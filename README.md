@@ -93,14 +93,14 @@ alias docker-root-here='docker run --rm -it -v "$PWD":/work -w /work'
     docker build -t exlearn -f docker/project/Dockerfile "$PWD"
     ```
 
-3. Run an interactive shell
-    ```bash
-    docker-here exlearn iex -S mix
-    ```
-
-4. Update dependencies
+3. Update dependencies
     ```bash
     docker-here exlearn mix deps.get
+    ```
+
+4. Run an interactive shell
+    ```bash
+    docker-here exlearn iex -S mix
     ```
 
 5. Run tests
