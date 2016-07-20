@@ -1,7 +1,7 @@
-defmodule MasterTest do
+defmodule SupervisorTest do
   use ExUnit.Case, async: true
 
-  alias ExLearn.NeuralNetwork.Master
+  alias ExLearn.NeuralNetwork.Supervisor
 
   test "#start returns a running process" do
     network_parameters = %{
@@ -27,7 +27,7 @@ defmodule MasterTest do
       }
     }
 
-    network = Master.start(network_parameters)
+    network = Supervisor.start(network_parameters)
 
     assert network |> is_pid
     assert Process.alive?(network)

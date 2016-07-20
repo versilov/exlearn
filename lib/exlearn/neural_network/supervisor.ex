@@ -1,4 +1,4 @@
-defmodule ExLearn.NeuralNetwork.Master do
+defmodule ExLearn.NeuralNetwork.Supervisor do
   alias ExLearn.NeuralNetwork.{Forwarder, Propagator, State}
 
   @spec start(map) :: pid
