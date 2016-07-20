@@ -102,18 +102,22 @@ alias docker-root-here='docker run --rm -it -v "$PWD":/work -w /work'
     ```bash
     docker-here exlearn iex -S mix
     ```
+5. Run a sample
+    ```bash
+    docker-here exlearn mix run samples/or.exs
+    ```
 
-5. Run tests
+6. Run tests
     ```bash
     docker-here exlearn mix test
     ```
 
-6. Run tests with coverage report
+7. Run tests with coverage report
     ```bash
     docker-here exlearn mix coveralls
     ```
 
-7. Run dialyzer
+8. Run dialyzer
     ```bash
     docker-here exlearn mix dialyzer
     ```
