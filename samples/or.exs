@@ -6,7 +6,7 @@ structure_parameters = %{
     hidden: [%{activity: :logistic, name: "First Hidden", size: 2}],
     output:  %{activity: :logistic, name: "Output",       size: 1}
   },
-  objective: :quadratic,
+  objective: :cross_entropy,
   random:    %{distribution: :uniform, range: {-1, 1}}
 }
 
@@ -22,9 +22,9 @@ training_data = [
 configuration = %{
   batch_size:     2,
   data_size:      4,
-  epochs:         1000,
+  epochs:         50,
   dropout:        0.5,
-  learning_rate:  0.5,
+  learning_rate:  4.5,
   regularization: :L2
 }
 
