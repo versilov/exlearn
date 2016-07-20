@@ -1,11 +1,12 @@
 defmodule ExLearn.NeuralNetwork.Master do
-  alias ExLearn.NeuralNetwork.{Builder, Forwarder, Propagator}
+  alias ExLearn.NeuralNetwork.{Forwarder, Propagator, State}
 
   @spec start(map) :: pid
   def start(parameters) do
-    state = Builder.initialize(parameters)
+    state_server  = State.start(parameters)
+    network_state = State.get_state(state_server)
 
-    spawn fn -> network_loop(state) end
+    spawn fn -> network_loop(network_state) end
   end
 
   @spec network_loop(map) :: no_return
