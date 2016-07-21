@@ -47,7 +47,15 @@ defmodule ExLearn.NeuralNetwork do
   """
   @spec initialize(map) :: pid
   def initialize(parameters) do
-    Master.start(parameters)
+    names = %{
+      master_name: make_ref(),
+      state_name:  make_ref(),
+      worker_name: make_ref()
+    }
+
+    Master.start_link(parameters, names)
+
+    names
   end
 
   @doc """

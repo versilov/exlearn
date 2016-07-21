@@ -1,7 +1,7 @@
 defmodule ExLearn.NeuralNetwork.State do
-  alias ExLearn.NeuralNetwork.Builder
-
   use GenServer
+
+  alias ExLearn.NeuralNetwork.Builder
 
   # Client API
 

@@ -1,55 +1,30 @@
 defmodule ExLearn.NeuralNetwork.Master do
-  alias ExLearn.NeuralNetwork.{Forwarder, Propagator, State}
+  use Supervisor
 
-  @spec start(map) :: pid
-  def start(parameters) do
-    state_server  = State.start(parameters)
-    network_state = State.get_state(state_server)
+  alias ExLearn.NeuralNetwork.{State, Worker}
 
-    spawn fn -> network_loop(network_state) end
+  # Client API
+
+  @spec start_link(map, map) :: pid
+  def start_link(parameters, names) do
+    %{master_name: master_name} = names
+
+    Supervisor.start_link(
+      __MODULE__, {parameters, names}, name: master_name
+    )
   end
 
-  @spec network_loop(map) :: no_return
-  defp network_loop(state) do
-    receive do
-      {:ask, input, caller} ->
-        ask_network(input, state, caller)
-        network_loop(state)
-      {:test, batch, configuration, caller} ->
-        result = test_network(batch, configuration, state)
-        send caller, {:ok, result}
-        network_loop(state)
-      {:train, batch, configuration, caller} ->
-        new_state = train_network(batch, configuration, state)
-        send caller, :ok
-        network_loop(new_state)
-    end
-  end
+  # Supervisor API
 
-  defp ask_network(input, state, caller) do
-    output = Forwarder.forward_for_output(input, state)
+  @spec init({}) :: {}
+  def init({parameters, names}) do
+    %{state_name: state_name, worker_name: worker_name} = names
 
-    send caller, {:ok, output}
-  end
+    children = [
+      worker(State,  parameters, name: state_name),
+      worker(Worker, [],         name: worker_name)
+    ]
 
-  defp test_network(batch, configuration, state) do
-    outputs = Forwarder.forward_for_test(batch, state)
-
-    %{network: %{objective: %{function: objective}}} = state
-    %{data_size: data_size} = configuration
-
-    targets = Enum.map(batch, fn ({_, target}) -> target end)
-
-    costs = Enum.zip(targets, outputs)
-      |> Enum.map(fn ({target, output}) -> objective.(target, output, data_size) end)
-
-    {outputs, costs}
-  end
-
-  @spec train_network(list, map, map) :: map
-  defp train_network(batch, configuration, state) do
-    batch
-    |> Forwarder.forward_for_activity(state)
-    |> Propagator.back_propagate(configuration, state)
+    supervise(children, strategy: :one_for_one)
   end
 end
