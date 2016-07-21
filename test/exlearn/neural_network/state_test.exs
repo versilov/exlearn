@@ -27,7 +27,7 @@ defmodule StateTest do
       }
     }
 
-    {:ok, network} = State.start(network_parameters)
+    network = State.start(network_parameters)
 
     {:ok, setup: %{network: network}}
   end
@@ -35,8 +35,10 @@ defmodule StateTest do
   test "#start returns a running process", %{setup: setup} do
     %{network: network} = setup
 
-    assert network |> is_pid
-    assert Process.alive?(network)
+    {:global, reference} = network
+
+    assert reference |> is_reference
+    assert :global.whereis_name(reference) |> Process.alive?
   end
 
   test "#get_state returns the state", %{setup: setup} do

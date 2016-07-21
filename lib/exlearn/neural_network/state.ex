@@ -5,14 +5,27 @@ defmodule ExLearn.NeuralNetwork.State do
 
   # Client API
 
-  @spec start(map) :: pid
-  def start(parameters) do
-    GenServer.start(__MODULE__, parameters)
-  end
-
   @spec get_state(pid) :: map
   def get_state(server) do
     GenServer.call(server, :get)
+  end
+
+  @spec start(map) :: reference
+  def start(parameters) do
+    name = {:global, make_ref()}
+
+    {:ok, _pid} = GenServer.start(__MODULE__, parameters, name: name)
+
+    name
+  end
+
+  @spec start_link(map) :: reference
+  def start_link(parameters) do
+    name = {:global, make_ref()}
+
+    {:ok, _pid} = GenServer.start_link(__MODULE__, parameters, name: name)
+
+    name
   end
 
   # Server API
