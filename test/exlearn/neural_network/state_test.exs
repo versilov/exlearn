@@ -27,7 +27,7 @@ defmodule StateTest do
       }
     }
 
-    network = State.start(network_parameters)
+    {:ok, network} = State.start(network_parameters)
 
     {:ok, setup: %{network: network}}
   end
@@ -42,7 +42,7 @@ defmodule StateTest do
   test "#get_state returns the state", %{setup: setup} do
     %{network: network} = setup
 
-    result   = State.get_state(network)
+    result = State.get_state(network)
 
     assert result |> is_map
   end

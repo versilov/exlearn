@@ -1,28 +1,31 @@
 defmodule ExLearn.NeuralNetwork.State do
-  alias ExLearn.NeuralNetwork.{Builder}
+  alias ExLearn.NeuralNetwork.Builder
+
+  use GenServer
+
+  # Client API
 
   @spec start(map) :: pid
   def start(parameters) do
-    network_state = Builder.initialize(parameters)
-
-    spawn fn -> state_loop(network_state) end
+    GenServer.start(__MODULE__, parameters)
   end
 
   @spec get_state(pid) :: map
   def get_state(server) do
-    send server, {:get, self()}
-
-    receive do
-      {:ok, state} -> state
-    end
+    GenServer.call(server, :get)
   end
 
-  @spec state_loop(map) :: no_return
-  defp state_loop(state) do
-    receive do
-      {:get, caller} ->
-        send caller, {:ok, state}
-        state_loop(state)
-    end
+  # Server API
+
+  @spec init(%{}) :: {}
+  def init(parameters) do
+    state = Builder.initialize(parameters)
+
+    {:ok, state}
+  end
+
+  @spec handle_call(atom, {}, map) :: {}
+  def handle_call(:get, _from, state) do
+    {:reply, state, state}
   end
 end

@@ -3,8 +3,8 @@ defmodule ExLearn.NeuralNetwork.Master do
 
   @spec start(map) :: pid
   def start(parameters) do
-    state_server  = State.start(parameters)
-    network_state = State.get_state(state_server)
+    {:ok, state_server} = State.start(parameters)
+    network_state       = State.get_state(state_server)
 
     spawn fn -> network_loop(network_state) end
   end
