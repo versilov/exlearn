@@ -8,7 +8,7 @@ defmodule WorkerTest do
     configuration = %{configuration: :configuration}
     network_state = %{network_state: :network_state}
 
-    {:ok, worker} = Worker.start(batch, configuration, network_state)
+    worker = Worker.start(batch, configuration, network_state)
 
     {:ok, setup: %{
       batch:         batch,
@@ -19,7 +19,8 @@ defmodule WorkerTest do
   end
 
   test "#set_batch receives success", %{setup: setup} do
-    %{worker: worker} = setup
+    %{worker: worker}    = setup
+    {:global, reference} = worker
 
     new_batch = [{3, 3}, {4, 4}]
 
@@ -27,11 +28,12 @@ defmodule WorkerTest do
     result   = Worker.set_batch(new_batch, worker)
 
     assert expected == result
-    assert Process.alive?(worker)
+    assert :global.whereis_name(reference) |> Process.alive?
   end
 
   test "#set_configuration receives success", %{setup: setup} do
-    %{worker: worker} = setup
+    %{worker: worker}    = setup
+    {:global, reference} = worker
 
     new_configuration = %{new_configuration: :new_configuration}
 
@@ -39,11 +41,12 @@ defmodule WorkerTest do
     result   = Worker.set_configuration(new_configuration, worker)
 
     assert expected == result
-    assert Process.alive?(worker)
+    assert :global.whereis_name(reference) |> Process.alive?
   end
 
   test "#set_network_state receives success", %{setup: setup} do
-    %{worker: worker} = setup
+    %{worker: worker}    = setup
+    {:global, reference} = worker
 
     new_network_state = %{new_network_state: :new_network_state}
 
@@ -51,13 +54,14 @@ defmodule WorkerTest do
     result   = Worker.set_network_state(new_network_state, worker)
 
     assert expected == result
-    assert Process.alive?(worker)
+    assert :global.whereis_name(reference) |> Process.alive?
   end
 
   test "#start returns a running process", %{setup: setup} do
-    %{worker: worker} = setup
+    %{worker: worker}    = setup
+    {:global, reference} = worker
 
-    assert worker |> is_pid
-    assert Process.alive?(worker)
+    assert reference |> is_reference
+    assert :global.whereis_name(reference) |> Process.alive?
   end
 end

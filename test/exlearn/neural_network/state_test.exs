@@ -33,8 +33,7 @@ defmodule StateTest do
   end
 
   test "#start returns a running process", %{setup: setup} do
-    %{network: network} = setup
-
+    %{network: network}  = setup
     {:global, reference} = network
 
     assert reference |> is_reference
@@ -42,11 +41,13 @@ defmodule StateTest do
   end
 
   test "#get_state returns the state", %{setup: setup} do
-    %{network: network} = setup
+    %{network: network}  = setup
+    {:global, reference} = network
 
     result = State.get_state(network)
 
     assert result |> is_map
+    assert :global.whereis_name(reference) |> Process.alive?
   end
 end
 

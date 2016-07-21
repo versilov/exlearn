@@ -18,12 +18,30 @@ defmodule ExLearn.NeuralNetwork.Worker do
     GenServer.cast(worker, {:network_state, new_value})
   end
 
-  @spec start([{}], map, map) :: pid
+  @spec start([{}], map, map) :: {}
   def start(batch, configuration, network_state) do
+    name = {:global, make_ref()}
+
     GenServer.start(
       __MODULE__,
-      {batch, configuration, network_state}
+      {batch, configuration, network_state},
+      name: name
     )
+
+    name
+  end
+
+  @spec start_link([{}], map, map) :: {}
+  def start_link(batch, configuration, network_state) do
+    name = {:global, make_ref()}
+
+    {:ok, _pid} = GenServer.start_link(
+      __MODULE__,
+      {batch, configuration, network_state},
+      name: name
+    )
+
+    name
   end
 
   # Server API
