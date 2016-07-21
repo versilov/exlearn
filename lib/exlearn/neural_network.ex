@@ -3,7 +3,7 @@ defmodule ExLearn.NeuralNetwork do
   A neural network
   """
 
-  alias ExLearn.NeuralNetwork.Supervisor
+  alias ExLearn.NeuralNetwork.Master
 
   @doc """
   Makes a prediction
@@ -47,7 +47,7 @@ defmodule ExLearn.NeuralNetwork do
   """
   @spec initialize(map) :: pid
   def initialize(parameters) do
-    Supervisor.start(parameters)
+    Master.start(parameters)
   end
 
   @doc """
