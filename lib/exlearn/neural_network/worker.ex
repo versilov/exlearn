@@ -1,51 +1,62 @@
 defmodule ExLearn.NeuralNetwork.Worker do
-  @spec set_batch([{}], pid) :: atom
-  def set_batch(new_batch, worker) do
-    send worker, {:set, :batch, new_batch, self()}
+  use GenServer
 
-    receive do
-      message -> message
-    end
+  # Client API
+
+  @spec set_batch([{}], pid) :: atom
+  def set_batch(new_value, worker) do
+    GenServer.cast(worker, {:batch, new_value})
   end
 
   @spec set_configuration([{}], pid) :: atom
-  def set_configuration(new_configuration, worker) do
-    send worker, {:set, :configuration, new_configuration, self()}
-
-    receive do
-      message -> message
-    end
+  def set_configuration(new_value, worker) do
+    GenServer.cast(worker, {:configuration, new_value})
   end
 
   @spec set_network_state([{}], pid) :: atom
-  def set_network_state(new_network_state, worker) do
-    send worker, {:set, :network_state, new_network_state, self()}
-
-    receive do
-      message -> message
-    end
+  def set_network_state(new_value, worker) do
+    GenServer.cast(worker, {:network_state, new_value})
   end
 
   @spec start([{}], map, map) :: pid
   def start(batch, configuration, network_state) do
-    spawn fn -> worker_loop(batch, configuration, network_state) end
+    GenServer.start(
+      __MODULE__,
+      {batch, configuration, network_state}
+    )
   end
 
-  @spec worker_loop([{}], map, map) :: no_return
-  defp worker_loop(batch, configuration, network_state) do
-    receive do
-      {:get, caller} ->
-        send caller, :ok
-        worker_loop(batch, configuration, network_state)
-      {:set, :batch, new_batch, caller} ->
-        send caller, :ok
-        worker_loop(new_batch, configuration, network_state)
-      {:set, :configuration, new_configuration, caller} ->
-        send caller, :ok
-        worker_loop(batch, new_configuration, network_state)
-      {:set, :network_state, new_network_state, caller} ->
-        send caller, :ok
-        worker_loop(batch, configuration, new_network_state)
-    end
+  # Server API
+
+  @spec init({}) :: {}
+  def init({batch, configuration, network_state}) do
+    state = %{
+      batch:         batch,
+      configuration: configuration,
+      network_state: network_state
+    }
+
+    {:ok, state}
+  end
+
+  @spec handle_cast({}, map) :: {}
+  def handle_cast({:batch, new_value}, state) do
+    new_state = Map.put(state, :batch, new_value)
+
+    {:noreply, new_state}
+  end
+
+  @spec handle_cast({}, map) :: {}
+  def handle_cast({:configuration, new_value}, state) do
+    new_state = Map.put(state, :configuration, new_value)
+
+    {:noreply, new_state}
+  end
+
+  @spec handle_cast({}, map) :: {}
+  def handle_cast({:network_state, new_value}, state) do
+    new_state = Map.put(state, :network_state, new_value)
+
+    {:noreply, new_state}
   end
 end

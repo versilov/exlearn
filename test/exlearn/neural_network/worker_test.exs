@@ -8,7 +8,7 @@ defmodule WorkerTest do
     configuration = %{configuration: :configuration}
     network_state = %{network_state: :network_state}
 
-    worker = Worker.start(batch, configuration, network_state)
+    {:ok, worker} = Worker.start(batch, configuration, network_state)
 
     {:ok, setup: %{
       batch:         batch,
