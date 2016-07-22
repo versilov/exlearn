@@ -10,22 +10,19 @@ defmodule ExLearn.NeuralNetwork.State do
     GenServer.call(server, :get)
   end
 
-  @spec start(map) :: reference
-  def start(parameters) do
-    name = {:global, make_ref()}
-
-    {:ok, _pid} = GenServer.start(__MODULE__, parameters, name: name)
-
-    name
+  @spec set_state(map, pid) :: map
+  def set_state(state, server) do
+    GenServer.cast(server, {:set, state})
   end
 
-  @spec start_link(map) :: reference
-  def start_link(parameters) do
-    name = {:global, make_ref()}
+  @spec start(map, {}) :: reference
+  def start(args, options) do
+    GenServer.start(__MODULE__, args, options)
+  end
 
-    {:ok, _pid} = GenServer.start_link(__MODULE__, parameters, name: name)
-
-    name
+  @spec start_link(map, {}) :: reference
+  def start_link(args, options) do
+    GenServer.start_link(__MODULE__, args, options)
   end
 
   # Server API
@@ -40,5 +37,10 @@ defmodule ExLearn.NeuralNetwork.State do
   @spec handle_call(atom, {}, map) :: {}
   def handle_call(:get, _from, state) do
     {:reply, state, state}
+  end
+
+  @spec handle_cast(atom, map) :: {}
+  def handle_cast({:set, new_state}, state) do
+    {:noreply, new_state}
   end
 end

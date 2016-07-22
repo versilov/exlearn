@@ -1,9 +1,24 @@
 defmodule ExLearn.NeuralNetwork.Worker do
   use GenServer
 
-  alias ExLearn.NeuralNetwork.{Forwarder, Propagator}
+  alias ExLearn.NeuralNetwork.{State, Forwarder, Propagator}
 
   # Client API
+
+  @spec ask(any, any) :: any
+  def ask(batch, worker) do
+    GenServer.call(worker, {:ask, batch})
+  end
+
+  @spec test(any, any, any) :: any
+  def test(batch, configuration, worker) do
+    GenServer.call(worker, {:test, batch, configuration})
+  end
+
+  @spec train(any, any, any) :: any
+  def train(batch, configuration, worker) do
+    GenServer.call(worker, {:train, batch, configuration})
+  end
 
   @spec set_batch([{}], pid) :: atom
   def set_batch(new_value, worker) do
@@ -20,60 +35,62 @@ defmodule ExLearn.NeuralNetwork.Worker do
     GenServer.cast(worker, {:network_state, new_value})
   end
 
-  @spec start([{}], map, map) :: {}
-  def start(batch, configuration, network_state) do
-    name = {:global, make_ref()}
-
-    GenServer.start(
-      __MODULE__,
-      {batch, configuration, network_state},
-      name: name
-    )
-
-    name
+  @spec start([{}], map) :: {}
+  def start(args, options) do
+    GenServer.start( __MODULE__, args, options)
   end
 
-  @spec start_link([{}], map, map) :: {}
-  def start_link(batch, configuration, network_state) do
-    name = {:global, make_ref()}
-
-    {:ok, _pid} = GenServer.start_link(
-      __MODULE__,
-      {batch, configuration, network_state},
-      name: name
-    )
-
-    name
+  @spec start_link([{}], map) :: {}
+  def start_link(args, options) do
+    GenServer.start_link(__MODULE__, args, options)
   end
 
   # Server API
 
-  @spec init([]) :: {}
-  def init([]) do
-    state = %{batch: [], configuration: %{}, network_state: %{}}
+  @spec init(any) :: {}
+  def init(names) do
+    %{state_name: state_name} = names
+
+    state = %{
+      batch:         [],
+      configuration: %{},
+      network_state: %{},
+      state_name:    state_name,
+    }
 
     {:ok, state}
   end
 
-  @spec handle_call({}, map) :: {}
-  def handle_call({:ask, batch}, state) do
-    result = ask_network(batch, state)
+  @spec handle_call({}, any,  map) :: {}
+  def handle_call({:ask, batch}, _from,  state) do
+    %{state_name: state_name} = state
+
+    network_state = State.get_state(state_name)
+    result        = ask_network(batch, network_state)
 
     {:reply, result, state}
   end
 
-  @spec handle_call({}, map) :: {}
-  def handle_call({:test, batch, configuration}, state) do
-    result = test_network(batch, configuration, state)
+  @spec handle_call({}, any, map) :: {}
+  def handle_call({:test, batch, configuration}, _from, state) do
+    %{state_name: state_name} = state
+
+    network_state = State.get_state(state_name)
+    result        = test_network(batch, configuration, network_state)
 
     {:reply, result, state}
   end
 
-  @spec handle_call({}, map) :: {}
-  def handle_call({:train, batch, configuration}, state) do
-    new_state = train_network(batch, configuration, state)
+  @spec handle_call({}, any, map) :: {}
+  def handle_call({:train, batch, configuration}, _from, state) do
+    %{state_name: state_name} = state
 
-    {:reply, :ok, new_state}
+    network_state     = State.get_state(state_name)
+    new_network_state = train_network(batch, configuration, network_state)
+
+    State.set_state(new_network_state, state_name)
+
+    {:reply, :ok, state}
   end
 
   @spec handle_cast({}, map) :: {}

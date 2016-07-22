@@ -61,7 +61,7 @@ defmodule NeuralNetworkTest do
   test "#ask responds with a list of numbers", %{setup: setup} do
     %{ask_data: data, network: network} = setup
 
-    {:ok, result} = NeuralNetwork.ask(data, network)
+    result = NeuralNetwork.ask(data, network)
 
     assert length(result) == length(data)
     Enum.each(result, fn (element) ->
@@ -83,10 +83,23 @@ defmodule NeuralNetworkTest do
   end
 
   test "#initialize returns a running process", %{setup: setup} do
-    %{network: network} = setup
+    %{network: {
+      {:global, master_reference},
+      {:global, state_reference },
+      {:global, worker_reference}
+    }} = setup
 
-    assert network |> is_pid
-    assert Process.alive?(network)
+    pid_of_master = :global.whereis_name(master_reference)
+    pid_of_state  = :global.whereis_name(state_reference)
+    pid_of_worker = :global.whereis_name(worker_reference)
+
+    assert master_reference |> is_reference
+    assert state_reference  |> is_reference
+    assert worker_reference |> is_reference
+
+    assert pid_of_master |> Process.alive?
+    assert pid_of_state  |> Process.alive?
+    assert pid_of_worker |> Process.alive?
   end
 
   test "#test responds with a tuple", %{setup: setup} do
@@ -96,8 +109,7 @@ defmodule NeuralNetworkTest do
       test_data:     test_data
     } = setup
 
-    output = NeuralNetwork.test(test_data, configuration, network)
-    {:ok, {result, cost}} = output
+    {result, cost} = NeuralNetwork.test(test_data, configuration, network)
 
     assert length(result) == length(test_data)
     Enum.each(result, fn (element) ->

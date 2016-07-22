@@ -3,18 +3,16 @@ defmodule ExLearn.NeuralNetwork do
   A neural network
   """
 
-  alias ExLearn.NeuralNetwork.Master
+  alias ExLearn.NeuralNetwork.{Master, Worker}
 
   @doc """
   Makes a prediction
   """
-  @spec ask(any, pid) :: any
-  def ask(input, pid) do
-    send pid, {:ask, input, self()}
+  @spec ask(any, any) :: any
+  def ask(data, network) do
+    {_, _, worker} = network
 
-    receive do
-      response -> response
-    end
+    Worker.ask(data, worker)
   end
 
   @doc """
@@ -48,38 +46,37 @@ defmodule ExLearn.NeuralNetwork do
   @spec initialize(map) :: pid
   def initialize(parameters) do
     names = %{
-      master_name: make_ref(),
-      state_name:  make_ref(),
-      worker_name: make_ref()
+      master_name: master_name = {:global, make_ref()},
+      state_name:  state_name  = {:global, make_ref()},
+      worker_name: worker_name = {:global, make_ref()}
     }
 
-    Master.start_link(parameters, names)
+    args    = {parameters, names}
+    options = [name: master_name]
 
-    names
+    {:ok, pid} = Master.start_link(args, options)
+
+    {master_name, state_name, worker_name}
   end
 
   @doc """
   Makes a prediction and returs the cost
   """
-  @spec test(any, map, pid) :: any
-  def test(batch, configuration, pid) do
-    send pid, {:test, batch, configuration, self()}
+  @spec test(any, map, any) :: any
+  def test(batch, configuration, network) do
+    {_, _, worker} = network
 
-    receive do
-      response -> response
-    end
+    Worker.test(batch, configuration, worker)
   end
 
   @doc """
   Trains the neural network
   """
-  @spec train(list, map, pid) :: any
-  def train(batch, configuration, pid) do
-    send pid, {:train, batch, configuration, self()}
+  @spec train(list, map, any) :: any
+  def train(batch, configuration, network) do
+    {_, _, worker} = network
 
-    receive do
-      response -> response
-    end
+    Worker.train(batch, configuration, worker)
   end
 
   # @doc """

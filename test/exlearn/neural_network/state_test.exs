@@ -27,27 +27,40 @@ defmodule StateTest do
       }
     }
 
-    network = State.start(network_parameters)
+    name = {:global, make_ref()}
 
-    {:ok, setup: %{network: network}}
+    {:ok, network} = State.start(network_parameters, name: name)
+
+    {:ok, setup: %{
+      name:    name,
+      network: network
+    }}
   end
 
   test "#start returns a running process", %{setup: setup} do
-    %{network: network}  = setup
-    {:global, reference} = network
+    %{
+      name:    {:global, reference},
+      network: network
+    } = setup
 
+    pid_of_reference = :global.whereis_name(reference)
+
+    assert network   |> is_pid
+    assert network   |> Process.alive?
     assert reference |> is_reference
-    assert :global.whereis_name(reference) |> Process.alive?
+    assert network == pid_of_reference
   end
 
   test "#get_state returns the state", %{setup: setup} do
-    %{network: network}  = setup
-    {:global, reference} = network
+    %{
+      name:    name = {:global, reference},
+      network: network
+    } = setup
 
-    result = State.get_state(network)
+    result = State.get_state(name)
 
-    assert result |> is_map
-    assert :global.whereis_name(reference) |> Process.alive?
+    assert result  |> is_map
+    assert network |> Process.alive?
   end
 end
 
