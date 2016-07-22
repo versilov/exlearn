@@ -29,7 +29,7 @@ defmodule WorkerTest do
 
     state_name = {:global, make_ref()}
 
-    {:ok, state} = State.start(network_parameters, name: state_name)
+    {:ok, _state} = State.start(network_parameters, name: state_name)
 
     batch         = [{1, 1}, {2, 2}]
     configuration = %{configuration: :configuration}
@@ -95,7 +95,7 @@ defmodule WorkerTest do
 
   test "#start returns a running process", %{setup: setup} do
     %{
-      name:   name = {:global, reference},
+      name:   {:global, reference},
       worker: worker
     } = setup
 

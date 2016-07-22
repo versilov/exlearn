@@ -54,7 +54,7 @@ defmodule ExLearn.NeuralNetwork do
     args    = {parameters, names}
     options = [name: master_name]
 
-    {:ok, pid} = Master.start_link(args, options)
+    {:ok, _pid} = Master.start_link(args, options)
 
     {master_name, state_name, worker_name}
   end

@@ -53,7 +53,7 @@ defmodule StateTest do
 
   test "#get_state returns the state", %{setup: setup} do
     %{
-      name:    name = {:global, reference},
+      name:    name,
       network: network
     } = setup
 

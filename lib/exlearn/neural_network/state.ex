@@ -40,7 +40,7 @@ defmodule ExLearn.NeuralNetwork.State do
   end
 
   @spec handle_cast(atom, map) :: {}
-  def handle_cast({:set, new_state}, state) do
+  def handle_cast({:set, new_state}, _state) do
     {:noreply, new_state}
   end
 end

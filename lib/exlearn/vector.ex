@@ -67,8 +67,4 @@ defmodule ExLearn.Vector do
   def multiply_with_scalar(vector, scalar) do
     Enum.map(vector, fn (x) -> x * scalar end)
   end
-
-  @spec sign(number) :: integer
-  defp sign(number) when number < 0, do: -1
-  defp sign(_), do: 1
 end
