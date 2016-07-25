@@ -22,7 +22,7 @@ defmodule ExLearn.NeuralNetwork.Builder do
 
     layer_config = [input_layer] ++ hidden_layers ++ [output_layer]
 
-    objective_function = Objective.determine(objective_setup)
+    objective_function = Objective.determine(objective_setup, output_layer)
     random_function    = Distribution.determine(random)
 
     layers = build_network(layer_config, random_function)

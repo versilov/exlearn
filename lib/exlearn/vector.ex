@@ -31,6 +31,12 @@ defmodule ExLearn.Vector do
     |> Enum.to_list
   end
 
+  @spec divide([number], [number]) :: [number]
+  def divide(first, second) do
+    Stream.zip(first, second)
+    |> Enum.map(fn({x, y}) -> x / y end)
+  end
+
   @spec dot_product([number], [number]) :: number
   def dot_product(first, second) do
     Enum.sum(multiply(first, second))

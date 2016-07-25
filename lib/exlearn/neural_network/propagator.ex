@@ -37,20 +37,10 @@ defmodule ExLearn.NeuralNetwork.Propagator do
 
     [last_activity_layer|rest] = reversed_activity_layers
 
-    %{network: %{objective: %{error: objective}}} = state
-    cost_gradient = [objective.(expected, output)]
+    %{network: %{objective: %{error: error_function}}} = state
+    starting_delta = error_function.(expected, output, last_activity_layer)
 
-    starting_delta = calculate_starting_delta(last_activity_layer, cost_gradient)
-
-    calculate_remaning_deltas(rest, reversed_network_layers, [starting_delta])
-  end
-
-  defp calculate_starting_delta(activity_layer, cost_gradient) do
-    %{input: input} = activity_layer
-
-    input_gradient = Activation.apply_derivative(input, activity_layer)
-
-    Matrix.multiply(cost_gradient, input_gradient)
+    calculate_remaning_deltas(rest, reversed_network_layers, [[starting_delta]])
   end
 
   defp calculate_remaning_deltas([], _, deltas) do

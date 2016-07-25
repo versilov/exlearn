@@ -33,6 +33,16 @@ defmodule VectorTest do
     assert result == expected
   end
 
+  test "#divide computes the elementwise division of two lists" do
+    first    = [10, 20, 30]
+    second   = [5,  4,  3 ]
+    expected = [2,  5,  10]
+
+    result = Vector.divide(first, second)
+
+    assert result == expected
+  end
+
   test "#dot_product computes the sum of element product of two lists" do
     first    = [1, 2, 3]
     second   = [5, 3, 3]

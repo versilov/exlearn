@@ -7,7 +7,7 @@ structure_parameters = %{
     output:  %{activity: :softmax,  name: "Output",       size: 2}
   },
   objective: :negative_log_likelihood,
-  random:    %{distribution: :uniform, range: {-0.01, 0.01}}
+  random:    %{distribution: :uniform, range: {-1, 1}}
 }
 
 network = NN.initialize(structure_parameters)
@@ -22,9 +22,9 @@ training_data = [
 configuration = %{
   batch_size:     2,
   data_size:      4,
-  epochs:         6000,
+  epochs:         600,
   dropout:        0.5,
-  learning_rate:  0.2,
+  learning_rate:  0.4,
   regularization: :L2
 }
 

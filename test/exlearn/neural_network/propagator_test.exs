@@ -5,7 +5,7 @@ defmodule PropagatorTest do
 
   setup do
     derivative = fn(_)    -> 1 end
-    objective  = fn(a, b) ->
+    objective  = fn(a, b, _c) ->
       Stream.zip(b, a) |> Enum.map(fn({x, y}) -> x - y end)
     end
 
