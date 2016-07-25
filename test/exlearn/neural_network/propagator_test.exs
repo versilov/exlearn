@@ -30,7 +30,7 @@ defmodule PropagatorTest do
             weights:  [[1, 2], [3, 4]]
           },
         ],
-        objective: %{derivative: objective}
+        objective: %{error: objective}
       }
     }
 
@@ -136,7 +136,7 @@ defmodule PropagatorTest do
             ]
           }
         ],
-        objective: %{derivative: objective}
+        objective: %{error: objective}
       }
     }
 

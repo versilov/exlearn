@@ -37,7 +37,7 @@ defmodule ExLearn.NeuralNetwork.Propagator do
 
     [last_activity_layer|rest] = reversed_activity_layers
 
-    %{network: %{objective: %{derivative: objective}}} = state
+    %{network: %{objective: %{error: objective}}} = state
     cost_gradient = [objective.(expected, output)]
 
     starting_delta = calculate_starting_delta(last_activity_layer, cost_gradient)

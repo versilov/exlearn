@@ -11,9 +11,9 @@ defmodule ExLearn.Objective do
   @spec determine(atom | map) :: map
   def determine(setup) do
     case setup do
-      %{function: function, derivative: derivative}
-          when function |> is_function and derivative |> is_function ->
-        %{function: function, derivative: derivative}
+      %{function: function, error: error}
+          when function |> is_function and error |> is_function ->
+        %{function: function, error: error}
       :cross_entropy           -> cross_entropy_pair
       :negative_log_likelihood -> negative_log_likelihood_pair
       :quadratic               -> quadratic_pair
@@ -22,10 +22,10 @@ defmodule ExLearn.Objective do
 
   @spec cross_entropy_pair :: map
   defp cross_entropy_pair do
-    function   = &cross_entropy_function/3
-    derivative = &cross_entropy_partial_derivative/2
+    function = &cross_entropy_function/3
+    error    = &cross_entropy_error/2
 
-    %{function: function, derivative: derivative}
+    %{function: function, error: error}
   end
 
   @spec cross_entropy_function([number], [number], non_neg_integer) :: float
@@ -39,17 +39,17 @@ defmodule ExLearn.Objective do
     -1 / data_size * binary_entropy_sum
   end
 
-  @spec cross_entropy_partial_derivative([number], [number]) :: [number]
-  defp cross_entropy_partial_derivative(expected, actual) do
+  @spec cross_entropy_error([number], [number]) :: [number]
+  defp cross_entropy_error(expected, actual) do
     Vector.substract(actual, expected)
   end
 
   @spec quadratic_pair :: map
   defp quadratic_pair do
-    function   = &quadratic_cost_function/3
-    derivative = &quadratic_cost_partial_derivative/2
+    function = &quadratic_cost_function/3
+    error    = &quadratic_cost_error/2
 
-    %{function: function, derivative: derivative}
+    %{function: function, error: error}
   end
 
   @spec quadratic_cost_function([number], [number], non_neg_integer) :: float
@@ -57,17 +57,17 @@ defmodule ExLearn.Objective do
     1 / (2 * data_size) * Vector.dot_square_difference(expected, actual)
   end
 
-  @spec quadratic_cost_partial_derivative([], []) :: []
-  defp quadratic_cost_partial_derivative(expected, actual) do
+  @spec quadratic_cost_error([], []) :: []
+  defp quadratic_cost_error(expected, actual) do
     Vector.substract(actual, expected)
   end
 
   @spec negative_log_likelihood_pair :: map
   defp negative_log_likelihood_pair do
-    function   = &negative_log_likelihood_function/3
-    derivative = &negative_log_likelihood_partial_derivative/2
+    function = &negative_log_likelihood_function/3
+    error    = &negative_log_likelihood_error/2
 
-    %{function: function, derivative: derivative}
+    %{function: function, error: error}
   end
 
   @spec negative_log_likelihood_function([number], [number], non_neg_integer) :: float
@@ -80,8 +80,8 @@ defmodule ExLearn.Objective do
     )
   end
 
-  @spec negative_log_likelihood_partial_derivative([number], [number]) :: []
-  defp negative_log_likelihood_partial_derivative(expected, actual) do
+  @spec negative_log_likelihood_error([number], [number]) :: []
+  defp negative_log_likelihood_error(expected, actual) do
     Vector.substract(actual, expected)
   end
 end
