@@ -92,6 +92,7 @@ defmodule ExLearn.Objective do
     end
   end
 
+  # TODO: Calculate the non optimised derivative here
   @spec negative_log_likelihood_error_simple([number], [number], %{}) :: []
   defp negative_log_likelihood_error_simple(expected, actual, layer) do
     %{derivative: derivative, input: input} = layer
