@@ -7,17 +7,17 @@ defmodule ExLearn.NeuralNetwork.Worker do
 
   @spec ask(any, any) :: any
   def ask(batch, worker) do
-    GenServer.call(worker, {:ask, batch})
+    GenServer.call(worker, {:ask, batch}, :infinity)
   end
 
   @spec test(any, any, any) :: any
   def test(batch, configuration, worker) do
-    GenServer.call(worker, {:test, batch, configuration})
+    GenServer.call(worker, {:test, batch, configuration}, :infinity)
   end
 
   @spec train(any, any, any) :: any
   def train(batch, configuration, worker) do
-    GenServer.call(worker, {:train, batch, configuration})
+    GenServer.call(worker, {:train, batch, configuration}, :infinity)
   end
 
   @spec set_batch([{}], pid) :: atom

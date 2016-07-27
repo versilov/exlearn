@@ -104,7 +104,7 @@ alias ExLearn.NeuralNetwork, as: NN
 structure_parameters = %{
   layers: %{
     input:   %{size: 784},
-    hidden: [%{activity: :logistic, name: "First Hidden", size: 100}],
+    hidden: [%{activity: :logistic, name: "First Hidden", size: 30}],
     output:  %{activity: :logistic, name: "Output",       size: 10}
   },
   objective: :quadratic,
@@ -116,7 +116,7 @@ network = NN.initialize(structure_parameters)
 
 # Defines the training configuration
 configuration = %{
-  batch_size:    10,
+  batch_size:    60000,
   data_size:     60000,
   epochs:        1,
   learning_rate: 0.05,
@@ -127,4 +127,4 @@ IO.puts "Started feeding the neural network"
 NN.feed(training_data, configuration, network)
 IO.puts "Finished feeding the neural network"
 
-IO.inspect NN.test(hd(training_data))
+IO.inspect NN.test([hd(training_data)], configuration, network)
