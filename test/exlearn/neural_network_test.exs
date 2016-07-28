@@ -83,20 +83,24 @@ defmodule NeuralNetworkTest do
   end
 
   test "#initialize returns a running process", %{setup: setup} do
-    %{network: {
-      {:global, master_reference},
-      {:global, state_reference },
-      {:global, worker_reference}
+    %{network: %{
+      logger: {:global, logger_reference},
+      master: {:global, master_reference},
+      state:  {:global, state_reference },
+      worker: {:global, worker_reference}
     }} = setup
 
+    pid_of_logger = :global.whereis_name(logger_reference)
     pid_of_master = :global.whereis_name(master_reference)
     pid_of_state  = :global.whereis_name(state_reference)
     pid_of_worker = :global.whereis_name(worker_reference)
 
+    assert logger_reference |> is_reference
     assert master_reference |> is_reference
     assert state_reference  |> is_reference
     assert worker_reference |> is_reference
 
+    assert pid_of_logger |> Process.alive?
     assert pid_of_master |> Process.alive?
     assert pid_of_state  |> Process.alive?
     assert pid_of_worker |> Process.alive?

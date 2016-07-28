@@ -10,7 +10,7 @@ defmodule ExLearn.NeuralNetwork do
   """
   @spec ask(any, any) :: any
   def ask(data, network) do
-    {_, _, worker} = network
+    %{worker: worker} = network
 
     Worker.ask(data, worker)
   end
@@ -46,6 +46,7 @@ defmodule ExLearn.NeuralNetwork do
   @spec initialize(map) :: pid
   def initialize(parameters) do
     names = %{
+      logger_name: logger_name = {:global, make_ref()},
       master_name: master_name = {:global, make_ref()},
       state_name:  state_name  = {:global, make_ref()},
       worker_name: worker_name = {:global, make_ref()}
@@ -56,7 +57,12 @@ defmodule ExLearn.NeuralNetwork do
 
     {:ok, _pid} = Master.start_link(args, options)
 
-    {master_name, state_name, worker_name}
+    %{
+      logger: logger_name,
+      master: master_name,
+      state:  state_name,
+      worker: worker_name
+    }
   end
 
   @doc """
@@ -64,7 +70,7 @@ defmodule ExLearn.NeuralNetwork do
   """
   @spec test(any, map, any) :: any
   def test(batch, configuration, network) do
-    {_, _, worker} = network
+    %{worker: worker} = network
 
     Worker.test(batch, configuration, worker)
   end
@@ -74,7 +80,7 @@ defmodule ExLearn.NeuralNetwork do
   """
   @spec train(list, map, any) :: any
   def train(batch, configuration, network) do
-    {_, _, worker} = network
+    %{worker: worker} = network
 
     Worker.train(batch, configuration, worker)
   end

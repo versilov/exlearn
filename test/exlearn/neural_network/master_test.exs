@@ -29,6 +29,7 @@ defmodule MasterTest do
 
     master_name = {:global, make_ref()}
     child_names = %{
+      logger_name: {:global, make_ref()},
       state_name:  {:global, make_ref()},
       worker_name: {:global, make_ref()}
     }

@@ -1,5 +1,6 @@
 defmodule LoggerTest do
-  use ExUnit.Case, async: true
+  use    ExUnit.Case, async: true
+  import ExUnit.CaptureIO
 
   alias ExLearn.NeuralNetwork.Logger
 
@@ -11,6 +12,12 @@ defmodule LoggerTest do
       args: args,
       name: name
     }}
+  end
+
+  test "#get" do
+  end
+
+  test "#log" do
   end
 
   test "#start returns a running process", %{setup: setup} do
@@ -41,5 +48,11 @@ defmodule LoggerTest do
     assert logger    |> Process.alive?
     assert reference |> is_reference
     assert logger == pid_of_reference
+  end
+
+  test "#stream" do
+  end
+
+  test "#stream_async" do
   end
 end
