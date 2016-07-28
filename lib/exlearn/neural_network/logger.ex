@@ -5,12 +5,12 @@ defmodule ExLearn.NeuralNetwork.Logger do
 
   @spec get({}) :: {}
   def get(logger) do
-    GenServer.call(:get, logger)
+    GenServer.call(logger, :get, :infinity)
   end
 
   @spec log(String.t, {}) :: any
   def log(message, logger) do
-    GenServer.cast({:log, message}, logger)
+    GenServer.cast(logger, {:log, message})
   end
 
   @spec start(map, {}) :: reference
@@ -46,6 +46,7 @@ defmodule ExLearn.NeuralNetwork.Logger do
     {:ok, logs} = get(logger)
 
     Enum.each(logs, fn(log) -> IO.puts log end)
+    Process.sleep(500)
 
     stream_loop(logger)
   end
@@ -57,8 +58,8 @@ defmodule ExLearn.NeuralNetwork.Logger do
     {:ok, initial_state}
   end
 
-  @spec handle_call(atom, list) :: tuple
-  def handle_call(:get, state) do
+  @spec handle_call(atom, any, list) :: tuple
+  def handle_call(:get, _from, state) do
     {:reply, state, []}
   end
 

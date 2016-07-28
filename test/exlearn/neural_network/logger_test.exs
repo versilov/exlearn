@@ -14,10 +14,40 @@ defmodule LoggerTest do
     }}
   end
 
-  test "#get" do
+  test "#get returns the logged state", %{setup: setup} do
+    %{
+      args: args,
+      name: name = {:global, reference}
+    } = setup
+
+    message = "Message"
+
+    {:ok, logger} = Logger.start(args, name: name)
+    initial_state = Logger.get(name)
+    :ok           = Logger.log(message, name)
+    new_state     = Logger.get(name)
+
+    assert initial_state == []
+    assert new_state     == [message]
   end
 
-  test "#log" do
+  test "#log modifies the logger state", %{setup: setup} do
+    %{
+      args: args,
+      name: name = {:global, reference}
+    } = setup
+
+    first_log  = "Message 1"
+    second_log = "Message 2"
+
+    {:ok, logger} = Logger.start(args, name: name)
+
+    :ok = Logger.log(first_log,  name)
+    :ok = Logger.log(second_log, name)
+
+    state = Logger.get(name)
+
+    assert state == [second_log, first_log]
   end
 
   test "#start returns a running process", %{setup: setup} do
