@@ -43,7 +43,7 @@ defmodule WorkerTest do
     configuration = %{configuration: :configuration}
     network_state = %{network_state: :network_state}
 
-    worker_args    = %{state_name: state_name}
+    worker_args    = %{logger_name: logger_name, state_name: state_name}
     worker_options = [name: worker_name]
 
     {:ok, worker} = Worker.start(worker_args, worker_options)

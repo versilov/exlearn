@@ -1,7 +1,7 @@
 defmodule ExLearn.NeuralNetwork.Worker do
   use GenServer
 
-  alias ExLearn.NeuralNetwork.{State, Forwarder, Propagator}
+  alias ExLearn.NeuralNetwork.{Logger, State, Forwarder, Propagator}
 
   # Client API
 
@@ -49,13 +49,17 @@ defmodule ExLearn.NeuralNetwork.Worker do
 
   @spec init(any) :: {}
   def init(names) do
-    %{state_name: state_name} = names
+    %{
+      logger_name: logger_name,
+      state_name:  state_name
+    } = names
 
     state = %{
       batch:         [],
       configuration: %{},
       network_state: %{},
       state_name:    state_name,
+      logger_name:   logger_name
     }
 
     {:ok, state}
@@ -63,30 +67,48 @@ defmodule ExLearn.NeuralNetwork.Worker do
 
   @spec handle_call({}, any,  map) :: {}
   def handle_call({:ask, batch}, _from,  state) do
-    %{state_name: state_name} = state
+    %{
+      logger_name: logger,
+      state_name:  state_name
+    } = state
 
     network_state = State.get_state(state_name)
-    result        = ask_network(batch, network_state)
+
+    Logger.log("Asking", logger)
+    result = ask_network(batch, network_state)
+    Logger.log("Finished Asking", logger)
 
     {:reply, result, state}
   end
 
   @spec handle_call({}, any, map) :: {}
   def handle_call({:test, batch, configuration}, _from, state) do
-    %{state_name: state_name} = state
+    %{
+      logger_name: logger,
+      state_name:  state_name
+    } = state
 
     network_state = State.get_state(state_name)
-    result        = test_network(batch, configuration, network_state)
+
+    Logger.log("Testing", logger)
+    result = test_network(batch, configuration, network_state)
+    Logger.log("Finished Testing", logger)
 
     {:reply, result, state}
   end
 
   @spec handle_call({}, any, map) :: {}
   def handle_call({:train, batch, configuration}, _from, state) do
-    %{state_name: state_name} = state
+    %{
+      logger_name: logger,
+      state_name:  state_name
+    } = state
 
-    network_state     = State.get_state(state_name)
+    network_state = State.get_state(state_name)
+
+    Logger.log("Training", logger)
     new_network_state = train_network(batch, configuration, network_state)
+    Logger.log("Finished Training", logger)
 
     State.set_state(new_network_state, state_name)
 
@@ -127,7 +149,7 @@ defmodule ExLearn.NeuralNetwork.Worker do
     targets = Enum.map(batch, fn ({_, target}) -> target end)
 
     costs = Enum.zip(targets, outputs)
-      |> Enum.map(fn ({target, output}) -> objective.(target, output, data_size) end)
+    |> Enum.map(fn ({target, output}) -> objective.(target, output, data_size) end)
 
     {outputs, costs}
   end

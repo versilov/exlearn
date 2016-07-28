@@ -3,7 +3,7 @@ defmodule ExLearn.NeuralNetwork do
   A neural network
   """
 
-  alias ExLearn.NeuralNetwork.{Master, Worker}
+  alias ExLearn.NeuralNetwork.{Logger, Master, Worker}
 
   @doc """
   Makes a prediction
@@ -21,14 +21,24 @@ defmodule ExLearn.NeuralNetwork do
   @spec feed(list, map, pid) :: atom
   def feed(data, configuration, network) do
     %{epochs: epochs} = configuration
+    %{logger: logger} = network
+    Logger.log("Started feeding data", logger)
 
     feed_network(data, configuration, network, epochs)
   end
 
   @spec feed_network(list, map, pid, non_neg_integer) :: atom
-  defp feed_network(_, _, _, 0), do: :ok
+  defp feed_network(_, _, network, 0) do
+    %{logger: logger} = network
+    Logger.log("Finished feeding data", logger)
+
+    :ok
+  end
+
   defp feed_network(data, configuration, network, epochs)
       when is_integer(epochs) and epochs > 0 do
+    %{logger: logger} = network
+    Logger.log("Epoch #{epochs}", logger)
 
     %{batch_size: batch_size} = configuration
     batches = Enum.shuffle(data) |> Enum.chunk(batch_size)
