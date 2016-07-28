@@ -20,11 +20,13 @@ defmodule ExLearn.NeuralNetwork do
   """
   @spec feed(list, map, pid) :: atom
   def feed(data, configuration, network) do
-    %{epochs: epochs} = configuration
-    %{logger: logger} = network
-    Logger.log("Started feeding data", logger)
+    Task.async(fn ->
+      %{epochs: epochs} = configuration
+      %{logger: logger} = network
+      Logger.log("Started feeding data", logger)
 
-    feed_network(data, configuration, network, epochs)
+      feed_network(data, configuration, network, epochs)
+    end)
   end
 
   @spec feed_network(list, map, pid, non_neg_integer) :: atom

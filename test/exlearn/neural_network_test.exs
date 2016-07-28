@@ -79,7 +79,11 @@ defmodule NeuralNetworkTest do
       training_data: training_data
     } = setup
 
-    NeuralNetwork.feed(training_data, configuration, network)
+    task = NeuralNetwork.feed(training_data, configuration, network)
+
+    result = Task.await(task)
+
+    assert result == :ok
   end
 
   test "#initialize returns a running process", %{setup: setup} do
