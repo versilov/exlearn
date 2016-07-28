@@ -8,46 +8,37 @@ defmodule LoggerTest do
     args = []
     name = {:global, make_ref()}
 
-    {:ok, setup: %{
-      args: args,
-      name: name
-    }}
+    {:ok, setup: %{args: args, name: name}}
   end
 
   test "#get returns the logged state", %{setup: setup} do
-    %{
-      args: args,
-      name: name = {:global, reference}
-    } = setup
+    %{args: args, name: name} = setup
 
     message = "Message"
 
     {:ok, logger} = Logger.start(args, name: name)
-    initial_state = Logger.get(name)
-    :ok           = Logger.log(message, name)
-    new_state     = Logger.get(name)
+    initial_state = Logger.get(logger)
+    :ok           = Logger.log(message, logger)
+    new_state     = Logger.get(logger)
 
     assert initial_state == []
     assert new_state     == [message]
   end
 
   test "#log modifies the logger state", %{setup: setup} do
-    %{
-      args: args,
-      name: name = {:global, reference}
-    } = setup
+    %{args: args, name: name} = setup
 
     first_log  = "Message 1"
     second_log = "Message 2"
 
     {:ok, logger} = Logger.start(args, name: name)
 
-    :ok = Logger.log(first_log,  name)
-    :ok = Logger.log(second_log, name)
+    :ok = Logger.log(first_log,  logger)
+    :ok = Logger.log(second_log, logger)
 
     state = Logger.get(name)
 
-    assert state == [second_log, first_log]
+    assert state == [first_log, second_log]
   end
 
   test "#start returns a running process", %{setup: setup} do
@@ -81,10 +72,7 @@ defmodule LoggerTest do
   end
 
   test "#stream writes logs to stdout", %{setup: setup} do
-    %{
-      args: args,
-      name: name = {:global, reference}
-    } = setup
+    %{args: args, name: name} = setup
 
     first_log  = "Message 1"
     second_log = "Message 2"
@@ -100,14 +88,11 @@ defmodule LoggerTest do
       Process.sleep(501)
     end)
 
-    assert result == second_log <> "\n" <> first_log <> "\n"
+    assert result == first_log <> "\n" <> second_log <> "\n"
   end
 
   test "#stream_async writes logs to stdout", %{setup: setup} do
-    %{
-      args: args,
-      name: name = {:global, reference}
-    } = setup
+    %{args: args, name: name} = setup
 
     first_log  = "Message 1"
     second_log = "Message 2"
@@ -126,6 +111,6 @@ defmodule LoggerTest do
       Process.sleep(501)
     end)
 
-    assert result == second_log <> "\n" <> first_log <> "\n"
+    assert result == first_log <> "\n" <> second_log <> "\n"
   end
 end

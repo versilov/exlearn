@@ -56,7 +56,7 @@ defmodule ExLearn.NeuralNetwork.Logger do
 
   @spec handle_call(atom, any, list) :: tuple
   def handle_call(:get, _from, state) do
-    {:reply, state, []}
+    {:reply, Enum.reverse(state), []}
   end
 
   @spec handle_cast(tuple, list) :: tuple
