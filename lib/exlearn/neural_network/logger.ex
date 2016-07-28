@@ -5,7 +5,12 @@ defmodule ExLearn.NeuralNetwork.Logger do
 
   @spec get({}) :: {}
   def get(logger) do
-    GenServer.call(logger, :get)
+    GenServer.call(logger, :get, :infinity)
+  end
+
+  @spec get({}) :: {}
+  defp get(logger, timeout) do
+    GenServer.call(logger, :get, timeout)
   end
 
   @spec log(String.t, {}) :: any
@@ -25,26 +30,40 @@ defmodule ExLearn.NeuralNetwork.Logger do
 
   @spec stream(map) :: no_return
   def stream(logger) do
-    stream_loop(logger)
+    stream_loop(logger, :infinity)
+  end
+
+  @spec stream(map, number) :: no_return
+  def stream(logger, timeout) do
+    stream_loop(logger, timeout)
   end
 
   @spec stream_async(map) :: any
   def stream_async(logger) do
     {:ok, pid} = Task.start(fn ->
-      stream_loop(logger)
+      stream_loop(logger, :infinity)
     end)
 
     pid
   end
 
-  @spec stream_loop(map) :: no_return
-  defp stream_loop(logger) do
-    logs = get(logger)
+  @spec stream_async(map, number) :: any
+  def stream_async(logger, timeout) do
+    {:ok, pid} = Task.start(fn ->
+      stream_loop(logger, timeout)
+    end)
+
+    pid
+  end
+
+  @spec stream_loop(map, number) :: no_return
+  defp stream_loop(logger, timeout) do
+    logs = get(logger, timeout)
 
     Enum.each(logs, fn(log) -> IO.puts log end)
     Process.sleep(500)
 
-    stream_loop(logger)
+    stream_loop(logger, timeout)
   end
 
   # Server API

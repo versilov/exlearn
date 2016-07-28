@@ -91,6 +91,26 @@ defmodule LoggerTest do
     assert result == first_log <> "\n" <> second_log <> "\n"
   end
 
+  test "#stream with timeout writes logs to stdout", %{setup: setup} do
+    %{args: args, name: name} = setup
+
+    first_log  = "Message 1"
+    second_log = "Message 2"
+
+    {:ok, logger} = Logger.start(args, name: name)
+
+    :ok = Logger.log(first_log,  name)
+    :ok = Logger.log(second_log, name)
+
+    result = capture_io(fn ->
+      Task.start(fn -> Logger.stream(logger, 1000) end)
+
+      Process.sleep(501)
+    end)
+
+    assert result == first_log <> "\n" <> second_log <> "\n"
+  end
+
   test "#stream_async writes logs to stdout", %{setup: setup} do
     %{args: args, name: name} = setup
 
@@ -104,6 +124,29 @@ defmodule LoggerTest do
 
     result = capture_io(fn ->
       pid = Logger.stream_async(logger)
+
+      assert pid |> is_pid
+      assert pid |> Process.alive?
+
+      Process.sleep(501)
+    end)
+
+    assert result == first_log <> "\n" <> second_log <> "\n"
+  end
+
+  test "#stream_async with timeout writes logs to stdout", %{setup: setup} do
+    %{args: args, name: name} = setup
+
+    first_log  = "Message 1"
+    second_log = "Message 2"
+
+    {:ok, logger} = Logger.start(args, name: name)
+
+    :ok = Logger.log(first_log,  name)
+    :ok = Logger.log(second_log, name)
+
+    result = capture_io(fn ->
+      pid = Logger.stream_async(logger, 1000)
 
       assert pid |> is_pid
       assert pid |> Process.alive?
