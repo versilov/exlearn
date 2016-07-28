@@ -5,7 +5,7 @@ defmodule ExLearn.NeuralNetwork.Logger do
 
   @spec get({}) :: {}
   def get(logger) do
-    GenServer.call(logger, :get, :infinity)
+    GenServer.call(logger, :get)
   end
 
   @spec log(String.t, {}) :: any
@@ -24,16 +24,12 @@ defmodule ExLearn.NeuralNetwork.Logger do
   end
 
   @spec stream(map) :: no_return
-  def stream(network) do
-    %{logger: logger} = network
-
+  def stream(logger) do
     stream_loop(logger)
   end
 
   @spec stream_async(map) :: any
-  def stream_async(network) do
-    %{logger: logger} = network
-
+  def stream_async(logger) do
     {:ok, pid} = Task.start(fn ->
       stream_loop(logger)
     end)
@@ -43,7 +39,7 @@ defmodule ExLearn.NeuralNetwork.Logger do
 
   @spec stream_loop(map) :: no_return
   defp stream_loop(logger) do
-    {:ok, logs} = get(logger)
+    logs = get(logger)
 
     Enum.each(logs, fn(log) -> IO.puts log end)
     Process.sleep(500)

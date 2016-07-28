@@ -80,9 +80,52 @@ defmodule LoggerTest do
     assert logger == pid_of_reference
   end
 
-  test "#stream" do
+  test "#stream writes logs to stdout", %{setup: setup} do
+    %{
+      args: args,
+      name: name = {:global, reference}
+    } = setup
+
+    first_log  = "Message 1"
+    second_log = "Message 2"
+
+    {:ok, logger} = Logger.start(args, name: name)
+
+    :ok = Logger.log(first_log,  name)
+    :ok = Logger.log(second_log, name)
+
+    result = capture_io(fn ->
+      Task.start(fn -> Logger.stream(logger) end)
+
+      Process.sleep(501)
+    end)
+
+    assert result == second_log <> "\n" <> first_log <> "\n"
   end
 
-  test "#stream_async" do
+  test "#stream_async writes logs to stdout", %{setup: setup} do
+    %{
+      args: args,
+      name: name = {:global, reference}
+    } = setup
+
+    first_log  = "Message 1"
+    second_log = "Message 2"
+
+    {:ok, logger} = Logger.start(args, name: name)
+
+    :ok = Logger.log(first_log,  name)
+    :ok = Logger.log(second_log, name)
+
+    result = capture_io(fn ->
+      pid = Logger.stream_async(logger)
+
+      assert pid |> is_pid
+      assert pid |> Process.alive?
+
+      Process.sleep(501)
+    end)
+
+    assert result == second_log <> "\n" <> first_log <> "\n"
   end
 end
