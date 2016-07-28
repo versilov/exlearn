@@ -99,6 +99,7 @@ IO.puts "Finished extracting image data and labels"
 # preview_image.(first_image)
 
 alias ExLearn.NeuralNetwork, as: NN
+alias ExLearn.NeuralNetwork.Logger
 
 # Defines the network structure.
 structure_parameters = %{
@@ -124,7 +125,9 @@ configuration = %{
 
 # Feeds the data to te neural network
 IO.puts "Started feeding the neural network"
-NN.feed(training_data, configuration, network)
-IO.puts "Finished feeding the neural network"
+task = NN.feed(training_data, configuration, network)
+
+%{logger: logger} = network
+Logger.stream(logger)
 
 IO.inspect NN.test([hd(training_data)], configuration, network)
