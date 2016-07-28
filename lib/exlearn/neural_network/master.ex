@@ -21,9 +21,9 @@ defmodule ExLearn.NeuralNetwork.Master do
     } = names
 
     children = [
-      worker(Logger, [[],         [name: logger_name]]),
-      worker(State,  [parameters, [name: state_name ]]),
-      worker(Worker, [names,      [name: worker_name]])
+      worker(Logger, [[],                  [name: logger_name]]),
+      worker(State,  [{parameters, names}, [name: state_name ]]),
+      worker(Worker, [names,               [name: worker_name]])
     ]
 
     supervise(children, strategy: :one_for_one)

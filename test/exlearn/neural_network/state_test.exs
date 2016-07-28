@@ -1,7 +1,7 @@
 defmodule StateTest do
   use ExUnit.Case, async: true
 
-  alias ExLearn.NeuralNetwork.State
+  alias ExLearn.NeuralNetwork.{Logger, State}
 
   setup do
     network_parameters = %{
@@ -27,12 +27,19 @@ defmodule StateTest do
       }
     }
 
-    name = {:global, make_ref()}
+    logger_name = {:global, make_ref()}
+    state_name  = {:global, make_ref()}
 
-    {:ok, network} = State.start(network_parameters, name: name)
+    {:ok, _logger} = Logger.start([], [name: logger_name])
+
+    names   = %{logger_name: logger_name}
+    args    = {network_parameters, names}
+    options = [name: state_name]
+
+    {:ok, network} = State.start(args, options)
 
     {:ok, setup: %{
-      name:    name,
+      name:    state_name,
       network: network
     }}
   end

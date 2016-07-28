@@ -1,7 +1,7 @@
 defmodule ExLearn.NeuralNetwork.State do
   use GenServer
 
-  alias ExLearn.NeuralNetwork.Builder
+  alias ExLearn.NeuralNetwork.{Logger, Builder}
 
   # Client API
 
@@ -27,20 +27,39 @@ defmodule ExLearn.NeuralNetwork.State do
 
   # Server API
 
-  @spec init(%{}) :: {}
-  def init(parameters) do
-    state = Builder.initialize(parameters)
+  @spec init({}) :: {}
+  def init({parameters, names}) do
+    %{logger_name: logger} = names
 
-    {:ok, state}
+    Logger.log("Initializing state", logger)
+    state = Builder.initialize(parameters)
+    Logger.log("Finished initializing state", logger)
+
+    {:ok, %{
+      logger:        logger,
+      network_state: state
+    }}
   end
 
   @spec handle_call(atom, {}, map) :: {}
   def handle_call(:get, _from, state) do
-    {:reply, state, state}
+    %{
+      logger:        logger,
+      network_state: network_state
+    } = state
+
+    Logger.log("State requested", logger)
+
+    {:reply, network_state, state}
   end
 
   @spec handle_cast(atom, map) :: {}
-  def handle_cast({:set, new_state}, _state) do
+  def handle_cast({:set, new_network_state}, state) do
+    %{logger: logger} = state
+
+    new_state = Map.put(state, :network_state, new_network_state)
+    Logger.log("New state set", logger)
+
     {:noreply, new_state}
   end
 end
