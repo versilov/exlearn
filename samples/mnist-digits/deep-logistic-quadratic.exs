@@ -43,8 +43,6 @@ configuration = %{
 
 # Feeds the data to te neural network.
 NN.feed(training_data, configuration, network)
-
-%{logger: logger} = network
-Notification.stream(logger) |> Task.await(:infinity)
-
 IO.inspect NN.test([hd(test_data)], configuration, network)
+
+NN.notifications(network) |> Task.await(:infinity)

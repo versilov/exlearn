@@ -79,6 +79,16 @@ defmodule ExLearn.NeuralNetwork do
   end
 
   @doc """
+  Starts the notification stream
+  """
+  @spec notifications(any) :: Task.t
+  def notifications(network) do
+    %{logger: logger} = network
+
+    Notification.stream(logger)
+  end
+
+  @doc """
   Makes a prediction and returs the cost
   """
   @spec test(any, map, any) :: any

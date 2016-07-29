@@ -1,7 +1,9 @@
 defmodule NeuralNetworkTest do
-  use ExUnit.Case, async: true
+  use    ExUnit.Case, async: true
+  import ExUnit.CaptureIO
 
   alias ExLearn.NeuralNetwork
+  alias ExLearn.NeuralNetwork.Notification
 
   setup do
     network_parameters = %{
@@ -108,6 +110,22 @@ defmodule NeuralNetworkTest do
     assert pid_of_master |> Process.alive?
     assert pid_of_state  |> Process.alive?
     assert pid_of_worker |> Process.alive?
+  end
+
+  test "#notifications returns an async task", %{setup: _setup} do
+    {:ok, logger} = Notification.start([], [{:global, make_ref()}])
+    network       = %{logger: logger}
+
+    :ok = Notification.push("Message", logger)
+    :ok = Notification.done(logger)
+
+    result = capture_io(fn ->
+      Task.start(fn -> NeuralNetwork.notifications(network) |> Task.await end)
+
+      Process.sleep(100)
+    end)
+
+    assert result == "Message\n"
   end
 
   test "#test responds with a tuple", %{setup: setup} do
