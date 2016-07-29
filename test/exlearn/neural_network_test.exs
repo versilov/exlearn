@@ -117,10 +117,10 @@ defmodule NeuralNetworkTest do
     network       = %{logger: logger}
 
     :ok = Notification.push("Message", logger)
-    :ok = Notification.done(logger)
 
     result = capture_io(fn ->
-      Task.start(fn -> NeuralNetwork.notifications(network) |> Task.await end)
+      Task.start(fn -> NeuralNetwork.notifications(:start, network) |> Task.await end)
+      NeuralNetwork.notifications(:stop, network)
 
       Process.sleep(100)
     end)

@@ -81,11 +81,21 @@ defmodule ExLearn.NeuralNetwork do
   @doc """
   Starts the notification stream
   """
-  @spec notifications(any) :: Task.t
-  def notifications(network) do
+  @spec notifications(atom, any) :: Task.t
+  def notifications(:start, network) do
     %{logger: logger} = network
 
     Notification.stream(logger)
+  end
+
+  @doc """
+  Stops the notification stream
+  """
+  @spec notifications(atom, any) :: Task.t
+  def notifications(:stop, network) do
+    %{logger: logger} = network
+
+    Notification.done(logger)
   end
 
   @doc """

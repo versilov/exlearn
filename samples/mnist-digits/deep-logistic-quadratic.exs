@@ -17,7 +17,6 @@ Code.require_file("data/data_loader.exs", __DIR__)
 # DataLoader.preview_image(first_image)
 
 alias ExLearn.NeuralNetwork, as: NN
-alias ExLearn.NeuralNetwork.Notification
 
 # Defines the network structure.
 structure_parameters = %{
@@ -41,8 +40,11 @@ configuration = %{
   learning_rate: 0.05,
 }
 
+# Starts the notifications stream.
+NN.notifications(:start, network)
+
 # Feeds the data to te neural network.
 NN.feed(training_data, configuration, network)
-IO.inspect NN.test([hd(test_data)], configuration, network)
+|> Task.await(:infinity)
 
-NN.notifications(network) |> Task.await(:infinity)
+IO.inspect NN.test([hd(test_data)], configuration, network)
