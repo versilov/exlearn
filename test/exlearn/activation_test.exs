@@ -105,17 +105,14 @@ defmodule ActivationTest do
   end
 
   test "#determine the logistic pair" do
-    argument = 10
-
-    expected_from_function   = 0.9999546021312976
-    expected_from_derivative = 4.5395807735907655e-5
-
     setup = :logistic
 
     %{function: function, derivative: derivative} = Activation.determine(setup)
 
-    assert function.(argument)   == expected_from_function
-    assert derivative.(argument) == expected_from_derivative
+    assert function.(  10) == 0.9999546021312976
+    assert function.( 710) == 1
+    assert function.(-710) == 0
+    assert derivative.(10) == 4.5395807735907655e-5
   end
 
   test "#determine the tanh pair" do
