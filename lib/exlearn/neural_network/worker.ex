@@ -1,7 +1,7 @@
 defmodule ExLearn.NeuralNetwork.Worker do
   use GenServer
 
-  alias ExLearn.NeuralNetwork.{Logger, State, Forwarder, Propagator}
+  alias ExLearn.NeuralNetwork.{Logger, Store, Forwarder, Propagator}
 
   # Client API
 
@@ -72,7 +72,7 @@ defmodule ExLearn.NeuralNetwork.Worker do
       state_name:  state_name
     } = state
 
-    network_state = State.get_state(state_name)
+    network_state = Store.get_state(state_name)
 
     Logger.log("Asking", logger)
     result = ask_network(batch, network_state)
@@ -88,7 +88,7 @@ defmodule ExLearn.NeuralNetwork.Worker do
       state_name:  state_name
     } = state
 
-    network_state = State.get_state(state_name)
+    network_state = Store.get_state(state_name)
 
     Logger.log("Testing", logger)
     result = test_network(batch, configuration, network_state)
@@ -104,13 +104,13 @@ defmodule ExLearn.NeuralNetwork.Worker do
       state_name:  state_name
     } = state
 
-    network_state = State.get_state(state_name)
+    network_state = Store.get_state(state_name)
 
     Logger.log("Training", logger)
     new_network_state = train_network(batch, configuration, network_state)
     Logger.log("Finished Training", logger)
 
-    State.set_state(new_network_state, state_name)
+    Store.set_state(new_network_state, state_name)
 
     {:reply, :ok, state}
   end

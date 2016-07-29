@@ -1,7 +1,7 @@
 defmodule StateTest do
   use ExUnit.Case, async: true
 
-  alias ExLearn.NeuralNetwork.{Logger, State}
+  alias ExLearn.NeuralNetwork.{Logger, Store}
 
   setup do
     network_parameters = %{
@@ -36,7 +36,7 @@ defmodule StateTest do
     args    = {network_parameters, names}
     options = [name: state_name]
 
-    {:ok, network} = State.start(args, options)
+    {:ok, network} = Store.start(args, options)
 
     {:ok, setup: %{
       name:    state_name,
@@ -64,7 +64,7 @@ defmodule StateTest do
       network: network
     } = setup
 
-    result = State.get_state(name)
+    result = Store.get_state(name)
 
     assert result  |> is_map
     assert network |> Process.alive?

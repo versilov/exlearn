@@ -1,4 +1,4 @@
-defmodule ExLearn.NeuralNetwork.State do
+defmodule ExLearn.NeuralNetwork.Store do
   use GenServer
 
   alias ExLearn.NeuralNetwork.{Logger, Builder}

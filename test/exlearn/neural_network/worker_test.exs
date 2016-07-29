@@ -1,7 +1,7 @@
 defmodule WorkerTest do
   use ExUnit.Case, async: true
 
-  alias ExLearn.NeuralNetwork.{Logger, State, Worker}
+  alias ExLearn.NeuralNetwork.{Logger, Store, Worker}
 
   setup do
     network_parameters = %{
@@ -37,7 +37,7 @@ defmodule WorkerTest do
     state_args      = {network_parameters, names_for_state}
     state_options   = [name: state_name]
 
-    {:ok, _state} = State.start(state_args, state_options)
+    {:ok, _state} = Store.start(state_args, state_options)
 
     batch         = [{1, 1}, {2, 2}]
     configuration = %{configuration: :configuration}
