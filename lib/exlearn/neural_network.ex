@@ -33,7 +33,6 @@ defmodule ExLearn.NeuralNetwork do
   defp feed_network(_, _, network, 0) do
     %{logger: logger} = network
     Notification.push("Finished feeding data", logger)
-    Notification.done(logger)
 
     :ok
   end
