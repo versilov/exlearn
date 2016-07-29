@@ -105,10 +105,10 @@ defmodule ExLearn.NeuralNetwork.Propagator do
     [%{activity: activity, biases: biases, weights: weights}|other_layers] = layers
 
     new_biases = Matrix.multiply_with_scalar(bias_change, rate)
-      |> Matrix.substract_inverse(biases)
+    |> Matrix.substract_inverse(biases)
 
     new_weights = Matrix.multiply_with_scalar(weight_change, rate)
-      |> Matrix.substract_inverse(weights)
+    |> Matrix.substract_inverse(weights)
 
     new_layer = %{activity: activity, biases: new_biases, weights: new_weights}
 
