@@ -11,21 +11,32 @@ defmodule LoggerTest do
     {:ok, setup: %{args: args, name: name}}
   end
 
-  test "#get returns the logged state", %{setup: setup} do
+  test "#done modifies the logger state", %{setup: setup} do
+    %{args: args, name: name} = setup
+
+    {:ok, logger} = Notification.start(args, name: name)
+
+    :ok   = Notification.done(logger)
+    state = Notification.pop(name)
+
+    assert state == [:done]
+  end
+
+  test "#pop returns the logged state", %{setup: setup} do
     %{args: args, name: name} = setup
 
     message = "Message"
 
     {:ok, logger} = Notification.start(args, name: name)
-    initial_state = Notification.get(logger)
-    :ok           = Notification.log(message, logger)
-    new_state     = Notification.get(logger)
+    initial_state = Notification.pop(logger)
+    :ok           = Notification.push(message, logger)
+    new_state     = Notification.pop(logger)
 
     assert initial_state == []
-    assert new_state     == [message]
+    assert new_state     == [{:message, message}]
   end
 
-  test "#log modifies the logger state", %{setup: setup} do
+  test "#push modifies the logger state", %{setup: setup} do
     %{args: args, name: name} = setup
 
     first_log  = "Message 1"
@@ -33,12 +44,12 @@ defmodule LoggerTest do
 
     {:ok, logger} = Notification.start(args, name: name)
 
-    :ok = Notification.log(first_log,  logger)
-    :ok = Notification.log(second_log, logger)
+    :ok = Notification.push(first_log,  logger)
+    :ok = Notification.push(second_log, logger)
 
-    state = Notification.get(name)
+    state = Notification.pop(name)
 
-    assert state == [first_log, second_log]
+    assert state == [{:message, first_log}, {:message, second_log}]
   end
 
   test "#start returns a running process", %{setup: setup} do
@@ -79,8 +90,8 @@ defmodule LoggerTest do
 
     {:ok, logger} = Notification.start(args, name: name)
 
-    :ok = Notification.log(first_log,  name)
-    :ok = Notification.log(second_log, name)
+    :ok = Notification.push(first_log,  name)
+    :ok = Notification.push(second_log, name)
 
     result = capture_io(fn ->
       Task.start(fn -> Notification.stream(logger) |> Task.await end)
@@ -89,5 +100,7 @@ defmodule LoggerTest do
     end)
 
     assert result == first_log <> "\n" <> second_log <> "\n"
+
+    :ok = Notification.done(logger)
   end
 end

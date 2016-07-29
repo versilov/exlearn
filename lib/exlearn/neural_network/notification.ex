@@ -3,14 +3,19 @@ defmodule ExLearn.NeuralNetwork.Notification do
 
   # Client API
 
-  @spec get({}) :: {}
-  def get(logger) do
-    GenServer.call(logger, :get, :infinity)
+  @spec done(any) :: {}
+  def done(logger) do
+    GenServer.cast(logger, :done)
   end
 
-  @spec log(String.t, {}) :: any
-  def log(message, logger) do
-    GenServer.cast(logger, {:log, message})
+  @spec pop({}) :: {}
+  def pop(logger) do
+    GenServer.call(logger, :pop, :infinity)
+  end
+
+  @spec push(String.t, {}) :: any
+  def push(message, logger) do
+    GenServer.cast(logger, {:push, message})
   end
 
   @spec start(map, {}) :: reference
@@ -30,12 +35,26 @@ defmodule ExLearn.NeuralNetwork.Notification do
 
   @spec stream_loop(map) :: no_return
   defp stream_loop(logger) do
-    logs = get(logger)
+    logs = pop(logger)
 
-    Enum.each(logs, fn(log) -> IO.puts log end)
-    Process.sleep(500)
+    case reduce_logs(logs) do
+      :done     -> :ok
+      _not_done ->
+        Process.sleep(500)
 
-    stream_loop(logger)
+        stream_loop(logger)
+    end
+  end
+
+  defp reduce_logs([]), do: :ok
+  defp reduce_logs([log|logs]) do
+    case log do
+      :done               -> :done
+      {:message, message} ->
+        IO.puts(message)
+
+        reduce_logs(logs)
+    end
   end
 
   # Server API
@@ -46,12 +65,17 @@ defmodule ExLearn.NeuralNetwork.Notification do
   end
 
   @spec handle_call(atom, any, list) :: tuple
-  def handle_call(:get, _from, state) do
+  def handle_call(:pop, _from, state) do
     {:reply, Enum.reverse(state), []}
   end
 
   @spec handle_cast(tuple, list) :: tuple
-  def handle_cast({:log, message}, state) do
-    {:noreply, [message|state]}
+  def handle_cast(:done, state) do
+    {:noreply, [:done|state]}
+  end
+
+  @spec handle_cast(tuple, list) :: tuple
+  def handle_cast({:push, message}, state) do
+    {:noreply, [{:message, message}|state]}
   end
 end

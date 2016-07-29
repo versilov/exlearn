@@ -23,7 +23,7 @@ defmodule ExLearn.NeuralNetwork do
     Task.async(fn ->
       %{epochs: epochs} = configuration
       %{logger: logger} = network
-      Notification.log("Started feeding data", logger)
+      Notification.push("Started feeding data", logger)
 
       feed_network(data, configuration, network, epochs)
     end)
@@ -32,7 +32,7 @@ defmodule ExLearn.NeuralNetwork do
   @spec feed_network(list, map, pid, non_neg_integer) :: atom
   defp feed_network(_, _, network, 0) do
     %{logger: logger} = network
-    Notification.log("Finished feeding data", logger)
+    Notification.push("Finished feeding data", logger)
 
     :ok
   end
@@ -40,7 +40,7 @@ defmodule ExLearn.NeuralNetwork do
   defp feed_network(data, configuration, network, epochs)
       when is_integer(epochs) and epochs > 0 do
     %{logger: logger} = network
-    Notification.log("Epoch #{epochs}", logger)
+    Notification.push("Epoch #{epochs}", logger)
 
     %{batch_size: batch_size} = configuration
     batches = Enum.shuffle(data) |> Enum.chunk(batch_size)

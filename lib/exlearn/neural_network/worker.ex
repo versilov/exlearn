@@ -74,9 +74,9 @@ defmodule ExLearn.NeuralNetwork.Worker do
 
     network_state = Store.get_state(state_name)
 
-    Notification.log("Asking", logger)
+    Notification.push("Asking", logger)
     result = ask_network(batch, network_state)
-    Notification.log("Finished Asking", logger)
+    Notification.push("Finished Asking", logger)
 
     {:reply, result, state}
   end
@@ -90,9 +90,9 @@ defmodule ExLearn.NeuralNetwork.Worker do
 
     network_state = Store.get_state(state_name)
 
-    Notification.log("Testing", logger)
+    Notification.push("Testing", logger)
     result = test_network(batch, configuration, network_state)
-    Notification.log("Finished Testing", logger)
+    Notification.push("Finished Testing", logger)
 
     {:reply, result, state}
   end
@@ -106,9 +106,9 @@ defmodule ExLearn.NeuralNetwork.Worker do
 
     network_state = Store.get_state(state_name)
 
-    Notification.log("Training", logger)
+    Notification.push("Training", logger)
     new_network_state = train_network(batch, configuration, network_state)
-    Notification.log("Finished Training", logger)
+    Notification.push("Finished Training", logger)
 
     Store.set_state(new_network_state, state_name)
 
