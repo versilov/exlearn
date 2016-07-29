@@ -1,4 +1,4 @@
-defmodule ExLearn.NeuralNetwork.Logger do
+defmodule ExLearn.NeuralNetwork.Notification do
   use GenServer
 
   # Client API

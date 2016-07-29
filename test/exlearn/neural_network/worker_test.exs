@@ -1,7 +1,7 @@
 defmodule WorkerTest do
   use ExUnit.Case, async: true
 
-  alias ExLearn.NeuralNetwork.{Logger, Store, Worker}
+  alias ExLearn.NeuralNetwork.{Notification, Store, Worker}
 
   setup do
     network_parameters = %{
@@ -31,7 +31,7 @@ defmodule WorkerTest do
     state_name  = {:global, make_ref()}
     worker_name = {:global, make_ref()}
 
-    {:ok, _logger} = Logger.start([], [name: logger_name])
+    {:ok, _logger} = Notification.start([], [name: logger_name])
 
     names_for_state = %{logger_name: logger_name}
     state_args      = {network_parameters, names_for_state}

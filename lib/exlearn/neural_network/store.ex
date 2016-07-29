@@ -1,7 +1,7 @@
 defmodule ExLearn.NeuralNetwork.Store do
   use GenServer
 
-  alias ExLearn.NeuralNetwork.{Logger, Builder}
+  alias ExLearn.NeuralNetwork.{Builder, Notification}
 
   # Client API
 
@@ -31,9 +31,9 @@ defmodule ExLearn.NeuralNetwork.Store do
   def init({parameters, names}) do
     %{logger_name: logger} = names
 
-    Logger.log("Initializing state", logger)
+    Notification.log("Initializing state", logger)
     state = Builder.initialize(parameters)
-    Logger.log("Finished initializing state", logger)
+    Notification.log("Finished initializing state", logger)
 
     {:ok, %{
       logger:        logger,
@@ -48,7 +48,7 @@ defmodule ExLearn.NeuralNetwork.Store do
       network_state: network_state
     } = state
 
-    Logger.log("State requested", logger)
+    Notification.log("State requested", logger)
 
     {:reply, network_state, state}
   end
@@ -58,7 +58,7 @@ defmodule ExLearn.NeuralNetwork.Store do
     %{logger: logger} = state
 
     new_state = Map.put(state, :network_state, new_network_state)
-    Logger.log("New state set", logger)
+    Notification.log("New state set", logger)
 
     {:noreply, new_state}
   end

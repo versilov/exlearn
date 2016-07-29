@@ -2,7 +2,7 @@ defmodule LoggerTest do
   use    ExUnit.Case, async: true
   import ExUnit.CaptureIO
 
-  alias ExLearn.NeuralNetwork.Logger
+  alias ExLearn.NeuralNetwork.Notification
 
   setup do
     args = []
@@ -16,10 +16,10 @@ defmodule LoggerTest do
 
     message = "Message"
 
-    {:ok, logger} = Logger.start(args, name: name)
-    initial_state = Logger.get(logger)
-    :ok           = Logger.log(message, logger)
-    new_state     = Logger.get(logger)
+    {:ok, logger} = Notification.start(args, name: name)
+    initial_state = Notification.get(logger)
+    :ok           = Notification.log(message, logger)
+    new_state     = Notification.get(logger)
 
     assert initial_state == []
     assert new_state     == [message]
@@ -31,12 +31,12 @@ defmodule LoggerTest do
     first_log  = "Message 1"
     second_log = "Message 2"
 
-    {:ok, logger} = Logger.start(args, name: name)
+    {:ok, logger} = Notification.start(args, name: name)
 
-    :ok = Logger.log(first_log,  logger)
-    :ok = Logger.log(second_log, logger)
+    :ok = Notification.log(first_log,  logger)
+    :ok = Notification.log(second_log, logger)
 
-    state = Logger.get(name)
+    state = Notification.get(name)
 
     assert state == [first_log, second_log]
   end
@@ -47,7 +47,7 @@ defmodule LoggerTest do
       name: name = {:global, reference}
     } = setup
 
-    {:ok, logger}    = Logger.start(args, name: name)
+    {:ok, logger}    = Notification.start(args, name: name)
     pid_of_reference = :global.whereis_name(reference)
 
     assert logger    |> is_pid
@@ -62,7 +62,7 @@ defmodule LoggerTest do
       name: name = {:global, reference}
     } = setup
 
-    {:ok, logger}    = Logger.start_link(args, name: name)
+    {:ok, logger}    = Notification.start_link(args, name: name)
     pid_of_reference = :global.whereis_name(reference)
 
     assert logger    |> is_pid
@@ -77,13 +77,13 @@ defmodule LoggerTest do
     first_log  = "Message 1"
     second_log = "Message 2"
 
-    {:ok, logger} = Logger.start(args, name: name)
+    {:ok, logger} = Notification.start(args, name: name)
 
-    :ok = Logger.log(first_log,  name)
-    :ok = Logger.log(second_log, name)
+    :ok = Notification.log(first_log,  name)
+    :ok = Notification.log(second_log, name)
 
     result = capture_io(fn ->
-      Task.start(fn -> Logger.stream(logger) |> Task.await end)
+      Task.start(fn -> Notification.stream(logger) |> Task.await end)
 
       Process.sleep(501)
     end)
