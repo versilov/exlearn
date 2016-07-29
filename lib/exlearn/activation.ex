@@ -126,9 +126,15 @@ defmodule ExLearn.Activation do
 
   @spec logistic_pair :: map
   defp logistic_pair do
-    function   = fn(x) -> 1 / (1 + :math.exp(-x)) end
+    function   = fn
+      x when x >  709 -> 1
+      x when x < -709 -> 0
+      x               -> 1 / (1 + :math.exp(-x))
+    end
+
     derivative = fn(x) ->
       result = function.(x)
+
       result * (1 - result)
     end
 
