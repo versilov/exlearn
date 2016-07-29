@@ -4,7 +4,7 @@
 # Using the data loading module defined in the same folder.
 Code.require_file("data/data_loader.exs", __DIR__)
 
-# Loads training and test data
+# Loads training and test data.
 {training_data, test_data} = DataLoader.load_data
 
 # You can inspect the data using something similar with the following:
@@ -30,10 +30,10 @@ structure_parameters = %{
   random:    %{distribution: :uniform, range: {-0.01, 0.01}}
 }
 
-# Initializes the neural network
+# Initializes the neural network.
 network = NN.initialize(structure_parameters)
 
-# Defines the training configuration
+# Defines the training configuration.
 configuration = %{
   batch_size:    60000,
   data_size:     60000,
@@ -41,7 +41,7 @@ configuration = %{
   learning_rate: 0.05,
 }
 
-# Feeds the data to te neural network
+# Feeds the data to te neural network.
 NN.feed(training_data, configuration, network)
 
 %{logger: logger} = network
