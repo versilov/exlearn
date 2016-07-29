@@ -2,7 +2,7 @@
 :ok = File.cd("samples/mnist-digits")
 
 # Using the data loading module defined in the same folder.
-Code.require_file("data_loader.exs", __DIR__)
+Code.require_file("data/data_loader.exs", __DIR__)
 
 # Loads training and test data
 {training_data, test_data} = DataLoader.load_data
