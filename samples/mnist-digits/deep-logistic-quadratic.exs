@@ -17,7 +17,7 @@ Code.require_file("data/data_loader.exs", __DIR__)
 # DataLoader.preview_image(first_image)
 
 alias ExLearn.NeuralNetwork, as: NN
-alias ExLearn.NeuralNetwork.Logger
+alias ExLearn.NeuralNetwork.Notification
 
 # Defines the network structure.
 structure_parameters = %{
@@ -45,6 +45,6 @@ configuration = %{
 NN.feed(training_data, configuration, network)
 
 %{logger: logger} = network
-Logger.stream(logger)
+Notification.stream(logger) |> Task.await(:infinity)
 
 IO.inspect NN.test([hd(test_data)], configuration, network)
