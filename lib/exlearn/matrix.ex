@@ -88,6 +88,17 @@ defmodule ExLearn.Matrix do
   @spec transpose([[]]) :: [[]]
   def transpose([[]|_]), do: []
   def transpose(matrix) do
-    [Enum.map(matrix, &hd(&1)) | transpose(Enum.map(matrix, &tl(&1)))]
+    transpose(matrix, [])
+  end
+
+  defp transpose([[]|_], accumulator) do
+    Enum.reverse(accumulator)
+  end
+
+  defp transpose(matrix, accumulator) do
+    heads = Enum.map(matrix, &hd/1)
+    tails = Enum.map(matrix, &tl/1)
+
+    transpose(tails, [heads|accumulator])
   end
 end
