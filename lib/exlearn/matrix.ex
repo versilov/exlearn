@@ -5,6 +5,16 @@ defmodule ExLearn.Matrix do
 
   alias ExLearn.Vector
 
+  @on_load :load_nifs
+
+  def load_nifs do
+    :ok = :erlang.load_nif('priv/matrix', 0)
+  end
+
+  def dot2(a, v) do
+    :ok
+  end
+
   @doc """
   Adds two matrices
   """
