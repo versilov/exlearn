@@ -1,15 +1,15 @@
 #include "erl_nif.h"
 
 typedef struct Matrix {
-  int     rows;
-  int     columns;
-  double *data;
+  unsigned int  rows;
+  unsigned int  columns;
+  double       *data;
 } Matrix;
 
 static Matrix *
 list_of_lists_to_matrix(ErlNifEnv *env, ERL_NIF_TERM list_of_lists) {
-  int           row    = 0;
-  int           column = 0;
+  unsigned int  row    = 0;
+  unsigned int  column = 0;
   double        element;
   Matrix       *matrix = malloc(sizeof(Matrix));
   ERL_NIF_TERM  head, tail, row_head, row_tail;
@@ -25,8 +25,15 @@ list_of_lists_to_matrix(ErlNifEnv *env, ERL_NIF_TERM list_of_lists) {
     enif_get_list_cell(env, head, &row_head, &row_tail);
 
     while(1) {
-      enif_get_double(env, row_head, &element);
-      matrix->data[row * matrix->rows + column] = element;
+      if (enif_get_double(env, row_head, &element) == 0) {
+        long long_element;
+        enif_get_int64(env, row_head, &long_element);
+
+        element = (double) long_element;
+      }
+
+      int index = row * matrix->rows + column;
+      matrix->data[index] = element;
 
       if (enif_is_empty_list(env, row_tail) == 1) { break; }
       enif_get_list_cell(env, row_tail, &row_head, &row_tail);
@@ -62,7 +69,7 @@ matrix_to_list_of_lists(ErlNifEnv *env, Matrix *matrix) {
 
     if (column == matrix->columns) {
       column = 0;
-      result = enif_make_list(env, row, result);
+      result = enif_make_list_cell(env, row, result);
       row    = enif_make_list(env, 0);
     }
   }
@@ -78,8 +85,8 @@ matrix_dot(Matrix *first, Matrix *second) {
   result->columns = second->columns;
   result->data    = malloc(sizeof(double) * result->rows * result->columns);
 
-  for (int first_row = 0; first_row < first->rows; first += 1) {
-    for (int second_column = 0; second_column < second->columns; second += 1) {
+  for (int first_row = 0; first_row < first->rows; first_row += 1) {
+    for (int second_column = 0; second_column < second->columns; second_column += 1) {
       sum = 0.0;
 
       for (int common = 0; common < first->columns; common += 1) {
@@ -92,6 +99,8 @@ matrix_dot(Matrix *first, Matrix *second) {
       result->data[first_row * result->rows + second_column] = sum;
     }
   }
+
+  return result;
 }
 
 static ERL_NIF_TERM

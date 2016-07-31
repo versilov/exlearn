@@ -2,6 +2,7 @@
 /deps
 /cover
 erl_crash.dump
+core
 *.ez
 notebooks/**/.ipynb_checkpoints
 /priv
