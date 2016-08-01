@@ -1,9 +1,9 @@
 defmodule DataLoader do
   def load_data do
-    test_image_list     = load_images("data/t10k-images-idx3-ubyte.gz",  10000)
-    test_label_list     = load_labels("data/t10k-labels-idx1-ubyte.gz",  10000)
-    training_image_list = load_images("data/train-images-idx3-ubyte.gz", 60000)
-    training_label_list = load_labels("data/train-labels-idx1-ubyte.gz", 60000)
+    test_image_list     = load_images("samples/mnist-digits/data/t10k-images-idx3-ubyte.gz",  10000)
+    test_label_list     = load_labels("samples/mnist-digits/data/t10k-labels-idx1-ubyte.gz",  10000)
+    training_image_list = load_images("samples/mnist-digits/data/train-images-idx3-ubyte.gz", 60000)
+    training_label_list = load_labels("samples/mnist-digits/data/train-labels-idx1-ubyte.gz", 60000)
 
     test_data     = Enum.zip(test_image_list, test_label_list)
     training_data = Enum.zip(training_image_list, training_label_list)

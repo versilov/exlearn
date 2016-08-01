@@ -1,6 +1,3 @@
-# Changes cwd to the sample folder since `mix run` sets it to the project root.
-:ok = File.cd("samples/mnist-digits")
-
 # Using the data loading module defined in the same folder.
 Code.require_file("data/data_loader.exs", __DIR__)
 
