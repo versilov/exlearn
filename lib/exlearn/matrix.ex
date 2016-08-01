@@ -52,9 +52,8 @@ defmodule ExLearn.Matrix do
   Elementwise multiplication of two matrices
   """
   @spec multiply([[]], [[]]) :: [[]]
-  def multiply(first, second) do
-    Stream.zip(first, second)
-      |> Enum.map(fn({x, y}) -> Vector.multiply(x,y) end)
+  def multiply(_first, _second) do
+    exit(:nif_library_not_loaded)
   end
 
   @doc """

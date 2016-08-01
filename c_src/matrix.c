@@ -52,6 +52,20 @@ matrix_dot(Matrix *first, Matrix *second) {
   return result;
 }
 
+static Matrix *
+matrix_multiply(Matrix *first, Matrix *second) {
+  Matrix *result  = malloc(sizeof(Matrix));
+  result->rows    = first->rows;
+  result->columns = first->columns;
+  result->data    = malloc(sizeof(double) * result->rows * result->columns);
+
+  for (int index = 0; index < result->rows * result->columns; index += 1) {
+    result->data[index] = first->data[index] * second->data[index];
+  }
+
+  return result;
+}
+
 //-----------------------------------------------------------------------------
 // Utilities
 //-----------------------------------------------------------------------------
@@ -171,9 +185,27 @@ dot(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   return result;
 }
 
+static ERL_NIF_TERM
+multiply(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
+  ERL_NIF_TERM  result;
+  Matrix       *first, *second, *product;
+
+  first   = list_of_lists_to_matrix(env, argv[0]);
+  second  = list_of_lists_to_matrix(env, argv[1]);
+  product = matrix_multiply(first, second);
+  result  = matrix_to_list_of_lists(env, product);
+
+  free_matrix(first);
+  free_matrix(second);
+  free_matrix(product);
+
+  return result;
+}
+
 static ErlNifFunc nif_functions[] = {
-  {"add", 2, add},
-  {"dot", 2, dot}
+  {"add",      2, add     },
+  {"dot",      2, dot     },
+  {"multiply", 2, multiply}
 };
 
 ERL_NIF_INIT(Elixir.ExLearn.Matrix, nif_functions, NULL, NULL, NULL, NULL)
