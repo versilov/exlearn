@@ -10,18 +10,11 @@ typedef struct Matrix {
 // Matrix API
 //-----------------------------------------------------------------------------
 
-static Matrix *
+static void
 matrix_add(Matrix *first, Matrix *second) {
-  Matrix *result  = malloc(sizeof(Matrix));
-  result->rows    = first->rows;
-  result->columns = first->columns;
-  result->data    = malloc(sizeof(double) * result->rows * result->columns);
-
-  for (int index = 0; index < result->rows * result->columns; index += 1) {
-    result->data[index] = first->data[index] + second->data[index];
+  for (int index = 0; index < first->rows * first->columns; index += 1) {
+    first->data[index] = first->data[index] + second->data[index];
   }
-
-  return result;
 }
 
 static Matrix *
@@ -80,46 +73,25 @@ matrix_dot_and_add(Matrix *first, Matrix *second, Matrix *third) {
   return result;
 }
 
-static Matrix *
+static void
 matrix_multiply(Matrix *first, Matrix *second) {
-  Matrix *result  = malloc(sizeof(Matrix));
-  result->rows    = first->rows;
-  result->columns = first->columns;
-  result->data    = malloc(sizeof(double) * result->rows * result->columns);
-
-  for (int index = 0; index < result->rows * result->columns; index += 1) {
-    result->data[index] = first->data[index] * second->data[index];
+  for (int index = 0; index < first->rows * first->columns; index += 1) {
+    first->data[index] = first->data[index] * second->data[index];
   }
-
-  return result;
 }
 
-static Matrix *
+static void
 matrix_multiply_with_scalar(Matrix *matrix, double scalar) {
-  Matrix *result  = malloc(sizeof(Matrix));
-  result->rows    = matrix->rows;
-  result->columns = matrix->columns;
-  result->data    = malloc(sizeof(double) * result->rows * result->columns);
-
-  for (int index = 0; index < result->rows * result->columns; index += 1) {
-    result->data[index] = matrix->data[index] * scalar;
+  for (int index = 0; index < matrix->rows * matrix->columns; index += 1) {
+    matrix->data[index] = matrix->data[index] * scalar;
   }
-
-  return result;
 }
 
-static Matrix *
+static void
 matrix_substract(Matrix *first, Matrix *second) {
-  Matrix *result  = malloc(sizeof(Matrix));
-  result->rows    = first->rows;
-  result->columns = first->columns;
-  result->data    = malloc(sizeof(double) * result->rows * result->columns);
-
-  for (int index = 0; index < result->rows * result->columns; index += 1) {
-    result->data[index] = first->data[index] - second->data[index];
+  for (int index = 0; index < first->rows * first->columns; index += 1) {
+    first->data[index] = first->data[index] - second->data[index];
   }
-
-  return result;
 }
 
 //-----------------------------------------------------------------------------
@@ -210,16 +182,17 @@ free_matrix(Matrix *matrix) {
 static ERL_NIF_TERM
 add(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   ERL_NIF_TERM  result;
-  Matrix       *first, *second, *sum;
+  Matrix       *first, *second;
 
   first  = list_of_lists_to_matrix(env, argv[0]);
   second = list_of_lists_to_matrix(env, argv[1]);
-  sum    = matrix_add(first, second);
-  result = matrix_to_list_of_lists(env, sum);
+
+  matrix_add(first, second);
+
+  result = matrix_to_list_of_lists(env, first);
 
   free_matrix(first);
   free_matrix(second);
-  free_matrix(sum);
 
   return result;
 }
@@ -263,16 +236,17 @@ dot_and_add(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
 static ERL_NIF_TERM
 multiply(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   ERL_NIF_TERM  result;
-  Matrix       *first, *second, *product;
+  Matrix       *first, *second;
 
   first   = list_of_lists_to_matrix(env, argv[0]);
   second  = list_of_lists_to_matrix(env, argv[1]);
-  product = matrix_multiply(first, second);
-  result  = matrix_to_list_of_lists(env, product);
+
+  matrix_multiply(first, second);
+
+  result  = matrix_to_list_of_lists(env, first);
 
   free_matrix(first);
   free_matrix(second);
-  free_matrix(product);
 
   return result;
 }
@@ -280,7 +254,7 @@ multiply(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
 static ERL_NIF_TERM
 multiply_with_scalar(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   ERL_NIF_TERM  result;
-  Matrix       *matrix, *product;
+  Matrix       *matrix;
   double        scalar;
 
   matrix = list_of_lists_to_matrix(env, argv[0]);
@@ -292,11 +266,9 @@ multiply_with_scalar(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
     scalar = (double) long_element;
   }
 
-  product = matrix_multiply_with_scalar(matrix, scalar);
-  result  = matrix_to_list_of_lists(env, product);
-
+  matrix_multiply_with_scalar(matrix, scalar);
+  result = matrix_to_list_of_lists(env, matrix);
   free_matrix(matrix);
-  free_matrix(product);
 
   return result;
 }
@@ -304,16 +276,17 @@ multiply_with_scalar(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
 static ERL_NIF_TERM
 substract(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   ERL_NIF_TERM  result;
-  Matrix       *first, *second, *difference;
+  Matrix       *first, *second;
 
-  first      = list_of_lists_to_matrix(env, argv[0]);
-  second     = list_of_lists_to_matrix(env, argv[1]);
-  difference = matrix_substract(first, second);
-  result     = matrix_to_list_of_lists(env, difference);
+  first  = list_of_lists_to_matrix(env, argv[0]);
+  second = list_of_lists_to_matrix(env, argv[1]);
+
+  matrix_substract(first, second);
+
+  result = matrix_to_list_of_lists(env, first);
 
   free_matrix(first);
   free_matrix(second);
-  free_matrix(difference);
 
   return result;
 }
