@@ -57,6 +57,26 @@ defmodule ExLearn.Matrix do
   end
 
   @doc """
+  Matrix multiplication where the second matrix needs to be transposed.
+  """
+  @spec dot_nt([[]], [[]]) :: [[]]
+  def dot_nt(first, second) do
+    second_transposed = transpose(second)
+
+    dot(first, second_transposed)
+  end
+
+  @doc """
+  Matrix multiplication where the first matrix needs to be transposed.
+  """
+  @spec dot_tn([[]], [[]]) :: [[]]
+  def dot_tn(first, second) do
+    first_transposed = transpose(first)
+
+    dot(first_transposed, second)
+  end
+
+  @doc """
   Elementwise multiplication of two matrices
   """
   @spec multiply([[]], [[]]) :: [[]]
@@ -68,7 +88,7 @@ defmodule ExLearn.Matrix do
   Elementwise multiplication of a scalar
   """
   @spec multiply_with_scalar([[]], [[]]) :: [[]]
-  def multiply_with_scalar(matrix, scalar) do
+  def multiply_with_scalar(_matrix, _scalar) do
     exit(:nif_library_not_loaded)
   end
 
@@ -76,7 +96,7 @@ defmodule ExLearn.Matrix do
   Substracts two matrices
   """
   @spec substract([[number]], [[number]]) :: []
-  def substract(first, second) do
+  def substract(_first, _second) do
     exit(:nif_library_not_loaded)
   end
 

@@ -58,6 +58,28 @@ defmodule MatrixTest do
     assert result == expected
   end
 
+  test "#dot_nt multiplies two matrices, second needing to be transposed" do
+    first  = [[1, 2, 3], [4, 5, 6]]
+    second = [[1, 3, 5], [2, 4, 6]]
+
+    expected = [[22, 28], [49, 64]]
+
+    result = Matrix.dot_nt(first, second)
+
+    assert result == expected
+  end
+
+  test "#dot_tn multiplies two matrices, first needing to be transposed" do
+    first  = [[1, 4], [2, 5], [3, 6]]
+    second = [[1, 2], [3, 4], [5, 6]]
+
+    expected = [[22, 28], [49, 64]]
+
+    result = Matrix.dot_tn(first, second)
+
+    assert result == expected
+  end
+
   test "#multiply performs elementwise multiplication of two matrices" do
     first  = [[1, 2, 3], [4, 5, 6]]
     second = [[5, 2, 1], [3, 4, 6]]
