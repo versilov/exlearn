@@ -73,6 +73,62 @@ matrix_dot_and_add(Matrix *first, Matrix *second, Matrix *third) {
   return result;
 }
 
+static Matrix *
+matrix_dot_nt(Matrix *first, Matrix *second) {
+  double  sum;
+  Matrix *result  = malloc(sizeof(Matrix));
+  result->rows    = first->rows;
+  result->columns = second->rows;
+  result->data    = malloc(sizeof(double) * result->rows * result->columns);
+
+  for (int first_row = 0; first_row < first->rows; first_row += 1) {
+    for (int second_row = 0; second_row < second->rows; second_row += 1) {
+      sum = 0.0;
+
+      for (int common = 0; common < first->columns; common += 1) {
+        int first_index  = first_row  *  first->columns + common;
+        int second_index = second_row * second->columns + common;
+
+        double product = first->data[first_index] * second->data[second_index];
+        sum += product;
+      }
+
+      int index = first_row * result->columns + second_row;
+      result->data[index] = sum;
+    }
+  }
+
+  return result;
+}
+
+static Matrix *
+matrix_dot_tn(Matrix *first, Matrix *second) {
+  double  sum;
+  Matrix *result  = malloc(sizeof(Matrix));
+  result->rows    = first->columns;
+  result->columns = second->columns;
+  result->data    = malloc(sizeof(double) * result->rows * result->columns);
+
+  for (int first_column = 0; first_column < first->columns; first_column += 1) {
+    for (int second_column = 0; second_column < second->columns; second_column += 1) {
+      sum = 0.0;
+
+      for (int common = 0; common < first->rows; common += 1) {
+        int first_index  = common *  first->columns + first_column;
+        int second_index = common * second->columns + second_column;
+
+        double product = first->data[first_index] * second->data[second_index];
+        sum += product;
+      }
+
+      int index = first_column * result->columns + second_column;
+      result->data[index] = sum;
+    }
+  }
+
+  return result;
+}
+
 static void
 matrix_multiply(Matrix *first, Matrix *second) {
   for (int index = 0; index < first->rows * first->columns; index += 1) {
@@ -234,6 +290,40 @@ dot_and_add(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
 }
 
 static ERL_NIF_TERM
+dot_nt(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
+  ERL_NIF_TERM  result;
+  Matrix       *first, *second, *dot_product;
+
+  first       = list_of_lists_to_matrix(env, argv[0]);
+  second      = list_of_lists_to_matrix(env, argv[1]);
+  dot_product = matrix_dot_nt(first, second);
+  result      = matrix_to_list_of_lists(env, dot_product);
+
+  free_matrix(first);
+  free_matrix(second);
+  free_matrix(dot_product);
+
+  return result;
+}
+
+static ERL_NIF_TERM
+dot_tn(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
+  ERL_NIF_TERM  result;
+  Matrix       *first, *second, *dot_product;
+
+  first       = list_of_lists_to_matrix(env, argv[0]);
+  second      = list_of_lists_to_matrix(env, argv[1]);
+  dot_product = matrix_dot_tn(first, second);
+  result      = matrix_to_list_of_lists(env, dot_product);
+
+  free_matrix(first);
+  free_matrix(second);
+  free_matrix(dot_product);
+
+  return result;
+}
+
+static ERL_NIF_TERM
 multiply(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   ERL_NIF_TERM  result;
   Matrix       *first, *second;
@@ -295,6 +385,8 @@ static ErlNifFunc nif_functions[] = {
   {"add",                  2, add                 },
   {"dot",                  2, dot                 },
   {"dot_and_add",          3, dot_and_add         },
+  {"dot_nt",               2, dot_nt              },
+  {"dot_tn",               2, dot_tn              },
   {"multiply",             2, multiply            },
   {"multiply_with_scalar", 2, multiply_with_scalar},
   {"substract",            2, substract           }

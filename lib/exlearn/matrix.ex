@@ -61,9 +61,7 @@ defmodule ExLearn.Matrix do
   """
   @spec dot_nt([[]], [[]]) :: [[]]
   def dot_nt(first, second) do
-    second_transposed = transpose(second)
-
-    dot(first, second_transposed)
+    exit(:nif_library_not_loaded)
   end
 
   @doc """
@@ -71,9 +69,7 @@ defmodule ExLearn.Matrix do
   """
   @spec dot_tn([[]], [[]]) :: [[]]
   def dot_tn(first, second) do
-    first_transposed = transpose(first)
-
-    dot(first_transposed, second)
+    exit(:nif_library_not_loaded)
   end
 
   @doc """
