@@ -24,9 +24,7 @@ defmodule ExLearn.Matrix do
   """
   @spec apply([[]], ((number) -> number)) :: [[]]
   def apply(matrix, function) do
-    Enum.map(matrix, fn (row) ->
-      Enum.map(row, &function.(&1))
-    end)
+    Enum.map(matrix, &Vector.apply(&1, function))
   end
 
   @doc """

@@ -17,7 +17,7 @@ defmodule ExLearn.Vector do
   """
   @spec apply([number], ((number) -> number)) :: [number]
   def apply(vector, function) do
-    Enum.map(vector, fn (x) -> function.(x) end)
+    Enum.map(vector, &function.(&1))
   end
 
   @doc """
