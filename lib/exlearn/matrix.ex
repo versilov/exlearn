@@ -61,9 +61,7 @@ defmodule ExLearn.Matrix do
   """
   @spec multiply_with_scalar([[]], [[]]) :: [[]]
   def multiply_with_scalar(matrix, scalar) do
-    Enum.map(matrix, fn (row) ->
-      Vector.multiply_with_scalar(row, scalar)
-    end)
+    exit(:nif_library_not_loaded)
   end
 
   @doc """
@@ -71,8 +69,7 @@ defmodule ExLearn.Matrix do
   """
   @spec substract([[number]], [[number]]) :: []
   def substract(first, second) do
-    Stream.zip(first, second)
-      |> Enum.map(fn({x, y}) -> Vector.substract(x,y) end)
+    exit(:nif_library_not_loaded)
   end
 
   @doc """

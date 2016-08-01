@@ -66,6 +66,34 @@ matrix_multiply(Matrix *first, Matrix *second) {
   return result;
 }
 
+static Matrix *
+matrix_multiply_with_scalar(Matrix *matrix, double scalar) {
+  Matrix *result  = malloc(sizeof(Matrix));
+  result->rows    = matrix->rows;
+  result->columns = matrix->columns;
+  result->data    = malloc(sizeof(double) * result->rows * result->columns);
+
+  for (int index = 0; index < result->rows * result->columns; index += 1) {
+    result->data[index] = matrix->data[index] * scalar;
+  }
+
+  return result;
+}
+
+static Matrix *
+matrix_substract(Matrix *first, Matrix *second) {
+  Matrix *result  = malloc(sizeof(Matrix));
+  result->rows    = first->rows;
+  result->columns = first->columns;
+  result->data    = malloc(sizeof(double) * result->rows * result->columns);
+
+  for (int index = 0; index < result->rows * result->columns; index += 1) {
+    result->data[index] = first->data[index] - second->data[index];
+  }
+
+  return result;
+}
+
 //-----------------------------------------------------------------------------
 // Utilities
 //-----------------------------------------------------------------------------
@@ -202,10 +230,53 @@ multiply(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   return result;
 }
 
+static ERL_NIF_TERM
+multiply_with_scalar(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
+  ERL_NIF_TERM  result;
+  Matrix       *matrix, *product;
+  double        scalar;
+
+  matrix = list_of_lists_to_matrix(env, argv[0]);
+
+  if (enif_get_double(env, argv[1], &scalar) == 0) {
+    long long_element;
+    enif_get_int64(env, argv[1], &long_element);
+
+    scalar = (double) long_element;
+  }
+
+  product = matrix_multiply_with_scalar(matrix, scalar);
+  result  = matrix_to_list_of_lists(env, product);
+
+  free_matrix(matrix);
+  free_matrix(product);
+
+  return result;
+}
+
+static ERL_NIF_TERM
+substract(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
+  ERL_NIF_TERM  result;
+  Matrix       *first, *second, *difference;
+
+  first      = list_of_lists_to_matrix(env, argv[0]);
+  second     = list_of_lists_to_matrix(env, argv[1]);
+  difference = matrix_substract(first, second);
+  result     = matrix_to_list_of_lists(env, difference);
+
+  free_matrix(first);
+  free_matrix(second);
+  free_matrix(difference);
+
+  return result;
+}
+
 static ErlNifFunc nif_functions[] = {
-  {"add",      2, add     },
-  {"dot",      2, dot     },
-  {"multiply", 2, multiply}
+  {"add",                  2, add                 },
+  {"dot",                  2, dot                 },
+  {"multiply",             2, multiply            },
+  {"multiply_with_scalar", 2, multiply_with_scalar},
+  {"substract",            2, substract           }
 };
 
 ERL_NIF_INIT(Elixir.ExLearn.Matrix, nif_functions, NULL, NULL, NULL, NULL)
