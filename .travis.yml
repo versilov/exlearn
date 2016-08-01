@@ -8,6 +8,12 @@ otp_release:
 
 sudo: false
 
+addons:
+  apt:
+    packages:
+    - gcc-4.9
+    - clang
+
 env:
   - MIX_ENV=test
 
