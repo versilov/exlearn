@@ -11,10 +11,6 @@ defmodule ExLearn.Matrix do
     :ok = :erlang.load_nif('priv/matrix', 0)
   end
 
-  def dot2(a, v) do
-    :ok
-  end
-
   @doc """
   Adds two matrices
   """
@@ -49,11 +45,8 @@ defmodule ExLearn.Matrix do
   Matrix multiplication
   """
   @spec dot([[]], [[]]) :: [[]]
-  def dot(first, second) do
-    second_transposed = transpose(second)
-    Enum.map(first, fn (row) ->
-      Enum.map(second_transposed, &Vector.dot_product(row, &1))
-    end)
+  def dot(_first, _second) do
+    exit(:nif_library_not_loaded)
   end
 
   @doc """

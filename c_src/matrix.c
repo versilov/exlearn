@@ -32,7 +32,7 @@ list_of_lists_to_matrix(ErlNifEnv *env, ERL_NIF_TERM list_of_lists) {
         element = (double) long_element;
       }
 
-      int index = row * matrix->rows + column;
+      int index = row * matrix->columns + column;
       matrix->data[index] = element;
 
       if (enif_is_empty_list(env, row_tail) == 1) { break; }
@@ -90,33 +90,46 @@ matrix_dot(Matrix *first, Matrix *second) {
       sum = 0.0;
 
       for (int common = 0; common < first->columns; common += 1) {
-        int first_index  = first_row *  first->rows + common;
-        int second_index = common    * second->rows + second_column;
+        int first_index  = first_row *  first->columns + common;
+        int second_index = common    * second->columns + second_column;
 
-        sum += first->data[first_index] * second->data[second_index];
+        double product = first->data[first_index] * second->data[second_index];
+        sum += product;
       }
 
-      result->data[first_row * result->rows + second_column] = sum;
+      int index = first_row * result->columns + second_column;
+      result->data[index] = sum;
     }
   }
 
   return result;
 }
 
+static void
+free_matrix(Matrix *matrix) {
+  free(matrix->data);
+  free(matrix);
+}
+
 static ERL_NIF_TERM
 dot(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
-  Matrix *first, *second, *result;
+  ERL_NIF_TERM  result;
+  Matrix       *first, *second, *dot_product;
 
-  first  = list_of_lists_to_matrix(env, argv[0]);
-  second = list_of_lists_to_matrix(env, argv[1]);
+  first       = list_of_lists_to_matrix(env, argv[0]);
+  second      = list_of_lists_to_matrix(env, argv[1]);
+  dot_product = matrix_dot(first, second);
+  result      = matrix_to_list_of_lists(env, dot_product);
 
-  result = matrix_dot(first, second);
+  free_matrix(first);
+  free_matrix(second);
+  free_matrix(dot_product);
 
-  return matrix_to_list_of_lists(env, result);
+  return result;
 }
 
 static ErlNifFunc nif_functions[] = {
-  {"dot2", 2, dot}
+  {"dot", 2, dot}
 };
 
 ERL_NIF_INIT(Elixir.ExLearn.Matrix, nif_functions, NULL, NULL, NULL, NULL)
