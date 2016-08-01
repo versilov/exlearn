@@ -49,6 +49,14 @@ defmodule ExLearn.Matrix do
   end
 
   @doc """
+  Matrix multiplication
+  """
+  @spec dot_and_add([[]], [[]], [[]]) :: [[]]
+  def dot_and_add(_first, _second, _third) do
+    exit(:nif_library_not_loaded)
+  end
+
+  @doc """
   Elementwise multiplication of two matrices
   """
   @spec multiply([[]], [[]]) :: [[]]

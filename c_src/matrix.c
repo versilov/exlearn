@@ -53,6 +53,34 @@ matrix_dot(Matrix *first, Matrix *second) {
 }
 
 static Matrix *
+matrix_dot_and_add(Matrix *first, Matrix *second, Matrix *third) {
+  double  sum;
+  Matrix *result  = malloc(sizeof(Matrix));
+  result->rows    = first->rows;
+  result->columns = second->columns;
+  result->data    = malloc(sizeof(double) * result->rows * result->columns);
+
+  for (int first_row = 0; first_row < first->rows; first_row += 1) {
+    for (int second_column = 0; second_column < second->columns; second_column += 1) {
+      sum = 0.0;
+
+      for (int common = 0; common < first->columns; common += 1) {
+        int first_index  = first_row *  first->columns + common;
+        int second_index = common    * second->columns + second_column;
+
+        double product = first->data[first_index] * second->data[second_index];
+        sum += product;
+      }
+
+      int index = first_row * result->columns + second_column;
+      result->data[index] = sum + third->data[index];
+    }
+  }
+
+  return result;
+}
+
+static Matrix *
 matrix_multiply(Matrix *first, Matrix *second) {
   Matrix *result  = malloc(sizeof(Matrix));
   result->rows    = first->rows;
@@ -214,6 +242,25 @@ dot(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
 }
 
 static ERL_NIF_TERM
+dot_and_add(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
+  ERL_NIF_TERM  result;
+  Matrix       *first, *second, *third, *dot_product;
+
+  first       = list_of_lists_to_matrix(env, argv[0]);
+  second      = list_of_lists_to_matrix(env, argv[1]);
+  third       = list_of_lists_to_matrix(env, argv[2]);
+  dot_product = matrix_dot_and_add(first, second, third);
+  result      = matrix_to_list_of_lists(env, dot_product);
+
+  free_matrix(first);
+  free_matrix(second);
+  free_matrix(third);
+  free_matrix(dot_product);
+
+  return result;
+}
+
+static ERL_NIF_TERM
 multiply(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   ERL_NIF_TERM  result;
   Matrix       *first, *second, *product;
@@ -274,6 +321,7 @@ substract(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
 static ErlNifFunc nif_functions[] = {
   {"add",                  2, add                 },
   {"dot",                  2, dot                 },
+  {"dot_and_add",          3, dot_and_add         },
   {"multiply",             2, multiply            },
   {"multiply_with_scalar", 2, multiply_with_scalar},
   {"substract",            2, substract           }

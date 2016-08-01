@@ -28,9 +28,8 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
       weights:  weights
     } = layer
 
-    output = Matrix.dot(input, weights)
-      |> Matrix.add(biases)
-      |> Activation.apply_function(activity)
+    output = Matrix.dot_and_add(input, weights, biases)
+    |> Activation.apply_function(activity)
 
     calculate_output(output, rest)
   end
@@ -55,9 +54,8 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
       weights:  weights
     } = layer
 
-    output = Matrix.dot(input, weights)
-      |> Matrix.add(biases)
-      |> Activation.apply_function(activity)
+    output = Matrix.dot_and_add(input, weights, biases)
+    |> Activation.apply_function(activity)
 
     calculate_test({output, expected}, rest)
   end
@@ -75,8 +73,8 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
       activity = calculate_activity([input], layers, [])
 
       activity
-        |> Map.put(:expected, expected)
-        |> Map.put(:input, input)
+      |> Map.put(:expected, expected)
+      |> Map.put(:input, input)
     end)
   end
 
@@ -93,11 +91,11 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
       weights:  weights
     } = layer
 
-    input  = Matrix.dot(layer_input, weights) |> Matrix.add(biases)
+    input  = Matrix.dot_and_add(layer_input, weights, biases)
     output = Activation.apply_function(input, activity)
 
     new_activity = Map.put(activity, :input, input)
-      |> Map.put(:output, output)
+    |> Map.put(:output, output)
 
     calculate_activity(output, rest, [new_activity|activities])
   end

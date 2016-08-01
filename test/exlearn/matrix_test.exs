@@ -46,6 +46,18 @@ defmodule MatrixTest do
     assert result == expected
   end
 
+  test "#dot_and_add multiplies two matrices and adds the third" do
+    first  = [[1, 2, 3], [4, 5, 6]]
+    second = [[1, 2], [3, 4], [5, 6]]
+    third  = [[1, 2], [3, 4]]
+
+    expected = [[23, 30], [52, 68]]
+
+    result = Matrix.dot_and_add(first, second, third)
+
+    assert result == expected
+  end
+
   test "#multiply performs elementwise multiplication of two matrices" do
     first  = [[1, 2, 3], [4, 5, 6]]
     second = [[5, 2, 1], [3, 4, 6]]
