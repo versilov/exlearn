@@ -6,6 +6,42 @@ typedef struct Matrix {
   double       *data;
 } Matrix;
 
+//-----------------------------------------------------------------------------
+// Matrix API
+//-----------------------------------------------------------------------------
+
+static Matrix *
+matrix_dot(Matrix *first, Matrix *second) {
+  double  sum;
+  Matrix *result  = malloc(sizeof(Matrix));
+  result->rows    = first->rows;
+  result->columns = second->columns;
+  result->data    = malloc(sizeof(double) * result->rows * result->columns);
+
+  for (int first_row = 0; first_row < first->rows; first_row += 1) {
+    for (int second_column = 0; second_column < second->columns; second_column += 1) {
+      sum = 0.0;
+
+      for (int common = 0; common < first->columns; common += 1) {
+        int first_index  = first_row *  first->columns + common;
+        int second_index = common    * second->columns + second_column;
+
+        double product = first->data[first_index] * second->data[second_index];
+        sum += product;
+      }
+
+      int index = first_row * result->columns + second_column;
+      result->data[index] = sum;
+    }
+  }
+
+  return result;
+}
+
+//-----------------------------------------------------------------------------
+// Utilities
+//-----------------------------------------------------------------------------
+
 static Matrix *
 list_of_lists_to_matrix(ErlNifEnv *env, ERL_NIF_TERM list_of_lists) {
   unsigned int  row    = 0;
@@ -77,39 +113,15 @@ matrix_to_list_of_lists(ErlNifEnv *env, Matrix *matrix) {
   return result;
 }
 
-static Matrix *
-matrix_dot(Matrix *first, Matrix *second) {
-  double  sum;
-  Matrix *result  = malloc(sizeof(Matrix));
-  result->rows    = first->rows;
-  result->columns = second->columns;
-  result->data    = malloc(sizeof(double) * result->rows * result->columns);
-
-  for (int first_row = 0; first_row < first->rows; first_row += 1) {
-    for (int second_column = 0; second_column < second->columns; second_column += 1) {
-      sum = 0.0;
-
-      for (int common = 0; common < first->columns; common += 1) {
-        int first_index  = first_row *  first->columns + common;
-        int second_index = common    * second->columns + second_column;
-
-        double product = first->data[first_index] * second->data[second_index];
-        sum += product;
-      }
-
-      int index = first_row * result->columns + second_column;
-      result->data[index] = sum;
-    }
-  }
-
-  return result;
-}
-
 static void
 free_matrix(Matrix *matrix) {
   free(matrix->data);
   free(matrix);
 }
+
+//-----------------------------------------------------------------------------
+// Exported nifs
+//-----------------------------------------------------------------------------
 
 static ERL_NIF_TERM
 dot(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
