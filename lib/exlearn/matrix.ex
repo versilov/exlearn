@@ -15,9 +15,8 @@ defmodule ExLearn.Matrix do
   Adds two matrices
   """
   @spec add([[number]], [[number]]) :: []
-  def add(first, second) do
-    Stream.zip(first, second)
-      |> Enum.map(fn({x, y}) -> Vector.add(x,y) end)
+  def add(_first, _second) do
+    exit(:nif_library_not_loaded)
   end
 
   @doc """

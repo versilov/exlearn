@@ -11,6 +11,20 @@ typedef struct Matrix {
 //-----------------------------------------------------------------------------
 
 static Matrix *
+matrix_add(Matrix *first, Matrix *second) {
+  Matrix *result  = malloc(sizeof(Matrix));
+  result->rows    = first->rows;
+  result->columns = first->columns;
+  result->data    = malloc(sizeof(double) * result->rows * result->columns);
+
+  for (int index = 0; index < result->rows * result->columns; index += 1) {
+    result->data[index] = first->data[index] + second->data[index];
+  }
+
+  return result;
+}
+
+static Matrix *
 matrix_dot(Matrix *first, Matrix *second) {
   double  sum;
   Matrix *result  = malloc(sizeof(Matrix));
@@ -124,6 +138,23 @@ free_matrix(Matrix *matrix) {
 //-----------------------------------------------------------------------------
 
 static ERL_NIF_TERM
+add(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
+  ERL_NIF_TERM  result;
+  Matrix       *first, *second, *sum;
+
+  first  = list_of_lists_to_matrix(env, argv[0]);
+  second = list_of_lists_to_matrix(env, argv[1]);
+  sum    = matrix_add(first, second);
+  result = matrix_to_list_of_lists(env, sum);
+
+  free_matrix(first);
+  free_matrix(second);
+  free_matrix(sum);
+
+  return result;
+}
+
+static ERL_NIF_TERM
 dot(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   ERL_NIF_TERM  result;
   Matrix       *first, *second, *dot_product;
@@ -141,6 +172,7 @@ dot(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
 }
 
 static ErlNifFunc nif_functions[] = {
+  {"add", 2, add},
   {"dot", 2, dot}
 };
 
