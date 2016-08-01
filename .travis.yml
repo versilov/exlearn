@@ -10,9 +10,11 @@ sudo: false
 
 addons:
   apt:
+    sources:
+      - ubuntu-toolchain-r-test
     packages:
-    - gcc
-    - clang
+      - gcc
+      - clang
 
 env:
   - MIX_ENV=test
