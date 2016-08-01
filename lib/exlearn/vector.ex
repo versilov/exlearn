@@ -8,7 +8,7 @@ defmodule ExLearn.Vector do
   """
   @spec add([number], [number]) :: [number]
   def add(first, second) do
-    Stream.zip(first, second)
+    Enum.zip(first, second)
     |> Enum.map(fn({x, y}) -> x + y end)
   end
 
@@ -33,7 +33,7 @@ defmodule ExLearn.Vector do
 
   @spec divide([number], [number]) :: [number]
   def divide(first, second) do
-    Stream.zip(first, second)
+    Enum.zip(first, second)
     |> Enum.map(fn({x, y}) -> x / y end)
   end
 
@@ -44,7 +44,7 @@ defmodule ExLearn.Vector do
 
   @spec dot_square_difference([number], [number]) :: number
   def dot_square_difference(first, second) do
-    Stream.zip(first, second)
+    Enum.zip(first, second)
     |> Enum.map(fn({x, y}) -> square_difference(x, y) end)
     |> Enum.sum
   end
@@ -59,13 +59,13 @@ defmodule ExLearn.Vector do
   """
   @spec substract([number], [number]) :: [number]
   def substract(first, second) do
-    Stream.zip(first, second)
+    Enum.zip(first, second)
     |> Enum.map(fn({x, y}) -> x - y end)
   end
 
   @spec multiply([number], [number]) :: [number]
   def multiply(first, second) do
-    Stream.zip(first, second)
+    Enum.zip(first, second)
     |> Enum.map(fn({x, y}) -> x * y end)
   end
 

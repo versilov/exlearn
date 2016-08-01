@@ -106,19 +106,7 @@ defmodule ExLearn.Matrix do
   Transposes a matrix
   """
   @spec transpose([[]]) :: [[]]
-  def transpose([[]|_]), do: []
   def transpose(matrix) do
-    transpose(matrix, [])
-  end
-
-  defp transpose([[]|_], accumulator) do
-    Enum.reverse(accumulator)
-  end
-
-  defp transpose(matrix, accumulator) do
-    heads = Enum.map(matrix, &hd/1)
-    tails = Enum.map(matrix, &tl/1)
-
-    transpose(tails, [heads|accumulator])
+    exit(:nif_library_not_loaded)
   end
 end

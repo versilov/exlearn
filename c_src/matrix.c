@@ -143,6 +143,22 @@ matrix_multiply_with_scalar(Matrix *matrix, double scalar) {
   }
 }
 
+static Matrix *
+matrix_transpose(Matrix *matrix) {
+  Matrix *result  = malloc(sizeof(Matrix));
+  result->rows    = matrix->columns;
+  result->columns = matrix->rows;
+  result->data    = malloc(sizeof(double) * result->rows * result->columns);
+
+  for (int row = 0; row < matrix->rows; row += 1) {
+    for (int column = 0; column < matrix->columns; column += 1) {
+      result->data[column * result->columns + row] = matrix->data[row * matrix->columns + column];
+    }
+  }
+
+  return result;
+}
+
 static void
 matrix_substract(Matrix *first, Matrix *second) {
   for (int index = 0; index < first->rows * first->columns; index += 1) {
@@ -364,6 +380,21 @@ multiply_with_scalar(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
 }
 
 static ERL_NIF_TERM
+transpose(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
+  ERL_NIF_TERM  result;
+  Matrix       *matrix, *transposed;
+
+  matrix = list_of_lists_to_matrix(env, argv[0]);
+  transposed = matrix_transpose(matrix);
+  result = matrix_to_list_of_lists(env, transposed);
+
+  free_matrix(matrix);
+  free_matrix(transposed);
+
+  return result;
+}
+
+static ERL_NIF_TERM
 substract(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   ERL_NIF_TERM  result;
   Matrix       *first, *second;
@@ -389,6 +420,7 @@ static ErlNifFunc nif_functions[] = {
   {"dot_tn",               2, dot_tn              },
   {"multiply",             2, multiply            },
   {"multiply_with_scalar", 2, multiply_with_scalar},
+  {"transpose",            1, transpose           },
   {"substract",            2, substract           }
 };
 
