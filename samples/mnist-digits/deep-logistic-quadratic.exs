@@ -2,7 +2,7 @@
 Code.require_file("data/data_loader.exs", __DIR__)
 
 # Loads training and test data.
-{training_data, test_data} = DataLoader.load_data
+[training_data, test_data] = DataLoader.load_data
 
 # You can inspect the data using something similar with the following:
 #
@@ -23,7 +23,7 @@ structure_parameters = %{
     output:  %{activity: :logistic, name: "Output",       size: 10}
   },
   objective: :quadratic,
-  random:    %{distribution: :uniform, range: {-0.01, 0.01}}
+  random:    %{distribution: :uniform, range: {-1, 1}}
 }
 
 # Initializes the neural network.
@@ -34,7 +34,7 @@ configuration = %{
   batch_size:    60000,
   data_size:     60000,
   epochs:        1,
-  learning_rate: 0.05,
+  learning_rate: 0.3,
 }
 
 # Starts the notifications stream.

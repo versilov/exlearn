@@ -1,14 +1,25 @@
 defmodule DataLoader do
   def load_data do
-    test_image_list     = load_images("samples/mnist-digits/data/t10k-images-idx3-ubyte.gz",  10000)
-    test_label_list     = load_labels("samples/mnist-digits/data/t10k-labels-idx1-ubyte.gz",  10000)
+    tasks = [
+      Task.async(fn -> load_training_data end),
+      Task.async(fn -> load_test_data     end)
+    ]
+
+    Enum.map(tasks, &Task.await(&1, :infinity))
+  end
+
+  defp load_training_data do
     training_image_list = load_images("samples/mnist-digits/data/train-images-idx3-ubyte.gz", 60000)
     training_label_list = load_labels("samples/mnist-digits/data/train-labels-idx1-ubyte.gz", 60000)
 
-    test_data     = Enum.zip(test_image_list, test_label_list)
-    training_data = Enum.zip(training_image_list, training_label_list)
+    Enum.zip(training_image_list, training_label_list)
+  end
 
-    {training_data, test_data}
+  defp load_test_data do
+    test_image_list = load_images("samples/mnist-digits/data/t10k-images-idx3-ubyte.gz",  10000)
+    test_label_list = load_labels("samples/mnist-digits/data/t10k-labels-idx1-ubyte.gz",  10000)
+
+    Enum.zip(test_image_list, test_label_list)
   end
 
   def load_images(file_name, count) do
