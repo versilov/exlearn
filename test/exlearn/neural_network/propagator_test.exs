@@ -9,7 +9,10 @@ defmodule PropagatorTest do
       Stream.zip(b, a) |> Enum.map(fn({x, y}) -> x - y end)
     end
 
-    configuration = %{learning_rate: 2}
+    configuration = %{
+      batch_size:    1,
+      learning_rate: 2
+    }
 
     network_state = %{
       network: %{

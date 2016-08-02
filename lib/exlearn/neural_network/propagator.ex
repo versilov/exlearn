@@ -92,17 +92,22 @@ defmodule ExLearn.NeuralNetwork.Propagator do
   end
 
   def apply_changes({bias_changes, weight_changes}, configuration, layers, state, new_layers) do
-    %{learning_rate: rate} = configuration
+    %{
+      batch_size:    batch_size,
+      learning_rate: learning_rate
+    } = configuration
+
+    scale = learning_rate / batch_size
 
     [bias_change|other_bias_changes]     = bias_changes
     [weight_change|other_weight_changes] = weight_changes
 
     [%{activity: activity, biases: biases, weights: weights}|other_layers] = layers
 
-    new_biases = Matrix.multiply_with_scalar(bias_change, rate)
+    new_biases = Matrix.multiply_with_scalar(bias_change, scale)
     |> Matrix.substract_inverse(biases)
 
-    new_weights = Matrix.multiply_with_scalar(weight_change, rate)
+    new_weights = Matrix.multiply_with_scalar(weight_change, scale)
     |> Matrix.substract_inverse(weights)
 
     new_layer = %{activity: activity, biases: new_biases, weights: new_weights}

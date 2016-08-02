@@ -31,14 +31,14 @@ network = NN.initialize(structure_parameters)
 
 # Defines the training configuration.
 configuration = %{
-  batch_size:    60000,
+  batch_size:    50,
   data_size:     60000,
   epochs:        1,
-  learning_rate: 0.3,
+  learning_rate: 3,
 }
 
 # Starts the notifications stream.
-NN.notifications(:start, network)
+# NN.notifications(:start, network)
 
 # Feeds the data to te neural network.
 NN.feed(training_data, configuration, network)
