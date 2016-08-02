@@ -1,5 +1,8 @@
 language: elixir
 
+notifications:
+  email: false
+
 elixir: 1.3.2
 
 otp_release:
@@ -23,7 +26,4 @@ before_script:
   - CC=gcc-4.9 make
 
 script:
-  - ls -la .
-  - ls -la priv
-  - pwd
   - mix coveralls.travis

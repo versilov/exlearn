@@ -8,7 +8,7 @@ defmodule ExLearn.Matrix do
   @on_load :load_nifs
 
   def load_nifs do
-    :ok = :erlang.load_nif('priv/matrix', 0)
+    :ok = :erlang.load_nif('./priv/matrix', 0)
   end
 
   @doc """
