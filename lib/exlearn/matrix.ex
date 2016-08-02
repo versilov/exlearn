@@ -58,7 +58,7 @@ defmodule ExLearn.Matrix do
   Matrix multiplication where the second matrix needs to be transposed.
   """
   @spec dot_nt([[]], [[]]) :: [[]]
-  def dot_nt(first, second) do
+  def dot_nt(_first, _second) do
     exit(:nif_library_not_loaded)
   end
 
@@ -66,7 +66,7 @@ defmodule ExLearn.Matrix do
   Matrix multiplication where the first matrix needs to be transposed.
   """
   @spec dot_tn([[]], [[]]) :: [[]]
-  def dot_tn(first, second) do
+  def dot_tn(_first, _second) do
     exit(:nif_library_not_loaded)
   end
 
@@ -106,7 +106,7 @@ defmodule ExLearn.Matrix do
   Transposes a matrix
   """
   @spec transpose([[]]) :: [[]]
-  def transpose(matrix) do
+  def transpose(_matrix) do
     exit(:nif_library_not_loaded)
   end
 end

@@ -3,7 +3,7 @@ defmodule ExLearn.Objective do
   Translates objective names to functions
   """
 
-  alias ExLearn.{Activation, Matrix, Vector}
+  alias ExLearn.{Activation, Vector}
 
   @doc """
   Returns the appropriate function
@@ -49,7 +49,7 @@ defmodule ExLearn.Objective do
 
   @spec cross_entropy_error_simple([number], [number], %{}) :: [number]
   defp cross_entropy_error_simple(expected, actual, layer) do
-    %{derivative: derivative, input: input} = layer
+    %{input: input} = layer
 
     [input_derivative] = Activation.apply_derivative(input, layer)
     top                = Vector.substract(actual, expected)
@@ -94,7 +94,7 @@ defmodule ExLearn.Objective do
 
   # TODO: This seems to work but no idea why
   @spec negative_log_likelihood_error_simple([number], [number], %{}) :: []
-  defp negative_log_likelihood_error_simple(expected, actual, layer) do
+  defp negative_log_likelihood_error_simple(expected, actual, _layer) do
     Vector.substract(actual, expected)
   end
 
@@ -118,7 +118,7 @@ defmodule ExLearn.Objective do
 
   @spec quadratic_cost_error([], [], %{}) :: []
   defp quadratic_cost_error(expected, actual, layer) do
-    %{derivative: derivative, input: input} = layer
+    %{input: input} = layer
 
     cost_gradient      = Vector.substract(actual, expected)
     [input_derivative] = Activation.apply_derivative(input, layer)
