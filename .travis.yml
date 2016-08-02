@@ -6,12 +6,7 @@ notifications:
 elixir: 1.3.2
 
 otp_release:
-  - 18.3
   - 19.0
-
-matrix:
-  allowed_failures:
-    otp_release: 18.3
 
 sudo: false
 
