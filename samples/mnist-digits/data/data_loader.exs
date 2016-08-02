@@ -1,11 +1,9 @@
 defmodule DataLoader do
   def load_data do
-    tasks = [
-      Task.async(fn -> load_training_data end),
-      Task.async(fn -> load_test_data     end)
-    ]
+    training_data = Task.async(fn -> load_training_data end) |> Task.await(:infinity)
+    test_data     = Task.async(fn -> load_test_data     end) |> Task.await(:infinity)
 
-    Enum.map(tasks, &Task.await(&1, :infinity))
+    {training_data, test_data}
   end
 
   defp load_training_data do
@@ -59,19 +57,60 @@ defmodule DataLoader do
   end
 
   defp extract_images(images) do
-    for <<pixel :: size(8) <- images>> do pixel end
-    |> Enum.chunk(28 * 28)
+    extract_images(images, [], 1, [])
+  end
+
+  defp extract_images(<<>>, current, _, accumulator) do
+    Enum.reverse([Enum.reverse(current)|accumulator])
+  end
+
+  defp extract_images(images, current, image_size, accumulator) do
+    <<pixel :: size(8), rest :: binary>> = images
+
+    case image_size do
+      784 ->
+        extract_images(
+          rest,
+          [],
+          1,
+          [Enum.reverse([pixel|current])|accumulator]
+        )
+      _   ->
+        extract_images(
+          rest,
+          [pixel|current],
+          image_size + 1,
+          accumulator
+        )
+    end
   end
 
   defp extract_labels(labels) do
-    for <<label :: size(8) <- labels>> do
-      Enum.to_list(0..9)
-      |> Enum.map(fn(element) ->
-        case element do
-          ^label -> 1
-          _      -> 0
-        end
-      end)
+    ten_numbers = Enum.to_list(0..9)
+
+    extract_labels(labels, ten_numbers, [])
+  end
+
+  defp extract_labels(<<>>, _,  accumulator) do
+    Enum.reverse(accumulator)
+  end
+
+  defp extract_labels(labels, ten_numbers, accumulator) do
+    <<label :: size(8), rest :: binary >> = labels
+
+    result = format_label(label, ten_numbers)
+
+    extract_labels(rest, ten_numbers, [result|accumulator])
+  end
+
+  defp format_label(label, ten_numbers) do
+    Enum.map(ten_numbers, &zeroes_except_label(&1, label))
+  end
+
+  defp zeroes_except_label(element, label) do
+    case element do
+      ^label -> 1
+      _      -> 0
     end
   end
 end

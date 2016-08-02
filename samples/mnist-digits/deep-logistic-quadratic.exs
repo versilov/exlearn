@@ -2,7 +2,7 @@
 Code.require_file("data/data_loader.exs", __DIR__)
 
 # Loads training and test data.
-[training_data, test_data] = DataLoader.load_data
+{training_data, test_data} = DataLoader.load_data
 
 # You can inspect the data using something similar with the following:
 #
