@@ -25,4 +25,5 @@ before_script:
 script:
   - ls -la .
   - ls -la priv
+  - pwd
   - mix coveralls.travis
