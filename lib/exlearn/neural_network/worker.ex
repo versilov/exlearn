@@ -1,6 +1,7 @@
 defmodule ExLearn.NeuralNetwork.Worker do
   use GenServer
 
+  alias ExLearn.Matrix
   alias ExLearn.NeuralNetwork.{Forwarder, Notification, Propagator, Store}
 
   # Client API
@@ -136,12 +137,12 @@ defmodule ExLearn.NeuralNetwork.Worker do
     {:noreply, new_state}
   end
 
-  defp ask_network(input, state) do
-    Forwarder.forward_for_output(input, state)
+  defp ask_network(batch, state) do
+    Enum.map(batch, &Forwarder.forward_for_output(&1, state))
   end
 
   defp test_network(batch, configuration, state) do
-    outputs = Forwarder.forward_for_test(batch, state)
+    outputs = Enum.map(batch, &Forwarder.forward_for_test(&1, state))
 
     %{network: %{objective: %{function: objective}}} = state
     %{data_size: data_size} = configuration
@@ -149,15 +150,48 @@ defmodule ExLearn.NeuralNetwork.Worker do
     targets = Enum.map(batch, fn ({_, target}) -> target end)
 
     costs = Enum.zip(targets, outputs)
-    |> Enum.map(fn ({target, output}) -> objective.(target, output, data_size) end)
+    |> Enum.map(fn ({target, output}) ->
+      %{output: output_for_objective} = output
+
+      objective.(target, output_for_objective, data_size)
+    end)
 
     {outputs, costs}
   end
 
   @spec train_network(list, map, map) :: map
-  defp train_network(batch, configuration, state) do
-    batch
-    |> Forwarder.forward_for_activity(state)
+  defp train_network([sample|batch], configuration, state) do
+    correction = train_sample(sample, configuration, state)
+
+    train_network(batch, correction, configuration, state)
+  end
+
+  defp train_network([], total_correction, configuration, state) do
+    Propagator.apply_changes(total_correction, configuration, state)
+  end
+
+  defp train_network([sample|batch], total_correction, configuration, state) do
+    correction     = train_sample(sample, configuration, state)
+    new_correction = accumulate_correction(correction, total_correction)
+
+    train_network(batch, new_correction, configuration, state)
+  end
+
+  defp accumulate_correction(correction, total) do
+    {bias_correction, weight_correction} = correction
+    {bias_total,      weight_total     } = total
+
+    bias_final = Enum.zip(bias_correction, bias_total)
+    |> Enum.map(fn({x, y}) -> Matrix.add(x, y) end)
+
+    weight_final = Enum.zip(weight_correction, weight_total)
+    |> Enum.map(fn({x, y}) -> Matrix.add(x, y) end)
+
+    {bias_final, weight_final}
+  end
+
+  defp train_sample(sample, configuration, state) do
+    Forwarder.forward_for_activity(sample, state)
     |> Propagator.back_propagate(configuration, state)
   end
 end

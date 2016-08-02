@@ -139,7 +139,7 @@ defmodule NeuralNetworkTest do
 
     assert length(result) == length(test_data)
     Enum.each(result, fn (element) ->
-      assert element |> is_list
+      assert element |> is_map
     end)
     assert cost |> is_list
   end

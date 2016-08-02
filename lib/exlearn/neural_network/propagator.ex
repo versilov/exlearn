@@ -8,21 +8,19 @@ defmodule ExLearn.NeuralNetwork.Propagator do
   @doc """
   Performs backpropagation
   """
-  @spec back_propagate([%{}], map, %{}) :: map
-  def back_propagate(forward_batch, configuration, state) do
+  @spec back_propagate(%{}, map, %{}) :: map
+  def back_propagate(forward_batch, _configuration, state) do
     %{network: %{layers: network_layers}} = state
 
-    Enum.reduce(forward_batch, state, fn (forward_state, new_state) ->
-      deltas = calculate_deltas(forward_state, network_layers, state)
+    deltas = calculate_deltas(forward_batch, network_layers, state)
 
-      %{activity: activity, input: input} = forward_state
+    %{activity: activity, input: input} = forward_batch
 
-      full_activity  = [%{output: [input]}|activity]
-      bias_change    = deltas
-      weight_change  = calculate_weight_change(full_activity, deltas, [])
+    full_activity  = [%{output: [input]}|activity]
+    bias_change    = deltas
+    weight_change  = calculate_weight_change(full_activity, deltas, [])
 
-      apply_changes(bias_change, weight_change, configuration, new_state)
-    end)
+    {bias_change, weight_change}
   end
 
   defp calculate_deltas(forward_state, network_layers, state) do
@@ -79,13 +77,13 @@ defmodule ExLearn.NeuralNetwork.Propagator do
     calculate_weight_change(as, ds, [result|total])
   end
 
-  defp apply_changes(bias_change, weight_change, configuration, state) do
+  def apply_changes({bias_change, weight_change}, configuration, state) do
     %{network: %{layers: layers}} = state
 
-    apply_changes(bias_change, weight_change, configuration, layers, state, [])
+    apply_changes({bias_change, weight_change}, configuration, layers, state, [])
   end
 
-  defp apply_changes([], [], _, [], state, new_layers) do
+  def apply_changes({[], []}, _, [], state, new_layers) do
     %{network: network} = state
 
     new_network = put_in(network, [:layers], Enum.reverse(new_layers))
@@ -93,7 +91,7 @@ defmodule ExLearn.NeuralNetwork.Propagator do
     put_in(state, [:network], new_network)
   end
 
-  defp apply_changes(bias_changes, weight_changes, configuration, layers, state, new_layers) do
+  def apply_changes({bias_changes, weight_changes}, configuration, layers, state, new_layers) do
     %{learning_rate: rate} = configuration
 
     [bias_change|other_bias_changes]     = bias_changes
@@ -110,8 +108,8 @@ defmodule ExLearn.NeuralNetwork.Propagator do
     new_layer = %{activity: activity, biases: new_biases, weights: new_weights}
 
     apply_changes(
-      other_bias_changes,
-      other_weight_changes,
+      {other_bias_changes,
+      other_weight_changes},
       configuration,
       other_layers,
       state,
