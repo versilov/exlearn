@@ -6,76 +6,17 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
   alias ExLearn.{Activation, Matrix}
 
   @doc """
-  Propagates input forward trough a network and return the output
-  """
-  @spec forward_for_output([[number]], map) :: [[number]]
-  def forward_for_output(batch, state) do
-    %{network: %{layers: layers}} = state
-
-    Enum.map(batch, fn(sample) ->
-      calculate_output([sample], layers)
-    end)
-  end
-
-  defp calculate_output(output, []) do
-    List.first(output)
-  end
-
-  defp calculate_output(input, [layer|rest]) do
-    %{
-      activity: activity,
-      biases:   biases,
-      weights:  weights
-    } = layer
-
-    output = Matrix.dot_and_add(input, weights, biases)
-    |> Activation.apply_function(activity)
-
-    calculate_output(output, rest)
-  end
-
-  @spec forward_for_test([[number]], map) :: [[number]]
-  def forward_for_test(batch, state) do
-    %{network: %{layers: layers}} = state
-
-    Enum.map(batch, fn({input, expected}) ->
-      calculate_test({[input], expected}, layers)
-    end)
-  end
-
-  defp calculate_test({output, _expected}, []) do
-    List.first(output)
-  end
-
-  defp calculate_test({input, expected}, [layer|rest]) do
-    %{
-      activity: activity,
-      biases:   biases,
-      weights:  weights
-    } = layer
-
-    output = Matrix.dot_and_add(input, weights, biases)
-    |> Activation.apply_function(activity)
-
-    calculate_test({output, expected}, rest)
-  end
-
-  @doc """
   Propagates input forward trough a network and return the activity
   """
   @spec forward_for_activity([number], map) :: [map]
-  def forward_for_activity(batch, state) do
+  def forward_for_activity(sample, state) do
     %{network: %{layers: layers}} = state
 
-    Enum.map(batch, fn(sample) ->
-      {input, expected} = sample
+    {input, expected} = sample
 
-      activity = calculate_activity([input], layers, [])
-
-      activity
-      |> Map.put(:expected, expected)
-      |> Map.put(:input, input)
-    end)
+    calculate_activity([input], layers, [])
+    |> Map.put(:expected, expected)
+    |> Map.put(:input, input)
   end
 
   defp calculate_activity(output, [], activities) do
@@ -98,5 +39,63 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
     |> Map.put(:output, output)
 
     calculate_activity(output, rest, [new_activity|activities])
+  end
+
+  @doc """
+  Propagates input forward trough a network and return the output
+  """
+  @spec forward_for_output([number], map) :: [[number]]
+  def forward_for_output(input, state) do
+    %{network: %{layers: layers}} = state
+
+    calculate_output([input], layers)
+  end
+
+  defp calculate_output(output, []) do
+    [result] = output
+
+    result
+  end
+
+  defp calculate_output(input, layers) do
+    [layer|other_layers] = layers
+
+    %{
+      activity: activity,
+      biases:   biases,
+      weights:  weights
+    } = layer
+
+    Matrix.dot_and_add(input, weights, biases)
+    |> Activation.apply_function(activity)
+    |> calculate_output(other_layers)
+  end
+
+  @spec forward_for_test([[number]], map) :: [[number]]
+  def forward_for_test(sample, state) do
+    %{network: %{layers: layers}} = state
+
+    {input, expected} = sample
+
+    calculate_test(%{input: input, expected: expected}, [input], layers)
+  end
+
+  defp calculate_test(sample, output, []) do
+    [result] = output
+
+    Map.put(sample, :output, result)
+  end
+
+  defp calculate_test(sample, input, [layer|rest]) do
+    %{
+      activity: activity,
+      biases:   biases,
+      weights:  weights
+    } = layer
+
+    output = Matrix.dot_and_add(input, weights, biases)
+    |> Activation.apply_function(activity)
+
+    calculate_test(sample, output, rest)
   end
 end

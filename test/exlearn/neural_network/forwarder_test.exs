@@ -48,17 +48,6 @@ defmodule ForwarderTest do
     }}
   end
 
-  test "#forward_for_output returns the outputs", %{setup: setup} do
-    %{state: state} = setup
-
-    inputs   = [[1, 2, 3], [2, 3, 4]]
-    expected = [[1897, 2784], [2620, 3846]]
-
-    output = Forwarder.forward_for_output(inputs, state)
-
-    assert expected == output
-  end
-
   test "#forward_for_activity returns the activities", %{setup: setup} do
     %{
       derivative: derivative,
@@ -66,10 +55,8 @@ defmodule ForwarderTest do
       state:      state
     } = setup
 
-    input = [
-      {[1, 2, 3], [1900, 2800]},
-      {[2, 3, 4], [2600, 3800]}
-    ]
+    first_input  = {[1, 2, 3], [1900, 2800]}
+    second_input = {[2, 3, 4], [2600, 3800]}
 
     first_activity = %{
       activity: [
@@ -129,10 +116,36 @@ defmodule ForwarderTest do
       output:   [2620, 3846]
     }
 
-    expected = [first_activity, second_activity]
+    assert Forwarder.forward_for_activity(first_input,  state) == first_activity
+    assert Forwarder.forward_for_activity(second_input, state) == second_activity
+  end
 
-    output = Forwarder.forward_for_activity(input, state)
+  test "#forward_for_output returns the outputs", %{setup: setup} do
+    %{state: state} = setup
 
-    assert expected == output
+    assert Forwarder.forward_for_output([1, 2, 3], state) == [1897, 2784]
+    assert Forwarder.forward_for_output([2, 3, 4], state) == [2620, 3846]
+  end
+
+  test "#forward_for_test returns the outputs and expected", %{setup: setup} do
+    %{state: state} = setup
+
+    first_input  = {[1, 2, 3], [1900, 2800]}
+    second_input = {[2, 3, 4], [2600, 3800]}
+
+    first_expected = %{
+      input:    [1, 2, 3],
+      expected: [1900, 2800],
+      output:   [1897, 2784]
+    }
+
+    second_expected = %{
+      input:    [2, 3, 4],
+      expected: [2600, 3800],
+      output:   [2620, 3846]
+    }
+
+    assert Forwarder.forward_for_test(first_input,  state) == first_expected
+    assert Forwarder.forward_for_test(second_input, state) == second_expected
   end
 end
