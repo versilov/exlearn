@@ -10,4 +10,4 @@ clean:
 
 compile:
 	mkdir -p priv && \
-	cc -fPIC -I$(ERL_INCLUDE_PATH) -o priv/matrix.so -O3 -shared -std=c11 -Wall c_src/matrix.c
+	$(CC) -fPIC -I$(ERL_INCLUDE_PATH) -o priv/matrix.so -O3 -shared -std=c11 -Wall c_src/matrix.c
