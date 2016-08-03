@@ -66,9 +66,11 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
   end
 
   defp start_workers(data, configuration, state) do
+    %{workers: workers} = configuration
     %{manager: manager} = state
 
-    workers = [{1, {:global, make_ref()}}]
+    workers = Enum.to_list(1..workers)
+    |> Enum.map(fn(index) -> {index, {:global, make_ref()}})
 
     Enum.each(
       workers,
@@ -85,32 +87,73 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
   defp train_for_epochs(workers, network_state, state, epochs, current_epoch) do
     Notification.push("Epoch: #{current_epoch + 1}", state)
 
-    workers
-    |> Enum.map(&prepare_worker(&1, network_state))
+    Enum.map(workers, &prepare_worker/1)
     |> Enum.map(&Task.await(&1, :infinity))
-    |> Enum.map(&train_worker(&1, network_state))
-    |> Enum.map(&Task.await(&1, :infinity))
-    |> accumulate_corrections
-    |> apply_correction
-    |> set_worker_state
 
-    train_for_epochs(workers, state, epochs, current_epoch + 1)
+    new_network_state = train_each_batch(workers, network_state, state)
+
+    train_for_epochs(workers, new_network_state, state, epochs, current_epoch + 1)
   end
 
-  defp prepare_worker(worker, network_state) do
-    Task.async(fn -> Worker.prepare(netwrok_state, worker) end)
+  defp train_each_batch([], network_state, state) do
+    network_state
+  end
+
+  defp train_each_batch(workers, network_state, state) do
+    %{configuration: configuration} = state
+
+    {remaining_workers, correction} = Enum.map(workers, &train_worker(&1, network_state))
+    |> Enum.map(&await_worker/1)
+    |> accumulate_correction
+
+    new_network_state = Propagator.apply_changes(correction, configuration, network_state)
+
+    Store.set(new_network_state, state)
+
+    train_each_batch(remaining_workers, new_network_state, state)
+  end
+
+  defp prepare_worker({_index, worker}) do
+    Task.async(&Worker.prepare(worker))
   end
 
   defp train_worker(worker, network_state) do
-    Task.async(fn -> Worker.work(:train, worker) end)
+    {worker, Task.async(&Worker.work(:train, network_state, worker))}
   end
 
-  defp accumulate_corrections do
+  defp await_worker(task_data) do
+    {worker, task} = task_data
+
+    result = Task.await(task, :infinity)
+
+    {worker, result}
   end
 
-  defp apply_correction do
+  defp accumulate_correction(worker_data) do
+    workers    = filter_workers(worker_data, [])
+    correction = reduce_correction(worker_data)
+
+    {workers, correction}
   end
 
-  defp set_worker_state do
+  defp filter_workers([], workers) do
+    workers
+  end
+
+  defp filter_workers([worker_data|rest], workers) do
+    case worker_data do
+      {_worker, {_, :done}}     -> filter_workers(rest, workers)
+      {worker,  {_, :continue}} -> filter_workers(rest, [worker|workers])
+    end
+  end
+
+  defp reduce_correction(worker_data) do
+    corrections = Enum.map(worker_data, fn(data) ->
+      {_, {correction, _}} = data
+
+      correction
+    end)
+
+    Enum.reduce(corrections, &Worker.accumulate_correction/2)
   end
 end

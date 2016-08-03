@@ -6,9 +6,9 @@ defmodule ExLearn.NeuralNetwork.Worker do
 
   # Client API
 
-  @spec prepare(map, any) :: any
-  def prepare(network_state, worker) do
-    GenServer.call(worker, {:prepare, network_state}, :infinity)
+  @spec prepare(any) :: any
+  def prepare(worker) do
+    GenServer.call(worker, :prepare, :infinity)
   end
 
   @spec work(:ask, any) :: any
@@ -21,14 +21,14 @@ defmodule ExLearn.NeuralNetwork.Worker do
     GenServer.call(worker, :test, :infinity)
   end
 
-  @spec work(:train, any) :: any
-  def work(:train, worker) do
-    GenServer.call(worker, :train, :infinity)
+  @spec work(:train, map,  any) :: any
+  def work(:train, map, worker) do
+    GenServer.call(worker, {:train, network_state}, :infinity)
   end
 
   @spec start([{}], map) :: {}
   def start(args, options) do
-    GenServer.start( __MODULE__, args, options)
+    GenServer.start(__MODULE__, args, options)
   end
 
   @spec start_link([{}], map) :: {}
@@ -52,7 +52,7 @@ defmodule ExLearn.NeuralNetwork.Worker do
   end
 
   @spec handle_call({}, any,  map) :: {}
-  def handle_call({:prepare, network_state}, state) do
+  def handle_call(:prepare, state) do
     %{
       configuration: %{batch_size: batch_size},
       data:          data
@@ -61,10 +61,9 @@ defmodule ExLearn.NeuralNetwork.Worker do
     [current_batch|remaining_batches] = Enum.chunk(data, batch_size)
 
     new_state = Map.put(state, :current_batch, current_batch)
-    |> Map.put(:netwrok_state,     network_state)
     |> Map.put(:remaining_batches, remaining_batches)
 
-    {:reply, result, new_state}
+    {:reply, :ok, new_state}
   end
 
   @spec handle_call({}, any,  map) :: {}
@@ -100,10 +99,27 @@ defmodule ExLearn.NeuralNetwork.Worker do
   end
 
   @spec handle_call({}, any, map) :: {}
-  def handle_call(:train, _from, state) do
+  def handle_call({:train, network_state}, _from, state) do
+    %{
+      current_batch:     batch,
+      configuration:     configuration,
+      remaining_batches: remaining_batches
+    } = state
+
     correction = train_network(batch, configuration, network_state)
 
-    {:reply, correction, state}
+    case remaining_batches do
+      []                 ->
+        new_state = Map.put(state, :current_batch, :not_set)
+        |> Map.put(state, :remaining_batches, :not_set)
+
+        {:reply, {correction, :done}, new_state}
+      [next_batch|other] ->
+        new_state = Map.put(state, :current_batch, next_batch)
+        |> Map.put(state, :remaining_batches, other)
+
+        {:reply, {correction, :continue}, state}
+    end
   end
 
   # Internal functions
@@ -148,7 +164,7 @@ defmodule ExLearn.NeuralNetwork.Worker do
     train_network(batch, new_correction, configuration, state)
   end
 
-  defp accumulate_correction(correction, total) do
+  def accumulate_correction(correction, total) do
     {bias_correction, weight_correction} = correction
     {bias_total,      weight_total     } = total
 
