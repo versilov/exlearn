@@ -1,7 +1,7 @@
 defmodule ExLearn.NeuralNetwork.Master do
   use Supervisor
 
-  alias ExLearn.NeuralNetwork.{Notification, Store, Worker}
+  alias ExLearn.NeuralNetwork.{Accumulator, Manager, Notification, Store}
 
   # Client API
 
@@ -15,15 +15,17 @@ defmodule ExLearn.NeuralNetwork.Master do
   @spec init({}) :: {}
   def init({parameters, names}) do
     %{
-      logger_name: logger_name,
-      state_name:  state_name,
-      worker_name: worker_name
+      accumulator:  accumulator,
+      manager:      manager,
+      notification: notification,
+      store:        store
     } = names
 
     children = [
-      worker(Notification, [[],                  [name: logger_name]]),
-      worker(Store,        [{parameters, names}, [name: state_name ]]),
-      worker(Worker,       [names,               [name: worker_name]])
+      worker(Accumulator,  [names,               [name: accumulator ]]),
+      worker(Manager,      [[],                  [name: manager     ]]),
+      worker(Notification, [[],                  [name: notification]]),
+      worker(Store,        [{parameters, names}, [name: store       ]]),
     ]
 
     supervise(children, strategy: :one_for_one)

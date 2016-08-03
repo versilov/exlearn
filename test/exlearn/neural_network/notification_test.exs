@@ -1,4 +1,4 @@
-defmodule LoggerTest do
+defmodule NotificationTest do
   use    ExUnit.Case, async: true
   import ExUnit.CaptureIO
 
@@ -11,12 +11,12 @@ defmodule LoggerTest do
     {:ok, setup: %{args: args, name: name}}
   end
 
-  test "#done modifies the logger state", %{setup: setup} do
+  test "#done modifies the notification state", %{setup: setup} do
     %{args: args, name: name} = setup
 
-    {:ok, logger} = Notification.start(args, name: name)
+    {:ok, notification} = Notification.start(args, name: name)
 
-    :ok   = Notification.done(logger)
+    :ok   = Notification.done(notification)
     state = Notification.pop(name)
 
     assert state == [:done]
@@ -27,25 +27,26 @@ defmodule LoggerTest do
 
     message = "Message"
 
-    {:ok, logger} = Notification.start(args, name: name)
-    initial_state = Notification.pop(logger)
-    :ok           = Notification.push(message, logger)
-    new_state     = Notification.pop(logger)
+    {:ok, notification} = Notification.start(args, name: name)
+
+    initial_state = Notification.pop(notification)
+    :ok           = Notification.push(message, notification)
+    new_state     = Notification.pop(notification)
 
     assert initial_state == []
     assert new_state     == [{:message, message}]
   end
 
-  test "#push modifies the logger state", %{setup: setup} do
+  test "#push modifies the notification state", %{setup: setup} do
     %{args: args, name: name} = setup
 
     first_log  = "Message 1"
     second_log = "Message 2"
 
-    {:ok, logger} = Notification.start(args, name: name)
+    {:ok, notification} = Notification.start(args, name: name)
 
-    :ok = Notification.push(first_log,  logger)
-    :ok = Notification.push(second_log, logger)
+    :ok = Notification.push(first_log,  notification)
+    :ok = Notification.push(second_log, notification)
 
     state = Notification.pop(name)
 
@@ -58,13 +59,13 @@ defmodule LoggerTest do
       name: name = {:global, reference}
     } = setup
 
-    {:ok, logger}    = Notification.start(args, name: name)
-    pid_of_reference = :global.whereis_name(reference)
+    {:ok, notification} = Notification.start(args, name: name)
+    pid_of_reference    = :global.whereis_name(reference)
 
-    assert logger    |> is_pid
-    assert logger    |> Process.alive?
-    assert reference |> is_reference
-    assert logger == pid_of_reference
+    assert notification |> is_pid
+    assert notification |> Process.alive?
+    assert reference    |> is_reference
+    assert notification == pid_of_reference
   end
 
   test "#start_link returns a running process", %{setup: setup} do
@@ -73,13 +74,13 @@ defmodule LoggerTest do
       name: name = {:global, reference}
     } = setup
 
-    {:ok, logger}    = Notification.start_link(args, name: name)
+    {:ok, notification}    = Notification.start_link(args, name: name)
     pid_of_reference = :global.whereis_name(reference)
 
-    assert logger    |> is_pid
-    assert logger    |> Process.alive?
-    assert reference |> is_reference
-    assert logger == pid_of_reference
+    assert notification |> is_pid
+    assert notification |> Process.alive?
+    assert reference    |> is_reference
+    assert notification == pid_of_reference
   end
 
   test "#stream writes logs to stdout", %{setup: setup} do
@@ -88,19 +89,19 @@ defmodule LoggerTest do
     first_log  = "Message 1"
     second_log = "Message 2"
 
-    {:ok, logger} = Notification.start(args, name: name)
+    {:ok, notification} = Notification.start(args, name: name)
 
     :ok = Notification.push(first_log,  name)
     :ok = Notification.push(second_log, name)
 
     result = capture_io(fn ->
-      Task.start(fn -> Notification.stream(logger) |> Task.await end)
+      Task.start(fn -> Notification.stream(notification) |> Task.await end)
 
       Process.sleep(501)
     end)
 
     assert result == first_log <> "\n" <> second_log <> "\n"
 
-    :ok = Notification.done(logger)
+    :ok = Notification.done(notification)
   end
 end

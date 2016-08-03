@@ -88,35 +88,39 @@ defmodule NeuralNetworkTest do
     assert result == :ok
   end
 
-  test "#initialize returns a running process", %{setup: setup} do
+  test "#initialize returns a running process tree", %{setup: setup} do
     %{network: %{
-      logger: {:global, logger_reference},
-      master: {:global, master_reference},
-      state:  {:global, state_reference },
-      worker: {:global, worker_reference}
+      accumulator:  {:global, accumulator_reference },
+      manager:      {:global, manager_reference     },
+      master:       {:global, master_reference      },
+      notification: {:global, notification_reference},
+      store:        {:global, store_reference       }
     }} = setup
 
-    pid_of_logger = :global.whereis_name(logger_reference)
-    pid_of_master = :global.whereis_name(master_reference)
-    pid_of_state  = :global.whereis_name(state_reference)
-    pid_of_worker = :global.whereis_name(worker_reference)
+    pid_of_accumulator  = :global.whereis_name(accumulator_reference)
+    pid_of_manager      = :global.whereis_name(manager_reference)
+    pid_of_master       = :global.whereis_name(master_reference)
+    pid_of_notification = :global.whereis_name(notification_reference)
+    pid_of_store        = :global.whereis_name(store_reference)
 
-    assert logger_reference |> is_reference
-    assert master_reference |> is_reference
-    assert state_reference  |> is_reference
-    assert worker_reference |> is_reference
+    assert accumulator_reference  |> is_reference
+    assert manager_reference      |> is_reference
+    assert master_reference       |> is_reference
+    assert notification_reference |> is_reference
+    assert store_reference        |> is_reference
 
-    assert pid_of_logger |> Process.alive?
-    assert pid_of_master |> Process.alive?
-    assert pid_of_state  |> Process.alive?
-    assert pid_of_worker |> Process.alive?
+    assert pid_of_accumulator  |> Process.alive?
+    assert pid_of_manager      |> Process.alive?
+    assert pid_of_master       |> Process.alive?
+    assert pid_of_notification |> Process.alive?
+    assert pid_of_store        |> Process.alive?
   end
 
   test "#notifications returns an async task", %{setup: _setup} do
-    {:ok, logger} = Notification.start([], [{:global, make_ref()}])
-    network       = %{logger: logger}
+    {:ok, notification} = Notification.start([], [{:global, make_ref()}])
+    network             = %{notification: notification}
 
-    :ok = Notification.push("Message", logger)
+    :ok = Notification.push("Message", notification)
 
     result = capture_io(fn ->
       Task.start(fn -> NeuralNetwork.notifications(:start, network) |> Task.await end)

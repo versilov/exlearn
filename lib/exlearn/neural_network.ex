@@ -10,9 +10,9 @@ defmodule ExLearn.NeuralNetwork do
   """
   @spec ask(any, any) :: any
   def ask(data, network) do
-    %{worker: worker} = network
+    %{accumulator: accumulator} = network
 
-    Worker.ask(data, worker)
+    Worker.ask(data, accumulator)
   end
 
   @doc """
@@ -22,8 +22,8 @@ defmodule ExLearn.NeuralNetwork do
   def feed(data, configuration, network) do
     Task.async(fn ->
       %{epochs: epochs} = configuration
-      %{logger: logger} = network
-      Notification.push("Started feeding data", logger)
+      %{notification: notification} = network
+      Notification.push("Started feeding data", notification)
 
       feed_network(data, configuration, network, epochs)
     end)
@@ -31,16 +31,16 @@ defmodule ExLearn.NeuralNetwork do
 
   @spec feed_network(list, map, pid, non_neg_integer) :: atom
   defp feed_network(_, _, network, 0) do
-    %{logger: logger} = network
-    Notification.push("Finished feeding data", logger)
+    %{notification: notification} = network
+    Notification.push("Finished feeding data", notification)
 
     :ok
   end
 
   defp feed_network(data, configuration, network, epochs)
       when is_integer(epochs) and epochs > 0 do
-    %{logger: logger} = network
-    Notification.push("Epoch #{epochs}", logger)
+    %{notification: notification} = network
+    Notification.push("Epoch #{epochs}", notification)
 
     %{batch_size: batch_size} = configuration
     batches = Enum.shuffle(data) |> Enum.chunk(batch_size)
@@ -58,22 +58,24 @@ defmodule ExLearn.NeuralNetwork do
   @spec initialize(map) :: pid
   def initialize(parameters) do
     names = %{
-      logger_name: logger_name = {:global, make_ref()},
-      master_name: master_name = {:global, make_ref()},
-      state_name:  state_name  = {:global, make_ref()},
-      worker_name: worker_name = {:global, make_ref()}
+      accumulator:  accumulator  = {:global, make_ref()},
+      manager:      manager      = {:global, make_ref()},
+      master:       master       = {:global, make_ref()},
+      notification: notification = {:global, make_ref()},
+      store:        store        = {:global, make_ref()}
     }
 
     args    = {parameters, names}
-    options = [name: master_name]
+    options = [name: master]
 
     {:ok, _pid} = Master.start_link(args, options)
 
     %{
-      logger: logger_name,
-      master: master_name,
-      state:  state_name,
-      worker: worker_name
+      accumulator:  accumulator,
+      manager:      manager,
+      master:       master,
+      notification: notification,
+      store:        store,
     }
   end
 
@@ -82,9 +84,9 @@ defmodule ExLearn.NeuralNetwork do
   """
   @spec notifications(atom, any) :: Task.t
   def notifications(:start, network) do
-    %{logger: logger} = network
+    %{notification: notification} = network
 
-    Notification.stream(logger)
+    Notification.stream(notification)
   end
 
   @doc """
@@ -92,9 +94,9 @@ defmodule ExLearn.NeuralNetwork do
   """
   @spec notifications(atom, any) :: Task.t
   def notifications(:stop, network) do
-    %{logger: logger} = network
+    %{notification: notification} = network
 
-    Notification.done(logger)
+    Notification.done(notification)
   end
 
   @doc """

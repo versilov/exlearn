@@ -49,18 +49,11 @@ defmodule ExLearn.NeuralNetwork.Worker do
   # Server API
 
   @spec init(any) :: {}
-  def init(names) do
-    %{
-      logger_name: logger_name,
-      state_name:  state_name
-    } = names
-
+  def init(batches, configuration) do
     state = %{
-      batch:         [],
-      configuration: %{},
+      batches:       batches,
+      configuration: configuration,
       network_state: %{},
-      state_name:    state_name,
-      logger_name:   logger_name
     }
 
     {:ok, state}
@@ -69,15 +62,15 @@ defmodule ExLearn.NeuralNetwork.Worker do
   @spec handle_call({}, any,  map) :: {}
   def handle_call({:ask, batch}, _from,  state) do
     %{
-      logger_name: logger,
-      state_name:  state_name
+      notification: notification,
+      store:        store
     } = state
 
-    network_state = Store.get_state(state_name)
+    network_state = Store.get_state(store)
 
-    Notification.push("Asking", logger)
+    Notification.push("Asking", notification)
     result = ask_network(batch, network_state)
-    Notification.push("Finished Asking", logger)
+    Notification.push("Finished Asking", notification)
 
     {:reply, result, state}
   end
@@ -85,15 +78,15 @@ defmodule ExLearn.NeuralNetwork.Worker do
   @spec handle_call({}, any, map) :: {}
   def handle_call({:test, batch, configuration}, _from, state) do
     %{
-      logger_name: logger,
-      state_name:  state_name
+      notification: notification,
+      store:        store
     } = state
 
-    network_state = Store.get_state(state_name)
+    network_state = Store.get_state(store)
 
-    Notification.push("Testing", logger)
+    Notification.push("Testing", notification)
     result = test_network(batch, configuration, network_state)
-    Notification.push("Finished Testing", logger)
+    Notification.push("Finished Testing", notification)
 
     {:reply, result, state}
   end
@@ -101,17 +94,17 @@ defmodule ExLearn.NeuralNetwork.Worker do
   @spec handle_call({}, any, map) :: {}
   def handle_call({:train, batch, configuration}, _from, state) do
     %{
-      logger_name: logger,
-      state_name:  state_name
+      notification: notification,
+      store:        store
     } = state
 
-    network_state = Store.get_state(state_name)
+    network_state = Store.get_state(store)
 
-    Notification.push("Training", logger)
+    Notification.push("Training", notification)
     new_network_state = train_network(batch, configuration, network_state)
-    Notification.push("Finished Training", logger)
+    Notification.push("Finished Training", notification)
 
-    Store.set_state(new_network_state, state_name)
+    Store.set_state(new_network_state, store)
 
     {:reply, :ok, state}
   end

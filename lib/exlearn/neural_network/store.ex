@@ -29,14 +29,14 @@ defmodule ExLearn.NeuralNetwork.Store do
 
   @spec init({}) :: {}
   def init({parameters, names}) do
-    %{logger_name: logger} = names
+    %{notification: notification} = names
 
-    Notification.push("Initializing state", logger)
+    Notification.push("Initializing state", notification)
     state = Builder.initialize(parameters)
-    Notification.push("Finished initializing state", logger)
+    Notification.push("Finished initializing state", notification)
 
     {:ok, %{
-      logger:        logger,
+      notification:  notification,
       network_state: state
     }}
   end
@@ -44,21 +44,21 @@ defmodule ExLearn.NeuralNetwork.Store do
   @spec handle_call(atom, {}, map) :: {}
   def handle_call(:get, _from, state) do
     %{
-      logger:        logger,
+      notification:  notification,
       network_state: network_state
     } = state
 
-    Notification.push("State requested", logger)
+    Notification.push("State requested", notification)
 
     {:reply, network_state, state}
   end
 
   @spec handle_cast(atom, map) :: {}
   def handle_cast({:set, new_network_state}, state) do
-    %{logger: logger} = state
+    %{notification: notification} = state
 
     new_state = Map.put(state, :network_state, new_network_state)
-    Notification.push("New state set", logger)
+    Notification.push("New state set", notification)
 
     {:noreply, new_state}
   end
