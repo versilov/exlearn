@@ -6,34 +6,24 @@ defmodule ExLearn.NeuralNetwork.Worker do
 
   # Client API
 
-  @spec ask(any, any) :: any
-  def ask(batch, worker) do
-    GenServer.call(worker, {:ask, batch}, :infinity)
+  @spec prepare(map, any) :: any
+  def prepare(network_state, worker) do
+    GenServer.call(worker, {:prepare, network_state}, :infinity)
   end
 
-  @spec test(any, any, any) :: any
-  def test(batch, configuration, worker) do
-    GenServer.call(worker, {:test, batch, configuration}, :infinity)
+  @spec work(:ask, any) :: any
+  def work(:ask, worker) do
+    GenServer.call(worker, :ask, :infinity)
   end
 
-  @spec train(any, any, any) :: any
-  def train(batch, configuration, worker) do
-    GenServer.call(worker, {:train, batch, configuration}, :infinity)
+  @spec work(:test, any) :: any
+  def work(:test, worker) do
+    GenServer.call(worker, :test, :infinity)
   end
 
-  @spec set_batch([{}], pid) :: atom
-  def set_batch(new_value, worker) do
-    GenServer.cast(worker, {:batch, new_value})
-  end
-
-  @spec set_configuration([{}], pid) :: atom
-  def set_configuration(new_value, worker) do
-    GenServer.cast(worker, {:configuration, new_value})
-  end
-
-  @spec set_network_state([{}], pid) :: atom
-  def set_network_state(new_value, worker) do
-    GenServer.cast(worker, {:network_state, new_value})
+  @spec work(:train, any) :: any
+  def work(:train, worker) do
+    GenServer.call(worker, :train, :infinity)
   end
 
   @spec start([{}], map) :: {}
@@ -49,14 +39,32 @@ defmodule ExLearn.NeuralNetwork.Worker do
   # Server API
 
   @spec init(any) :: {}
-  def init(batches, configuration) do
+  def init(data, configuration) do
     state = %{
-      batches:       batches,
-      configuration: configuration,
-      network_state: %{},
+      current_batch:     :not_set,
+      configuration:     configuration,
+      data:              data,
+      network_state:     :not_set,
+      remaining_batches: :not_set,
     }
 
     {:ok, state}
+  end
+
+  @spec handle_call({}, any,  map) :: {}
+  def handle_call({:prepare, network_state}, state) do
+    %{
+      configuration: %{batch_size: batch_size},
+      data:          data
+    } = state
+
+    [current_batch|remaining_batches] = Enum.chunk(data, batch_size)
+
+    new_state = Map.put(state, :current_batch, current_batch)
+    |> Map.put(:netwrok_state,     network_state)
+    |> Map.put(:remaining_batches, remaining_batches)
+
+    {:reply, result, new_state}
   end
 
   @spec handle_call({}, any,  map) :: {}
@@ -66,7 +74,7 @@ defmodule ExLearn.NeuralNetwork.Worker do
       store:        store
     } = state
 
-    network_state = Store.get_state(store)
+    network_state = Store.get_state(state)
 
     Notification.push("Asking", notification)
     result = ask_network(batch, network_state)
@@ -92,43 +100,13 @@ defmodule ExLearn.NeuralNetwork.Worker do
   end
 
   @spec handle_call({}, any, map) :: {}
-  def handle_call({:train, batch, configuration}, _from, state) do
-    %{
-      notification: notification,
-      store:        store
-    } = state
+  def handle_call(:train, _from, state) do
+    correction = train_network(batch, configuration, network_state)
 
-    network_state = Store.get_state(store)
-
-    Notification.push("Training", notification)
-    new_network_state = train_network(batch, configuration, network_state)
-    Notification.push("Finished Training", notification)
-
-    Store.set_state(new_network_state, store)
-
-    {:reply, :ok, state}
+    {:reply, correction, state}
   end
 
-  @spec handle_cast({}, map) :: {}
-  def handle_cast({:batch, new_value}, state) do
-    new_state = Map.put(state, :batch, new_value)
-
-    {:noreply, new_state}
-  end
-
-  @spec handle_cast({}, map) :: {}
-  def handle_cast({:configuration, new_value}, state) do
-    new_state = Map.put(state, :configuration, new_value)
-
-    {:noreply, new_state}
-  end
-
-  @spec handle_cast({}, map) :: {}
-  def handle_cast({:network_state, new_value}, state) do
-    new_state = Map.put(state, :network_state, new_value)
-
-    {:noreply, new_state}
-  end
+  # Internal functions
 
   defp ask_network(batch, state) do
     Enum.map(batch, &Forwarder.forward_for_output(&1, state))
@@ -159,8 +137,8 @@ defmodule ExLearn.NeuralNetwork.Worker do
     train_network(batch, correction, configuration, state)
   end
 
-  defp train_network([], total_correction, configuration, state) do
-    Propagator.apply_changes(total_correction, configuration, state)
+  defp train_network([], correction, _, _) do
+    total_correction
   end
 
   defp train_network([sample|batch], total_correction, configuration, state) do

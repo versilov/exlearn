@@ -5,14 +5,24 @@ defmodule ExLearn.NeuralNetwork.Store do
 
   # Client API
 
-  @spec get_state(pid) :: map
-  def get_state(server) do
-    GenServer.call(server, :get)
+  @spec get(%{store: {:global, reference}}) :: {}
+  def get(%{store: store = {:global, _reference}}) do
+    GenServer.call(store, :get)
   end
 
-  @spec set_state(map, pid) :: map
-  def set_state(state, server) do
-    GenServer.cast(server, {:set, state})
+  @spec get({:global, reference}) :: {}
+  def get(store = {:global, _reference}) do
+    GenServer.call(store, :get)
+  end
+
+  @spec set(map, %{store: {:global, reference}}) :: {}
+  def set(state, %{store: store = {:global, _reference}}) do
+    GenServer.call(store, {:set, state})
+  end
+
+  @spec set(map, {:global, reference}) :: {}
+  def set(state, store = {:global, _reference}) do
+    GenServer.cast(store, {:set, state})
   end
 
   @spec start(map, {}) :: reference

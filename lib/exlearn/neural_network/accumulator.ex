@@ -1,20 +1,16 @@
 defmodule ExLearn.NeuralNetwork.Accumulator do
   use GenServer
 
-  alias ExLearn.NeuralNetwork.{Notification, Store}
+  alias ExLearn.NeuralNetwork.{Notification, Store, Worker}
 
   # Client API
 
-  def load_data(data, configuration, accumulator) do
-    GenServer.call(accumulator, {:load_data, data, configuration}, :infinity)
+  def ask(data, accumulator) do
+    GenServer.call(accumulator, {:ask, data}, :infinity)
   end
 
-  def load_network(accumulator) do
-    GenServer.call(accumulator, :load_netwrok, :infinity)
-  end
-
-  def process_batch(accumulator) do
-    GenServer.call(accumulator, :process_batch, :infinity)
+  def train(data, configuration, accumulator) do
+    GenServer.call(accumulator, {:train, data, configuration}, :infinity)
   end
 
   @spec start([{}], map) :: {}
@@ -38,7 +34,6 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     } = names
 
     state = %{
-      network_state: :not_set,
       notification:  notification,
       store:         store
     }
@@ -46,41 +41,76 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     {:ok, state}
   end
 
-  def handle_call({:load_data, data, configuration}, state) do
+  def handle_call({:ask, data}, state) do
+    {:reply, :ok, state}
+  end
+
+  def handle_call({:train, data, configuration}, state) do
+    train_network(data, configuration, state)
+
+    {:reply, :ok, state}
+  end
+
+  # Internal functions
+
+  defp train_network(data, configuration, state) do
+    %{epochs: epochs} = configuration
+    netwrok_state     = Store.get(state)
+    workers           = start_workers(data, configuration, state)
+
+    Notification.push("Started training", state)
+    train_for_epochs(workers, network_state, state, epochs, 0)
+    Notification.push("Finished training", state)
+
+    :ok
+  end
+
+  defp start_workers(data, configuration, state) do
     %{manager: manager} = state
 
-    child_names = [{1, {:global, make_ref()}}]
+    workers = [{1, {:global, make_ref()}}]
 
     Enum.each(
-      child_names,
+      workers,
       &Supervisor.start_child(
         manager,
         [[data, configuration], [name: elem(&1, 1)]]
       )
     )
 
-    new_state = Map.put(state, :workers, child_names)
-
-    {:reply, :ok, new_state}
+    workers
   end
 
-  def handle_call(:load_network, state) do
-    %{
-      notification: notification,
-      store:        store
-    } = state
+  defp train_for_epochs(workers, network_state, state, epochs, ^epochs), do: :ok
+  defp train_for_epochs(workers, network_state, state, epochs, current_epoch) do
+    Notification.push("Epoch: #{current_epoch + 1}", state)
 
-    Notification.push("Loading netwrok", notification)
-    network_state = Store.get_state(store)
+    workers
+    |> Enum.map(&prepare_worker(&1, network_state))
+    |> Enum.map(&Task.await(&1, :infinity))
+    |> Enum.map(&train_worker(&1, network_state))
+    |> Enum.map(&Task.await(&1, :infinity))
+    |> accumulate_corrections
+    |> apply_correction
+    |> set_worker_state
 
-    new_state = Map.put(state, :network_state, network_state)
-    Notification.push("Finished loading netwrok", notification)
-
-    {:reply, :ok, new_state}
+    train_for_epochs(workers, state, epochs, current_epoch + 1)
   end
 
-  def handle_call(:process_batch, state) do
+  defp prepare_worker(worker, network_state) do
+    Task.async(fn -> Worker.prepare(netwrok_state, worker) end)
+  end
 
-    {:reply, :ok, state}
+  defp train_worker(worker, network_state) do
+    Task.async(fn -> Worker.work(:train, worker) end)
+  end
+
+  defp accumulate_corrections do
+  end
+
+  defp apply_correction do
+  end
+
+  defp set_worker_state do
   end
 end

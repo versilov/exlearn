@@ -3,19 +3,34 @@ defmodule ExLearn.NeuralNetwork.Notification do
 
   # Client API
 
-  @spec done(any) :: {}
-  def done(logger) do
-    GenServer.cast(logger, :done)
+  @spec done(%{notification: {:global, reference}}) :: {}
+  def done(%{notification: notification = {:global, _reference}) do
+    GenServer.cast(notification, :done)
   end
 
-  @spec pop({}) :: {}
-  def pop(logger) do
-    GenServer.call(logger, :pop, :infinity)
+  @spec done({:global, reference}) :: {}
+  def done(notification = {:global, _reference}) do
+    GenServer.cast(notification, :done)
   end
 
-  @spec push(String.t, {}) :: any
-  def push(message, logger) do
-    GenServer.cast(logger, {:push, message})
+  @spec pop(%{notification: {:global, reference}}) :: {}
+  def pop(%{notification: notification = {:global, _reference}) do
+    GenServer.call(notification, :pop)
+  end
+
+  @spec pop({:global, reference}) :: {}
+  def pop(notification = {:global, _reference}) do
+    GenServer.call(notification, :pop)
+  end
+
+  @spec push(String.t, %{notification: {:global, reference}}) :: {}
+  def push(message, %{notification: notification = {:global, _reference}) do
+    GenServer.cast(notification, {:push, message})
+  end
+
+  @spec push(String.t, {:global, reference}) :: {}
+  def push(message, notification = {:global, _reference}) do
+    GenServer.cast(notification, {:push, message})
   end
 
   @spec start(map, {}) :: reference
