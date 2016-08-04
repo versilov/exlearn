@@ -120,22 +120,6 @@ defmodule NeuralNetworkTest do
     assert result == "Initializing state\nFinished initializing state\nMessage\n"
   end
 
-  test "#test responds with a tuple", %{setup: setup} do
-    %{
-      configuration: configuration,
-      network:       network,
-      test_data:     test_data
-    } = setup
-
-    {result, cost} = NeuralNetwork.test(test_data, configuration, network)
-
-    assert length(result) == length(test_data)
-    Enum.each(result, fn (element) ->
-      assert element |> is_map
-    end)
-    assert cost |> is_list
-  end
-
   test "#train responds with a tuple", %{setup: setup} do
     %{
       configuration: configuration,
