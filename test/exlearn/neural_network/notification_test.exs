@@ -180,7 +180,7 @@ defmodule NotificationTest do
 
     :ok = Notification.done(name)
 
-    # Allowing the message to be received.
+    # Allowing the :done message to be received.
     Process.sleep(50)
 
     assert notification_pid |> Process.alive?

@@ -74,20 +74,6 @@ defmodule NeuralNetworkTest do
     end)
   end
 
-  test "#feed can be called", %{setup: setup} do
-    %{
-      configuration: configuration,
-      network:       network,
-      training_data: training_data
-    } = setup
-
-    task = NeuralNetwork.feed(training_data, configuration, network)
-
-    result = Task.await(task)
-
-    assert result == :ok
-  end
-
   test "#initialize returns a running process tree", %{setup: setup} do
     %{network: %{
       accumulator:  {:global, accumulator_reference },
@@ -116,20 +102,22 @@ defmodule NeuralNetworkTest do
     assert pid_of_store        |> Process.alive?
   end
 
-  test "#notifications returns an async task", %{setup: _setup} do
-    {:ok, notification} = Notification.start([], [{:global, make_ref()}])
-    network             = %{notification: notification}
+  test "#notifications returns an async task", %{setup: setup} do
+    %{network: network} = setup
 
-    :ok = Notification.push("Message", notification)
+    :ok = Notification.push("Message", network)
 
     result = capture_io(fn ->
-      Task.start(fn -> NeuralNetwork.notifications(:start, network) |> Task.await end)
+      Task.start(fn ->
+        NeuralNetwork.notifications(:start, network)
+        |> Task.await
+      end)
       NeuralNetwork.notifications(:stop, network)
 
       Process.sleep(100)
     end)
 
-    assert result == "Message\n"
+    assert result == "Initializing state\nFinished initializing state\nMessage\n"
   end
 
   test "#test responds with a tuple", %{setup: setup} do
