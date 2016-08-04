@@ -12,7 +12,9 @@ defmodule ExLearn.NeuralNetwork do
   def ask(data, network) do
     %{accumulator: accumulator} = network
 
-    Accumulator.ask(data, accumulator)
+    Task.async(fn ->
+      Accumulator.ask(data, accumulator)
+    end)
   end
 
   @doc """
@@ -69,6 +71,8 @@ defmodule ExLearn.NeuralNetwork do
   def train(data, configuration, network) do
     %{accumulator: accumulator} = network
 
-    Accumulator.train(data, configuration, accumulator)
+    Task.async(fn ->
+      Accumulator.train(data, configuration, accumulator)
+    end)
   end
 end

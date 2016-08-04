@@ -36,7 +36,7 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
     }
 
     name    = {:global, make_ref()}
-    args    = %{data: data, configuration: configuration}
+    args    = {data, configuration}
     options = [name: name]
 
     {:ok, setup: %{

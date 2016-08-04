@@ -27,6 +27,14 @@ defmodule AccumulatorTest do
       }
     }
 
+    configuration = %{
+      batch_size:    2,
+      data_size:     6,
+      epochs:        5,
+      learning_rate: 3,
+      workers:       2
+    }
+
     notification_name    = {:global, make_ref()}
     notification_args    = []
     notification_options = [name: notification_name]
@@ -51,9 +59,10 @@ defmodule AccumulatorTest do
     options = [name: name]
 
     {:ok, setup: %{
-      args:    args,
-      name:    name,
-      options: options,
+      args:          args,
+      configuration: configuration,
+      name:          name,
+      options:       options,
     }}
   end
 
@@ -90,5 +99,4 @@ defmodule AccumulatorTest do
     assert reference  |> is_reference
     assert worker_pid == pid_of_reference
   end
-
 end

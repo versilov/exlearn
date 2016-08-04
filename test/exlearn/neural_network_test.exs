@@ -43,12 +43,11 @@ defmodule NeuralNetworkTest do
     ask_data = [[0], [1], [2], [3], [4], [5]]
 
     configuration = %{
-      batch_size:     2,
-      data_size:      6,
-      dropout:        0.5,
-      epochs:         5,
-      learning_rate:  0.005,
-      regularization: :L2
+      batch_size:    2,
+      data_size:     6,
+      epochs:        5,
+      learning_rate: 0.05,
+      workers:       2
     }
 
     {:ok, setup: %{
@@ -64,6 +63,7 @@ defmodule NeuralNetworkTest do
     %{ask_data: data, network: network} = setup
 
     result = NeuralNetwork.ask(data, network)
+    |> Task.await(:infinity)
 
     assert length(result) == length(data)
     Enum.each(result, fn (element) ->
@@ -120,17 +120,16 @@ defmodule NeuralNetworkTest do
     assert result == "Initializing state\nFinished initializing state\nMessage\n"
   end
 
-  test "#train responds with a tuple", %{setup: setup} do
+  test "#train responds with :ok", %{setup: setup} do
     %{
       configuration: configuration,
       network:       network,
       training_data: training_data,
     } = setup
 
-    expected = :ok
-
     result = NeuralNetwork.train(training_data, configuration, network)
+    |> Task.await(:infinity)
 
-    assert expected == result
+    assert result == :ok
   end
 end

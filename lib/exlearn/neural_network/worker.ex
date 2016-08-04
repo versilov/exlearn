@@ -39,7 +39,7 @@ defmodule ExLearn.NeuralNetwork.Worker do
   # Server API
 
   @spec init(any) :: {}
-  def init(data, configuration) do
+  def init({data, configuration}) do
     state = %{
       batches: %{
         current:   :not_set,

@@ -1,7 +1,7 @@
 defmodule ExLearn.NeuralNetwork.Accumulator do
   use GenServer
 
-  alias ExLearn.NeuralNetwork.{Notification, Store, Worker}
+  alias ExLearn.NeuralNetwork.{Notification, Propagator, Store, Worker}
 
   # Client API
 
@@ -42,11 +42,11 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     {:ok, state}
   end
 
-  def handle_call({:ask, data}, state) do
+  def handle_call({:ask, data}, _from, state) do
     {:reply, :ok, state}
   end
 
-  def handle_call({:train, data, configuration}, state) do
+  def handle_call({:train, data, configuration}, _from,  state) do
     train_network(data, configuration, state)
 
     {:reply, :ok, state}
@@ -60,7 +60,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     workers           = start_workers(data, configuration, state)
 
     Notification.push("Started training", state)
-    train_for_epochs(workers, network_state, state, epochs, 0)
+    train_for_epochs(workers, configuration, network_state, state, epochs, 0)
     Notification.push("Finished training", state)
 
     :ok
@@ -77,33 +77,31 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
       workers,
       &Supervisor.start_child(
         manager,
-        [[data, configuration], [name: elem(&1, 1)]]
+        [{data, configuration}, [name: elem(&1, 1)]]
       )
     )
 
     workers
   end
 
-  defp train_for_epochs(workers, network_state, state, epochs, current_epoch)
+  defp train_for_epochs(workers, configuration, network_state, state, epochs, current_epoch)
       when epochs == current_epoch, do: :ok
-  defp train_for_epochs(workers, network_state, state, epochs, current_epoch) do
+  defp train_for_epochs(workers, configuration, network_state, state, epochs, current_epoch) do
     Notification.push("Epoch: #{current_epoch + 1}", state)
 
     Enum.map(workers, &prepare_worker/1)
     |> Enum.map(&Task.await(&1, :infinity))
 
-    new_network_state = train_each_batch(workers, network_state, state)
+    new_network_state = train_each_batch(workers, configuration, network_state, state)
 
-    train_for_epochs(workers, new_network_state, state, epochs, current_epoch + 1)
+    train_for_epochs(workers, configuration, new_network_state, state, epochs, current_epoch + 1)
   end
 
-  defp train_each_batch([], network_state, state) do
+  defp train_each_batch([], configuration, network_state, state) do
     network_state
   end
 
-  defp train_each_batch(workers, network_state, state) do
-    %{configuration: configuration} = state
-
+  defp train_each_batch(workers, configuration, network_state, state) do
     {remaining_workers, correction} = Enum.map(workers, &train_worker(&1, network_state))
     |> Enum.map(&await_worker/1)
     |> accumulate_correction
@@ -112,15 +110,20 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
 
     Store.set(new_network_state, state)
 
-    train_each_batch(remaining_workers, new_network_state, state)
+    train_each_batch(remaining_workers, configuration, new_network_state, state)
   end
 
   defp prepare_worker({_index, worker}) do
-    Task.async(&Worker.prepare/1)
+    Task.async(fn -> Worker.prepare(worker) end)
   end
 
   defp train_worker(worker, network_state) do
-    {worker, Task.async(&Worker.work(:train, network_state, &1))}
+    {
+      worker,
+      Task.async(fn ->
+        Worker.work(:train, network_state, elem(worker, 1))
+      end)
+    }
   end
 
   defp await_worker(task_data) do
@@ -144,18 +147,18 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
 
   defp filter_workers([worker_data|rest], workers) do
     case worker_data do
-      {_worker, {_, :done}}     -> filter_workers(rest, workers)
-      {worker,  {_, :continue}} -> filter_workers(rest, [worker|workers])
+      {_worker, {:done,     _}} -> filter_workers(rest, workers)
+      {worker,  {:continue, _}} -> filter_workers(rest, [worker|workers])
     end
   end
 
   defp reduce_correction(worker_data) do
     corrections = Enum.map(worker_data, fn(data) ->
-      {_, {correction, _}} = data
+      {_, {_, correction}} = data
 
       correction
     end)
 
-    Enum.reduce(corrections, &Worker.accumulate_correction/2)
+    Enum.reduce(corrections, &Propagator.reduce_correction/2)
   end
 end
