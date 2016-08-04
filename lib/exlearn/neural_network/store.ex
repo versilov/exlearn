@@ -22,7 +22,7 @@ defmodule ExLearn.NeuralNetwork.Store do
 
   @spec set(map, {:global, reference}) :: {}
   def set(state, store = {:global, _reference}) do
-    GenServer.cast(store, {:set, state})
+    GenServer.call(store, {:set, state})
   end
 
   @spec start(map, {}) :: reference
@@ -63,13 +63,13 @@ defmodule ExLearn.NeuralNetwork.Store do
     {:reply, network_state, state}
   end
 
-  @spec handle_cast(atom, map) :: {}
-  def handle_cast({:set, new_network_state}, state) do
+  @spec handle_call(atom, {},  map) :: {}
+  def handle_call({:set, new_network_state}, _from, state) do
     %{notification: notification} = state
 
     new_state = Map.put(state, :network_state, new_network_state)
     Notification.push("New state set", notification)
 
-    {:noreply, new_state}
+    {:reply, :ok, new_state}
   end
 end

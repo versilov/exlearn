@@ -53,7 +53,7 @@ defmodule ExLearn.NeuralNetwork.Worker do
   end
 
   @spec handle_call({}, any,  map) :: {}
-  def handle_call(:prepare, state) do
+  def handle_call(:prepare, _from, state) do
     %{
       configuration: %{batch_size: batch_size},
       data:          data
@@ -144,7 +144,7 @@ defmodule ExLearn.NeuralNetwork.Worker do
     train_network(batch, first_correction, network_state)
   end
 
-  defp train_network([], correction, _, _), do: correction
+  defp train_network([], correction, _), do: correction
   defp train_network([sample|batch], accumulator, network_state) do
     new_correction = train_sample(sample, network_state)
     result         = Propagator.reduce_correction(new_correction, accumulator)

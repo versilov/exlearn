@@ -27,36 +27,37 @@ defmodule MasterTest do
       }
     }
 
-    master_name = {:global, make_ref()}
-    child_names = %{
-      logger_name: {:global, make_ref()},
-      state_name:  {:global, make_ref()},
-      worker_name: {:global, make_ref()}
+    children_names = %{
+      accumulator:  {:global, make_ref()},
+      manager:      {:global, make_ref()},
+      notification: {:global, make_ref()},
+      store:        {:global, make_ref()}
     }
 
-    args    = {network_parameters, child_names}
-    options = [name: master_name]
-
-    {:ok, master} = Master.start_link(args, options)
+    name    = {:global, make_ref()}
+    args    = {network_parameters, children_names}
+    options = [name: name]
 
     {:ok, setup: %{
-      master:      master,
-      master_name: master_name,
-      child_names: child_names
+      args:    args,
+      name:    name,
+      options: options
     }}
   end
 
-  test "#start returns a running process", %{setup: setup} do
+  test "#start_link returns a running process", %{setup: setup} do
     %{
-      master:      master,
-      master_name: {:global, master_reference},
+      args:    args,
+      name:    name = {:global, master_reference},
+      options: options
     } = setup
 
+    {:ok, master_pid}       = Master.start_link(args, options)
     pid_of_master_reference = :global.whereis_name(master_reference)
 
-    assert master           |> is_pid
-    assert master           |> Process.alive?
+    assert master_pid       |> is_pid
+    assert master_pid       |> Process.alive?
     assert master_reference |> is_reference
-    assert master == pid_of_master_reference
+    assert master_pid == pid_of_master_reference
   end
 end

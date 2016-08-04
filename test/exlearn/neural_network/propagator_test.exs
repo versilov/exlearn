@@ -6,7 +6,7 @@ defmodule PropagatorTest do
   setup do
     derivative = fn(_)    -> 1 end
     objective  = fn(a, b, _c) ->
-      Stream.zip(b, a) |> Enum.map(fn({x, y}) -> x - y end)
+      Enum.zip(b, a) |> Enum.map(fn({x, y}) -> x - y end)
     end
 
     configuration = %{
@@ -120,7 +120,6 @@ defmodule PropagatorTest do
 
   test "#back_propagate returns the correction", %{setup: setup} do
     %{
-      configuration: configuration,
       derivative:    derivative,
       network_state: network_state,
     } = setup
@@ -227,13 +226,11 @@ defmodule PropagatorTest do
 
     assert Propagator.back_propagate(
       first_forward_state,
-      configuration,
       network_state
     ) == first_correction
 
     assert Propagator.back_propagate(
       second_forward_state,
-      configuration,
       network_state
     ) == second_correction
   end

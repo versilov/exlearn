@@ -34,6 +34,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     } = names
 
     state = %{
+      manager:       manager,
       notification:  notification,
       store:         store
     }

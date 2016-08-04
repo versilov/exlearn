@@ -1,4 +1,4 @@
-defmodule StateTest do
+defmodule ExLearn.NeuralNetwork.StoreTest do
   use ExUnit.Case, async: true
 
   alias ExLearn.NeuralNetwork.{Notification, Store}
@@ -27,47 +27,114 @@ defmodule StateTest do
       }
     }
 
-    logger_name = {:global, make_ref()}
-    state_name  = {:global, make_ref()}
+    notification_name    = {:global, make_ref()}
+    notification_args    = []
+    notification_options = [name: notification_name]
+    {:ok, _} = Notification.start_link(notification_args, notification_options)
 
-    {:ok, _logger} = Notification.start([], [name: logger_name])
-
-    names   = %{logger_name: logger_name}
-    args    = {network_parameters, names}
-    options = [name: state_name]
-
-    {:ok, network} = Store.start(args, options)
+    name    = {:global, make_ref()}
+    args    = {network_parameters, %{notification: notification_name}}
+    options = [name: name]
 
     {:ok, setup: %{
-      name:    state_name,
-      network: network
+      args:    args,
+      name:    name,
+      options: options,
     }}
   end
 
   test "#start returns a running process", %{setup: setup} do
     %{
+      args:    args,
       name:    {:global, reference},
-      network: network
+      options: options
     } = setup
+
+    {:ok, store_pid} = Store.start(args, options)
 
     pid_of_reference = :global.whereis_name(reference)
 
-    assert network   |> is_pid
-    assert network   |> Process.alive?
-    assert reference |> is_reference
-    assert network == pid_of_reference
+    assert store_pid |> is_pid
+    assert store_pid |> Process.alive?
+    assert reference  |> is_reference
+    assert store_pid == pid_of_reference
   end
 
-  test "#get_state returns the state", %{setup: setup} do
+  test "#start_link returns a running process", %{setup: setup} do
     %{
-      name:    name,
-      network: network
+      args:    args,
+      name:    {:global, reference},
+      options: options
     } = setup
 
-    result = Store.get_state(name)
+    {:ok, store_pid} = Store.start_link(args, options)
 
-    assert result  |> is_map
-    assert network |> Process.alive?
+    pid_of_reference = :global.whereis_name(reference)
+
+    assert store_pid |> is_pid
+    assert store_pid |> Process.alive?
+    assert reference  |> is_reference
+    assert store_pid == pid_of_reference
+  end
+
+  test "#get with map returns the state", %{setup: setup} do
+    %{
+      args:    args,
+      name:    name,
+      options: options
+    } = setup
+
+    {:ok, store_pid} = Store.start_link(args, options)
+
+    result = Store.get(%{store: name})
+
+    assert result    |> is_map
+    assert store_pid |> Process.alive?
+  end
+
+  test "#get with name returns the state", %{setup: setup} do
+    %{
+      args:    args,
+      name:    name,
+      options: options
+    } = setup
+
+    {:ok, store_pid} = Store.start_link(args, options)
+
+    result = Store.get(name)
+
+    assert result    |> is_map
+    assert store_pid |> Process.alive?
+  end
+
+  test "#set with map returns the state", %{setup: setup} do
+    %{
+      args:    args,
+      name:    name,
+      options: options
+    } = setup
+
+    {:ok, store_pid} = Store.start_link(args, options)
+
+    result = Store.set([], %{store: name})
+
+    assert result == :ok
+    assert store_pid |> Process.alive?
+  end
+
+  test "#set with name returns the state", %{setup: setup} do
+    %{
+      args:    args,
+      name:    name,
+      options: options
+    } = setup
+
+    {:ok, store_pid} = Store.start_link(args, options)
+
+    result = Store.set([], name)
+
+    assert result == :ok
+    assert store_pid |> Process.alive?
   end
 end
 
