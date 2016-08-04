@@ -12,6 +12,20 @@ structure_parameters = %{
 
 network = NN.initialize(structure_parameters)
 
+configuration = %{
+  batch_size:    2,
+  data_size:     4,
+  epochs:        1000,
+  learning_rate: 0.5,
+  workers:       2
+}
+
+ask_data = [
+  [0, 0],
+  [0, 1],
+  [1, 0],
+  [1, 1]
+]
 training_data = [
   {[0, 0], [0]},
   {[0, 1], [0]},
@@ -19,19 +33,9 @@ training_data = [
   {[1, 1], [1]}
 ]
 
-configuration = %{
-  batch_size:     2,
-  data_size:      4,
-  epochs:         1000,
-  dropout:        0.5,
-  learning_rate:  0.5,
-  regularization: :L2
-}
+NN.train(training_data, configuration, network)
+|> Task.await(:infinity)
 
-NN.feed(training_data, configuration, network)
-
-ask_data = [[0, 0], [0, 1], [1, 0], [1, 1]]
-
-result = NN.ask(ask_data, network)
-
-IO.inspect result
+NN.ask(ask_data, network)
+|> Task.await(:infinity)
+|> IO.inspect

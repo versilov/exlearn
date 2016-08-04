@@ -35,13 +35,15 @@ configuration = %{
   data_size:     60000,
   epochs:        1,
   learning_rate: 3,
+  workers:       4
 }
 
 # Starts the notifications stream.
 # NN.notifications(:start, network)
 
-# Feeds the data to te neural network.
-NN.feed(training_data, configuration, network)
+NN.train(training_data, configuration, network)
 |> Task.await(:infinity)
 
-IO.inspect NN.test([hd(test_data)], configuration, network)
+NN.ask([hd(test_data)], network)
+|> Task.await(:infinity)
+|> IO.inspect
