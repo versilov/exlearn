@@ -8,8 +8,8 @@ defmodule ExLearn.NeuralNetwork.Propagator do
   @doc """
   Performs backpropagation
   """
-  @spec back_propagate(%{}, map, %{}) :: map
-  def back_propagate(forward_batch, _configuration, state) do
+  @spec back_propagate(%{}, %{}) :: map
+  def back_propagate(forward_batch, state) do
     %{network: %{layers: network_layers}} = state
 
     deltas = calculate_deltas(forward_batch, network_layers, state)
@@ -120,5 +120,15 @@ defmodule ExLearn.NeuralNetwork.Propagator do
       state,
       [new_layer|new_layers]
     )
+  end
+
+  def reduce_correction(correction, total) do
+    {bias_correction, weight_correction} = correction
+    {bias_total,      weight_total     } = total
+
+    final_bias   = Util.zip_map(bias_correction,   bias_total,   &Matrix.add/2)
+    final_weight = Util.zip_map(weight_correction, weight_total, &Matrix.add/2)
+
+    {final_bias, final_weight}
   end
 end

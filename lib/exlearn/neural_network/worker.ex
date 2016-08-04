@@ -1,7 +1,7 @@
 defmodule ExLearn.NeuralNetwork.Worker do
   use GenServer
 
-  alias ExLearn.Matrix
+  alias ExLearn.{Matrix, Util}
   alias ExLearn.NeuralNetwork.{Forwarder, Notification, Propagator, Store}
 
   # Client API
@@ -11,14 +11,14 @@ defmodule ExLearn.NeuralNetwork.Worker do
     GenServer.call(worker, :prepare, :infinity)
   end
 
-  @spec work(:ask, any) :: any
-  def work(:ask, worker) do
-    GenServer.call(worker, :ask, :infinity)
+  @spec work(:ask, map, any) :: any
+  def work(:ask, network_state, worker) do
+    GenServer.call(worker, {:ask, network_state}, :infinity)
   end
 
-  @spec work(:test, any) :: any
-  def work(:test, worker) do
-    GenServer.call(worker, :test, :infinity)
+  @spec work(:test, map, any) :: any
+  def work(:test, network_state, worker) do
+    GenServer.call(worker, {:test, network_state}, :infinity)
   end
 
   @spec work(:train, map,  any) :: any
@@ -41,10 +41,12 @@ defmodule ExLearn.NeuralNetwork.Worker do
   @spec init(any) :: {}
   def init(data, configuration) do
     state = %{
-      current_batch:     :not_set,
-      configuration:     configuration,
-      data:              data,
-      remaining_batches: :not_set,
+      batches: %{
+        current:   :not_set,
+        remaining: :not_set
+      },
+      configuration: configuration,
+      data:          data,
     }
 
     {:ok, state}
@@ -57,42 +59,31 @@ defmodule ExLearn.NeuralNetwork.Worker do
       data:          data
     } = state
 
-    [current_batch|remaining_batches] = Enum.chunk(data, batch_size)
+    [current|remaining] = Enum.chunk(data, batch_size)
 
-    new_state = Map.put(state, :current_batch, current_batch)
-    |> Map.put(:remaining_batches, remaining_batches)
+    batches   = %{current: current, remaining: remaining}
+    new_state = Map.put(state, :batches, batches)
 
     {:reply, :ok, new_state}
   end
 
   @spec handle_call({}, any,  map) :: {}
-  def handle_call({:ask, batch}, _from,  state) do
-    %{
-      notification: notification,
-      store:        store
-    } = state
+  def handle_call({:ask, network_state}, _from,  state) do
+    %{data: data} = state
 
-    network_state = Store.get_state(state)
-
-    Notification.push("Asking", notification)
-    result = ask_network(batch, network_state)
-    Notification.push("Finished Asking", notification)
+    result = ask_network(data, network_state)
 
     {:reply, result, state}
   end
 
   @spec handle_call({}, any, map) :: {}
-  def handle_call({:test, batch, configuration}, _from, state) do
+  def handle_call({:test, network_state}, _from, state) do
     %{
-      notification: notification,
-      store:        store
+      configuration: configuration,
+      data:          data
     } = state
 
-    network_state = Store.get_state(store)
-
-    Notification.push("Testing", notification)
-    result = test_network(batch, configuration, network_state)
-    Notification.push("Finished Testing", notification)
+    result = test_network(data, configuration, network_state)
 
     {:reply, result, state}
   end
@@ -100,24 +91,26 @@ defmodule ExLearn.NeuralNetwork.Worker do
   @spec handle_call({}, any, map) :: {}
   def handle_call({:train, network_state}, _from, state) do
     %{
-      current_batch:     batch,
-      configuration:     configuration,
-      remaining_batches: remaining_batches
+      batches: %{
+        current:   current,
+        remaining: remaining
+      }
     } = state
 
-    correction = train_network(batch, configuration, network_state)
+    correction = train_network(current, network_state)
 
-    case remaining_batches do
-      []                 ->
-        new_state = Map.put(state, :current_batch, :not_set)
-        |> Map.put(state, :remaining_batches, :not_set)
+    case remaining do
+      [] ->
+        new_batches = %{current: :not_set, remaining: :not_set}
+        new_state   = Map.put(state, :batches, new_batches)
 
-        {:reply, {correction, :done}, new_state}
-      [next_batch|other] ->
-        new_state = Map.put(state, :current_batch, next_batch)
-        |> Map.put(state, :remaining_batches, other)
+        {:reply, {:done, correction}, new_state}
 
-        {:reply, {correction, :continue}, state}
+      [new_current|new_remaining] ->
+        new_batches = %{current: new_current, remaining: new_remaining}
+        new_state   = Map.put(state, :batches, new_batches)
+
+        {:reply, {:continue, correction}, new_state}
     end
   end
 
@@ -135,8 +128,7 @@ defmodule ExLearn.NeuralNetwork.Worker do
 
     targets = Enum.map(batch, fn ({_, target}) -> target end)
 
-    costs = Enum.zip(targets, outputs)
-    |> Enum.map(fn ({target, output}) ->
+    costs = Util.zip_map(targets, outputs, fn (target, output) ->
       %{output: output_for_objective} = output
 
       objective.(target, output_for_objective, data_size)
@@ -146,35 +138,22 @@ defmodule ExLearn.NeuralNetwork.Worker do
   end
 
   @spec train_network(list, map, map) :: map
-  defp train_network([sample|batch], configuration, state) do
-    correction = train_sample(sample, configuration, state)
+  defp train_network([sample|batch], network_state) do
+    first_correction = train_sample(sample, network_state)
 
-    train_network(batch, correction, configuration, state)
+    train_network(batch, first_correction, network_state)
   end
 
   defp train_network([], correction, _, _), do: correction
-  defp train_network([sample|batch], total_correction, configuration, state) do
-    correction     = train_sample(sample, configuration, state)
-    new_correction = accumulate_correction(correction, total_correction)
+  defp train_network([sample|batch], accumulator, network_state) do
+    new_correction = train_sample(sample, network_state)
+    result         = Propagator.reduce_correction(new_correction, accumulator)
 
-    train_network(batch, new_correction, configuration, state)
+    train_network(batch, result, network_state)
   end
 
-  def accumulate_correction(correction, total) do
-    {bias_correction, weight_correction} = correction
-    {bias_total,      weight_total     } = total
-
-    bias_final = Enum.zip(bias_correction, bias_total)
-    |> Enum.map(fn({x, y}) -> Matrix.add(x, y) end)
-
-    weight_final = Enum.zip(weight_correction, weight_total)
-    |> Enum.map(fn({x, y}) -> Matrix.add(x, y) end)
-
-    {bias_final, weight_final}
-  end
-
-  defp train_sample(sample, configuration, state) do
-    Forwarder.forward_for_activity(sample, state)
-    |> Propagator.back_propagate(configuration, state)
+  defp train_sample(sample, network_state) do
+    Forwarder.forward_for_activity(sample, network_state)
+    |> Propagator.back_propagate(network_state)
   end
 end
