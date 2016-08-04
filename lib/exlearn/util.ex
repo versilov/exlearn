@@ -1,5 +1,6 @@
 defmodule ExLearn.Util do
-  def zip_map(first, second, function) do
+  def  zip_map(first, second, function)
+  when is_list(first) and is_list(second) and is_function(function, 2) do
     zip_map(first, second, function, [])
   end
 
