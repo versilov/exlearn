@@ -4,7 +4,7 @@ defmodule ExLearn.NeuralNetwork.Notification do
   # Client API
 
   @spec done(%{notification: {:global, reference}}) :: {}
-  def done(%{notification: notification = {:global, _reference}) do
+  def done(%{notification: notification = {:global, _reference}}) do
     GenServer.cast(notification, :done)
   end
 
@@ -14,7 +14,7 @@ defmodule ExLearn.NeuralNetwork.Notification do
   end
 
   @spec pop(%{notification: {:global, reference}}) :: {}
-  def pop(%{notification: notification = {:global, _reference}) do
+  def pop(%{notification: notification = {:global, _reference}}) do
     GenServer.call(notification, :pop)
   end
 
@@ -24,7 +24,7 @@ defmodule ExLearn.NeuralNetwork.Notification do
   end
 
   @spec push(String.t, %{notification: {:global, reference}}) :: {}
-  def push(message, %{notification: notification = {:global, _reference}) do
+  def push(message, %{notification: notification = {:global, _reference}}) do
     GenServer.cast(notification, {:push, message})
   end
 

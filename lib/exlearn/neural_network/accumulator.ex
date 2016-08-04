@@ -55,7 +55,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
 
   defp train_network(data, configuration, state) do
     %{epochs: epochs} = configuration
-    netwrok_state     = Store.get(state)
+    network_state     = Store.get(state)
     workers           = start_workers(data, configuration, state)
 
     Notification.push("Started training", state)
@@ -66,11 +66,11 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
   end
 
   defp start_workers(data, configuration, state) do
-    %{workers: workers} = configuration
+    %{workers: workers_count} = configuration
     %{manager: manager} = state
 
-    workers = Enum.to_list(1..workers)
-    |> Enum.map(fn(index) -> {index, {:global, make_ref()}})
+    workers = Enum.to_list(1..workers_count)
+    |> Enum.map(fn(index) -> {index, {:global, make_ref()}} end)
 
     Enum.each(
       workers,
@@ -83,7 +83,8 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     workers
   end
 
-  defp train_for_epochs(workers, network_state, state, epochs, ^epochs), do: :ok
+  defp train_for_epochs(workers, network_state, state, epochs, current_epoch)
+      when epochs == current_epoch, do: :ok
   defp train_for_epochs(workers, network_state, state, epochs, current_epoch) do
     Notification.push("Epoch: #{current_epoch + 1}", state)
 
@@ -114,11 +115,11 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
   end
 
   defp prepare_worker({_index, worker}) do
-    Task.async(&Worker.prepare(worker))
+    Task.async(&Worker.prepare/1)
   end
 
   defp train_worker(worker, network_state) do
-    {worker, Task.async(&Worker.work(:train, network_state, worker))}
+    {worker, Task.async(&Worker.work(:train, network_state, &1))}
   end
 
   defp await_worker(task_data) do

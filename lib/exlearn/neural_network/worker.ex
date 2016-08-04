@@ -22,7 +22,7 @@ defmodule ExLearn.NeuralNetwork.Worker do
   end
 
   @spec work(:train, map,  any) :: any
-  def work(:train, map, worker) do
+  def work(:train, network_state, worker) do
     GenServer.call(worker, {:train, network_state}, :infinity)
   end
 
@@ -44,7 +44,6 @@ defmodule ExLearn.NeuralNetwork.Worker do
       current_batch:     :not_set,
       configuration:     configuration,
       data:              data,
-      network_state:     :not_set,
       remaining_batches: :not_set,
     }
 
@@ -153,10 +152,7 @@ defmodule ExLearn.NeuralNetwork.Worker do
     train_network(batch, correction, configuration, state)
   end
 
-  defp train_network([], correction, _, _) do
-    total_correction
-  end
-
+  defp train_network([], correction, _, _), do: correction
   defp train_network([sample|batch], total_correction, configuration, state) do
     correction     = train_sample(sample, configuration, state)
     new_correction = accumulate_correction(correction, total_correction)
