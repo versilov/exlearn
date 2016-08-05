@@ -48,7 +48,7 @@ defmodule MasterTest do
   test "#start_link returns a running process", %{setup: setup} do
     %{
       args:    args,
-      name:    name = {:global, master_reference},
+      name:    {:global, master_reference},
       options: options
     } = setup
 

@@ -103,13 +103,13 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
 
   test "#work|:ask returns the ask data", %{setup: setup} do
     %{
-      name:          worker = {:global, reference},
+      name:          worker,
       network_state: network_state,
       options:       options
     } = setup
 
     args = {[[1, 2, 3]], []}
-    {:ok, worker_pid} = Worker.start_link(args, options)
+    {:ok, _pid} = Worker.start_link(args, options)
 
     expected = [[1897, 2784]]
     result   = Worker.work(:ask, network_state, worker)

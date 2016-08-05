@@ -62,7 +62,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     network_state = Store.get(state)
     worker_name   = {:global, make_ref()}
 
-    worker = Supervisor.start_child(
+    {:ok, _pid} = Supervisor.start_child(
       manager,
       [{data, []}, [name: worker_name]]
     )
@@ -106,7 +106,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     workers
   end
 
-  defp train_for_epochs(workers, configuration, network_state, state, epochs, current_epoch)
+  defp train_for_epochs(_, _, _, _, epochs, current_epoch)
       when epochs == current_epoch, do: :ok
   defp train_for_epochs(workers, configuration, network_state, state, epochs, current_epoch) do
     Notification.push("Epoch: #{current_epoch + 1}", state)
@@ -119,7 +119,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     train_for_epochs(workers, configuration, new_network_state, state, epochs, current_epoch + 1)
   end
 
-  defp train_each_batch([], configuration, network_state, state) do
+  defp train_each_batch([], _, network_state, _) do
     network_state
   end
 

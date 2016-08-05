@@ -127,11 +127,11 @@ defmodule NotificationTest do
   test "#start returns a running process", %{setup: setup} do
     %{
       args:    args,
-      name:    name = {:global, reference},
+      name:    {:global, reference},
       options: options
     } = setup
 
-    {:ok, notification_pid} = Notification.start_link(args, name: name)
+    {:ok, notification_pid} = Notification.start_link(args, options)
     pid_of_reference        = :global.whereis_name(reference)
 
     assert notification_pid |> is_pid
@@ -143,11 +143,11 @@ defmodule NotificationTest do
   test "#start_link returns a running process", %{setup: setup} do
     %{
       args:    args,
-      name:    name = {:global, reference},
+      name:    {:global, reference},
       options: options
     } = setup
 
-    {:ok, notification_pid} = Notification.start_link(args, name: name)
+    {:ok, notification_pid} = Notification.start_link(args, options)
     pid_of_reference        = :global.whereis_name(reference)
 
     assert notification_pid |> is_pid
