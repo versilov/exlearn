@@ -43,6 +43,8 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
   end
 
   def handle_call({:ask, data}, _from, state) do
+    result = ask_network(data, state)
+
     {:reply, :ok, state}
   end
 
@@ -53,6 +55,20 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
   end
 
   # Internal functions
+
+  defp ask_network(data, state) do
+    %{manager: manager} = state
+
+    network_state = Store.get(state)
+    worker_name   = {:global, make_ref()}
+
+    worker = Supervisor.start_child(
+      manager,
+      [{data, []}, [name: worker_name]]
+    )
+
+    Worker.ask(network_state, worker)
+  end
 
   defp train_network(data, configuration, state) do
     %{epochs: epochs} = configuration

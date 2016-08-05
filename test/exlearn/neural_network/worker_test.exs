@@ -101,6 +101,22 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
     assert worker_pid == pid_of_reference
   end
 
+  test "#work|:ask returns the ask data", %{setup: setup} do
+    %{
+      name:          worker = {:global, reference},
+      network_state: network_state,
+      options:       options
+    } = setup
+
+    args = {[[1, 2, 3]], []}
+    {:ok, worker_pid} = Worker.start_link(args, options)
+
+    expected = [[1897, 2784]]
+    result   = Worker.work(:ask, network_state, worker)
+
+    assert result == expected
+  end
+
   test "#work|:train returns the correction", %{setup: setup} do
     %{
       args:          args,
