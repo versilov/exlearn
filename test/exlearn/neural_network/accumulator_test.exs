@@ -67,31 +67,54 @@ defmodule AccumulatorTest do
     }}
   end
 
-  test "#start returns a running process", %{setup: setup} do
+  test "#ask returns the ask data", %{setup: setup} do
     %{
-      args:    args,
-      name:    {:global, reference},
-      options: options
-    } = setup
-
-    {:ok, accumulator_pid} = Accumulator.start(args, options)
-
-    pid_of_reference = :global.whereis_name(reference)
-
-    assert accumulator_pid |> is_pid
-    assert accumulator_pid |> Process.alive?
-    assert reference       |> is_reference
-    assert accumulator_pid == pid_of_reference
-  end
-
-  test "#start_link returns a running process", %{setup: setup} do
-    %{
-      args:    args,
-      name:    {:global, reference},
-      options: options
+      args:       args,
+      name:       name = {:global, reference},
+      options:    options,
+      store_name: store_name
     } = setup
 
     {:ok, accumulator_pid} = Accumulator.start_link(args, options)
+
+    function   = fn(x)    -> x + 1 end
+    derivative = fn(_)    -> 1     end
+    objective  = fn(a, b, _c) ->
+      Enum.zip(b, a) |> Enum.map(fn({x, y}) -> x - y end)
+    end
+
+    network_state = %{
+      network: %{
+        layers: [
+          %{
+            activity: %{arity: 1, function: function, derivative: derivative},
+            biases:   [[1, 2, 3]],
+            weights:  [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+          },
+          %{
+            activity: %{arity: 1, function: function, derivative: derivative},
+            biases:   [[4, 5]],
+            weights:  [[1, 2], [3, 4], [5, 6]]
+          },
+          %{
+            activity: %{arity: 1, function: function, derivative: derivative},
+            biases:   [[6, 7]],
+            weights:  [[1, 2], [3, 4]]
+          },
+        ],
+        objective: %{error: objective}
+      }
+    }
+
+    Store.set(network_state, store_name)
+
+    data     = [[1, 2, 3], [2, 3, 4]]
+    expected = [[1897.0, 2784.0], [2620.0, 3846.0]]
+    result   = Accumulator.ask(data, name)
+
+    assert result == expected
+
+    assert Store.get(store_name) == network_state
 
     pid_of_reference = :global.whereis_name(reference)
 
@@ -187,6 +210,40 @@ defmodule AccumulatorTest do
     :ok = Accumulator.train(data, configuration, name)
 
     assert Store.get(store_name) == expected_network_state
+
+    pid_of_reference = :global.whereis_name(reference)
+
+    assert accumulator_pid |> is_pid
+    assert accumulator_pid |> Process.alive?
+    assert reference       |> is_reference
+    assert accumulator_pid == pid_of_reference
+  end
+
+  test "#start returns a running process", %{setup: setup} do
+    %{
+      args:    args,
+      name:    {:global, reference},
+      options: options
+    } = setup
+
+    {:ok, accumulator_pid} = Accumulator.start(args, options)
+
+    pid_of_reference = :global.whereis_name(reference)
+
+    assert accumulator_pid |> is_pid
+    assert accumulator_pid |> Process.alive?
+    assert reference       |> is_reference
+    assert accumulator_pid == pid_of_reference
+  end
+
+  test "#start_link returns a running process", %{setup: setup} do
+    %{
+      args:    args,
+      name:    {:global, reference},
+      options: options
+    } = setup
+
+    {:ok, accumulator_pid} = Accumulator.start_link(args, options)
 
     pid_of_reference = :global.whereis_name(reference)
 

@@ -45,7 +45,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
   def handle_call({:ask, data}, _from, state) do
     result = ask_network(data, state)
 
-    {:reply, :ok, state}
+    {:reply, result, state}
   end
 
   def handle_call({:train, data, configuration}, _from,  state) do
@@ -67,7 +67,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
       [{data, []}, [name: worker_name]]
     )
 
-    Worker.ask(network_state, worker)
+    Worker.work(:ask, network_state, worker_name)
   end
 
   defp train_network(data, configuration, state) do
