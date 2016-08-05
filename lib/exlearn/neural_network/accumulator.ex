@@ -67,14 +67,19 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
   end
 
   defp start_workers(data, configuration, state) do
-    %{workers: workers_count} = configuration
+    %{
+      data_size: data_size,
+      workers:   workers_count
+    } = configuration
     %{manager: manager} = state
 
     workers = Enum.to_list(1..workers_count)
     |> Enum.map(fn(index) -> {index, {:global, make_ref()}} end)
-    split_data = Enum.chunk(data, workers_count)
 
-    Enum.zip(workers, split_data)
+    chunk_size = trunc(data_size / workers_count)
+    chunks     = Enum.chunk(data, chunk_size)
+
+    Enum.zip(workers, chunks)
     |> Enum.each(fn({worker, chunk}) ->
       Supervisor.start_child(
         manager,

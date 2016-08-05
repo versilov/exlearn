@@ -63,6 +63,7 @@ defmodule AccumulatorTest do
       configuration: configuration,
       name:          name,
       options:       options,
+      store_name:    store_name
     }}
   end
 
@@ -73,14 +74,14 @@ defmodule AccumulatorTest do
       options: options
     } = setup
 
-    {:ok, worker_pid} = Accumulator.start(args, options)
+    {:ok, accumulator_pid} = Accumulator.start(args, options)
 
     pid_of_reference = :global.whereis_name(reference)
 
-    assert worker_pid |> is_pid
-    assert worker_pid |> Process.alive?
-    assert reference  |> is_reference
-    assert worker_pid == pid_of_reference
+    assert accumulator_pid |> is_pid
+    assert accumulator_pid |> Process.alive?
+    assert reference       |> is_reference
+    assert accumulator_pid == pid_of_reference
   end
 
   test "#start_link returns a running process", %{setup: setup} do
@@ -90,13 +91,108 @@ defmodule AccumulatorTest do
       options: options
     } = setup
 
-    {:ok, worker_pid} = Accumulator.start_link(args, options)
+    {:ok, accumulator_pid} = Accumulator.start_link(args, options)
 
     pid_of_reference = :global.whereis_name(reference)
 
-    assert worker_pid |> is_pid
-    assert worker_pid |> Process.alive?
-    assert reference  |> is_reference
-    assert worker_pid == pid_of_reference
+    assert accumulator_pid |> is_pid
+    assert accumulator_pid |> Process.alive?
+    assert reference       |> is_reference
+    assert accumulator_pid == pid_of_reference
+  end
+
+  test "#train updates the network state in store", %{setup: setup} do
+    %{
+      args:       args,
+      name:       name = {:global, reference},
+      options:    options,
+      store_name: store_name
+    } = setup
+
+    {:ok, accumulator_pid} = Accumulator.start_link(args, options)
+
+    function   = fn(x)    -> x + 1 end
+    derivative = fn(_)    -> 1     end
+    objective  = fn(a, b, _c) ->
+      Enum.zip(b, a) |> Enum.map(fn({x, y}) -> x - y end)
+    end
+
+    configuration = %{
+      batch_size:    1,
+      data_size:     2,
+      epochs:        1,
+      learning_rate: 2,
+      workers:       2
+    }
+    data          = [{[1, 2, 3], [1900, 2800]}, {[2, 3, 4], [2600, 3800]}]
+    initial_network_state = %{
+      network: %{
+        layers: [
+          %{
+            activity: %{arity: 1, function: function, derivative: derivative},
+            biases:   [[1, 2, 3]],
+            weights:  [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+          },
+          %{
+            activity: %{arity: 1, function: function, derivative: derivative},
+            biases:   [[4, 5]],
+            weights:  [[1, 2], [3, 4], [5, 6]]
+          },
+          %{
+            activity: %{arity: 1, function: function, derivative: derivative},
+            biases:   [[6, 7]],
+            weights:  [[1, 2], [3, 4]]
+          },
+        ],
+        objective: %{error: objective}
+      }
+    }
+
+    Store.set(initial_network_state, store_name)
+
+    expected_network_state = %{
+      network: %{
+        layers: [
+          %{
+            activity: %{arity: 1, function: function, derivative: derivative},
+            biases:   [[-837, -1828, -2819]],
+            weights:  [
+              [-2037, -4452, -6867 ],
+              [-2872, -6279, -9686 ],
+              [-3707, -8106, -12505]
+            ]
+          },
+          %{
+            activity: %{arity: 1, function: function, derivative: derivative},
+            biases:   [[-150, -337]],
+            weights:  [
+              [-7615,  -16798],
+              [-9363,  -20654],
+              [-11111, -24510]
+            ]
+          },
+          %{
+            activity: %{arity: 1, function: function, derivative: derivative},
+            biases:   [[-28, -53]],
+            weights:  [
+              [-18935, -36562],
+              [-24745, -47780]
+            ]
+          }
+        ],
+        objective: %{error: objective}
+      }
+    }
+
+    :ok = Accumulator.train(data, configuration, name)
+
+    assert Store.get(store_name) == expected_network_state
+
+    pid_of_reference = :global.whereis_name(reference)
+
+    assert accumulator_pid |> is_pid
+    assert accumulator_pid |> Process.alive?
+    assert reference       |> is_reference
+    assert accumulator_pid == pid_of_reference
   end
 end
