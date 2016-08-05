@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/sdwolf/exlearn.svg?branch=master)](https://travis-ci.org/sdwolf/exlearn)
 [![Coverage Status](https://coveralls.io/repos/github/sdwolf/exlearn/badge.svg?branch=master)](https://coveralls.io/github/sdwolf/exlearn?branch=master)
 
-Elixir artificial intelligence library. (Extreemly early pre pre alpha!!!)
+Elixir Machine Learning library. (Extreemly early pre pre alpha!!!)
 
 ## Example
 
@@ -38,13 +38,13 @@ configuration = %{
   regularization: :L2
 }
 
-NN.feed(training_data, configuration, network)
+NN.train(training_data, configuration, network)
+|> Task.await
 
 ask_data = [[0, 0], [0, 1], [1, 0], [1, 1]]
-
-result = NN.ask(ask_data, network)
-
-IO.inspect result
+NN.ask(ask_data, network)
+|> Task.await
+|> IO.inspect
 ```
 
 ## Usage with Docker
