@@ -11,7 +11,8 @@ defmodule PropagatorTest do
 
     configuration = %{
       batch_size:    1,
-      learning_rate: 2
+      learning_rate: 2,
+      workers:       1
     }
 
     network_state = %{

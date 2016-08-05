@@ -144,7 +144,7 @@ defmodule AccumulatorTest do
       batch_size:    1,
       data_size:     2,
       epochs:        1,
-      learning_rate: 2,
+      learning_rate: 4,
       workers:       2
     }
     data          = [{[1, 2, 3], [1900, 2800]}, {[2, 3, 4], [2600, 3800]}]

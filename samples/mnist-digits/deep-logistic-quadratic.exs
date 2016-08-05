@@ -4,15 +4,6 @@ Code.require_file("data/data_loader.exs", __DIR__)
 # Loads training and test data.
 {training_data, test_data} = DataLoader.load_data
 
-# You can inspect the data using something similar with the following:
-#
-# [first_sample|_] = training_data
-# IO.inspect first_sample
-# {first_image, first_label} = first_sample
-# IO.inspect first_image
-# IO.inspect first_label
-# DataLoader.preview_image(first_image)
-
 alias ExLearn.NeuralNetwork, as: NN
 
 # Defines the network structure.
@@ -31,7 +22,7 @@ network = NN.initialize(structure_parameters)
 
 # Defines the training configuration.
 configuration = %{
-  batch_size:    50,
+  batch_size:    100,
   data_size:     60000,
   epochs:        1,
   learning_rate: 3,
@@ -39,11 +30,16 @@ configuration = %{
 }
 
 # Starts the notifications stream.
-# NN.notifications(:start, network)
+NN.notifications(:start, network)
 
 NN.train(training_data, configuration, network)
 |> Task.await(:infinity)
 
-NN.ask([hd(test_data)], network)
+[{first_image, first_label}|_] = test_data
+DataLoader.preview_image(first_image)
+IO.inspect first_label
+
+ask_data = [first_image]
+NN.ask(ask_data, network)
 |> Task.await(:infinity)
 |> IO.inspect
