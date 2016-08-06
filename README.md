@@ -30,21 +30,17 @@ training_data = [
 ]
 
 configuration = %{
-  batch_size:     2,
-  data_size:      4,
-  epochs:         1000,
-  dropout:        0.5,
-  learning_rate:  0.5,
-  regularization: :L2
+  batch_size:    2,
+  data_size:     4,
+  epochs:        1000,
+  learning_rate: 0.5,
+  workers:       1
 }
 
-NN.train(training_data, configuration, network)
-|> Task.await
+NN.train(training_data, configuration, network) |> Task.await
 
 ask_data = [[0, 0], [0, 1], [1, 0], [1, 1]]
-NN.ask(ask_data, network)
-|> Task.await
-|> IO.inspect
+NN.ask(ask_data, network) |> Task.await |> IO.inspect
 ```
 
 ## Usage with Docker

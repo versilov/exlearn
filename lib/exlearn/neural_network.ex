@@ -3,7 +3,7 @@ defmodule ExLearn.NeuralNetwork do
   A neural network
   """
 
-  alias ExLearn.NeuralNetwork.{Accumulator, Master, Notification}
+  alias ExLearn.NeuralNetwork.{Accumulator, Master, Notification, Persistence, Store}
 
   @doc """
   Makes a prediction
@@ -75,9 +75,10 @@ defmodule ExLearn.NeuralNetwork do
   @doc """
   Saves the network biases and weights to a file
   """
-  @spec save(String.t) :: :ok
-  def save(_path) do
-    :ok
+  @spec save(String.t, any) :: :ok
+  def save(name, network) do
+    Store.get(network)
+    |> Persistence.save(name)
   end
 
   @doc """
