@@ -45,6 +45,14 @@ defmodule ExLearn.NeuralNetwork do
   end
 
   @doc """
+  Loads the network biases and weights from a file
+  """
+  @spec load(String.t) :: :ok
+  def load(_path) do
+    :ok
+  end
+
+  @doc """
   Starts the notification stream
   """
   @spec notifications(atom, any) :: Task.t
@@ -62,6 +70,14 @@ defmodule ExLearn.NeuralNetwork do
     %{notification: notification} = network
 
     Notification.done(notification)
+  end
+
+  @doc """
+  Saves the network biases and weights to a file
+  """
+  @spec save(String.t) :: :ok
+  def save(_path) do
+    :ok
   end
 
   @doc """
