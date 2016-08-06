@@ -15,6 +15,16 @@ defmodule ExLearn.NeuralNetwork.Store do
     GenServer.call(store, :get)
   end
 
+  @spec load(any, %{store: {:global, reference}}) :: {}
+  def load(data, %{store: store = {:global, _reference}}) do
+    GenServer.call(store, {:load, data})
+  end
+
+  @spec load(any, {:global, reference}) :: {}
+  def load(data, store = {:global, _reference}) do
+    GenServer.call(store, {:load, data})
+  end
+
   @spec set(map, %{store: {:global, reference}}) :: {}
   def set(state, %{store: store = {:global, _reference}}) do
     GenServer.call(store, {:set, state})
@@ -61,6 +71,19 @@ defmodule ExLearn.NeuralNetwork.Store do
     Notification.push("State requested", notification)
 
     {:reply, network_state, state}
+  end
+
+  @spec handle_call(atom, {}, map) :: {}
+  def handle_call({:load, data}, _from, state) do
+    %{
+      notification:  notification,
+      network_state: network_state
+    } = state
+
+    %{network: %{layers: layers}} = network_state
+    Notification.push("State loaded", notification)
+
+    {:reply, :ok, state}
   end
 
   @spec handle_call(atom, {},  map) :: {}

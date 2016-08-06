@@ -47,9 +47,9 @@ defmodule ExLearn.NeuralNetwork do
   @doc """
   Loads the network biases and weights from a file
   """
-  @spec load(String.t) :: :ok
-  def load(_path) do
-    :ok
+  @spec load(String.t, any) :: :ok
+  def load(name, network) do
+    Persistence.load(name) |> Store.load(network)
   end
 
   @doc """
