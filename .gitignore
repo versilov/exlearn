@@ -1,8 +1,10 @@
 /_build
-/deps
 /cover
-erl_crash.dump
-core
-*.ez
-notebooks/**/.ipynb_checkpoints
+/deps
 /priv
+/test/temp/*
+!/test/temp/.keep
+*.ez
+core
+erl_crash.dump
+notebooks/**/.ipynb_checkpoints
