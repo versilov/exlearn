@@ -49,7 +49,9 @@ defmodule ExLearn.NeuralNetwork do
   """
   @spec load(String.t, any) :: :ok
   def load(name, network) do
-    Persistence.load(name) |> Store.load(network)
+    Store.get(network)
+    |> Persistence.load(name)
+    |> Store.set(network)
   end
 
   @doc """
