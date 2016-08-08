@@ -1,14 +1,14 @@
 defmodule ExLearn.NeuralNetwork.Persistence do
   alias ExLearn.Util
 
-  def load(network_state, name) do
-    {:ok, binary    } = File.read(name)
+  def load(network_state, path) do
+    {:ok, binary    } = File.read(path)
     {1,   layer_data} = :erlang.binary_to_term(binary)
 
     merge(layer_data, network_state)
   end
 
-  def save(network_state, name) do
+  def save(network_state, path) do
     %{network: %{layers: layers}} = network_state
 
     layer_data = Enum.map(layers, fn(layer) ->
@@ -20,7 +20,7 @@ defmodule ExLearn.NeuralNetwork.Persistence do
     data   = {1, layer_data}
     binary = :erlang.term_to_binary(data)
 
-    File.write(name, binary)
+    File.write(path, binary)
   end
 
   defp merge(layer_data, network_state) do

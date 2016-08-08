@@ -5,7 +5,7 @@ defmodule ExLearn.NeuralNetwork.PersistenceTest do
 
   setup do
     timestamp = :os.system_time(:milli_seconds) |> to_string
-    name      = "test/temp/" <> timestamp
+    path      = "test/temp/" <> timestamp
 
     first_network_state = %{
       network: %{
@@ -46,39 +46,39 @@ defmodule ExLearn.NeuralNetwork.PersistenceTest do
     }
 
     {:ok, setup: %{
-      name:                 name,
       first_network_state:  first_network_state,
+      path:                 path,
       second_network_state: second_network_state,
     }}
   end
 
   test "#load restores the state from a file", %{setup: setup} do
     %{
-      name:                 name,
+      path:                 path,
       first_network_state:  first_network_state,
       second_network_state: second_network_state,
     } = setup
 
-    :ok            = Persistence.save(first_network_state,  name)
-    restored_state = Persistence.load(second_network_state, name)
+    :ok            = Persistence.save(first_network_state,  path)
+    restored_state = Persistence.load(second_network_state, path)
 
     assert restored_state == first_network_state
     refute restored_state == second_network_state
 
-    :ok = File.rm(name)
+    :ok = File.rm(path)
   end
 
   test "#save stores the state to a file", %{setup: setup} do
     %{
-      name:                name,
+      path:                path,
       first_network_state: network_state,
     } = setup
 
-    :ok            = Persistence.save(network_state, name)
-    restored_state = Persistence.load(network_state, name)
+    :ok            = Persistence.save(network_state, path)
+    restored_state = Persistence.load(network_state, path)
 
     assert restored_state == network_state
 
-    :ok = File.rm(name)
+    :ok = File.rm(path)
   end
 end

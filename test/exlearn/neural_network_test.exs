@@ -102,6 +102,19 @@ defmodule NeuralNetworkTest do
     assert pid_of_store        |> Process.alive?
   end
 
+  test "#load responds with :ok", %{setup: setup} do
+    %{network: network} = setup
+
+    timestamp = :os.system_time(:milli_seconds) |> to_string
+    path      = "test/temp/" <> timestamp
+
+    :ok = NeuralNetwork.save(path, network)
+
+    assert NeuralNetwork.load(path, network) == :ok
+
+    :ok = File.rm(path)
+  end
+
   test "#notifications returns an async task", %{setup: setup} do
     %{network: network} = setup
 
@@ -118,6 +131,17 @@ defmodule NeuralNetworkTest do
     end)
 
     assert result == "Initializing state\nFinished initializing state\nMessage\n"
+  end
+
+  test "#save responds with :ok", %{setup: setup} do
+    %{network: network} = setup
+
+    timestamp = :os.system_time(:milli_seconds) |> to_string
+    path      = "test/temp/" <> timestamp
+
+    assert NeuralNetwork.save(path, network) == :ok
+
+    :ok = File.rm(path)
   end
 
   test "#train responds with :ok", %{setup: setup} do
