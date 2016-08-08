@@ -1,12 +1,14 @@
 defmodule ExLearn.NeuralNetwork do
   @moduledoc """
-  A neural network
+  A neural network.
   """
 
-  alias ExLearn.NeuralNetwork.{Accumulator, Master, Notification, Persistence, Store}
+  alias ExLearn.NeuralNetwork.{
+    Accumulator, Builder, Master, Notification, Persistence, Store
+  }
 
   @doc """
-  Makes a prediction
+  Makes a prediction.
   """
   @spec ask(any, any) :: any
   def ask(data, network) do
@@ -18,34 +20,48 @@ defmodule ExLearn.NeuralNetwork do
   end
 
   @doc """
-  Initalizez the neural network
+  Creates the neural network from the structure parameters.
   """
-  @spec initialize(map) :: pid
-  def initialize(parameters) do
-    names = %{
+  @spec create(map) :: pid
+  def create(structure) do
+    network_state = Builder.create(structure)
+
+    args = %{
       accumulator:  accumulator  = {:global, make_ref()},
       manager:      manager      = {:global, make_ref()},
       master:       master       = {:global, make_ref()},
       notification: notification = {:global, make_ref()},
       store:        store        = {:global, make_ref()}
     }
-
-    args    = {parameters, names}
     options = [name: master]
 
     {:ok, _pid} = Master.start_link(args, options)
 
-    %{
+    network = %{
       accumulator:  accumulator,
       manager:      manager,
       master:       master,
       notification: notification,
       store:        store,
     }
+
+    Store.set(network_state, network)
+
+    network
   end
 
   @doc """
-  Loads the network biases and weights from a file
+  Initalizez the neural network.
+  """
+  @spec initialize(map, map) :: pid
+  def initialize(parameters, network) do
+    Store.get(network)
+    |> Builder.initialize(parameters)
+    |> Store.set(network)
+  end
+
+  @doc """
+  Loads the network biases and weights from a file.
   """
   @spec load(String.t, any) :: :ok
   def load(name, network) do
@@ -55,7 +71,7 @@ defmodule ExLearn.NeuralNetwork do
   end
 
   @doc """
-  Starts the notification stream
+  Starts the notification stream.
   """
   @spec notifications(atom, any) :: Task.t
   def notifications(:start, network) do
@@ -65,7 +81,7 @@ defmodule ExLearn.NeuralNetwork do
   end
 
   @doc """
-  Stops the notification stream
+  Stops the notification stream.
   """
   @spec notifications(atom, any) :: Task.t
   def notifications(:stop, network) do
@@ -75,7 +91,7 @@ defmodule ExLearn.NeuralNetwork do
   end
 
   @doc """
-  Saves the network biases and weights to a file
+  Saves the network biases and weights to a file.
   """
   @spec save(String.t, any) :: :ok
   def save(name, network) do
@@ -84,7 +100,7 @@ defmodule ExLearn.NeuralNetwork do
   end
 
   @doc """
-  Trains the neural network
+  Trains the neural network.
   """
   @spec train(list, map, any) :: any
   def train(data, configuration, network) do
