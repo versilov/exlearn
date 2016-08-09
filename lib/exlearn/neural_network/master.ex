@@ -13,7 +13,7 @@ defmodule ExLearn.NeuralNetwork.Master do
   # Supervisor API
 
   @spec init({}) :: {}
-  def init({parameters, names}) do
+  def init(names) do
     %{
       accumulator:  accumulator,
       manager:      manager,
@@ -22,10 +22,10 @@ defmodule ExLearn.NeuralNetwork.Master do
     } = names
 
     children = [
-      worker(Accumulator,  [names,               [name: accumulator ]]),
-      worker(Manager,      [[],                  [name: manager     ]]),
-      worker(Notification, [[],                  [name: notification]]),
-      worker(Store,        [{parameters, names}, [name: store       ]]),
+      worker(Accumulator,  [names, [name: accumulator ]]),
+      worker(Manager,      [[],    [name: manager     ]]),
+      worker(Notification, [[],    [name: notification]]),
+      worker(Store,        [names, [name: store       ]]),
     ]
 
     supervise(children, strategy: :one_for_one)

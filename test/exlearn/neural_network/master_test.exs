@@ -4,29 +4,6 @@ defmodule MasterTest do
   alias ExLearn.NeuralNetwork.Master
 
   setup do
-    network_parameters = %{
-      layers: %{
-        input:  %{size: 1},
-        hidden: [
-          %{
-            activity: :identity,
-            name:     "First Hidden",
-            size:     1
-          }
-        ],
-        output: %{
-          activity: :identity,
-          name:     "Output",
-          size:     1
-        }
-      },
-      objective: :quadratic,
-      random: %{
-        distribution: :uniform,
-        range:        {-1, 1}
-      }
-    }
-
     children_names = %{
       accumulator:  {:global, make_ref()},
       manager:      {:global, make_ref()},
@@ -35,7 +12,7 @@ defmodule MasterTest do
     }
 
     name    = {:global, make_ref()}
-    args    = {network_parameters, children_names}
+    args    = children_names
     options = [name: name]
 
     {:ok, setup: %{

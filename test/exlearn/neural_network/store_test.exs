@@ -4,36 +4,13 @@ defmodule ExLearn.NeuralNetwork.StoreTest do
   alias ExLearn.NeuralNetwork.{Notification, Store}
 
   setup do
-    network_parameters = %{
-      layers: %{
-        input:  %{size: 1},
-        hidden: [
-          %{
-            activity: :identity,
-            name:     "First Hidden",
-            size:     1
-          }
-        ],
-        output: %{
-          activity: :identity,
-          name:     "Output",
-          size:     1
-        }
-      },
-      objective: :quadratic,
-      random: %{
-        distribution: :uniform,
-        range:        {-1, 1}
-      }
-    }
-
     notification_name    = {:global, make_ref()}
     notification_args    = []
     notification_options = [name: notification_name]
     {:ok, _} = Notification.start_link(notification_args, notification_options)
 
     name    = {:global, make_ref()}
-    args    = {network_parameters, %{notification: notification_name}}
+    args    = %{notification: notification_name}
     options = [name: name]
 
     {:ok, setup: %{
@@ -56,7 +33,7 @@ defmodule ExLearn.NeuralNetwork.StoreTest do
 
     assert store_pid |> is_pid
     assert store_pid |> Process.alive?
-    assert reference  |> is_reference
+    assert reference |> is_reference
     assert store_pid == pid_of_reference
   end
 
@@ -86,9 +63,7 @@ defmodule ExLearn.NeuralNetwork.StoreTest do
 
     {:ok, store_pid} = Store.start_link(args, options)
 
-    result = Store.get(%{store: name})
-
-    assert result    |> is_map
+    assert Store.get(%{store: name}) == :network_state_not_set
     assert store_pid |> Process.alive?
   end
 
@@ -101,9 +76,7 @@ defmodule ExLearn.NeuralNetwork.StoreTest do
 
     {:ok, store_pid} = Store.start_link(args, options)
 
-    result = Store.get(name)
-
-    assert result    |> is_map
+    assert Store.get(name) == :network_state_not_set
     assert store_pid |> Process.alive?
   end
 
@@ -116,9 +89,11 @@ defmodule ExLearn.NeuralNetwork.StoreTest do
 
     {:ok, store_pid} = Store.start_link(args, options)
 
-    result = Store.set([], %{store: name})
+    new_state = []
 
-    assert result == :ok
+    assert Store.get(name)                      == :network_state_not_set
+    assert Store.set(new_state, %{store: name}) == :ok
+    assert Store.get(name)                      == new_state
     assert store_pid |> Process.alive?
   end
 
@@ -131,9 +106,11 @@ defmodule ExLearn.NeuralNetwork.StoreTest do
 
     {:ok, store_pid} = Store.start_link(args, options)
 
-    result = Store.set([], name)
+    new_state = []
 
-    assert result == :ok
+    assert Store.get(name)            == :network_state_not_set
+    assert Store.set(new_state, name) == :ok
+    assert Store.get(name)            == new_state
     assert store_pid |> Process.alive?
   end
 end

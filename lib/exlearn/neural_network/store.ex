@@ -38,37 +38,25 @@ defmodule ExLearn.NeuralNetwork.Store do
   # Server API
 
   @spec init({}) :: {}
-  def init({parameters, names}) do
+  def init(names) do
     %{notification: notification} = names
-
-    Notification.push("Initializing state", notification)
-    state = Builder.initialize(parameters)
-    Notification.push("Finished initializing state", notification)
 
     {:ok, %{
       notification:  notification,
-      network_state: state
+      network_state: :network_state_not_set
     }}
   end
 
   @spec handle_call(atom, {}, map) :: {}
   def handle_call(:get, _from, state) do
-    %{
-      notification:  notification,
-      network_state: network_state
-    } = state
-
-    Notification.push("State requested", notification)
+    %{network_state: network_state} = state
 
     {:reply, network_state, state}
   end
 
   @spec handle_call(atom, {},  map) :: {}
   def handle_call({:set, new_network_state}, _from, state) do
-    %{notification: notification} = state
-
     new_state = Map.put(state, :network_state, new_network_state)
-    Notification.push("New state set", notification)
 
     {:reply, :ok, new_state}
   end
