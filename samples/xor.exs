@@ -6,26 +6,14 @@ structure_parameters = %{
     hidden: [%{activity: :logistic, name: "First Hidden", size: 4}],
     output:  %{activity: :softmax,  name: "Output",       size: 2}
   },
-  objective: :negative_log_likelihood,
-  random:    %{distribution: :uniform, range: {-1, 1}}
+  objective: :negative_log_likelihood
 }
 
-network = NN.initialize(structure_parameters)
+network = NN.create(structure_parameters)
 
-configuration = %{
-  batch_size:    2,
-  data_size:     4,
-  epochs:        600,
-  learning_rate: 0.4,
-  workers:       2
-}
+initialization_parameters = %{distribution: :uniform, range: {-1, 1}}
+NN.initialize(initialization_parameters)
 
-ask_data = [
-  [0, 0],
-  [0, 1],
-  [1, 0],
-  [1, 1]
-]
 training_data = [
   {[0, 0], [1, 0]},
   {[0, 1], [0, 1]},
@@ -33,9 +21,24 @@ training_data = [
   {[1, 1], [1, 0]}
 ]
 
-NN.train(training_data, configuration, network)
-|> Task.await(:infinity)
+learning_parameters = %{
+  training: %{
+    batch_size:    2,
+    data:          training_data,
+    data_size:     4,
+    epochs:        600,
+    learning_rate: 0.4,
+  },
+  workers: 2
+}
 
-NN.ask(ask_data, network)
-|> Task.await(:infinity)
-|> IO.inspect
+NN.train(learning_parameters, network) |> Task.await(:infinity)
+
+ask_data = [
+  [0, 0],
+  [0, 1],
+  [1, 0],
+  [1, 1]
+]
+
+NN.ask(ask_data, network) |> Task.await(:infinity) |> IO.inspect

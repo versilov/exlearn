@@ -1,7 +1,9 @@
 # Using the data loading module defined in the same folder.
+# This module contains helpers for transforming the raw data from the mnist
+# archives to a format that the network expects, sample loading and preview.
 Code.require_file("data_loader.exs", __DIR__)
 
-# Converts the raw data from archives to a format that the library expects.
+# Converts the raw data from archives to a format that the network expects.
 # The parameter represent the number of files that will be created for each
 # data set. The files will contain data distributed as evenly as possible.
 # You only need to do this once. Comment the following line after runing it
@@ -27,10 +29,8 @@ network = NN.create(structure_parameters)
 # Next comes the network initialization. Skip this if you intend to load an
 # already saved state.
 
-# Defines the initialization parameters.
+# Defines the initialization parameters and initializes the neural network.
 initialization_parameters = %{distribution: :uniform, range: {-1, 1}}
-
-# Initializes the neural network.
 NN.initialize(initialization_parameters)
 
 # If you already have a saved state you can load it with the following:
@@ -40,17 +40,17 @@ NN.initialize(initialization_parameters)
 learning_parameters = %{
   training: %{
     batch_size:    100,
-    data_path:     "samples/mnist-digits/data/training_data-*.eld",
+    data:          "samples/mnist-digits/data/training_data-*.eld",
     data_size:     50000,
     epochs:        1,
     learning_rate: 3,
   },
   validation: %{
-    data_path: "samples/mnist-digits/data/validation_data-*.eld",
+    data:      "samples/mnist-digits/data/validation_data-*.eld",
     data_size: 10000,
   },
   test: %{
-    data_path: "samples/mnist-digits/data/test_data-*.eld",
+    data:      "samples/mnist-digits/data/test_data-*.eld",
     data_size: 10000,
   },
   workers: 4
@@ -64,7 +64,8 @@ NN.notifications(:start, network)
 NN.train(learning_parameters, network) |> Task.await(:infinity)
 
 # Loading an image from the test data for preview.
-[{first_image, first_label}|_] = DataLoader.load("samples/mnist-digits/data/test_data-0.eld")
+[first_sample|_] = DataLoader.load("samples/mnist-digits/data/test_data-0.eld")
+{first_image, first_label} = first_sample
 DataLoader.preview_image(first_image)
 IO.inspect first_label
 

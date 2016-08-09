@@ -6,26 +6,14 @@ structure_parameters = %{
     hidden: [%{activity: :logistic, name: "First Hidden", size: 2}],
     output:  %{activity: :tanh,     name: "Output",       size: 1}
   },
-  objective: :quadratic,
-  random:    %{distribution: :uniform, range: {-1, 1}}
+  objective: :quadratic
 }
 
-network = NN.initialize(structure_parameters)
+network = NN.create(structure_parameters)
 
-configuration = %{
-  batch_size:    2,
-  data_size:     4,
-  epochs:        1000,
-  learning_rate: 0.5,
-  workers:       2
-}
+initialization_parameters = %{distribution: :uniform, range: {-1, 1}}
+NN.initialize(initialization_parameters)
 
-ask_data = [
-  [0, 0],
-  [0, 1],
-  [1, 0],
-  [1, 1]
-]
 training_data = [
   {[0, 0], [0]},
   {[0, 1], [0]},
@@ -33,9 +21,24 @@ training_data = [
   {[1, 1], [1]}
 ]
 
-NN.train(training_data, configuration, network)
-|> Task.await(:infinity)
+learning_parameters = %{
+  training: %{
+    batch_size:    2,
+    data:          training_data,
+    data_size:     4,
+    epochs:        1000,
+    learning_rate: 0.5,
+  },
+  workers: 2
+}
 
-NN.ask(ask_data, network)
-|> Task.await(:infinity)
-|> IO.inspect
+NN.train(training_data, configuration, network) |> Task.await(:infinity)
+
+ask_data = [
+  [0, 0],
+  [0, 1],
+  [1, 0],
+  [1, 1]
+]
+
+NN.ask(ask_data, network) |> Task.await(:infinity) |> IO.inspect
