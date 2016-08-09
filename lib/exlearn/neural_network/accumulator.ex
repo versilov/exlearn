@@ -112,8 +112,6 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
 
     chunk_size = trunc(Float.ceil(data_size / worker_count))
     chunks     = split_in_chunks(data_source, chunk_size)
-    IO.inspect chunks
-    IO.inspect workers
 
     Util.zip_with_fill(workers, chunks, []) |> Enum.each(fn({worker, chunk}) ->
       configuration = %{
@@ -121,7 +119,6 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
         data:          chunk,
         learning_rate: learning_rate
       }
-      IO.inspect configuration
       Supervisor.start_child(manager, [configuration, [name: elem(worker, 1)]])
     end)
 
@@ -204,16 +201,18 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
 
   defp filter_workers([worker_data|rest], workers) do
     case worker_data do
+      {_worker, :no_data      } -> filter_workers(rest, workers)
       {_worker, {:done,     _}} -> filter_workers(rest, workers)
       {worker,  {:continue, _}} -> filter_workers(rest, [worker|workers])
     end
   end
 
   defp reduce_correction(worker_data) do
-    corrections = Enum.map(worker_data, fn(data) ->
-      {_, {_, correction}} = data
-
-      correction
+    corrections = Enum.reduce(worker_data, [], fn(data, accumulator) ->
+      case data do
+        {_, :no_data       } -> accumulator
+        {_, {_, correction}} -> [correction|accumulator]
+      end
     end)
 
     Enum.reduce(corrections, &Propagator.reduce_correction/2)

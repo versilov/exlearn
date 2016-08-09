@@ -116,20 +116,25 @@ defmodule ExLearn.NeuralNetwork.Worker do
       }
     } = state
 
-    correction = train_network(current, network_state)
+    case current do
+      :not_set ->
+        {:reply, :no_data, state}
+      _ ->
+        correction = train_network(current, network_state)
 
-    case remaining do
-      [] ->
-        new_batches = %{current: :not_set, remaining: :not_set}
-        new_state   = Map.put(state, :batches, new_batches)
+        case remaining do
+          [] ->
+            new_batches = %{current: :not_set, remaining: :not_set}
+            new_state   = Map.put(state, :batches, new_batches)
 
-        {:reply, {:done, correction}, new_state}
+            {:reply, {:done, correction}, new_state}
 
-      [new_current|new_remaining] ->
-        new_batches = %{current: new_current, remaining: new_remaining}
-        new_state   = Map.put(state, :batches, new_batches)
+          [new_current|new_remaining] ->
+            new_batches = %{current: new_current, remaining: new_remaining}
+            new_state   = Map.put(state, :batches, new_batches)
 
-        {:reply, {:continue, correction}, new_state}
+            {:reply, {:continue, correction}, new_state}
+        end
     end
   end
 
