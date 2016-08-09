@@ -4,7 +4,9 @@ defmodule ExLearn.NeuralNetwork.Worker do
   alias ExLearn.Util
   alias ExLearn.NeuralNetwork.{Forwarder, Propagator}
 
+  #----------------------------------------------------------------------------
   # Client API
+  #----------------------------------------------------------------------------
 
   @spec prepare(any) :: any
   def prepare(worker) do
@@ -36,17 +38,28 @@ defmodule ExLearn.NeuralNetwork.Worker do
     GenServer.start_link(__MODULE__, args, options)
   end
 
+  #----------------------------------------------------------------------------
   # Server API
+  #----------------------------------------------------------------------------
 
   @spec init(any) :: {}
-  def init({data, configuration}) do
+  def init(configuration) do
+    %{
+      batch_size:    batch_size,
+      data:          data_source,
+      learning_rate: learning_rate
+    } = configuration
+
+    data = case List.first(data_source) do
+      path  when is_bitstring(path) -> read_data(data_source)
+      _  -> data_source
+    end
+
     state = %{
-      batches: %{
-        current:   :not_set,
-        remaining: :not_set
-      },
-      configuration: configuration,
+      batch_size:    batch_size,
+      batches:       %{current: :not_set, remaining: :not_set},
       data:          data,
+      learning_rate: learning_rate
     }
 
     {:ok, state}
@@ -55,8 +68,8 @@ defmodule ExLearn.NeuralNetwork.Worker do
   @spec handle_call({}, any,  map) :: {}
   def handle_call(:prepare, _from, state) do
     %{
-      configuration: %{batch_size: batch_size},
-      data:          data
+      batch_size: batch_size,
+      data:       data
     } = state
 
     [current|remaining] = Enum.chunk(data, batch_size)
@@ -114,10 +127,25 @@ defmodule ExLearn.NeuralNetwork.Worker do
     end
   end
 
+  #----------------------------------------------------------------------------
   # Internal functions
+  #----------------------------------------------------------------------------
 
   defp ask_network(batch, state) do
     Enum.map(batch, &Forwarder.forward_for_output(&1, state))
+  end
+
+  @spec read_data([bitstring]) :: list
+  defp read_data(paths) do
+    Enum.reduce(paths, [], &read_file/2)
+  end
+
+  @spec read_file(bitstring, list) :: list
+  defp read_file(path, accumulator) do
+    {:ok, binary} = File.read(path)
+    data          = :erlang.binary_to_term(binary)
+
+    data ++ accumulator
   end
 
   defp test_network(batch, configuration, state) do

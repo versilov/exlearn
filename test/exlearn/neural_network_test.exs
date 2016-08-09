@@ -1,4 +1,4 @@
-defmodule NeuralNetworkTest do
+defmodule ExLearn.NeuralNetworkTest do
   use    ExUnit.Case, async: true
   import ExUnit.CaptureIO
 
@@ -111,8 +111,8 @@ defmodule NeuralNetworkTest do
   test "#load responds with :ok", %{setup: setup} do
     %{network: network} = setup
 
-    timestamp = :os.system_time(:milli_seconds) |> to_string
-    path      = "test/temp/" <> timestamp
+    timestamp = :os.system_time(:micro_seconds) |> to_string
+    path      = "test/temp/exlearn-neural_network_test" <> timestamp
 
     :ok = NeuralNetwork.save(path, network)
 
@@ -142,8 +142,8 @@ defmodule NeuralNetworkTest do
   test "#save responds with :ok", %{setup: setup} do
     %{network: network} = setup
 
-    timestamp = :os.system_time(:milli_seconds) |> to_string
-    path      = "test/temp/" <> timestamp
+    timestamp = :os.system_time(:micro_seconds) |> to_string
+    path      = "test/temp/exlearn-neural_network_test" <> timestamp
 
     assert NeuralNetwork.save(path, network) == :ok
 

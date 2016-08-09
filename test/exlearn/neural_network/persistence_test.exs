@@ -4,8 +4,8 @@ defmodule ExLearn.NeuralNetwork.PersistenceTest do
   alias ExLearn.NeuralNetwork.Persistence
 
   setup do
-    timestamp = :os.system_time(:milli_seconds) |> to_string
-    path      = "test/temp/" <> timestamp
+    timestamp = :os.system_time(:micro_seconds) |> to_string
+    path      = "test/temp/exlearn-neural_network-persistence_test" <> timestamp
 
     first_network_state = %{
       network: %{

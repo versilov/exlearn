@@ -1,4 +1,4 @@
-defmodule AccumulatorTest do
+defmodule ExLearn.NeuralNetwork.AccumulatorTest do
   use ExUnit.Case, async: true
 
   alias ExLearn.NeuralNetwork.{Accumulator, Manager, Notification, Store}
@@ -104,8 +104,9 @@ defmodule AccumulatorTest do
       {[1, 2, 3], [1900, 2800]},
       {[2, 3, 4], [2600, 3800]}
     ]
-    timestamp = :os.system_time(:milli_seconds) |> to_string
-    path      = "test/temp/" <> timestamp
+
+    timestamp = :os.system_time(:micro_seconds) |> to_string
+    path      = "test/temp/exlearn-neural_network-accumulator_test" <> timestamp
     binary    = :erlang.term_to_binary(training_data)
     File.write(path, binary)
 
