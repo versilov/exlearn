@@ -47,7 +47,7 @@ defmodule BuilderTest do
       objective: %{
         function: objective_function,
         error:    objective_error
-      },
+      }
     }
 
     {:ok, setup: %{
@@ -89,9 +89,9 @@ defmodule BuilderTest do
               derivative: activity_derivative
             },
             biases:  :not_initialized,
-            columns: 3,
+            columns: 4,
             name:    "Second Hidden",
-            rows:    4,
+            rows:    3,
             weights: :not_initialized
           },
           %{
@@ -100,9 +100,9 @@ defmodule BuilderTest do
               derivative: activity_derivative
             },
             biases:  :not_initialized,
-            columns: 4,
+            columns: 5,
             name:    "Output",
-            rows:    5,
+            rows:    4,
             weights: :not_initialized
           }
         ],
@@ -126,9 +126,7 @@ defmodule BuilderTest do
     network_state = Builder.create(structure_parameters)
     result        = Builder.initialize(initialization_parameters, network_state)
 
-    assert result |> is_map
-
     %{network: %{layers: layers}} = result
-    assert length(layers) == 5
+    assert length(layers) == 3
   end
 end

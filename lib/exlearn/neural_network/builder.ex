@@ -62,7 +62,7 @@ defmodule ExLearn.NeuralNetwork.Builder do
   Initializez a neural network with the given setup.
   """
   @spec initialize(map, map) :: map
-  def initialize(network_state, parameters) do
+  def initialize(parameters, network_state) do
     %{network: network = %{layers: layers}} = network_state
 
     random_function = Distribution.determine(parameters)
@@ -72,19 +72,19 @@ defmodule ExLearn.NeuralNetwork.Builder do
     Map.put(network_state, :network, new_network)
   end
 
-  defp initialize_layers([_|[]], _, accumulator) do
+  defp initialize_layers([], _, accumulator) do
     Enum.reverse(accumulator)
   end
 
-  defp initialize_layers([first, second|rest], random_function, accumulator) do
-    %{columns: columns, rows: rows} = first
-    biases  = Matrix.build(1,    rows,    random_function)
+  defp initialize_layers([layer|rest], random_function, accumulator) do
+    %{columns: columns, rows: rows} = layer
+    biases  = Matrix.build(1,    columns, random_function)
     weights = Matrix.build(rows, columns, random_function)
 
-    new_layer = first
+    new_layer = layer
     |> Map.put(:biases,  biases)
     |> Map.put(:weights, weights)
 
-    initialize_layers([second|rest], random_function, [new_layer|accumulator])
+    initialize_layers(rest, random_function, [new_layer|accumulator])
   end
 end
