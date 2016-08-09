@@ -125,8 +125,29 @@ defmodule BuilderTest do
 
     network_state = Builder.create(structure_parameters)
     result        = Builder.initialize(initialization_parameters, network_state)
-
     %{network: %{layers: layers}} = result
+
     assert length(layers) == 3
+    Enum.each(layers, fn(layer) ->
+      %{
+        biases:  biases,
+        columns: columns,
+        rows:    rows,
+        weights: weights
+      } = layer
+
+      assert biases  |> is_list
+      assert weights |> is_list
+
+      assert length(biases)  == 1
+      assert length(weights) == rows
+
+      [bias_content] = biases
+      assert length(bias_content) == columns
+
+      Enum.each(weights, fn(row) ->
+        assert length(row) == columns
+      end)
+    end)
   end
 end
