@@ -9,8 +9,8 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     GenServer.call(accumulator, {:ask, data}, :infinity)
   end
 
-  def train(data, configuration, accumulator) do
-    GenServer.call(accumulator, {:train, data, configuration}, :infinity)
+  def train(learning_parameters, accumulator) do
+    GenServer.call(accumulator, {:train, learning_parameters}, :infinity)
   end
 
   @spec start([{}], map) :: {}
@@ -48,8 +48,8 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     {:reply, result, state}
   end
 
-  def handle_call({:train, data, configuration}, _from,  state) do
-    train_network(data, configuration, state)
+  def handle_call({:train, learning_parameters}, _from,  state) do
+    train_network(learning_parameters, state)
 
     {:reply, :ok, state}
   end
@@ -70,23 +70,24 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     Worker.work(:ask, network_state, worker_name)
   end
 
-  defp train_network(data, configuration, state) do
-    %{epochs: epochs} = configuration
+  defp train_network(learning_parameters, state) do
+    %{data: data, epochs: epochs} = learning_parameters
     network_state     = Store.get(state)
-    workers           = start_workers(data, configuration, state)
+    workers           = start_workers(learning_parameters, state)
 
     Notification.push("Started training", state)
-    train_for_epochs(workers, configuration, network_state, state, epochs, 0)
+    train_for_epochs(workers, learning_parameters, network_state, state, epochs, 0)
     Notification.push("Finished training", state)
 
     :ok
   end
 
-  defp start_workers(data, configuration, state) do
+  defp start_workers(learning_parameters, state) do
     %{
+      data:      data,
       data_size: data_size,
       workers:   workers_count
-    } = configuration
+    } = learning_parameters
     %{manager: manager} = state
 
     workers = Enum.to_list(1..workers_count)
@@ -99,7 +100,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     |> Enum.each(fn({worker, chunk}) ->
       Supervisor.start_child(
         manager,
-        [{chunk, configuration}, [name: elem(worker, 1)]]
+        [{chunk, learning_parameters}, [name: elem(worker, 1)]]
       )
     end)
 
