@@ -43,7 +43,7 @@ defmodule ExLearn.NeuralNetworkTest do
 
     learning_parameters = %{
       training: %{
-        batch_size:    2,
+        batch_size:    4,
         data:          training_data,
         data_size:     6,
         epochs:        5,

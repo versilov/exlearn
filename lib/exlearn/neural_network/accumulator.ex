@@ -1,9 +1,12 @@
 defmodule ExLearn.NeuralNetwork.Accumulator do
   use GenServer
 
+  alias ExLearn.Util
   alias ExLearn.NeuralNetwork.{Notification, Propagator, Store, Worker}
 
+  #----------------------------------------------------------------------------
   # Client API
+  #----------------------------------------------------------------------------
 
   def ask(data, accumulator) do
     GenServer.call(accumulator, {:ask, data}, :infinity)
@@ -23,7 +26,9 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     GenServer.start_link(__MODULE__, args, options)
   end
 
+  #----------------------------------------------------------------------------
   # Server API
+  #----------------------------------------------------------------------------
 
   @spec init(any) :: {}
   def init(names) do
@@ -54,7 +59,9 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     {:reply, :ok, state}
   end
 
+  #----------------------------------------------------------------------------
   # Internal functions
+  #----------------------------------------------------------------------------
 
   defp ask_network(data, state) do
     %{manager: manager} = state
@@ -71,44 +78,71 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
   end
 
   defp train_network(learning_parameters, state) do
-    %{data: data, epochs: epochs} = learning_parameters
-    network_state     = Store.get(state)
-    workers           = start_workers(learning_parameters, state)
+    %{
+      training: training_parameters,
+      workers:  worker_count
+    } = learning_parameters
+    %{
+      data:   data,
+      epochs: epochs
+    } = training_parameters
+
+    network_state = Store.get(state)
+    workers       = start_workers(worker_count, training_parameters, state)
 
     Notification.push("Started training", state)
-    train_for_epochs(workers, learning_parameters, network_state, state, epochs, 0)
+    train_for_epochs(workers, training_parameters, network_state, state, epochs, 0)
     Notification.push("Finished training", state)
 
     :ok
   end
 
-  defp start_workers(learning_parameters, state) do
+  defp start_workers(worker_count, training_parameters, state) do
     %{
-      data:      data,
-      data_size: data_size,
-      workers:   workers_count
-    } = learning_parameters
+      batch_size:    batch_size,
+      data:          data_source,
+      data_size:     data_size,
+      learning_rate: learning_rate
+    } = training_parameters
+
     %{manager: manager} = state
 
-    workers = Enum.to_list(1..workers_count)
+    workers = Enum.to_list(1..worker_count)
     |> Enum.map(fn(index) -> {index, {:global, make_ref()}} end)
 
-    chunk_size = trunc(data_size / workers_count)
-    chunks     = Enum.chunk(data, chunk_size)
+    chunk_size = trunc(Float.ceil(data_size / worker_count))
+    chunks     = split_in_chunks(data_source, chunk_size)
+    IO.inspect chunks
+    IO.inspect workers
 
-    Enum.zip(workers, chunks)
-    |> Enum.each(fn({worker, chunk}) ->
-      Supervisor.start_child(
-        manager,
-        [{chunk, learning_parameters}, [name: elem(worker, 1)]]
-      )
+    Util.zip_with_fill(workers, chunks, []) |> Enum.each(fn({worker, chunk}) ->
+      configuration = %{
+        batch_size:    trunc(Float.ceil(batch_size / worker_count)),
+        data:          chunk,
+        learning_rate: learning_rate
+      }
+      IO.inspect configuration
+      Supervisor.start_child(manager, [configuration, [name: elem(worker, 1)]])
     end)
 
     workers
   end
 
+  defp split_in_chunks(data_source, chunk_size) do
+    data_list = case data_source do
+      path when is_bitstring(path) -> Path.wildcard(path)
+      _  -> data_source
+    end
+
+    Enum.chunk(data_list, chunk_size, chunk_size, [])
+  end
+
   defp train_for_epochs(_, _, _, _, epochs, current_epoch)
-      when epochs == current_epoch, do: :ok
+  when epochs == current_epoch
+  do
+    :ok
+  end
+
   defp train_for_epochs(workers, configuration, network_state, state, epochs, current_epoch) do
     Notification.push("Epoch: #{current_epoch + 1}", state)
 

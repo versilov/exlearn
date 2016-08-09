@@ -20,4 +20,13 @@ defmodule ExLearn.UtilTest do
 
     assert Util.zip_map(first, second, function) == expected
   end
+
+  test "#zip_with_fill adds fill to the smallest list" do
+    assert Util.zip_with_fill([],        [],     0)  == []
+    assert Util.zip_with_fill([1],       [],     2)  == [{1, 2}]
+    assert Util.zip_with_fill([],        [1],    2)  == [{2, 1}]
+    assert Util.zip_with_fill([1, 2],    [3],    4)  == [{1, 3}, {2, 4}]
+    assert Util.zip_with_fill([1],       [2, 3], 4)  == [{1, 2}, {4, 3}]
+    assert Util.zip_with_fill([1, 2, 3], [4],    5)  == [{1, 4}, {2, 5}, {3, 5}]
+  end
 end

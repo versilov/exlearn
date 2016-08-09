@@ -51,7 +51,7 @@ defmodule ExLearn.NeuralNetwork.Worker do
     } = configuration
 
     data = case List.first(data_source) do
-      path  when is_bitstring(path) -> read_data(data_source)
+      path when is_bitstring(path) -> read_data(data_source)
       _  -> data_source
     end
 
@@ -72,9 +72,15 @@ defmodule ExLearn.NeuralNetwork.Worker do
       data:       data
     } = state
 
-    [current|remaining] = Enum.chunk(data, batch_size)
+    batches = case data do
+      [] ->
+        %{current: :not_set, remaining: :not_set}
+      _  ->
+        [current|remaining] = Enum.chunk(data, batch_size)
 
-    batches   = %{current: current, remaining: remaining}
+        %{current: current, remaining: remaining}
+    end
+
     new_state = Map.put(state, :batches, batches)
 
     {:reply, :ok, new_state}

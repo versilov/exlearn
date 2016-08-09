@@ -101,6 +101,28 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
     assert worker_pid == pid_of_reference
   end
 
+  test "#start with empty data returns a running process", %{setup: setup} do
+    %{
+      name:    {:global, reference},
+      options: options
+    } = setup
+
+    args = %{
+      batch_size:    1,
+      data:          [],
+      learning_rate: 2
+    }
+
+    {:ok, worker_pid} = Worker.start(args, options)
+
+    pid_of_reference = :global.whereis_name(reference)
+
+    assert worker_pid |> is_pid
+    assert worker_pid |> Process.alive?
+    assert reference  |> is_reference
+    assert worker_pid == pid_of_reference
+  end
+
   test "#start_link with data in file returns a running process", %{setup: setup} do
     %{
       name:    {:global, reference},
@@ -155,7 +177,7 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
     assert worker_pid == pid_of_reference
   end
 
-  test "#prepare can be called successfully", %{setup: setup} do
+  test "#prepare with data can be called successfully", %{setup: setup} do
     %{
       name:    worker = {:global, reference},
       options: options
@@ -167,6 +189,29 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
         {[1, 2, 3], [1900, 2800]},
         {[2, 3, 4], [2600, 3800]}
       ],
+      learning_rate: 2
+    }
+
+    {:ok, worker_pid} = Worker.start_link(args, options)
+    pid_of_reference  = :global.whereis_name(reference)
+
+    assert Worker.prepare(worker) == :ok
+
+    assert worker_pid |> is_pid
+    assert worker_pid |> Process.alive?
+    assert reference  |> is_reference
+    assert worker_pid == pid_of_reference
+  end
+
+  test "#prepare with no data can be called successfully", %{setup: setup} do
+    %{
+      name:    worker = {:global, reference},
+      options: options
+    } = setup
+
+    args = %{
+      batch_size:    1,
+      data:          [],
       learning_rate: 2
     }
 

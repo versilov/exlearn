@@ -118,7 +118,7 @@ defmodule ExLearn.NeuralNetwork.AccumulatorTest do
         epochs:        1,
         learning_rate: 4,
       },
-      workers: 1
+      workers: 2
     }
 
     function   = fn(x) -> x + 1 end
@@ -217,7 +217,7 @@ defmodule ExLearn.NeuralNetwork.AccumulatorTest do
 
     learning_parameters = %{
       training: %{
-        batch_size:    1,
+        batch_size:    2,
         data:          training_data,
         data_size:     2,
         epochs:        1,
