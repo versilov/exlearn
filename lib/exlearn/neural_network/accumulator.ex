@@ -107,15 +107,16 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
 
     %{manager: manager} = state
 
-    workers = Enum.to_list(1..worker_count)
-    |> Enum.map(fn(index) -> {index, {:global, make_ref()}} end)
+    chunk_size       = trunc(Float.ceil(data_size / worker_count))
+    chunks           = split_in_chunks(data_source, chunk_size)
+    workers_to_start = length(chunks)
 
-    chunk_size = trunc(Float.ceil(data_size / worker_count))
-    chunks     = split_in_chunks(data_source, chunk_size)
+    workers = Enum.to_list(1..workers_to_start)
+    |> Enum.map(fn(index) -> {index, {:global, make_ref()}} end)
 
     Util.zip_with_fill(workers, chunks, []) |> Enum.each(fn({worker, chunk}) ->
       configuration = %{
-        batch_size:    trunc(Float.ceil(batch_size / worker_count)),
+        batch_size:    trunc(Float.ceil(batch_size / workers_to_start)),
         data:          chunk,
         learning_rate: learning_rate
       }
