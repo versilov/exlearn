@@ -1,6 +1,9 @@
 # Using the data loading module defined in the same folder.
 # This module contains helpers for transforming the raw data from the mnist
 # archives to a format that the network expects, sample loading and preview.
+# To have the module available in a shell you need to give it the path relative
+# to the project root:
+# Code.require_file("samples/mnist-digits/data_loader.exs", __DIR__)
 Code.require_file("data_loader.exs", __DIR__)
 
 # Converts the raw data from archives to a format that the network expects.
@@ -8,7 +11,7 @@ Code.require_file("data_loader.exs", __DIR__)
 # data set. The files will contain data distributed as evenly as possible.
 # You only need to do this once. Comment the following line after runing it
 # the first time.
-DataLoader.convert(4)
+# DataLoader.convert(4)
 
 # Aliasing the module name for brevity.
 alias ExLearn.NeuralNetwork, as: NN
@@ -39,10 +42,10 @@ NN.initialize(initialization_parameters, network)
 # Defines the learning parameters.
 learning_parameters = %{
   training: %{
-    batch_size:    100,
+    batch_size:    1000,
     data:          "samples/mnist-digits/data/training_data-*.eld",
     data_size:     50000,
-    epochs:        1,
+    epochs:        5,
     learning_rate: 3,
   },
   validation: %{
@@ -75,4 +78,4 @@ ask_data = [first_image]
 NN.ask(ask_data, network) |> Task.await(:infinity) |> IO.inspect
 
 # Saves the network state so it can be loaded ack later.
-NN.save("samples/mnist-digits/saved_network.el1", network)
+# NN.save("samples/mnist-digits/saved_network.el1", network)

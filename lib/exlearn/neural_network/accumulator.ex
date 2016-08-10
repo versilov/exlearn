@@ -156,9 +156,6 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
   defp train_for_epochs(workers, configuration, network_state, state, epochs, current_epoch) do
     Notification.push("Epoch: #{current_epoch + 1}", state)
 
-    Enum.map(workers, &prepare_worker/1)
-    |> Enum.map(&Task.await(&1, :infinity))
-
     new_network_state = train_each_batch(workers, configuration, network_state, state)
 
     train_for_epochs(workers, configuration, new_network_state, state, epochs, current_epoch + 1)
@@ -178,10 +175,6 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     Store.set(new_network_state, state)
 
     train_each_batch(remaining_workers, configuration, new_network_state, state)
-  end
-
-  defp prepare_worker({_index, worker}) do
-    Task.async(fn -> Worker.prepare(worker) end)
   end
 
   defp train_worker(worker, network_state) do

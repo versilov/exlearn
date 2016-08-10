@@ -8,11 +8,6 @@ defmodule ExLearn.NeuralNetwork.Worker do
   # Client API
   #----------------------------------------------------------------------------
 
-  @spec prepare(any) :: any
-  def prepare(worker) do
-    GenServer.call(worker, :prepare, :infinity)
-  end
-
   @spec work(:ask, map, any) :: any
   def work(:ask, network_state, worker) do
     GenServer.call(worker, {:ask, network_state}, :infinity)
@@ -55,35 +50,21 @@ defmodule ExLearn.NeuralNetwork.Worker do
       _  -> data_source
     end
 
+    chunks = Enum.chunk(data, batch_size, batch_size, [])
+
+    batches = case chunks do
+      []                  -> %{current: :not_set, remaining: :not_set }
+      [current|remaining] -> %{current: current,  remaining: remaining}
+    end
+
     state = %{
       batch_size:    batch_size,
-      batches:       %{current: :not_set, remaining: :not_set},
+      batches:       batches,
       data:          data,
       learning_rate: learning_rate
     }
 
     {:ok, state}
-  end
-
-  @spec handle_call({}, any,  map) :: {}
-  def handle_call(:prepare, _from, state) do
-    %{
-      batch_size: batch_size,
-      data:       data
-    } = state
-
-    batches = case data do
-      [] ->
-        %{current: :not_set, remaining: :not_set}
-      _  ->
-        [current|remaining] = Enum.chunk(data, batch_size)
-
-        %{current: current, remaining: remaining}
-    end
-
-    new_state = Map.put(state, :batches, batches)
-
-    {:reply, :ok, new_state}
   end
 
   @spec handle_call({}, any,  map) :: {}
@@ -110,10 +91,12 @@ defmodule ExLearn.NeuralNetwork.Worker do
   @spec handle_call({}, any, map) :: {}
   def handle_call({:train, network_state}, _from, state) do
     %{
+      batch_size: batch_size,
       batches: %{
         current:   current,
         remaining: remaining
-      }
+      },
+      data: data
     } = state
 
     case current do
@@ -124,7 +107,9 @@ defmodule ExLearn.NeuralNetwork.Worker do
 
         case remaining do
           [] ->
-            new_batches = %{current: :not_set, remaining: :not_set}
+            [new_current|new_remaining] = Enum.chunk(data, batch_size, batch_size, [])
+
+            new_batches = %{current: new_current, remaining: new_remaining}
             new_state   = Map.put(state, :batches, new_batches)
 
             {:reply, {:done, correction}, new_state}

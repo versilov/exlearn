@@ -177,55 +177,6 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
     assert worker_pid == pid_of_reference
   end
 
-  test "#prepare with data can be called successfully", %{setup: setup} do
-    %{
-      name:    worker = {:global, reference},
-      options: options
-    } = setup
-
-    args = %{
-      batch_size: 1,
-      data: [
-        {[1, 2, 3], [1900, 2800]},
-        {[2, 3, 4], [2600, 3800]}
-      ],
-      learning_rate: 2
-    }
-
-    {:ok, worker_pid} = Worker.start_link(args, options)
-    pid_of_reference  = :global.whereis_name(reference)
-
-    assert Worker.prepare(worker) == :ok
-
-    assert worker_pid |> is_pid
-    assert worker_pid |> Process.alive?
-    assert reference  |> is_reference
-    assert worker_pid == pid_of_reference
-  end
-
-  test "#prepare with no data can be called successfully", %{setup: setup} do
-    %{
-      name:    worker = {:global, reference},
-      options: options
-    } = setup
-
-    args = %{
-      batch_size:    1,
-      data:          [],
-      learning_rate: 2
-    }
-
-    {:ok, worker_pid} = Worker.start_link(args, options)
-    pid_of_reference  = :global.whereis_name(reference)
-
-    assert Worker.prepare(worker) == :ok
-
-    assert worker_pid |> is_pid
-    assert worker_pid |> Process.alive?
-    assert reference  |> is_reference
-    assert worker_pid == pid_of_reference
-  end
-
   test "#work|:ask with data in file returns the ask data", %{setup: setup} do
     %{
       name:          worker,
@@ -294,7 +245,6 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
     }
 
     {:ok, worker_pid} = Worker.start_link(args, options)
-    :ok               = Worker.prepare(worker)
 
     {:continue, first_correction } = Worker.work(:train, network_state, worker)
     {:done,     second_correction} = Worker.work(:train, network_state, worker)
@@ -377,7 +327,6 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
     }
 
     {:ok, worker_pid} = Worker.start_link(args, options)
-    :ok               = Worker.prepare(worker)
 
     {:continue, first_correction } = Worker.work(:train, network_state, worker)
     {:done,     second_correction} = Worker.work(:train, network_state, worker)
