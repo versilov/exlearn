@@ -131,7 +131,7 @@ defmodule NotificationTest do
       options: options
     } = setup
 
-    {:ok, notification_pid} = Notification.start_link(args, options)
+    {:ok, notification_pid} = Notification.start(args, options)
     pid_of_reference        = :global.whereis_name(reference)
 
     assert notification_pid |> is_pid

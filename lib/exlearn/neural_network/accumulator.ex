@@ -1,7 +1,6 @@
 defmodule ExLearn.NeuralNetwork.Accumulator do
   use GenServer
 
-  alias ExLearn.Util
   alias ExLearn.NeuralNetwork.{Notification, Propagator, Store, Worker}
 
   #----------------------------------------------------------------------------
@@ -125,7 +124,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     workers = Enum.to_list(1..workers_to_start)
     |> Enum.map(fn(index) -> {index, {:global, make_ref()}} end)
 
-    Util.zip_with_fill(workers, chunks, []) |> Enum.each(fn({worker, chunk}) ->
+    Enum.zip(workers, chunks) |> Enum.each(fn({worker, chunk}) ->
       configuration = %{
         batch_size:    trunc(Float.ceil(batch_size / workers_to_start)),
         data:          chunk,
@@ -148,10 +147,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
   end
 
   defp train_for_epochs(_, _, _, _, epochs, current_epoch)
-  when epochs == current_epoch
-  do
-    :ok
-  end
+  when epochs == current_epoch, do: :ok
 
   defp train_for_epochs(workers, configuration, network_state, state, epochs, current_epoch) do
     Notification.push("Epoch: #{current_epoch + 1}", state)
@@ -202,7 +198,6 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
 
   defp filter_workers([worker_data|rest], workers) do
     case worker_data do
-      {_worker, :no_data      } -> filter_workers(rest, workers)
       {_worker, {:done,     _}} -> filter_workers(rest, workers)
       {worker,  {:continue, _}} -> filter_workers(rest, [worker|workers])
     end
@@ -210,10 +205,9 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
 
   defp reduce_correction(worker_data) do
     corrections = Enum.reduce(worker_data, [], fn(data, accumulator) ->
-      case data do
-        {_, :no_data       } -> accumulator
-        {_, {_, correction}} -> [correction|accumulator]
-      end
+      {_, {_, correction}} = data
+
+      [correction|accumulator]
     end)
 
     Enum.reduce(corrections, &Propagator.reduce_correction/2)
