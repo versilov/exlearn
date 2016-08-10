@@ -178,18 +178,13 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
   end
 
   defp train_worker(worker, network_state) do
-    {
-      worker,
-      Task.async(fn ->
-        Worker.work(:train, network_state, elem(worker, 1))
-      end)
-    }
+    Worker.work(:train, network_state, elem(worker, 1))
+
+    worker
   end
 
-  defp await_worker(task_data) do
-    {worker, task} = task_data
-
-    result = Task.await(task, :infinity)
+  defp await_worker(worker) do
+    result = Worker.get(elem(worker, 1))
 
     {worker, result}
   end

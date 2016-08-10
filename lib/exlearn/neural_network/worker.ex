@@ -7,6 +7,11 @@ defmodule ExLearn.NeuralNetwork.Worker do
   # Client API
   #----------------------------------------------------------------------------
 
+  @spec get(any) :: any
+  def get(worker) do
+    GenServer.call(worker, :get, :infinity)
+  end
+
   @spec work(:ask, map, any) :: any
   def work(:ask, network_state, worker) do
     GenServer.call(worker, {:ask, network_state}, :infinity)
@@ -14,7 +19,7 @@ defmodule ExLearn.NeuralNetwork.Worker do
 
   @spec work(:train, map,  any) :: any
   def work(:train, network_state, worker) do
-    GenServer.call(worker, {:train, network_state}, :infinity)
+    GenServer.cast(worker, {:train, network_state})
   end
 
   @spec start([{}], map) :: {}
@@ -55,10 +60,20 @@ defmodule ExLearn.NeuralNetwork.Worker do
       batch_size:    batch_size,
       batches:       batches,
       data:          data,
-      learning_rate: learning_rate
+      learning_rate: learning_rate,
+      result:        :no_data
     }
 
     {:ok, state}
+  end
+
+  @spec handle_call({}, any,  map) :: {}
+  def handle_call(:get, _from,  state) do
+    %{result: result} = state
+
+    new_state = Map.put(state, :result, :no_data)
+
+    {:reply, result, new_state}
   end
 
   @spec handle_call({}, any,  map) :: {}
@@ -70,8 +85,8 @@ defmodule ExLearn.NeuralNetwork.Worker do
     {:reply, result, state}
   end
 
-  @spec handle_call({}, any, map) :: {}
-  def handle_call({:train, network_state}, _from, state) do
+  @spec handle_cast({}, map) :: {}
+  def handle_cast({:train, network_state}, state) do
     %{
       batch_size: batch_size,
       batches: %{
@@ -81,9 +96,9 @@ defmodule ExLearn.NeuralNetwork.Worker do
       data: data
     } = state
 
-    case current do
+    new_state = case current do
       :not_set ->
-        {:reply, :no_data, state}
+        Map.put(state, :result, :no_data)
       _ ->
         correction = train_network(current, network_state)
 
@@ -92,17 +107,19 @@ defmodule ExLearn.NeuralNetwork.Worker do
             [new_current|new_remaining] = Enum.chunk(data, batch_size, batch_size, [])
 
             new_batches = %{current: new_current, remaining: new_remaining}
-            new_state   = Map.put(state, :batches, new_batches)
 
-            {:reply, {:done, correction}, new_state}
+            Map.put(state, :batches, new_batches)
+            |> Map.put(:result, {:done, correction})
 
           [new_current|new_remaining] ->
             new_batches = %{current: new_current, remaining: new_remaining}
-            new_state   = Map.put(state, :batches, new_batches)
 
-            {:reply, {:continue, correction}, new_state}
+            Map.put(state, :batches, new_batches)
+            |> Map.put(:result, {:continue, correction})
         end
     end
+
+    {:noreply, new_state}
   end
 
   #----------------------------------------------------------------------------

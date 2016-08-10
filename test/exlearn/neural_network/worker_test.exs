@@ -246,8 +246,11 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
 
     {:ok, worker_pid} = Worker.start_link(args, options)
 
-    {:continue, first_correction } = Worker.work(:train, network_state, worker)
-    {:done,     second_correction} = Worker.work(:train, network_state, worker)
+    Worker.work(:train, network_state, worker)
+    {:continue, first_correction } = Worker.get(worker)
+
+    Worker.work(:train, network_state, worker)
+    {:done, second_correction} = Worker.get(worker)
 
     first_expected_correction = {
       [
@@ -299,6 +302,8 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
 
     assert first_correction  == first_expected_correction
     assert second_correction == second_expected_correction
+
+    assert Worker.get(worker) == :no_data
 
     pid_of_reference = :global.whereis_name(reference)
 
@@ -328,8 +333,11 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
 
     {:ok, worker_pid} = Worker.start_link(args, options)
 
-    {:continue, first_correction } = Worker.work(:train, network_state, worker)
-    {:done,     second_correction} = Worker.work(:train, network_state, worker)
+    Worker.work(:train, network_state, worker)
+    {:continue, first_correction } = Worker.get(worker)
+
+    Worker.work(:train, network_state, worker)
+    {:done, second_correction} = Worker.get(worker)
 
     first_expected_correction = {
       [
@@ -381,6 +389,8 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
 
     assert first_correction  == first_expected_correction
     assert second_correction == second_expected_correction
+
+    assert Worker.get(worker) == :no_data
 
     pid_of_reference = :global.whereis_name(reference)
 
