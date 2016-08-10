@@ -8,7 +8,7 @@ Code.require_file("data_loader.exs", __DIR__)
 # data set. The files will contain data distributed as evenly as possible.
 # You only need to do this once. Comment the following line after runing it
 # the first time.
-# DataLoader.convert(4)
+DataLoader.convert(4)
 
 # Aliasing the module name for brevity.
 alias ExLearn.NeuralNetwork, as: NN
