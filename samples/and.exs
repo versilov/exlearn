@@ -12,7 +12,7 @@ structure_parameters = %{
 network = NN.create(structure_parameters)
 
 initialization_parameters = %{distribution: :uniform, range: {-1, 1}}
-NN.initialize(initialization_parameters)
+NN.initialize(initialization_parameters, network)
 
 training_data = [
   {[0, 0], [0]},
@@ -32,7 +32,7 @@ learning_parameters = %{
   workers: 2
 }
 
-NN.train(training_data, configuration, network) |> Task.await(:infinity)
+NN.train(learning_parameters, network) |> Task.await(:infinity)
 
 ask_data = [
   [0, 0],

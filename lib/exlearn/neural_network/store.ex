@@ -1,8 +1,6 @@
 defmodule ExLearn.NeuralNetwork.Store do
   use GenServer
 
-  alias ExLearn.NeuralNetwork.{Builder, Notification}
-
   # Client API
 
   @spec get(%{store: {:global, reference}}) :: {}

@@ -8,7 +8,7 @@ Code.require_file("data_loader.exs", __DIR__)
 # data set. The files will contain data distributed as evenly as possible.
 # You only need to do this once. Comment the following line after runing it
 # the first time.
-DataLoader.convert(4)
+# DataLoader.convert(4)
 
 # Aliasing the module name for brevity.
 alias ExLearn.NeuralNetwork, as: NN
@@ -31,7 +31,7 @@ network = NN.create(structure_parameters)
 
 # Defines the initialization parameters and initializes the neural network.
 initialization_parameters = %{distribution: :uniform, range: {-1, 1}}
-NN.initialize(initialization_parameters)
+NN.initialize(initialization_parameters, network)
 
 # If you already have a saved state you can load it with the following:
 # NN.load("samples/mnist-digits/saved_network.el1", network)

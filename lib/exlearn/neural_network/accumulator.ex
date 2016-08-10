@@ -87,10 +87,8 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
       training: training_parameters,
       workers:  worker_count
     } = learning_parameters
-    %{
-      data:   data,
-      epochs: epochs
-    } = training_parameters
+
+    %{epochs: epochs} = training_parameters
 
     network_state = Store.get(state)
     workers       = start_workers(worker_count, training_parameters, state)
@@ -112,7 +110,15 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
 
     %{manager: manager} = state
 
-    chunk_size       = trunc(Float.ceil(data_size / worker_count))
+    chunk_size = case data_source do
+      path when is_bitstring(path) ->
+        files = Path.wildcard(path)
+
+        trunc(Float.ceil(length(files) / worker_count))
+      _ ->
+        trunc(Float.ceil(data_size / worker_count))
+    end
+
     chunks           = split_in_chunks(data_source, chunk_size)
     workers_to_start = length(chunks)
 
@@ -125,6 +131,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
         data:          chunk,
         learning_rate: learning_rate
       }
+
       Supervisor.start_child(manager, [configuration, [name: elem(worker, 1)]])
     end)
 
