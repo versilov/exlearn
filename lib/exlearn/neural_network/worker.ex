@@ -1,7 +1,6 @@
 defmodule ExLearn.NeuralNetwork.Worker do
   use GenServer
 
-  alias ExLearn.Util
   alias ExLearn.NeuralNetwork.{Forwarder, Propagator}
 
   #----------------------------------------------------------------------------
@@ -11,11 +10,6 @@ defmodule ExLearn.NeuralNetwork.Worker do
   @spec work(:ask, map, any) :: any
   def work(:ask, network_state, worker) do
     GenServer.call(worker, {:ask, network_state}, :infinity)
-  end
-
-  @spec work(:test, map, any) :: any
-  def work(:test, network_state, worker) do
-    GenServer.call(worker, {:test, network_state}, :infinity)
   end
 
   @spec work(:train, map,  any) :: any
@@ -77,18 +71,6 @@ defmodule ExLearn.NeuralNetwork.Worker do
   end
 
   @spec handle_call({}, any, map) :: {}
-  def handle_call({:test, network_state}, _from, state) do
-    %{
-      configuration: configuration,
-      data:          data
-    } = state
-
-    result = test_network(data, configuration, network_state)
-
-    {:reply, result, state}
-  end
-
-  @spec handle_call({}, any, map) :: {}
   def handle_call({:train, network_state}, _from, state) do
     %{
       batch_size: batch_size,
@@ -142,23 +124,6 @@ defmodule ExLearn.NeuralNetwork.Worker do
     data          = :erlang.binary_to_term(binary)
 
     data ++ accumulator
-  end
-
-  defp test_network(batch, configuration, state) do
-    outputs = Enum.map(batch, &Forwarder.forward_for_test(&1, state))
-
-    %{network: %{objective: %{function: objective}}} = state
-    %{data_size: data_size} = configuration
-
-    targets = Enum.map(batch, fn ({_, target}) -> target end)
-
-    costs = Util.zip_map(targets, outputs, fn (target, output) ->
-      %{output: output_for_objective} = output
-
-      objective.(target, output_for_objective, data_size)
-    end)
-
-    {outputs, costs}
   end
 
   @spec train_network(list, map, map) :: map
