@@ -124,7 +124,7 @@ defmodule BuilderTest do
     } = setup
 
     network_state = Builder.create(structure_parameters)
-    result        = Builder.initialize(initialization_parameters, network_state)
+    result        = Builder.initialize(network_state, initialization_parameters)
     %{network: %{layers: layers}} = result
 
     assert length(layers) == 3

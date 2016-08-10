@@ -68,10 +68,15 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
 
     network_state = Store.get(state)
     worker_name   = {:global, make_ref()}
+    configuration = %{
+      batch_size:    length(data),
+      data:          data,
+      learning_rate: :not_needed
+    }
 
     {:ok, _pid} = Supervisor.start_child(
       manager,
-      [{data, []}, [name: worker_name]]
+      [configuration, [name: worker_name]]
     )
 
     Worker.work(:ask, network_state, worker_name)

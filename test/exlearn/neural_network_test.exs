@@ -9,8 +9,8 @@ defmodule ExLearn.NeuralNetworkTest do
     structure_parameters = %{
       layers: %{
         input:   %{size: 1},
-        hidden: [%{activity: :identity, name: "First Hidden", size:1}],
-        output:  %{activity: :identity, name: "Output",       size:1}
+        hidden: [%{activity: :identity, name: "First Hidden", size: 1}],
+        output:  %{activity: :identity, name: "Output",       size: 1}
       },
       objective: :quadratic
     }
@@ -56,7 +56,7 @@ defmodule ExLearn.NeuralNetworkTest do
       test: %{
         data:      test_data,
         data_size: 2
-      }
+      },
       workers: 2
     }
 
@@ -136,7 +136,7 @@ defmodule ExLearn.NeuralNetworkTest do
       Process.sleep(100)
     end)
 
-    assert result == "Initializing state\nFinished initializing state\nMessage\n"
+    assert result == "Message\n"
   end
 
   test "#save responds with :ok", %{setup: setup} do
@@ -152,12 +152,11 @@ defmodule ExLearn.NeuralNetworkTest do
 
   test "#train responds with :ok", %{setup: setup} do
     %{
-      configuration: configuration,
-      network:       network,
-      training_data: training_data,
+      learning_parameters: learning_parameters,
+      network:             network
     } = setup
 
-    result = NeuralNetwork.train(training_data, configuration, network)
+    result = NeuralNetwork.train(learning_parameters, network)
     |> Task.await(:infinity)
 
     assert result == :ok

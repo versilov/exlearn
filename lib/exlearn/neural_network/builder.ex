@@ -62,7 +62,7 @@ defmodule ExLearn.NeuralNetwork.Builder do
   Initializez a neural network with the given setup.
   """
   @spec initialize(map, map) :: map
-  def initialize(parameters, network_state) do
+  def initialize(network_state, parameters) do
     %{network: network = %{layers: layers}} = network_state
 
     random_function = Distribution.determine(parameters)
