@@ -1,7 +1,7 @@
 defmodule ExLearn.NeuralNetwork.Worker do
   use GenServer
 
-  alias ExLearn.NeuralNetwork.{Forwarder, Propagator, Regularization}
+  alias ExLearn.NeuralNetwork.{Forwarder, Propagator}
 
   #----------------------------------------------------------------------------
   # Client API
@@ -41,8 +41,7 @@ defmodule ExLearn.NeuralNetwork.Worker do
     %{
       batch_size:     batch_size,
       data:           data_source,
-      learning_rate:  learning_rate,
-      regularization: regularization,
+      learning_rate:  learning_rate
     } = configuration
 
     data = case List.first(data_source) do
@@ -57,14 +56,11 @@ defmodule ExLearn.NeuralNetwork.Worker do
       [current|remaining] -> %{current: current,  remaining: remaining}
     end
 
-    regularization_function = Regularization.determine(regularization)
-
     state = %{
       batch_size:     batch_size,
       batches:        batches,
       data:           data,
       learning_rate:  learning_rate,
-      regularization: regularization_function,
       result:         :no_data
     }
 

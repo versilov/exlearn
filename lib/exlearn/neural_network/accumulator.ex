@@ -70,8 +70,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     configuration = %{
       batch_size:     length(data),
       data:           data,
-      learning_rate:  :not_needed,
-      regularization: :none
+      learning_rate:  :not_needed
     }
 
     {:ok, _pid} = Supervisor.start_child(
@@ -105,8 +104,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
       batch_size:     batch_size,
       data:           data_source,
       data_size:      data_size,
-      learning_rate:  learning_rate,
-      regularization: regularization
+      learning_rate:  learning_rate
     } = training_parameters
 
     %{manager: manager} = state
@@ -130,8 +128,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
       configuration = %{
         batch_size:     trunc(Float.ceil(batch_size / workers_to_start)),
         data:           chunk,
-        learning_rate:  learning_rate,
-        regularization: regularization
+        learning_rate:  learning_rate
       }
 
       Supervisor.start_child(manager, [configuration, [name: elem(worker, 1)]])
