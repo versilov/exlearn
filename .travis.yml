@@ -16,6 +16,7 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - gcc-4.9
+      - libblas-dev
 
 env:
   - MIX_ENV=test
