@@ -13,7 +13,7 @@ typedef struct Matrix {
 static void
 matrix_add(Matrix *first, Matrix *second) {
   for (int index = 0; index < first->rows * first->columns; index += 1) {
-    first->data[index] = first->data[index] + second->data[index];
+    first->data[index] += second->data[index];
   }
 }
 
@@ -132,14 +132,14 @@ matrix_dot_tn(Matrix *first, Matrix *second) {
 static void
 matrix_multiply(Matrix *first, Matrix *second) {
   for (int index = 0; index < first->rows * first->columns; index += 1) {
-    first->data[index] = first->data[index] * second->data[index];
+    first->data[index] *= second->data[index];
   }
 }
 
 static void
 matrix_multiply_with_scalar(Matrix *matrix, double scalar) {
   for (int index = 0; index < matrix->rows * matrix->columns; index += 1) {
-    matrix->data[index] = matrix->data[index] * scalar;
+    matrix->data[index] *= scalar;
   }
 }
 
@@ -162,7 +162,7 @@ matrix_transpose(Matrix *matrix) {
 static void
 matrix_substract(Matrix *first, Matrix *second) {
   for (int index = 0; index < first->rows * first->columns; index += 1) {
-    first->data[index] = first->data[index] - second->data[index];
+    first->data[index] -= second->data[index];
   }
 }
 
