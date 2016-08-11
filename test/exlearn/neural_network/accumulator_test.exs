@@ -112,11 +112,12 @@ defmodule ExLearn.NeuralNetwork.AccumulatorTest do
 
     learning_parameters = %{
       training: %{
-        batch_size:    2,
-        data:          path,
-        data_size:     2,
-        epochs:        1,
-        learning_rate: 4,
+        batch_size:     2,
+        data:           path,
+        data_size:      2,
+        epochs:         1,
+        learning_rate:  4,
+        regularization: :none
       },
       workers: 2
     }
@@ -217,11 +218,12 @@ defmodule ExLearn.NeuralNetwork.AccumulatorTest do
 
     learning_parameters = %{
       training: %{
-        batch_size:    2,
-        data:          training_data,
-        data_size:     2,
-        epochs:        1,
-        learning_rate: 4,
+        batch_size:     2,
+        data:           training_data,
+        data_size:      2,
+        epochs:         1,
+        learning_rate:  4,
+        regularization: :none
       },
       workers: 2
     }

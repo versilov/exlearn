@@ -54,9 +54,10 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
     } = setup
 
     args = %{
-      batch_size:    1,
-      data:          [],
-      learning_rate: :not_neede
+      batch_size:     1,
+      data:           [],
+      learning_rate:  :not_needed,
+      regularization: :none
     }
 
     {:ok, worker_pid} = Worker.start_link(args, options)
@@ -83,9 +84,10 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
     :ok    = File.write(path, binary)
 
     args = %{
-      batch_size:    1,
-      data:          [path],
-      learning_rate: 2
+      batch_size:     1,
+      data:           [path],
+      learning_rate:  2,
+      regularization: :none
     }
 
     {:ok, worker_pid} = Worker.start(args, options)
@@ -112,7 +114,8 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
         {[1, 2, 3], [1900, 2800]},
         {[2, 3, 4], [2600, 3800]}
       ],
-      learning_rate: 2
+      learning_rate:  2,
+      regularization: :none
     }
 
     {:ok, worker_pid} = Worker.start(args, options)
@@ -132,9 +135,10 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
     } = setup
 
     args = %{
-      batch_size:    1,
-      data:          [],
-      learning_rate: 2
+      batch_size:     1,
+      data:           [],
+      learning_rate:  2,
+      regularization: :none
     }
 
     {:ok, worker_pid} = Worker.start(args, options)
@@ -159,9 +163,10 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
     :ok    = File.write(path, binary)
 
     args = %{
-      batch_size:    1,
-      data:          [path],
-      learning_rate: 2
+      batch_size:     1,
+      data:           [path],
+      learning_rate:  2,
+      regularization: :none
     }
 
     {:ok, worker_pid} = Worker.start_link(args, options)
@@ -188,7 +193,8 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
         {[1, 2, 3], [1900, 2800]},
         {[2, 3, 4], [2600, 3800]}
       ],
-      learning_rate: 2
+      learning_rate:  2,
+      regularization: :none
     }
 
     {:ok, worker_pid} = Worker.start_link(args, options)
@@ -214,9 +220,10 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
     :ok    = File.write(path, binary)
 
     args = %{
-      batch_size:    1,
-      data:          [path],
-      learning_rate: 2
+      batch_size:     1,
+      data:           [path],
+      learning_rate:  2,
+      regularization: :none
     }
 
     {:ok, _pid} = Worker.start_link(args, options)
@@ -237,9 +244,10 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
     } = setup
 
     args = %{
-      batch_size:    1,
-      data:          [[1, 2, 3]],
-      learning_rate: :none
+      batch_size:     1,
+      data:           [[1, 2, 3]],
+      learning_rate:  :not_needed,
+      regularization: :none
     }
 
     {:ok, _pid} = Worker.start_link(args, options)
@@ -263,9 +271,10 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
     :ok    = File.write(path, binary)
 
     args = %{
-      batch_size:    1,
-      data:          [path],
-      learning_rate: 2
+      batch_size:     1,
+      data:           [path],
+      learning_rate:  2,
+      regularization: :none
     }
 
     {:ok, worker_pid} = Worker.start_link(args, options)
@@ -352,7 +361,8 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
         {[1, 2, 3], [1900, 2800]},
         {[2, 3, 4], [2600, 3800]}
       ],
-      learning_rate: 2
+      learning_rate:  2,
+      regularization: :none
     }
 
     {:ok, worker_pid} = Worker.start_link(args, options)
@@ -432,9 +442,10 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
     } = setup
 
     args = %{
-      batch_size:    1,
-      data:          [],
-      learning_rate: :not_needed
+      batch_size:     1,
+      data:           [],
+      learning_rate:  :not_needed,
+      regularization: :none
     }
 
     {:ok, worker_pid} = Worker.start_link(args, options)

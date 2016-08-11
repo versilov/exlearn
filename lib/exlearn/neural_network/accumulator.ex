@@ -68,9 +68,10 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     network_state = Store.get(state)
     worker_name   = {:global, make_ref()}
     configuration = %{
-      batch_size:    length(data),
-      data:          data,
-      learning_rate: :not_needed
+      batch_size:     length(data),
+      data:           data,
+      learning_rate:  :not_needed,
+      regularization: :none
     }
 
     {:ok, _pid} = Supervisor.start_child(
@@ -101,10 +102,11 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
 
   defp start_workers(worker_count, training_parameters, state) do
     %{
-      batch_size:    batch_size,
-      data:          data_source,
-      data_size:     data_size,
-      learning_rate: learning_rate
+      batch_size:     batch_size,
+      data:           data_source,
+      data_size:      data_size,
+      learning_rate:  learning_rate,
+      regularization: regularization
     } = training_parameters
 
     %{manager: manager} = state
@@ -126,9 +128,10 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
 
     Enum.zip(workers, chunks) |> Enum.each(fn({worker, chunk}) ->
       configuration = %{
-        batch_size:    trunc(Float.ceil(batch_size / workers_to_start)),
-        data:          chunk,
-        learning_rate: learning_rate
+        batch_size:     trunc(Float.ceil(batch_size / workers_to_start)),
+        data:           chunk,
+        learning_rate:  learning_rate,
+        regularization: regularization
       }
 
       Supervisor.start_child(manager, [configuration, [name: elem(worker, 1)]])
