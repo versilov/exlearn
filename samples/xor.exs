@@ -28,7 +28,7 @@ learning_parameters = %{
     data_size:      4,
     epochs:         600,
     learning_rate:  0.4,
-    regularization: %{type: :L2, rate: 0.05}
+    regularization: :none
   },
   workers: 2
 }

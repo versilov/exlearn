@@ -21,11 +21,12 @@ training_data = [
 
 learning_parameters = %{
   training: %{
-    batch_size:    1,
-    data:          training_data,
-    data_size:     2,
-    epochs:        1000,
-    learning_rate: 0.5
+    batch_size:     1,
+    data:           training_data,
+    data_size:      2,
+    epochs:         1000,
+    learning_rate:  0.5,
+    regularization: :none
   },
   workers: 1
 }

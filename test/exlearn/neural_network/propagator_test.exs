@@ -8,11 +8,14 @@ defmodule PropagatorTest do
     objective  = fn(a, b, _c) ->
       Enum.zip(b, a) |> Enum.map(fn({x, y}) -> x - y end)
     end
+    regularization = fn(x, _, _) -> x + 1 end
 
     configuration = %{
-      batch_size:    1,
-      learning_rate: 2,
-      workers:       1
+      batch_size:     1,
+      data_size:      1,
+      learning_rate:  2,
+      workers:        1,
+      regularization: regularization
     }
 
     network_state = %{
@@ -85,26 +88,99 @@ defmodule PropagatorTest do
             activity: %{derivative: derivative},
             biases:   [[-837, -1828, -2819]],
             weights:  [
-              [-2037, -4452, -6867 ],
-              [-2872, -6279, -9686 ],
-              [-3707, -8106, -12505]
+              [-2036, -4451, -6866 ],
+              [-2871, -6278, -9685 ],
+              [-3706, -8105, -12504]
             ]
           },
           %{
             activity: %{derivative: derivative},
             biases:   [[-150, -337]],
             weights:  [
-              [-7615,  -16798],
-              [-9363,  -20654],
-              [-11111, -24510]
+              [-7614,  -16797],
+              [-9362,  -20653],
+              [-11110, -24509]
             ]
           },
           %{
             activity: %{derivative: derivative},
             biases:   [[-28, -53]],
             weights:  [
-              [-18935, -36562],
-              [-24745, -47780]
+              [-18934, -36561],
+              [-24744, -47779]
+            ]
+          }
+        ],
+        objective: %{error: objective}
+      }
+    }
+
+    assert Propagator.apply_changes(
+      correction,
+      configuration,
+      network_state
+    ) == expected
+  end
+
+  test "#apply_changes with regularization returns the new state", %{setup: setup} do
+    %{
+      configuration: configuration,
+      derivative:    derivative,
+      network_state: network_state,
+      objective:     objective
+    } = setup
+
+    correction = {
+      [
+        [[419, 915, 1411]],
+        [[77,  171]],
+        [[17,  30]]
+      ],
+      [
+        [
+          [1019, 2227, 3435],
+          [1438, 3142, 4846],
+          [1857, 4057, 6257]
+        ],
+        [
+          [3808, 8400 ],
+          [4683, 10329],
+          [5558, 12258]
+        ],
+        [
+          [9468,  18282],
+          [12374, 23892]
+        ]
+      ]
+    }
+
+    expected = %{
+      network: %{
+        layers: [
+          %{
+            activity: %{derivative: derivative},
+            biases:   [[-837, -1828, -2819]],
+            weights:  [
+              [-2036, -4451, -6866 ],
+              [-2871, -6278, -9685 ],
+              [-3706, -8105, -12504]
+            ]
+          },
+          %{
+            activity: %{derivative: derivative},
+            biases:   [[-150, -337]],
+            weights:  [
+              [-7614,  -16797],
+              [-9362,  -20653],
+              [-11110, -24509]
+            ]
+          },
+          %{
+            activity: %{derivative: derivative},
+            biases:   [[-28, -53]],
+            weights:  [
+              [-18934, -36561],
+              [-24744, -47779]
             ]
           }
         ],

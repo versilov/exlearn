@@ -23,7 +23,7 @@ structure_parameters = %{
     hidden: [%{activity: :logistic, name: "First Hidden", size: 30}],
     output:  %{activity: :logistic, name: "Output",       size: 10}
   },
-  objective: :quadratic
+  objective: :cross_entropy
 }
 
 # Creates the neural network structure.
@@ -42,11 +42,12 @@ NN.initialize(initialization_parameters, network)
 # Defines the learning parameters.
 learning_parameters = %{
   training: %{
-    batch_size:    1000,
-    data:          "samples/mnist-digits/data/training_data-*.eld",
-    data_size:     50000,
-    epochs:        5,
-    learning_rate: 3,
+    batch_size:     1000,
+    data:           "samples/mnist-digits/data/training_data-*.eld",
+    data_size:      50000,
+    epochs:         1,
+    learning_rate:  0.5,
+    regularization: %{type: :L2, rate: 0.005}
   },
   validation: %{
     data:      "samples/mnist-digits/data/validation_data-*.eld",

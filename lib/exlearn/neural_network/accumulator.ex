@@ -1,7 +1,9 @@
 defmodule ExLearn.NeuralNetwork.Accumulator do
   use GenServer
 
-  alias ExLearn.NeuralNetwork.{Notification, Propagator, Store, Worker}
+  alias ExLearn.NeuralNetwork.{
+    Notification, Propagator, Regularization, Store, Worker
+  }
 
   #----------------------------------------------------------------------------
   # Client API
@@ -87,13 +89,24 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
       workers:  worker_count
     } = learning_parameters
 
-    %{epochs: epochs} = training_parameters
+    %{
+      epochs:         epochs,
+      regularization: regularization
+    } = training_parameters
+
+    regularization_function = Regularization.determine(regularization)
+
+    new_training_parameters = Map.put(
+      training_parameters,
+      :regularization,
+      regularization_function
+    )
 
     network_state = Store.get(state)
-    workers       = start_workers(worker_count, training_parameters, state)
+    workers       = start_workers(worker_count, new_training_parameters, state)
 
     Notification.push("Started training", state)
-    train_for_epochs(workers, training_parameters, network_state, state, epochs, 0)
+    train_for_epochs(workers, new_training_parameters, network_state, state, epochs, 0)
     Notification.push("Finished training", state)
 
     :ok
