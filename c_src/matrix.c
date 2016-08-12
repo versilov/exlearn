@@ -1,4 +1,6 @@
 #include <cblas.h>
+#include <netinet/in.h>
+#include <stdio.h>
 #include "erl_nif.h"
 
 typedef struct Matrix {
@@ -10,13 +12,6 @@ typedef struct Matrix {
 //-----------------------------------------------------------------------------
 // Matrix API
 //-----------------------------------------------------------------------------
-
-static void
-matrix_add(Matrix *first, Matrix *second) {
-  for (int index = 0; index < first->rows * first->columns; index += 1) {
-    first->data[index] += second->data[index];
-  }
-}
 
 static Matrix *
 matrix_dot(Matrix *first, Matrix *second) {
@@ -243,18 +238,33 @@ free_matrix(Matrix *matrix) {
 
 static ERL_NIF_TERM
 add(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
+  ErlNifBinary  first, second;
   ERL_NIF_TERM  result;
-  Matrix       *first, *second;
+  float        *first_data, *second_data, *result_data;
+  int           data_size;
+  size_t        result_size;
 
-  first  = list_of_lists_to_matrix(env, argv[0]);
-  second = list_of_lists_to_matrix(env, argv[1]);
+  if (!enif_inspect_binary(env, argv[0], &first)) return enif_make_badarg(env);
+  if (!enif_inspect_binary(env, argv[1], &second)) return enif_make_badarg(env);
 
-  matrix_add(first, second);
+  first_data  = (float *) first_data;
 
-  result = matrix_to_list_of_lists(env, first);
+  second_data = (float *) second.data;
 
-  free_matrix(first);
-  free_matrix(second);
+  data_size   = first_data[0] * first_data[1] + 2;
+
+  printf("%e\r\n", first_data[0]);
+
+  result_size = sizeof(float) * data_size;
+
+  result_data = (float *) enif_make_new_binary(env, result_size, &result);
+
+  result_data[0] = first_data[0];
+  result_data[1] = first_data[1];
+
+  for (int index = 2; index < data_size; index += 1) {
+    result_data[index] = first_data[index] + second_data[index];
+  }
 
   return result;
 }

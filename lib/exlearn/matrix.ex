@@ -3,8 +3,6 @@ defmodule ExLearn.Matrix do
   Performs operations on matrices
   """
 
-  alias ExLearn.Vector
-
   @on_load :load_nifs
 
   def load_nifs do
@@ -22,20 +20,36 @@ defmodule ExLearn.Matrix do
   @doc """
   Applies the given function on each element of the matrix
   """
-  @spec apply([[]], ((number) -> number)) :: [[]]
+  @spec apply(binary, ((number) -> number)) :: [[]]
   def apply(matrix, function) do
-    Enum.map(matrix, &Vector.apply(&1, function))
+    <<rows :: float-32, columns :: float-32, data :: binary>> = matrix
+
+    initial = <<rows :: float-32, columns :: float-32>>
+
+    apply_on_matrix(data, function, initial)
+  end
+
+  defp apply_on_matrix(<<>>, _,        accumulator), do: accumulator
+  defp apply_on_matrix(data, function, accumulator)  do
+    <<element :: float-32, rest :: binary>> = data
+    new_element = function.(element)
+
+    apply_on_matrix(rest, function, accumulator <> <<new_element :: float-32>>)
   end
 
   @doc """
   Creates a new matrix with values provided by the given function
   """
+  @spec build(non_neg_integer, non_neg_integer, function) :: binary
   def build(rows, columns, function) do
-    Stream.unfold(rows, fn
-      0 -> nil
-      n -> {Vector.build(columns, function), n - 1}
-    end)
-    |> Enum.to_list
+    initial = <<rows :: float-32, columns :: float-32>>
+
+    build_matrix(rows * columns, function, initial)
+  end
+
+  defp build_matrix(0,    _,        accumulator), do: accumulator
+  defp build_matrix(size, function, accumulator)  do
+    build_matrix(size - 1, function, accumulator <> <<function.() :: float-32>>)
   end
 
   @doc """
