@@ -24,10 +24,22 @@ defmodule DataLoader do
 
   def preview_image(image) do
     preview_image(image, 1)
+
+    image
   end
 
-  def preview_image(<<>>,  _),             do: :ok
-  def preview_image(image, current_column) do
+  def preview_label(label) do
+    IO.inspect preview_label(label, [])
+
+    label
+  end
+
+  #----------------------------------------------------------------------------
+  # Internal Functions
+  #----------------------------------------------------------------------------
+
+  defp preview_image(<<>>,  _),             do: :ok
+  defp preview_image(image, current_column) do
     <<pixel :: float-32, rest :: binary>> = image
 
     :io.format("~3..0B", [trunc(pixel)])
@@ -42,9 +54,12 @@ defmodule DataLoader do
     end
   end
 
-  #----------------------------------------------------------------------------
-  # Internal Functions
-  #----------------------------------------------------------------------------
+  defp preview_label(<<>>,  accumulator), do: Enum.reverse(accumulator)
+  defp preview_label(label, accumulator)  do
+    <<element :: float-32, rest :: binary>> = label
+
+    preview_label(rest, [trunc(element)|accumulator])
+  end
 
   defp convert_training_and_validation_data(number_of_files) do
     data = read_training_data()
@@ -169,7 +184,7 @@ defmodule DataLoader do
 
     formatted_pixel = <<raw_pixel :: float-32>>
 
-    format_image(rest, formatted_pixel <> accumulator)
+    format_image(rest, accumulator <> formatted_pixel)
   end
 
   #----------------------------------------------------------------------------

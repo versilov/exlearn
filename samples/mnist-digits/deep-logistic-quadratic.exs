@@ -11,7 +11,7 @@ Code.require_file("data_loader.exs", __DIR__)
 # data set. The files will contain data distributed as evenly as possible.
 # You only need to do this once. Comment the following line after runing it
 # the first time.
-DataLoader.convert(4)
+# DataLoader.convert(4)
 
 # Aliasing the module name for brevity.
 alias ExLearn.NeuralNetwork, as: NN
@@ -71,7 +71,7 @@ NN.train(learning_parameters, network) |> Task.await(:infinity)
 [first_sample|_] = DataLoader.load("samples/mnist-digits/data/test_data-0.eld")
 {first_image, first_label} = first_sample
 DataLoader.preview_image(first_image)
-IO.inspect first_label
+DataLoader.preview_label(first_label)
 
 ask_data = [first_image]
 
