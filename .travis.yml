@@ -25,6 +25,7 @@ env:
 before_script:
   - mix deps.get --only test
   - CC=gcc-4.9 make
+  - find / -name libblas.so
 
 script:
   - mix coveralls.travis

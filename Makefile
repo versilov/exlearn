@@ -10,4 +10,4 @@ clean:
 
 compile:
 	mkdir -p priv && \
-	$(CC) -fPIC -I$(ERL_INCLUDE_PATH) -lblas -o priv/matrix.so -O3 -shared -std=c11 -Wall c_src/matrix.c
+	$(CC) -fPIC -I$(ERL_INCLUDE_PATH) -L/usr/lib/libblas -lblas -o priv/matrix.so -O3 -shared -std=c11 -Wall c_src/matrix.c
