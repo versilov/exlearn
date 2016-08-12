@@ -25,6 +25,9 @@ env:
 before_script:
   - mix deps.get --only test
   - CC=gcc-4.9 make
+  - ls -la /usr/lib
+  - ls -la /usr/lib/libblas
+  - nm -D /usr/lib/libblas.so | grep cblas_dgemm
 
 script:
   - mix coveralls.travis
