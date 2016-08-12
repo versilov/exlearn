@@ -45,7 +45,7 @@ learning_parameters = %{
     batch_size:     1000,
     data:           "samples/mnist-digits/data/training_data-*.eld",
     data_size:      50000,
-    epochs:         1,
+    epochs:         30,
     learning_rate:  0.5,
     regularization: %{type: :L2, rate: 0.005}
   },
