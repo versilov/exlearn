@@ -17,6 +17,8 @@ addons:
     packages:
       - gcc-4.9
       - libblas-dev
+      - libatlas-dev
+      - liblapack-dev
       - libgfortran3
 
 env:
@@ -25,6 +27,8 @@ env:
 before_script:
   - mix deps.get --only test
   - CC=gcc-4.9 make
+  - ls -la /usr/lib
+  - ls -la /usr/include
 
 script:
   - mix coveralls.travis
