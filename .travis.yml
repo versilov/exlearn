@@ -17,6 +17,7 @@ addons:
     packages:
       - gcc-4.9
       - libblas-dev
+      - libgfortran
 
 env:
   - MIX_ENV=test
