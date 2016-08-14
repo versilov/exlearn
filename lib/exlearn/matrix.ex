@@ -22,34 +22,25 @@ defmodule ExLearn.Matrix do
   """
   @spec apply(binary, ((number) -> number)) :: [[]]
   def apply(matrix, function) do
-    <<rows :: float-32, columns :: float-32, data :: binary>> = matrix
+    <<
+      rows    :: float-little-32,
+      columns :: float-little-32,
+      data    :: binary
+    >> = matrix
 
-    initial = <<rows :: float-32, columns :: float-32>>
+    initial = <<rows :: float-little-32, columns :: float-little-32>>
 
     apply_on_matrix(data, function, initial)
   end
 
   defp apply_on_matrix(<<>>, _,        accumulator), do: accumulator
   defp apply_on_matrix(data, function, accumulator)  do
-    <<element :: float-32, rest :: binary>> = data
-    new_element = function.(element)
+    <<value :: float-little-32, rest :: binary>> = data
 
-    apply_on_matrix(rest, function, accumulator <> <<new_element :: float-32>>)
-  end
+    new_value   = function.(value)
+    new_element = <<new_value :: float-little-32>>
 
-  @doc """
-  Creates a new matrix with values provided by the given function
-  """
-  @spec build(non_neg_integer, non_neg_integer, function) :: binary
-  def build(rows, columns, function) do
-    initial = <<rows :: float-32, columns :: float-32>>
-
-    build_matrix(rows * columns, function, initial)
-  end
-
-  defp build_matrix(0,    _,        accumulator), do: accumulator
-  defp build_matrix(size, function, accumulator)  do
-    build_matrix(size - 1, function, accumulator <> <<function.() :: float-32>>)
+    apply_on_matrix(rest, function, accumulator <> new_element)
   end
 
   @doc """
@@ -98,6 +89,34 @@ defmodule ExLearn.Matrix do
   @spec multiply_with_scalar([[]], [[]]) :: [[]]
   def multiply_with_scalar(_matrix, _scalar) do
     exit(:nif_library_not_loaded)
+  end
+
+  @doc """
+  Creates a new matrix with values provided by the given function
+  """
+  @spec new(non_neg_integer, non_neg_integer, function) :: binary
+  def new(rows, columns, function) when is_function(function, 0) do
+    initial = <<rows :: float-little-32, columns :: float-little-32>>
+
+    new_matrix_from_function(rows * columns, function, initial)
+  end
+
+  defp new_matrix_from_function(0,    _,        accumulator), do: accumulator
+  defp new_matrix_from_function(size, function, accumulator)  do
+    current = <<function.() :: float-little-32>>
+
+    new_matrix_from_function(size - 1, function, accumulator <> current)
+  end
+
+  @spec new(non_neg_integer, non_neg_integer, list(list)) :: binary
+  def new(rows, columns, list_of_lists) when is_list(list_of_lists) do
+    initial = <<rows :: float-little-32, columns :: float-little-32>>
+
+    Enum.reduce(list_of_lists, initial, fn(list, accumulator) ->
+      accumulator <> Enum.reduce(list, <<>>, fn(element, partial) ->
+        partial <> <<element :: float-little-32>>
+      end)
+    end)
   end
 
   @doc """
