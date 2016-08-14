@@ -8,7 +8,7 @@ defmodule MatrixTest do
     second   = Matrix.new(2, 3, [[5, 2, 1], [3, 4, 6 ]])
     expected = Matrix.new(2, 3, [[6, 4, 4], [7, 9, 12]])
 
-    assert Matrix.add(first, second) == first
+    assert Matrix.add(first, second) == expected
   end
 
   test "#apply applies a function on each element of the matrix" do
@@ -84,7 +84,7 @@ defmodule MatrixTest do
   test "#new creates a new matrix initialized by a list" do
     rows     = 2
     columns  = 3
-    list     = Matrix.new(2, 3, [[1, 2, 3], [4, 5, 6]])
+    list     = [[1, 2, 3], [4, 5, 6]]
     expected = <<
       2 :: float-little-32, 3 :: float-little-32,
       1 :: float-little-32, 2 :: float-little-32, 3 :: float-little-32,
