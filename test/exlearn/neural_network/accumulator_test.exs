@@ -56,18 +56,18 @@ defmodule ExLearn.NeuralNetwork.AccumulatorTest do
         layers: [
           %{
             activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   [[1, 2, 3]],
-            weights:  [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+            biases:   Matrix.new(1, 3, [[1, 2, 3]]),
+            weights:  Matrix.new(1, 3, [[1, 2, 3], [4, 5, 6], [7, 8, 9]])
           },
           %{
             activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   [[4, 5]],
-            weights:  [[1, 2], [3, 4], [5, 6]]
+            biases:   Matrix.new(1, 3, [[4, 5]]),
+            weights:  Matrix.new(1, 3, [[1, 2], [3, 4], [5, 6]])
           },
           %{
             activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   [[6, 7]],
-            weights:  [[1, 2], [3, 4]]
+            biases:   Matrix.new(1, 3, [[6, 7]]),
+            weights:  Matrix.new(1, 3, [[1, 2], [3, 4]])
           },
         ],
         objective: %{error: objective}
@@ -76,8 +76,8 @@ defmodule ExLearn.NeuralNetwork.AccumulatorTest do
 
     Store.set(network_state, store_name)
 
-    data     = [[1, 2, 3], [2, 3, 4]]
-    expected = [[1897, 2784], [2620, 3846]]
+    data     = Matrix.new(1, 3, [[1, 2, 3], [2, 3, 4]])
+    expected = Matrix.new(1, 3, [[1897, 2784], [2620, 3846]])
 
     assert Accumulator.ask(data, name) == expected
     assert Store.get(store_name)       == network_state
@@ -101,8 +101,8 @@ defmodule ExLearn.NeuralNetwork.AccumulatorTest do
     {:ok, accumulator_pid} = Accumulator.start_link(args, options)
 
     training_data = [
-      {[1, 2, 3], [1900, 2800]},
-      {[2, 3, 4], [2600, 3800]}
+      {Matrix.new(1, 3, [1, 2, 3]), Matrix.new(1, 3, [1900, 2800])},
+      {Matrix.new(1, 3, [2, 3, 4]), Matrix.new(1, 3, [2600, 3800])}
     ]
 
     timestamp = :os.system_time(:micro_seconds) |> to_string

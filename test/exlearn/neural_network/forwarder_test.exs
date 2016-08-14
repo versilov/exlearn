@@ -1,6 +1,7 @@
 defmodule ForwarderTest do
   use ExUnit.Case, async: true
 
+  alias ExLearn.Matrix
   alias ExLearn.NeuralNetwork.Forwarder
 
   # Netowrk mocked as following:
@@ -24,19 +25,19 @@ defmodule ForwarderTest do
         layers: [
           %{
             activity: %{arity: 1, function: f, derivative: d},
-            biases:   [[1, 2, 3]],
-            weights:  [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+            biases:   Matrix.new(1, 3, [[1, 2, 3]]),
+            weights:  Matrix.new(3, 3, [[1, 2, 3], [4, 5, 6], [7, 8, 9]])
           },
           %{
             activity: %{arity: 1, function: f, derivative: d},
-            biases:   [[4, 5]],
-            weights:  [[1, 2], [3, 4], [5, 6]]
+            biases:   Matrix.new(1, 2, [[4, 5]]),
+            weights:  Matrix.new(3, 2, [[1, 2], [3, 4], [5, 6]])
           },
           %{
             activity: %{arity: 1, function: f, derivative: d},
-            biases:   [[6, 7]],
-            weights:  [[1, 2], [3, 4]]
-          },
+            biases:   Matrix.new(2, 2, [[6, 7]]),
+            weights:  Matrix.new(2, 2, [[1, 2], [3, 4]])
+          }
         ]
       }
     }
@@ -55,8 +56,8 @@ defmodule ForwarderTest do
       state:      state
     } = setup
 
-    first_input  = {[1, 2, 3], [1900, 2800]}
-    second_input = {[2, 3, 4], [2600, 3800]}
+    first_input  = {Matrix.new(1, 3, [[1, 2, 3]]), Matrix.new(1, 2, [[1900, 2800]])}
+    second_input = {Matrix.new(1, 3, [[2, 3, 4]]), Matrix.new(1, 2, [[2600, 3800]])}
 
     first_activity = %{
       activity: [
@@ -64,27 +65,27 @@ defmodule ForwarderTest do
           arity:      1,
           function:   function,
           derivative: derivative,
-          input:      [[31, 38, 45]],
-          output:     [[32, 39, 46]]
+          input:      Matrix.new(1, 3, [[31, 38, 45]]),
+          output:     Matrix.new(1, 3, [[32, 39, 46]])
         },
         %{
           arity:      1,
           function:   function,
           derivative: derivative,
-          input:      [[383, 501]],
-          output:     [[384, 502]]
+          input:      Matrix.new(1, 2, [[383, 501]]),
+          output:     Matrix.new(1, 2, [[384, 502]])
         },
         %{
           arity:      1,
           function:   function,
           derivative: derivative,
-          input:      [[1896, 2783]],
-          output:     [[1897, 2784]]
+          input:      Matrix.new(1, 2, [[1896, 2783]]),
+          output:     Matrix.new(1, 2, [[1897, 2784]])
         }
       ],
-      expected: [1900, 2800],
-      input:    [1, 2, 3],
-      output:   [1897, 2784]
+      expected: Matrix.new(1, 2, [[1900, 2800]]),
+      input:    Matrix.new(1, 3, [[1, 2, 3]]),
+      output:   Matrix.new(1, 2, [[1897, 2784]])
     }
 
     second_activity = %{
@@ -93,27 +94,27 @@ defmodule ForwarderTest do
           arity:      1,
           function:   function,
           derivative: derivative,
-          input:      [[43, 53, 63]],
-          output:     [[44, 54, 64]]
+          input:      Matrix.new(1, 3, [[43, 53, 63]]),
+          output:     Matrix.new(1, 3, [[44, 54, 64]])
         },
         %{
           arity:      1,
           function:   function,
           derivative: derivative,
-          input:      [[530, 693]],
-          output:     [[531, 694]]
+          input:      Matrix.new(1, 2, [[530, 693]]),
+          output:     Matrix.new(1, 2, [[531, 694]])
         },
         %{
           arity:      1,
           function:   function,
           derivative: derivative,
-          input:      [[2619, 3845]],
-          output:     [[2620, 3846]]
+          input:      Matrix.new(1, 2, [[2619, 3845]]),
+          output:     Matrix.new(1, 2, [[2620, 3846]])
         }
       ],
-      expected: [2600, 3800],
-      input:    [2, 3, 4],
-      output:   [2620, 3846]
+      expected: Matrix.new(1, 2, [[2600, 3800]]),
+      input:    Matrix.new(1, 3, [[2, 3, 4]]),
+      output:   Matrix.new(1, 2, [[2620, 3846]])
     }
 
     assert Forwarder.forward_for_activity(first_input,  state) == first_activity
@@ -123,26 +124,32 @@ defmodule ForwarderTest do
   test "#forward_for_output returns the outputs", %{setup: setup} do
     %{state: state} = setup
 
-    assert Forwarder.forward_for_output([1, 2, 3], state) == [1897, 2784]
-    assert Forwarder.forward_for_output([2, 3, 4], state) == [2620, 3846]
+    first_input  = Matrix.new(1, 3, [[1, 2, 3]])
+    second_input = Matrix.new(1, 3, [[2, 3, 4]])
+
+    first_expected  = Matrix.new(1, 2, [[1897, 2784]])
+    second_expected = Matrix.new(1, 2, [[2620, 3846]])
+
+    assert Forwarder.forward_for_output(first_input,  state) == first_expected
+    assert Forwarder.forward_for_output(second_input, state) == second_expected
   end
 
   test "#forward_for_test returns the outputs and expected", %{setup: setup} do
     %{state: state} = setup
 
-    first_input  = {[1, 2, 3], [1900, 2800]}
-    second_input = {[2, 3, 4], [2600, 3800]}
+    first_input  = {Matrix.new(1, 3, [[1, 2, 3]]), Matrix.new(1, 2, [[1900, 2800]])}
+    second_input = {Matrix.new(1, 3, [[2, 3, 4]]), Matrix.new(1, 2, [[2600, 3800]])}
 
     first_expected = %{
-      input:    [1, 2, 3],
-      expected: [1900, 2800],
-      output:   [1897, 2784]
+      input:    Matrix.new(1, 3, [[1, 2, 3]]),
+      expected: Matrix.new(1, 2, [[1900, 2800]]),
+      output:   Matrix.new(1, 2, [[1897, 2784]])
     }
 
     second_expected = %{
-      input:    [2, 3, 4],
-      expected: [2600, 3800],
-      output:   [2620, 3846]
+      input:    Matrix.new(1, 3, [[2, 3, 4]]),
+      expected: Matrix.new(1, 2, [[2600, 3800]]),
+      output:   Matrix.new(1, 2, [[2620, 3846]])
     }
 
     assert Forwarder.forward_for_test(first_input,  state) == first_expected

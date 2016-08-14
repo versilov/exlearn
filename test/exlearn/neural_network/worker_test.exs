@@ -1,6 +1,7 @@
 defmodule ExLearn.NeuralNetwork.WorkerTest do
   use ExUnit.Case, async: true
 
+  alias ExLearn.Matrix
   alias ExLearn.NeuralNetwork.Worker
 
   setup do
@@ -18,18 +19,18 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
         layers: [
           %{
             activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   [[1, 2, 3]],
-            weights:  [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+            biases:   Matrix.new(1, 3, [[1, 2, 3]]),
+            weights:  Matrix.new(3, 3, [[1, 2, 3], [4, 5, 6], [7, 8, 9]])
           },
           %{
             activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   [[4, 5]],
-            weights:  [[1, 2], [3, 4], [5, 6]]
+            biases:   Matrix.new(1, 2, [[4, 5]]),
+            weights:  Matrix.new(3, 2, [[1, 2], [3, 4], [5, 6]])
           },
           %{
             activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   [[6, 7]],
-            weights:  [[1, 2], [3, 4]]
+            biases:   Matrix.new(1, 2, [[6, 7]]),
+            weights:  Matrix.new(2, 2, [[1, 2], [3, 4]])
           },
         ],
         objective: %{error: objective}
@@ -79,7 +80,10 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
       path:    path
     } = setup
 
-    data   = [{[1, 2, 3], [1900, 2800]}, {[2, 3, 4], [2600, 3800]}]
+    data   = [
+      {Matrix.new(1, 3, [[1, 2, 3]]), Matrix.new(1, 2, [[1900, 2800]])},
+      {Matrix.new(1, 3, [[2, 3, 4]]), Matrix.new(1, 2, [[2600, 3800]])}
+    ]
     binary = :erlang.term_to_binary(data)
     :ok    = File.write(path, binary)
 
@@ -111,8 +115,8 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
     args = %{
       batch_size: 1,
       data: [
-        {[1, 2, 3], [1900, 2800]},
-        {[2, 3, 4], [2600, 3800]}
+        {Matrix.new(1, 3, [[1, 2, 3]]), Matrix.new(1, 2, [[1900, 2800]])},
+        {Matrix.new(1, 3, [[2, 3, 4]]), Matrix.new(1, 2, [[2600, 3800]])}
       ],
       learning_rate:  2,
       regularization: :none
@@ -158,7 +162,10 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
       path:    path
     } = setup
 
-    data   = [{[1, 2, 3], [1900, 2800]}, {[2, 3, 4], [2600, 3800]}]
+    data   = [
+      {Matrix.new(1, 3, [[1, 2, 3]]), Matrix.new(1, 2, [[1900, 2800]])},
+      {Matrix.new(1, 3, [[2, 3, 4]]), Matrix.new(1, 2, [[2600, 3800]])}
+    ]
     binary = :erlang.term_to_binary(data)
     :ok    = File.write(path, binary)
 
@@ -190,8 +197,8 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
     args = %{
       batch_size: 1,
       data: [
-        {[1, 2, 3], [1900, 2800]},
-        {[2, 3, 4], [2600, 3800]}
+        {Matrix.new(1, 3, [[1, 2, 3]]), Matrix.new(1, 2, [[1900, 2800]])},
+        {Matrix.new(1, 3, [[2, 3, 4]]), Matrix.new(1, 2, [[2600, 3800]])}
       ],
       learning_rate:  2,
       regularization: :none
@@ -215,7 +222,7 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
       path:          path
     } = setup
 
-    data   = [[1, 2, 3]]
+    data   = Matrix.new(1, 3, [[1, 2, 3]])
     binary = :erlang.term_to_binary(data)
     :ok    = File.write(path, binary)
 
@@ -228,7 +235,7 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
 
     {:ok, _pid} = Worker.start_link(args, options)
 
-    expected = [[1897, 2784]]
+    expected = Matrix.new(1, 3, [[1897, 2784]])
     result   = Worker.work(:ask, network_state, worker)
 
     assert result == expected
@@ -245,14 +252,14 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
 
     args = %{
       batch_size:     1,
-      data:           [[1, 2, 3]],
+      data:           Matrix.new(1, 3, [[1, 2, 3]]),
       learning_rate:  :not_needed,
       regularization: :none
     }
 
     {:ok, _pid} = Worker.start_link(args, options)
 
-    expected = [[1897, 2784]]
+    expected = Matrix.new(1, 2, [[1897, 2784]])
     result   = Worker.work(:ask, network_state, worker)
 
     assert result == expected
@@ -266,7 +273,10 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
       path:          path
     } = setup
 
-    data   = [{[1, 2, 3], [1900, 2800]}, {[2, 3, 4], [2600, 3800]}]
+    data   = [
+      {Matrix.new(1, 3, [[1, 2, 3]]), Matrix.new(1, 2, [[1900, 2800]])},
+      {Matrix.new(1, 3, [[2, 3, 4]]), Matrix.new(1, 2, [[2600, 3800]])}
+    ]
     binary = :erlang.term_to_binary(data)
     :ok    = File.write(path, binary)
 
@@ -287,49 +297,49 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
 
     first_expected_correction = {
       [
-        [[-181, -397, -613]],
-        [[-35,  -73]],
-        [[-3,   -16]]
+        Matrix.new(1, 3, [[-181, -397, -613]]),
+        Matrix.new(1, 3, [[-35,  -73]]       ),
+        Matrix.new(1, 3, [[-3,   -16]]       )
       ],
       [
-        [
+        Matrix.new(3, 3, [
           [-181, -397,  -613 ],
           [-362, -794,  -1226],
           [-543, -1191, -1839]
-        ],
-        [
+        ]),
+        Matrix.new(3, 2, [
           [-1120, -2336],
           [-1365, -2847],
           [-1610, -3358]
-        ],
-        [
+        ]),
+        Matrix.new(2, 2, [
           [-1152, -6144],
           [-1506, -8032]
-        ]
+        ])
       ]
     }
 
     second_expected_correction = {
       [
-        [[600, 1312, 2024]],
-        [[112, 244]],
-        [[20,  46]]
+        Matrix.new(1, 3, [[600, 1312, 2024]]),
+        Matrix.new(1, 3, [[112, 244]]       ),
+        Matrix.new(1, 3, [[20,  46]]        )
       ],
       [
-        [
+        Matrix.new(3, 3, [
           [1200, 2624, 4048],
           [1800, 3936, 6072],
           [2400, 5248, 8096]
-        ],
-        [
+        ]),
+        Matrix.new(3, 2, [
           [4928, 10736],
           [6048, 13176],
           [7168, 15616]
-        ],
-        [
+        ]),
+        Matrix.new(2, 2, [
           [10620, 24426],
           [13880, 31924]
-        ]
+        ])
       ]
     }
 
@@ -358,8 +368,8 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
     args = %{
       batch_size: 1,
       data: [
-        {[1, 2, 3], [1900, 2800]},
-        {[2, 3, 4], [2600, 3800]}
+        {Matrix.new(1, 3, [[1, 2, 3]]), Matrix.new(1, 2, [[1900, 2800]])},
+        {Matrix.new(1, 3, [[2, 3, 4]]), Matrix.new(1, 2, [[2600, 3800]])}
       ],
       learning_rate:  2,
       regularization: :none
@@ -375,49 +385,49 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
 
     first_expected_correction = {
       [
-        [[-181, -397, -613]],
-        [[-35,  -73]],
-        [[-3,   -16]]
+        Matrix.new(1, 3, [[-181, -397, -613]]),
+        Matrix.new(1, 3, [[-35,  -73]]       ),
+        Matrix.new(1, 3, [[-3,   -16]]       )
       ],
       [
-        [
+        Matrix.new(3, 3, [
           [-181, -397,  -613 ],
           [-362, -794,  -1226],
           [-543, -1191, -1839]
-        ],
-        [
+        ]),
+        Matrix.new(3, 2, [
           [-1120, -2336],
           [-1365, -2847],
           [-1610, -3358]
-        ],
-        [
+        ]),
+        Matrix.new(2, 2, [
           [-1152, -6144],
           [-1506, -8032]
-        ]
+        ])
       ]
     }
 
     second_expected_correction = {
       [
-        [[600, 1312, 2024]],
-        [[112, 244]],
-        [[20,  46]]
+        Matrix.new(1, 3, [[600, 1312, 2024]]),
+        Matrix.new(1, 3, [[112, 244]]       ),
+        Matrix.new(1, 3, [[20,  46]]        )
       ],
       [
-        [
+        Matrix.new(3, 3, [
           [1200, 2624, 4048],
           [1800, 3936, 6072],
           [2400, 5248, 8096]
-        ],
-        [
+        ]),
+        Matrix.new(3, 2, [
           [4928, 10736],
           [6048, 13176],
           [7168, 15616]
-        ],
-        [
+        ]),
+        Matrix.new(2, 2, [
           [10620, 24426],
           [13880, 31924]
-        ]
+        ])
       ]
     }
 

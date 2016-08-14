@@ -14,15 +14,13 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
 
     {input, expected} = sample
 
-    calculate_activity([input], layers, [])
+    calculate_activity(input, layers, [])
     |> Map.put(:expected, expected)
     |> Map.put(:input, input)
   end
 
   defp calculate_activity(output, [], activities) do
-    layer_output = List.first(output)
-
-    %{activity: Enum.reverse(activities), output: layer_output}
+    %{activity: Enum.reverse(activities), output: output}
   end
 
   defp calculate_activity(layer_input, [layer|rest], activities) do
@@ -48,14 +46,10 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
   def forward_for_output(input, state) do
     %{network: %{layers: layers}} = state
 
-    calculate_output([input], layers)
+    calculate_output(input, layers)
   end
 
-  defp calculate_output(output, []) do
-    [result] = output
-
-    result
-  end
+  defp calculate_output(output, []), do: output
 
   defp calculate_output(input, layers) do
     [layer|other_layers] = layers
@@ -77,13 +71,11 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
 
     {input, expected} = sample
 
-    calculate_test(%{input: input, expected: expected}, [input], layers)
+    calculate_test(%{input: input, expected: expected}, input, layers)
   end
 
   defp calculate_test(sample, output, []) do
-    [result] = output
-
-    Map.put(sample, :output, result)
+    Map.put(sample, :output, output)
   end
 
   defp calculate_test(sample, input, [layer|rest]) do

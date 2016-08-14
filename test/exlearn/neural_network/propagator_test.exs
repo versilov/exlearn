@@ -1,6 +1,7 @@
 defmodule PropagatorTest do
   use ExUnit.Case, async: true
 
+  alias ExLearn.Matrix
   alias ExLearn.NeuralNetwork.Propagator
 
   setup do
@@ -23,19 +24,19 @@ defmodule PropagatorTest do
         layers: [
           %{
             activity: %{derivative: derivative},
-            biases:   [[1, 2, 3]],
-            weights:  [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+            biases:   Matrix.new(1, 3, [[1, 2, 3]]),
+            weights:  Matrix.new(3, 3, [[1, 2, 3], [4, 5, 6], [7, 8, 9]])
           },
           %{
             activity: %{derivative: derivative},
-            biases:   [[4, 5]],
-            weights:  [[1, 2], [3, 4], [5, 6]]
+            biases:   Matrix.new(1, 2, [[4, 5]]),
+            weights:  Matrix.new(3, 2, [[1, 2], [3, 4], [5, 6]])
           },
           %{
             activity: %{derivative: derivative},
-            biases:   [[6, 7]],
-            weights:  [[1, 2], [3, 4]]
-          },
+            biases:   Matrix.new(1, 2, [[6, 7]]),
+            weights:  Matrix.new(2, 2, [[1, 2], [3, 4]])
+          }
         ],
         objective: %{error: objective}
       }
@@ -59,25 +60,25 @@ defmodule PropagatorTest do
 
     correction = {
       [
-        [[419, 915, 1411]],
-        [[77,  171]],
-        [[17,  30]]
+        Matrix.new(1, 3, [[419, 915, 1411]]),
+        Matrix.new(1, 2, [[77,  171]]      ),
+        Matrix.new(1, 2, [[17,  30]]       )
       ],
       [
-        [
+        Matrix.new(3, 3, [
           [1019, 2227, 3435],
           [1438, 3142, 4846],
           [1857, 4057, 6257]
-        ],
-        [
+        ]),
+        Matrix.new(3, 2, [
           [3808, 8400 ],
           [4683, 10329],
           [5558, 12258]
-        ],
-        [
+        ]),
+        Matrix.new(2, 2, [
           [9468,  18282],
           [12374, 23892]
-        ]
+        ])
       ]
     }
 
@@ -86,29 +87,29 @@ defmodule PropagatorTest do
         layers: [
           %{
             activity: %{derivative: derivative},
-            biases:   [[-837, -1828, -2819]],
-            weights:  [
+            biases:   Matrix.new(1, 3, [[-837, -1828, -2819]]),
+            weights:  Matrix.new(3, 3, [
               [-2036, -4451, -6866 ],
               [-2871, -6278, -9685 ],
               [-3706, -8105, -12504]
-            ]
+            ])
           },
           %{
             activity: %{derivative: derivative},
-            biases:   [[-150, -337]],
-            weights:  [
+            biases:   Matrix.new(1, 2, [[-150, -337]]),
+            weights:  Matrix.new(3, 2, [
               [-7614,  -16797],
               [-9362,  -20653],
               [-11110, -24509]
-            ]
+            ])
           },
           %{
             activity: %{derivative: derivative},
-            biases:   [[-28, -53]],
-            weights:  [
+            biases:   Matrix.new(1, 2, [[-28, -53]]),
+            weights:  Matrix.new(2, 2, [
               [-18934, -36561],
               [-24744, -47779]
-            ]
+            ])
           }
         ],
         objective: %{error: objective}
@@ -132,25 +133,25 @@ defmodule PropagatorTest do
 
     correction = {
       [
-        [[419, 915, 1411]],
-        [[77,  171]],
-        [[17,  30]]
+        Matrix.new(1, 3, [[419, 915, 1411]]),
+        Matrix.new(1, 2, [[77,  171]]      ),
+        Matrix.new(1, 2, [[17,  30]]       )
       ],
       [
-        [
+        Matrix.new(3, 3, [
           [1019, 2227, 3435],
           [1438, 3142, 4846],
           [1857, 4057, 6257]
-        ],
-        [
+        ]),
+        Matrix.new(3, 2, [
           [3808, 8400 ],
           [4683, 10329],
           [5558, 12258]
-        ],
-        [
+        ]),
+        Matrix.new(2, 2, [
           [9468,  18282],
           [12374, 23892]
-        ]
+        ])
       ]
     }
 
@@ -159,29 +160,29 @@ defmodule PropagatorTest do
         layers: [
           %{
             activity: %{derivative: derivative},
-            biases:   [[-837, -1828, -2819]],
-            weights:  [
+            biases:   Matrix.new(1, 3, [[-837, -1828, -2819]]),
+            weights:  Matrix.new(3, 3, [
               [-2036, -4451, -6866 ],
               [-2871, -6278, -9685 ],
               [-3706, -8105, -12504]
-            ]
+            ])
           },
           %{
             activity: %{derivative: derivative},
-            biases:   [[-150, -337]],
-            weights:  [
+            biases:   Matrix.new(1, 2, [[-150, -337]]),
+            weights:  Matrix.new(3, 2, [
               [-7614,  -16797],
               [-9362,  -20653],
               [-11110, -24509]
-            ]
+            ])
           },
           %{
             activity: %{derivative: derivative},
-            biases:   [[-28, -53]],
-            weights:  [
+            biases:   Matrix.new(1, 2, [[-28, -53]]),
+            weights:  Matrix.new(2, 2, [
               [-18934, -36561],
               [-24744, -47779]
-            ]
+            ])
           }
         ],
         objective: %{error: objective}
@@ -206,48 +207,48 @@ defmodule PropagatorTest do
         %{
           arity:      1,
           derivative: derivative,
-          input:      [[31, 38, 45]],
-          output:     [[32, 39, 46]]
+          input:      Matrix.new(1, 3, [[31, 38, 45]]),
+          output:     Matrix.new(1, 3, [[32, 39, 46]])
         },
         %{
           arity:      1,
           derivative: derivative,
-          input:      [[383, 501]],
-          output:     [[384, 502]]
+          input:      Matrix.new(1, 2, [[383, 501]]),
+          output:     Matrix.new(1, 2, [[384, 502]])
         },
         %{
           arity:      1,
           derivative: derivative,
-          input:      [[1896, 2783]],
-          output:     [[1897, 2784]]
+          input:      Matrix.new(1, 2, [[1896, 2783]]),
+          output:     Matrix.new(1, 2, [[1897, 2784]])
         }
       ],
-      expected: [1900, 2800],
-      input:    [1, 2, 3],
-      output:   [1897, 2784]
+      expected: Matrix.new(1, 2, [[1900, 2800]]),
+      input:    Matrix.new(1, 3, [[1, 2, 3]]),
+      output:   Matrix.new(1, 2, [[1897, 2784]])
     }
 
     first_correction = {
       [
-        [[-181, -397, -613]],
-        [[-35,  -73]],
-        [[-3,   -16]]
+        Matrix.new(1, 3, [[-181, -397, -613]]),
+        Matrix.new(1, 2, [[-35,  -73]]       ),
+        Matrix.new(1, 2, [[-3,   -16]]       )
       ],
       [
-        [
+        Matrix.new(3, 3, [
           [-181, -397,  -613 ],
           [-362, -794,  -1226],
           [-543, -1191, -1839]
-        ],
-        [
+        ]),
+        Matrix.new(3, 2, [
           [-1120, -2336],
           [-1365, -2847],
           [-1610, -3358]
-        ],
-        [
+        ]),
+        Matrix.new(2, 2, [
           [-1152, -6144],
           [-1506, -8032]
-        ]
+        ])
       ]
     }
 
@@ -256,48 +257,48 @@ defmodule PropagatorTest do
         %{
           arity:      1,
           derivative: derivative,
-          input:      [[43, 53, 63]],
-          output:     [[44, 54, 64]]
+          input:      Matrix.new(1, 3, [[43, 53, 63]]),
+          output:     Matrix.new(1, 3, [[44, 54, 64]])
         },
         %{
           arity:      1,
           derivative: derivative,
-          input:      [[530, 693]],
-          output:     [[531, 694]]
+          input:      Matrix.new(1, 2, [[530, 693]]),
+          output:     Matrix.new(1, 2, [[531, 694]])
         },
         %{
           arity:      1,
           derivative: derivative,
-          input:      [[2619, 3845]],
-          output:     [[2620, 3846]]
+          input:      Matrix.new(1, 2, [[2619, 3845]]),
+          output:     Matrix.new(1, 2, [[2620, 3846]])
         }
       ],
-      expected: [2600, 3800],
-      input:    [2, 3, 4],
-      output:   [2620, 3846]
+      expected: Matrix.new(1, 2, [[2600, 3800]]),
+      input:    Matrix.new(1, 3, [[2, 3, 4]]),
+      output:   Matrix.new(1, 2, [[2620, 3846]])
     }
 
     second_correction = {
       [
-        [[600, 1312, 2024]],
-        [[112, 244]],
-        [[20,  46]]
+        Matrix.new(1, 3, [[600, 1312, 2024]]),
+        Matrix.new(1, 2, [[112, 244]]       ),
+        Matrix.new(1, 2, [[20,  46]]        )
       ],
       [
-        [
+        Matrix.new(3, 3, [
           [1200, 2624, 4048],
           [1800, 3936, 6072],
           [2400, 5248, 8096]
-        ],
-        [
+        ]),
+        Matrix.new(3, 2, [
           [4928, 10736],
           [6048, 13176],
           [7168, 15616]
-        ],
-        [
+        ]),
+        Matrix.new(2, 2, [
           [10620, 24426],
           [13880, 31924]
-        ]
+        ])
       ]
     }
 
