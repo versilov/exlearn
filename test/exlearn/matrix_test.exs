@@ -21,8 +21,8 @@ defmodule MatrixTest do
 
   test "#dot multiplies two matrices" do
     first    = Matrix.new(2, 3, [[1, 2, 3], [4, 5, 6]])
-    second   = Matrix.new(3, 3, [[1, 2], [3, 4], [5, 6]])
-    expected = Matrix.new(2, 3, [[22, 28], [49, 64]])
+    second   = Matrix.new(3, 2, [[1, 2], [3, 4], [5, 6]])
+    expected = Matrix.new(2, 2, [[22, 28], [49, 64]])
 
     assert Matrix.dot(first, second) == expected
   end
@@ -45,8 +45,8 @@ defmodule MatrixTest do
   end
 
   test "#dot_tn multiplies two matrices, first needing to be transposed" do
-    first    = Matrix.new(2, 3, [[1, 4], [2, 5], [3, 6]])
-    second   = Matrix.new(2, 3, [[1, 2], [3, 4], [5, 6]])
+    first    = Matrix.new(3, 2, [[1, 4], [2, 5], [3, 6]])
+    second   = Matrix.new(3, 2, [[1, 2], [3, 4], [5, 6]])
     expected = Matrix.new(2, 2, [[22, 28], [49, 64]])
 
     assert Matrix.dot_tn(first, second) == expected

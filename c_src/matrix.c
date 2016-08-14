@@ -1,199 +1,5 @@
 #include <cblas.h>
-#include <netinet/in.h>
-#include <stdio.h>
 #include "erl_nif.h"
-
-typedef struct Matrix {
-  unsigned int  rows;
-  unsigned int  columns;
-  double       *data;
-} Matrix;
-
-//-----------------------------------------------------------------------------
-// Matrix API
-//-----------------------------------------------------------------------------
-
-static Matrix *
-matrix_dot(Matrix *first, Matrix *second) {
-  Matrix *result  = malloc(sizeof(Matrix));
-  result->rows    = first->rows;
-  result->columns = second->columns;
-  result->data    = malloc(sizeof(double) * result->rows * result->columns);
-
-  cblas_dgemm(
-    CblasRowMajor,
-    CblasNoTrans,
-    CblasNoTrans,
-    first->rows,
-    second->columns,
-    first->columns,
-    1.0,
-    first->data,
-    first->columns,
-    second->data,
-    second->columns,
-    0.0,
-    result->data,
-    result->columns
-  );
-
-  return result;
-}
-
-static void
-matrix_dot_and_add(Matrix *first, Matrix *second, Matrix *third) {
-  cblas_dgemm(
-    CblasRowMajor,
-    CblasNoTrans,
-    CblasNoTrans,
-    first->rows,
-    second->columns,
-    first->columns,
-    1.0,
-    first->data,
-    first->columns,
-    second->data,
-    second->columns,
-    1.0,
-    third->data,
-    third->columns
-  );
-}
-
-static Matrix *
-matrix_dot_nt(Matrix *first, Matrix *second) {
-  Matrix *result  = malloc(sizeof(Matrix));
-  result->rows    = first->rows;
-  result->columns = second->rows;
-  result->data    = malloc(sizeof(double) * result->rows * result->columns);
-
-  cblas_dgemm(
-    CblasRowMajor,
-    CblasNoTrans,
-    CblasTrans,
-    first->rows,
-    second->rows,
-    first->columns,
-    1.0,
-    first->data,
-    first->columns,
-    second->data,
-    second->columns,
-    0.0,
-    result->data,
-    result->columns
-  );
-
-  return result;
-}
-
-static Matrix *
-matrix_dot_tn(Matrix *first, Matrix *second) {
-  Matrix *result  = malloc(sizeof(Matrix));
-  result->rows    = first->columns;
-  result->columns = second->columns;
-  result->data    = malloc(sizeof(double) * result->rows * result->columns);
-
-  cblas_dgemm(
-    CblasRowMajor,
-    CblasTrans,
-    CblasNoTrans,
-    first->columns,
-    second->columns,
-    first->rows,
-    1.0,
-    first->data,
-    first->columns,
-    second->data,
-    second->columns,
-    0.0,
-    result->data,
-    result->columns
-  );
-
-  return result;
-}
-
-//-----------------------------------------------------------------------------
-// Utilities
-//-----------------------------------------------------------------------------
-
-static Matrix *
-list_of_lists_to_matrix(ErlNifEnv *env, ERL_NIF_TERM list_of_lists) {
-  unsigned int  row    = 0;
-  unsigned int  column = 0;
-  double        element;
-  Matrix       *matrix = malloc(sizeof(Matrix));
-  ERL_NIF_TERM  head, tail, row_head, row_tail;
-
-  enif_get_list_cell(env, list_of_lists, &head, &tail);
-
-  enif_get_list_length(env, list_of_lists, &matrix->rows   );
-  enif_get_list_length(env, head,          &matrix->columns);
-
-  matrix->data = malloc(sizeof(double) * matrix->rows * matrix->columns);
-
-  while(1) {
-    enif_get_list_cell(env, head, &row_head, &row_tail);
-
-    while(1) {
-      if (enif_get_double(env, row_head, &element) == 0) {
-        long long_element;
-        enif_get_int64(env, row_head, &long_element);
-
-        element = (double) long_element;
-      }
-
-      int index = row * matrix->columns + column;
-      matrix->data[index] = element;
-
-      if (enif_is_empty_list(env, row_tail) == 1) { break; }
-      enif_get_list_cell(env, row_tail, &row_head, &row_tail);
-
-      column += 1;
-    }
-
-    if (enif_is_empty_list(env, tail) == 1) { break; }
-    enif_get_list_cell(env, tail, &head, &tail);
-
-    row    += 1;
-    column  = 0;
-  }
-
-  return matrix;
-}
-
-static ERL_NIF_TERM
-matrix_to_list_of_lists(ErlNifEnv *env, Matrix *matrix) {
-  int          column, size;
-  ERL_NIF_TERM element, result, row;
-
-  column = 0;
-  size   = matrix->rows * matrix->columns;
-  result = enif_make_list(env, 0);
-  row    = enif_make_list(env, 0);
-
-  for (int index = size - 1; index >= 0; index -= 1) {
-    element = enif_make_double(env, matrix->data[index]);
-    column += 1;
-
-    row = enif_make_list_cell(env, element, row);
-
-    if (column == matrix->columns) {
-      column = 0;
-      result = enif_make_list_cell(env, row, result);
-      row    = enif_make_list(env, 0);
-    }
-  }
-
-  return result;
-}
-
-static void
-free_matrix(Matrix *matrix) {
-  free(matrix->data);
-  free(matrix);
-}
 
 //-----------------------------------------------------------------------------
 // Exported nifs
@@ -229,71 +35,170 @@ add(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
 
 static ERL_NIF_TERM
 dot(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
+  ErlNifBinary  first, second;
   ERL_NIF_TERM  result;
-  Matrix       *first, *second, *dot_product;
+  float        *first_data, *second_data, *result_data;
+  int           data_size;
+  size_t        result_size;
 
-  first       = list_of_lists_to_matrix(env, argv[0]);
-  second      = list_of_lists_to_matrix(env, argv[1]);
-  dot_product = matrix_dot(first, second);
-  result      = matrix_to_list_of_lists(env, dot_product);
+  if (!enif_inspect_binary(env, argv[0], &first )) return enif_make_badarg(env);
+  if (!enif_inspect_binary(env, argv[1], &second)) return enif_make_badarg(env);
 
-  free_matrix(first);
-  free_matrix(second);
-  free_matrix(dot_product);
+  first_data  = (float *) first.data;
+  second_data = (float *) second.data;
+  data_size   = (int) (first_data[0] * second_data[1] + 2);
+
+  result_size = sizeof(float) * data_size;
+  result_data = (float *) enif_make_new_binary(env, result_size, &result);
+
+  result_data[0] = first_data[0];
+  result_data[1] = second_data[1];
+
+  cblas_sgemm(
+    CblasRowMajor,
+    CblasNoTrans,
+    CblasNoTrans,
+    first_data[0],
+    second_data[1],
+    first_data[1],
+    1.0,
+    first_data + 2,
+    first_data[1],
+    second_data + 2,
+    second_data[1],
+    0.0,
+    result_data + 2,
+    result_data[1]
+  );
 
   return result;
 }
 
 static ERL_NIF_TERM
 dot_and_add(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
+  ErlNifBinary  first, second, third;
   ERL_NIF_TERM  result;
-  Matrix       *first, *second, *third;
+  float        *first_data, *second_data, *third_data, *result_data;
+  int           data_size;
+  size_t        result_size;
 
-  first  = list_of_lists_to_matrix(env, argv[0]);
-  second = list_of_lists_to_matrix(env, argv[1]);
-  third  = list_of_lists_to_matrix(env, argv[2]);
+  if (!enif_inspect_binary(env, argv[0], &first )) return enif_make_badarg(env);
+  if (!enif_inspect_binary(env, argv[1], &second)) return enif_make_badarg(env);
+  if (!enif_inspect_binary(env, argv[2], &third )) return enif_make_badarg(env);
 
-  matrix_dot_and_add(first, second, third);
+  first_data  = (float *) first.data;
+  second_data = (float *) second.data;
+  third_data  = (float *) third.data;
+  data_size   = (int) (first_data[0] * second_data[1] + 2);
 
-  result = matrix_to_list_of_lists(env, third);
+  result_size = sizeof(float) * data_size;
+  result_data = (float *) enif_make_new_binary(env, result_size, &result);
 
-  free_matrix(first);
-  free_matrix(second);
-  free_matrix(third);
+  result_data[0] = first_data[0];
+  result_data[1] = second_data[1];
+
+  cblas_sgemm(
+    CblasRowMajor,
+    CblasNoTrans,
+    CblasNoTrans,
+    first_data[0],
+    second_data[1],
+    first_data[1],
+    1.0,
+    first_data + 2,
+    first_data[1],
+    second_data + 2,
+    second_data[1],
+    0.0,
+    result_data + 2,
+    result_data[1]
+  );
+
+  for(int index = 2; index < data_size; index += 1) {
+    result_data[index] += third_data[index];
+  }
 
   return result;
 }
 
 static ERL_NIF_TERM
 dot_nt(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
+  ErlNifBinary  first, second;
   ERL_NIF_TERM  result;
-  Matrix       *first, *second, *dot_product;
+  float        *first_data, *second_data, *result_data;
+  int           data_size;
+  size_t        result_size;
 
-  first       = list_of_lists_to_matrix(env, argv[0]);
-  second      = list_of_lists_to_matrix(env, argv[1]);
-  dot_product = matrix_dot_nt(first, second);
-  result      = matrix_to_list_of_lists(env, dot_product);
+  if (!enif_inspect_binary(env, argv[0], &first )) return enif_make_badarg(env);
+  if (!enif_inspect_binary(env, argv[1], &second)) return enif_make_badarg(env);
 
-  free_matrix(first);
-  free_matrix(second);
-  free_matrix(dot_product);
+  first_data  = (float *) first.data;
+  second_data = (float *) second.data;
+  data_size   = (int) (first_data[0] * second_data[0] + 2);
+
+  result_size = sizeof(float) * data_size;
+  result_data = (float *) enif_make_new_binary(env, result_size, &result);
+
+  result_data[0] = first_data[0];
+  result_data[1] = second_data[0];
+
+  cblas_sgemm(
+    CblasRowMajor,
+    CblasNoTrans,
+    CblasTrans,
+    first_data[0],
+    second_data[0],
+    first_data[1],
+    1.0,
+    first_data + 2,
+    first_data[1],
+    second_data + 2,
+    second_data[1],
+    0.0,
+    result_data + 2,
+    result_data[1]
+  );
 
   return result;
 }
 
 static ERL_NIF_TERM
 dot_tn(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
+  ErlNifBinary  first, second;
   ERL_NIF_TERM  result;
-  Matrix       *first, *second, *dot_product;
+  float        *first_data, *second_data, *result_data;
+  int           data_size;
+  size_t        result_size;
 
-  first       = list_of_lists_to_matrix(env, argv[0]);
-  second      = list_of_lists_to_matrix(env, argv[1]);
-  dot_product = matrix_dot_tn(first, second);
-  result      = matrix_to_list_of_lists(env, dot_product);
+  if (!enif_inspect_binary(env, argv[0], &first )) return enif_make_badarg(env);
+  if (!enif_inspect_binary(env, argv[1], &second)) return enif_make_badarg(env);
 
-  free_matrix(first);
-  free_matrix(second);
-  free_matrix(dot_product);
+  first_data  = (float *) first.data;
+  second_data = (float *) second.data;
+  data_size   = (int) (first_data[1] * second_data[1] + 2);
+
+  result_size = sizeof(float) * data_size;
+  result_data = (float *) enif_make_new_binary(env, result_size, &result);
+
+  result_data[0] = first_data[1];
+  result_data[1] = second_data[1];
+
+  cblas_sgemm(
+    CblasRowMajor,
+    CblasTrans,
+    CblasNoTrans,
+    first_data[1],
+    second_data[1],
+    first_data[0],
+    1.0,
+    first_data + 2,
+    first_data[1],
+    second_data + 2,
+    second_data[1],
+    0.0,
+    result_data + 2,
+    result_data[1]
+  );
 
   return result;
 }
