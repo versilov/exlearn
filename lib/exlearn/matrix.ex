@@ -101,7 +101,7 @@ defmodule ExLearn.Matrix do
       ^columns ->
         IO.puts(element)
 
-        0.0
+        1.0
       _ ->
         IO.write("#{element} ")
 

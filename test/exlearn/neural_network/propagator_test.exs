@@ -6,7 +6,7 @@ defmodule PropagatorTest do
 
   setup do
     derivative     = fn(_)        -> 1 end
-    objective      = fn(a, b, _c) -> Matrix.substract(a, b) end
+    objective      = fn(a, b, _c) -> Matrix.substract(b, a) end
     regularization = fn(x, _, _)  -> x + 1 end
 
     configuration = %{
