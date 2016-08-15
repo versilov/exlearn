@@ -12,12 +12,21 @@ defmodule MatrixTest do
     assert Matrix.add(first, second) == expected
   end
 
-  test "#apply applies a function on each element of the matrix" do
+  test "#apply/2 applies a function on each element of the matrix" do
     function = &(&1 + 1)
     input    = Matrix.new(2, 3, [[1, 2, 3], [4, 5, 6]])
     expected = Matrix.new(2, 3, [[2, 3, 4], [5, 6, 7]])
 
     assert Matrix.apply(input, function) == expected
+  end
+
+  test "#apply/3 applies a function on each element of the matrices" do
+    function = &(&1 + &2)
+    first    = Matrix.new(2, 3, [[1, 2, 3], [4, 5,  6 ]])
+    second   = Matrix.new(2, 3, [[2, 3, 4], [5, 6,  7 ]])
+    expected = Matrix.new(2, 3, [[3, 5, 7], [9, 11, 13]])
+
+    assert Matrix.apply(first, second, function) == expected
   end
 
   test "#dot multiplies two matrices" do
@@ -55,7 +64,7 @@ defmodule MatrixTest do
 
   test "#inspect displays a matrix visualization to stdout" do
     matrix   = Matrix.new(2, 3, [[1, 2, 3], [4,  5,  6 ]])
-    expected = "Rows: 2 Columns: 3\n1.0 2.0 3.0\n4.0 5.0 6.0 \n"
+    expected = "Rows: 2 Columns: 3\n1.0 2.0 3.0\n4.0 5.0 6.0\n"
 
     output = capture_io(fn ->
       assert Matrix.inspect(matrix) == matrix
@@ -120,6 +129,13 @@ defmodule MatrixTest do
     expected = Matrix.new(2, 3, [[4, 0, -2], [-1, -1, 0]])
 
     assert Matrix.substract_inverse(first, second) == expected
+  end
+
+  test "#sum return the sum of all elements in the matrix" do
+    input    = Matrix.new(2, 3, [[1, 2, 3], [4, 5, 6]])
+    expected = 21
+
+    assert Matrix.sum(input) == expected
   end
 
   test "#transpose transposes a matrix" do

@@ -43,6 +43,36 @@ defmodule ExLearn.Matrix do
     apply_on_matrix(rest, function, accumulator <> new_element)
   end
 
+  @spec apply(binary, binary, ((number) -> number)) :: [[]]
+  def apply(first, second, function) do
+    <<
+      rows       :: float-little-32,
+      columns    :: float-little-32,
+      first_data :: binary
+    >> = first
+    <<
+      _           :: float-little-32,
+      _           :: float-little-32,
+      second_data :: binary
+    >> = second
+
+    initial = <<rows :: float-little-32, columns :: float-little-32>>
+
+    apply_on_matrices(first_data, second_data, function, initial)
+  end
+
+  defp apply_on_matrices(<<>>, <<>>, _, accumulator), do: accumulator
+  defp apply_on_matrices(first_data, second_data, function, accumulator)  do
+    <<first_value  :: float-little-32, first_rest  :: binary>> = first_data
+    <<second_value :: float-little-32, second_rest :: binary>> = second_data
+
+    new_value       = function.(first_value, second_value)
+    new_element     = <<new_value :: float-little-32>>
+    new_accumulator = accumulator <> new_element
+
+    apply_on_matrices(first_rest, second_rest, function, new_accumulator)
+  end
+
   @doc """
   Matrix multiplication
   """
@@ -93,7 +123,7 @@ defmodule ExLearn.Matrix do
     matrix
   end
 
-  defp inspect_element(_, _, <<>>), do: IO.puts("")
+  defp inspect_element(_, _, <<>>), do: :ok
   defp inspect_element(column, columns, elements) do
     <<element :: float-little-32, rest :: binary>> = elements
 
@@ -169,6 +199,27 @@ defmodule ExLearn.Matrix do
   @spec substract_inverse([[number]], [[number]]) :: []
   def substract_inverse(first, second) do
     substract(second, first)
+  end
+
+  @doc """
+  Sums all elements.
+  """
+  @spec sum(binary) :: number
+  def sum(matrix) do
+    <<
+      _rows    :: float-little-32,
+      _columns :: float-little-32,
+      data     :: binary
+    >> = matrix
+
+    sum(data, 0)
+  end
+
+  defp sum(<<>>,   accumulator), do: accumulator
+  defp sum(values, accumulator)  do
+    <<value :: float-little-32, rest :: binary>> = values
+
+    sum(rest, accumulator + value)
   end
 
   @doc """

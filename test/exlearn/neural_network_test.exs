@@ -82,11 +82,10 @@ defmodule ExLearn.NeuralNetworkTest do
     result = NeuralNetwork.ask(ask_data, network)
     |> Task.await(:infinity)
 
+    assert result |> is_list
     assert length(result) == length(ask_data)
-    Enum.each(result, fn(element) ->
-      assert element |> is_list
-      Enum.each(element, fn(number) -> assert is_number(number) end)
-    end)
+
+    Enum.each(result, fn(element) -> assert element |> is_binary end)
   end
 
   test "#initialize returns a running process tree", %{setup: setup} do

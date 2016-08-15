@@ -3,7 +3,7 @@ defmodule ExLearn.Objective do
   Translates objective names to functions
   """
 
-  alias ExLearn.{Activation, Vector}
+  alias ExLearn.{Activation, Matrix, Vector}
 
   @doc """
   Returns the appropriate function
@@ -30,11 +30,9 @@ defmodule ExLearn.Objective do
 
   @spec cross_entropy_function([number], [number], non_neg_integer) :: float
   defp cross_entropy_function(expected, actual, data_size) do
-    binary_entropy_sum = Enum.zip(expected, actual)
-      |> Enum.map(fn({x, y}) ->
-        x * :math.log(y) + (1 - x) * :math.log(1 - y)
-      end)
-      |> Enum.sum
+    binary_entropy_sum = Matrix.apply(expected, actual, fn(x, y) ->
+      x * :math.log(y) + (1 - x) * :math.log(1 - y)
+    end) |> Matrix.sum
 
     -1 / data_size * binary_entropy_sum
   end
@@ -51,19 +49,19 @@ defmodule ExLearn.Objective do
   defp cross_entropy_error_simple(expected, actual, layer) do
     %{input: input} = layer
 
-    [input_derivative] = Activation.apply_derivative(input, layer)
-    top                = Vector.substract(actual, expected)
-    bottom             = Enum.map(actual, fn(element) ->
+    input_derivative = Activation.apply_derivative(input, layer)
+    top              = Matrix.substract(actual, expected)
+    bottom           = Matrix.apply(actual, fn(element) ->
       element * (1 - element)
     end)
 
-    Vector.divide(top, bottom)
-    |> Vector.multiply(input_derivative)
+    Matrix.divide(top, bottom)
+    |> Matrix.multiply(input_derivative)
   end
 
   @spec cross_entropy_error_optimised([number], [number], %{}) :: [number]
   defp cross_entropy_error_optimised(expected, actual, _layer) do
-    Vector.substract(actual, expected)
+    Matrix.substract(actual, expected)
   end
 
   @spec negative_log_likelihood_pair(map) :: map
@@ -76,10 +74,10 @@ defmodule ExLearn.Objective do
 
   @spec negative_log_likelihood_function([number], [number], non_neg_integer) :: float
   defp negative_log_likelihood_function(expected, actual, data_size) do
-    -1 / data_size * Enum.sum(
-      Vector.multiply(
+    -1 / data_size * Matrix.sum(
+      Matrix.multiply(
         expected,
-        Vector.apply(actual, &:math.log/1)
+        Matrix.apply(actual, &:math.log/1)
       )
     )
   end
@@ -95,12 +93,12 @@ defmodule ExLearn.Objective do
   # TODO: This seems to work but no idea why
   @spec negative_log_likelihood_error_simple([number], [number], %{}) :: []
   defp negative_log_likelihood_error_simple(expected, actual, _layer) do
-    Vector.substract(actual, expected)
+    Matrix.substract(actual, expected)
   end
 
   @spec negative_log_likelihood_error_optimised([number], [number], %{}) :: []
   defp negative_log_likelihood_error_optimised(expected, actual, _layer) do
-    Vector.substract(actual, expected)
+    Matrix.substract(actual, expected)
   end
 
   @spec quadratic_pair :: map
@@ -120,9 +118,9 @@ defmodule ExLearn.Objective do
   defp quadratic_cost_error(expected, actual, layer) do
     %{input: input} = layer
 
-    cost_gradient      = Vector.substract(actual, expected)
-    [input_derivative] = Activation.apply_derivative(input, layer)
+    cost_gradient    = Matrix.substract(actual, expected)
+    input_derivative = Activation.apply_derivative(input, layer)
 
-    Vector.multiply(cost_gradient, input_derivative)
+    Matrix.multiply(cost_gradient, input_derivative)
   end
 end
