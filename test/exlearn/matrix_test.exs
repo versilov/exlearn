@@ -1,5 +1,6 @@
 defmodule MatrixTest do
-  use ExUnit.Case, async: true
+  use    ExUnit.Case, async: true
+  import ExUnit.CaptureIO
 
   alias ExLearn.Matrix
 
@@ -50,6 +51,17 @@ defmodule MatrixTest do
     expected = Matrix.new(2, 2, [[22, 28], [49, 64]])
 
     assert Matrix.dot_tn(first, second) == expected
+  end
+
+  test "#inspect displays a matrix visualization to stdout" do
+    matrix   = Matrix.new(2, 3, [[1, 2, 3], [4,  5,  6 ]])
+    expected = "Rows: 2 Columns: 3\n1.0 2.0 3.0\n4.0 5.0 6.0 \n"
+
+    output = capture_io(fn ->
+      assert Matrix.inspect(matrix) == matrix
+    end)
+
+    assert output == expected
   end
 
   test "#multiply performs elementwise multiplication of two matrices" do

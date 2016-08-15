@@ -16,7 +16,7 @@ defmodule ExLearn.NeuralNetwork.Propagator do
 
     %{activity: activity, input: input} = forward_batch
 
-    full_activity  = [%{output: [input]}|activity]
+    full_activity  = [%{output: input}|activity]
     bias_change    = deltas
     weight_change  = calculate_weight_change(full_activity, deltas, [])
 
@@ -38,7 +38,7 @@ defmodule ExLearn.NeuralNetwork.Propagator do
     %{network: %{objective: %{error: error_function}}} = state
     starting_delta = error_function.(expected, output, last_activity_layer)
 
-    calculate_remaning_deltas(rest, reversed_network_layers, [[starting_delta]])
+    calculate_remaning_deltas(rest, reversed_network_layers, [starting_delta])
   end
 
   defp calculate_remaning_deltas([], _, deltas) do

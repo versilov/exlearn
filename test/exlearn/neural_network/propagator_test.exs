@@ -5,11 +5,9 @@ defmodule PropagatorTest do
   alias ExLearn.NeuralNetwork.Propagator
 
   setup do
-    derivative = fn(_)    -> 1 end
-    objective  = fn(a, b, _c) ->
-      Enum.zip(b, a) |> Enum.map(fn({x, y}) -> x - y end)
-    end
-    regularization = fn(x, _, _) -> x + 1 end
+    derivative     = fn(_)        -> 1 end
+    objective      = fn(a, b, _c) -> Matrix.substract(a, b) end
+    regularization = fn(x, _, _)  -> x + 1 end
 
     configuration = %{
       batch_size:     1,

@@ -76,6 +76,42 @@ defmodule ExLearn.Matrix do
   end
 
   @doc """
+  Displays a visualization of the matrix.
+  """
+  @spec inspect(binary) :: binary
+  def inspect(matrix) do
+    <<
+      rows    :: float-little-32,
+      columns :: float-little-32,
+      rest    :: binary
+    >> = matrix
+
+    IO.puts("Rows: #{trunc(rows)} Columns: #{trunc(columns)}")
+
+    inspect_element(1, columns, rest)
+
+    matrix
+  end
+
+  defp inspect_element(_, _, <<>>), do: IO.puts("")
+  defp inspect_element(column, columns, elements) do
+    <<element :: float-little-32, rest :: binary>> = elements
+
+    next_column = case column do
+      ^columns ->
+        IO.puts(element)
+
+        0.0
+      _ ->
+        IO.write("#{element} ")
+
+        column + 1.0
+    end
+
+    inspect_element(next_column, columns, rest)
+  end
+
+  @doc """
   Elementwise multiplication of two matrices
   """
   @spec multiply([[]], [[]]) :: [[]]
