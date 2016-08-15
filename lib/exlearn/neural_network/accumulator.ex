@@ -67,12 +67,32 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
   defp ask_network(data, state) do
     %{manager: manager} = state
 
+    batch_size = case data do
+      path when is_bitstring(path) ->
+        files = Path.wildcard(path)
+
+        trunc(Float.ceil(length(files)))
+      _ ->
+        length(data)
+    end
+
+    data_list = case data do
+      path when is_bitstring(path) -> Path.wildcard(path)
+      _  -> data
+    end
+
+    data_location = case data do
+      path when is_bitstring(path) -> :file
+      _                            -> :memory
+    end
+
     network_state = Store.get(state)
     worker_name   = {:global, make_ref()}
     configuration = %{
-      batch_size:     length(data),
-      data:           data,
-      learning_rate:  :not_needed
+      batch_size:    batch_size,
+      data:          data_list,
+      data_location: data_location,
+      learning_rate: :not_needed
     }
 
     {:ok, _pid} = Supervisor.start_child(
@@ -114,10 +134,10 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
 
   defp start_workers(worker_count, training_parameters, state) do
     %{
-      batch_size:     batch_size,
-      data:           data_source,
-      data_size:      data_size,
-      learning_rate:  learning_rate
+      batch_size:    batch_size,
+      data:          data_source,
+      data_size:     data_size,
+      learning_rate: learning_rate
     } = training_parameters
 
     %{manager: manager} = state
@@ -131,6 +151,11 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
         trunc(Float.ceil(data_size / worker_count))
     end
 
+    data_location = case data_source do
+      path when is_bitstring(path) -> :file
+      _                            -> :memory
+    end
+
     chunks           = split_in_chunks(data_source, chunk_size)
     workers_to_start = length(chunks)
 
@@ -139,9 +164,10 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
 
     Enum.zip(workers, chunks) |> Enum.each(fn({worker, chunk}) ->
       configuration = %{
-        batch_size:     trunc(Float.ceil(batch_size / workers_to_start)),
-        data:           chunk,
-        learning_rate:  learning_rate
+        batch_size:    trunc(Float.ceil(batch_size / workers_to_start)),
+        data:          chunk,
+        data_location: data_location,
+        learning_rate: learning_rate
       }
 
       Supervisor.start_child(manager, [configuration, [name: elem(worker, 1)]])

@@ -131,8 +131,6 @@ defmodule ExLearn.NeuralNetwork.BuilderTest do
     Enum.each(layers, fn(layer) ->
       %{
         biases:  biases,
-        columns: columns,
-        rows:    rows,
         weights: weights
       } = layer
 

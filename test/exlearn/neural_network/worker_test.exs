@@ -55,6 +55,7 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
     args = %{
       batch_size:     1,
       data:           [],
+      data_location:  :memory,
       learning_rate:  :not_needed,
       regularization: :none
     }
@@ -88,6 +89,7 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
     args = %{
       batch_size:     1,
       data:           [path],
+      data_location:  :file,
       learning_rate:  2,
       regularization: :none
     }
@@ -116,6 +118,7 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
         {Matrix.new(1, 3, [[1, 2, 3]]), Matrix.new(1, 2, [[1900, 2800]])},
         {Matrix.new(1, 3, [[2, 3, 4]]), Matrix.new(1, 2, [[2600, 3800]])}
       ],
+      data_location:  :memory,
       learning_rate:  2,
       regularization: :none
     }
@@ -139,6 +142,7 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
     args = %{
       batch_size:     1,
       data:           [],
+      data_location:  :memory,
       learning_rate:  2,
       regularization: :none
     }
@@ -170,6 +174,7 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
     args = %{
       batch_size:     1,
       data:           [path],
+      data_location:  :file,
       learning_rate:  2,
       regularization: :none
     }
@@ -198,6 +203,7 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
         {Matrix.new(1, 3, [[1, 2, 3]]), Matrix.new(1, 2, [[1900, 2800]])},
         {Matrix.new(1, 3, [[2, 3, 4]]), Matrix.new(1, 2, [[2600, 3800]])}
       ],
+      data_location:  :memory,
       learning_rate:  2,
       regularization: :none
     }
@@ -227,6 +233,7 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
     args = %{
       batch_size:     1,
       data:           [path],
+      data_location:  :file,
       learning_rate:  2,
       regularization: :none
     }
@@ -251,6 +258,7 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
     args = %{
       batch_size:     1,
       data:           [Matrix.new(1, 3, [[1, 2, 3]])],
+      data_location:  :memory,
       learning_rate:  :not_needed,
       regularization: :none
     }
@@ -281,6 +289,7 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
     args = %{
       batch_size:     1,
       data:           [path],
+      data_location:  :file,
       learning_rate:  2,
       regularization: :none
     }
@@ -369,6 +378,7 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
         {Matrix.new(1, 3, [[1, 2, 3]]), Matrix.new(1, 2, [[1900, 2800]])},
         {Matrix.new(1, 3, [[2, 3, 4]]), Matrix.new(1, 2, [[2600, 3800]])}
       ],
+      data_location:  :memory,
       learning_rate:  2,
       regularization: :none
     }
@@ -452,6 +462,7 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
     args = %{
       batch_size:     1,
       data:           [],
+      data_location:  :memory,
       learning_rate:  :not_needed,
       regularization: :none
     }

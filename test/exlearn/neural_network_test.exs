@@ -2,6 +2,7 @@ defmodule ExLearn.NeuralNetworkTest do
   use    ExUnit.Case, async: true
   import ExUnit.CaptureIO
 
+  alias ExLearn.Matrix
   alias ExLearn.NeuralNetwork
   alias ExLearn.NeuralNetwork.Notification
 
@@ -21,25 +22,32 @@ defmodule ExLearn.NeuralNetworkTest do
     NeuralNetwork.initialize(initialization_parameters, network)
 
     training_data = [
-      {[0], [0]},
-      {[1], [1]},
-      {[2], [2]},
-      {[3], [3]},
-      {[4], [4]},
-      {[5], [5]}
+      {Matrix.new(1, 1, [[0]]), Matrix.new(1, 1, [[0]])},
+      {Matrix.new(1, 1, [[1]]), Matrix.new(1, 1, [[1]])},
+      {Matrix.new(1, 1, [[2]]), Matrix.new(1, 1, [[2]])},
+      {Matrix.new(1, 1, [[3]]), Matrix.new(1, 1, [[3]])},
+      {Matrix.new(1, 1, [[4]]), Matrix.new(1, 1, [[4]])},
+      {Matrix.new(1, 1, [[5]]), Matrix.new(1, 1, [[5]])}
     ]
 
     validation_data = [
-      {[6], [6]},
-      {[7], [7]}
+      {Matrix.new(1, 1, [[6]]), Matrix.new(1, 1, [[6]])},
+      {Matrix.new(1, 1, [[7]]), Matrix.new(1, 1, [[7]])}
     ]
 
     test_data = [
-      {[8], [8]},
-      {[9], [9]}
+      {Matrix.new(1, 1, [[8]]), Matrix.new(1, 1, [[8]])},
+      {Matrix.new(1, 1, [[9]]), Matrix.new(1, 1, [[9]])}
     ]
 
-    ask_data = [[0], [1], [2], [3], [4], [5]]
+    ask_data = [
+      Matrix.new(1, 1, [[0]]),
+      Matrix.new(1, 1, [[1]]),
+      Matrix.new(1, 1, [[2]]),
+      Matrix.new(1, 1, [[3]]),
+      Matrix.new(1, 1, [[4]]),
+      Matrix.new(1, 1, [[5]])
+    ]
 
     learning_parameters = %{
       training: %{

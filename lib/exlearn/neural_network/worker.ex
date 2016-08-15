@@ -41,12 +41,13 @@ defmodule ExLearn.NeuralNetwork.Worker do
     %{
       batch_size:     batch_size,
       data:           data_source,
+      data_location:  data_location,
       learning_rate:  learning_rate
     } = configuration
 
-    data = case is_bitstring(List.first(data_source)) do
-      true -> read_data(data_source)
-      _    -> data_source
+    data = case data_location do
+      :file   -> read_data(data_source)
+      :memory -> data_source
     end
 
     chunks = Enum.chunk(data, batch_size, batch_size, [])
