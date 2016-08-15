@@ -71,7 +71,7 @@ defmodule ObjectiveTest do
     data_size  = 1
 
     expected_from_function = 0.5108255743980408
-    expected_from_error    = Matrix.new(1, 3, [[-0.4, 0.3, 0.1]])
+    expected_from_error    = Matrix.new(1, 3, [[-0.39999997, 0.3, 0.1]])
 
     setup           = :negative_log_likelihood
     output_activity = %{arity: 2, derivative: derivative, input: input}
@@ -91,7 +91,7 @@ defmodule ObjectiveTest do
     data_size  = 1
 
     expected_from_function = 0.5108255743980408
-    expected_from_error    = Matrix.new(1, 3, [[-0.4, 0.3, 0.1]])
+    expected_from_error    = Matrix.new(1, 3, [[-0.39999997, 0.3, 0.1]])
 
     setup           = :negative_log_likelihood
     output_activity = %{arity: 1, derivative: derivative, input: input}

@@ -74,6 +74,14 @@ defmodule ExLearn.Matrix do
   end
 
   @doc """
+  Divides two matrices
+  """
+  @spec divide([[number]], [[number]]) :: []
+  def divide(_first, _second) do
+    exit(:nif_library_not_loaded)
+  end
+
+  @doc """
   Matrix multiplication
   """
   @spec dot([[]], [[]]) :: [[]]

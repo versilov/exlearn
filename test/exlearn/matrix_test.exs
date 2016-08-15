@@ -29,6 +29,14 @@ defmodule MatrixTest do
     assert Matrix.apply(first, second, function) == expected
   end
 
+  test "#divide divides two matrices" do
+    first    = Matrix.new(2, 3, [[1,   2, 6], [9, 10, 18]])
+    second   = Matrix.new(2, 3, [[2,   2, 3], [3, 5,  6 ]])
+    expected = Matrix.new(2, 3, [[0.5, 1, 2], [3, 2,  3 ]])
+
+    assert Matrix.divide(first, second) == expected
+  end
+
   test "#dot multiplies two matrices" do
     first    = Matrix.new(2, 3, [[1, 2, 3], [4, 5, 6]])
     second   = Matrix.new(3, 2, [[1, 2], [3, 4], [5, 6]])

@@ -14,8 +14,8 @@ defmodule ActivationTest do
   end
 
   test "#apply_derivative for arity 2" do
-    activity = %{arity: 2, derivative: &Enum.sum/1}
-    data     = Matrix.new(1, 3, [1, 2, 3])
+    activity = %{arity: 2, derivative: &Matrix.sum/1}
+    data     = Matrix.new(1, 3, [[1, 2, 3]])
     expected = 6
 
     result = Activation.apply_derivative(data, activity)
@@ -34,7 +34,7 @@ defmodule ActivationTest do
   end
 
   test "#apply_function for arity 2" do
-    activity = %{arity: 2, function: &(&1 + Enum.sum(&2))}
+    activity = %{arity: 2, function: &(&1 + Matrix.sum(&2))}
     data     = Matrix.new(1, 3, [[1, 2, 3]])
     expected = Matrix.new(1, 3, [[7, 8, 9]])
 

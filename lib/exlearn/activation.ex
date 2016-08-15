@@ -27,12 +27,8 @@ defmodule ExLearn.Activation do
 
     case arity do
       1 -> Matrix.apply(data, function)
-      2 -> Enum.map(data, &apply_on_row(&1, function))
+      2 -> Matrix.apply(data, &function.(&1, data))
     end
-  end
-
-  defp apply_on_row(row, function) do
-    Enum.map(row, &function.(&1, row))
   end
 
   @doc """

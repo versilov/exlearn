@@ -111,7 +111,13 @@ defmodule ExLearn.Objective do
 
   @spec quadratic_cost_function([number], [number], non_neg_integer) :: float
   defp quadratic_cost_function(expected, actual, data_size) do
-    1 / (2 * data_size) * Vector.dot_square_difference(expected, actual)
+    1 / (2 * data_size) * Matrix.sum(
+      Matrix.apply(expected, actual, fn(x, y) ->
+        product = x - y
+
+        product * product
+      end)
+    )
   end
 
   @spec quadratic_cost_error([], [], %{}) :: []

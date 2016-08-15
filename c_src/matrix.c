@@ -34,6 +34,34 @@ add(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
 }
 
 static ERL_NIF_TERM
+divide(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
+  ErlNifBinary  first, second;
+  ERL_NIF_TERM  result;
+  float        *first_data, *second_data, *result_data;
+  int           data_size;
+  size_t        result_size;
+
+  if (!enif_inspect_binary(env, argv[0], &first )) return enif_make_badarg(env);
+  if (!enif_inspect_binary(env, argv[1], &second)) return enif_make_badarg(env);
+
+  first_data  = (float *) first.data;
+  second_data = (float *) second.data;
+  data_size   = (int) (first_data[0] * first_data[1] + 2);
+
+  result_size = sizeof(float) * data_size;
+  result_data = (float *) enif_make_new_binary(env, result_size, &result);
+
+  result_data[0] = first_data[0];
+  result_data[1] = first_data[1];
+
+  for (int index = 2; index < data_size; index += 1) {
+    result_data[index] = first_data[index] / second_data[index];
+  }
+
+  return result;
+}
+
+static ERL_NIF_TERM
 dot(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   ErlNifBinary  first, second;
   ERL_NIF_TERM  result;
@@ -327,6 +355,7 @@ substract(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
 
 static ErlNifFunc nif_functions[] = {
   {"add",                  2, add                 },
+  {"divide",               2, divide              },
   {"dot",                  2, dot                 },
   {"dot_and_add",          3, dot_and_add         },
   {"dot_nt",               2, dot_nt              },
