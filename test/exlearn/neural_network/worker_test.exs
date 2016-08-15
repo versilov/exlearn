@@ -5,11 +5,9 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
   alias ExLearn.NeuralNetwork.Worker
 
   setup do
-    function   = fn(x) -> x + 1 end
-    derivative = fn(_) -> 1     end
-    objective  = fn(a, b, _c) ->
-      Enum.zip(b, a) |> Enum.map(fn({x, y}) -> x - y end)
-    end
+    function   = fn(x)        -> x + 1                  end
+    derivative = fn(_)        -> 1                      end
+    objective  = fn(a, b, _c) -> Matrix.substract(b, a) end
 
     timestamp = :os.system_time(:micro_seconds) |> to_string
     path      = "test/temp/exlearn-neural_network-worker_test" <> timestamp
@@ -222,7 +220,7 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
       path:          path
     } = setup
 
-    data   = Matrix.new(1, 3, [[1, 2, 3]])
+    data   = [Matrix.new(1, 3, [[1, 2, 3]])]
     binary = :erlang.term_to_binary(data)
     :ok    = File.write(path, binary)
 
@@ -235,7 +233,7 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
 
     {:ok, _pid} = Worker.start_link(args, options)
 
-    expected = Matrix.new(1, 3, [[1897, 2784]])
+    expected = [Matrix.new(1, 2, [[1897, 2784]])]
     result   = Worker.work(:ask, network_state, worker)
 
     assert result == expected
@@ -252,14 +250,14 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
 
     args = %{
       batch_size:     1,
-      data:           Matrix.new(1, 3, [[1, 2, 3]]),
+      data:           [Matrix.new(1, 3, [[1, 2, 3]])],
       learning_rate:  :not_needed,
       regularization: :none
     }
 
     {:ok, _pid} = Worker.start_link(args, options)
 
-    expected = Matrix.new(1, 2, [[1897, 2784]])
+    expected = [Matrix.new(1, 2, [[1897, 2784]])]
     result   = Worker.work(:ask, network_state, worker)
 
     assert result == expected
@@ -298,8 +296,8 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
     first_expected_correction = {
       [
         Matrix.new(1, 3, [[-181, -397, -613]]),
-        Matrix.new(1, 3, [[-35,  -73]]       ),
-        Matrix.new(1, 3, [[-3,   -16]]       )
+        Matrix.new(1, 2, [[-35,  -73]]       ),
+        Matrix.new(1, 2, [[-3,   -16]]       )
       ],
       [
         Matrix.new(3, 3, [
@@ -322,8 +320,8 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
     second_expected_correction = {
       [
         Matrix.new(1, 3, [[600, 1312, 2024]]),
-        Matrix.new(1, 3, [[112, 244]]       ),
-        Matrix.new(1, 3, [[20,  46]]        )
+        Matrix.new(1, 2, [[112, 244]]       ),
+        Matrix.new(1, 2, [[20,  46]]        )
       ],
       [
         Matrix.new(3, 3, [
@@ -386,8 +384,8 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
     first_expected_correction = {
       [
         Matrix.new(1, 3, [[-181, -397, -613]]),
-        Matrix.new(1, 3, [[-35,  -73]]       ),
-        Matrix.new(1, 3, [[-3,   -16]]       )
+        Matrix.new(1, 2, [[-35,  -73]]       ),
+        Matrix.new(1, 2, [[-3,   -16]]       )
       ],
       [
         Matrix.new(3, 3, [
@@ -410,8 +408,8 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
     second_expected_correction = {
       [
         Matrix.new(1, 3, [[600, 1312, 2024]]),
-        Matrix.new(1, 3, [[112, 244]]       ),
-        Matrix.new(1, 3, [[20,  46]]        )
+        Matrix.new(1, 2, [[112, 244]]       ),
+        Matrix.new(1, 2, [[20,  46]]        )
       ],
       [
         Matrix.new(3, 3, [

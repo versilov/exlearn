@@ -1,6 +1,7 @@
 defmodule ExLearn.NeuralNetwork.PersistenceTest do
   use ExUnit.Case, async: true
 
+  alias ExLearn.Matrix
   alias ExLearn.NeuralNetwork.Persistence
 
   setup do
@@ -11,16 +12,16 @@ defmodule ExLearn.NeuralNetwork.PersistenceTest do
       network: %{
         layers: [
           %{
-            biases:   [[1, 2, 3]],
-            weights:  [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+            biases:   Matrix.new(1, 3, [[1, 2, 3]]),
+            weights:  Matrix.new(3, 3, [[1, 2, 3], [4, 5, 6], [7, 8, 9]])
           },
           %{
-            biases:   [[4, 5]],
-            weights:  [[1, 2], [3, 4], [5, 6]]
+            biases:   Matrix.new(1, 2, [[4, 5]]),
+            weights:  Matrix.new(3, 2, [[1, 2], [3, 4], [5, 6]])
           },
           %{
-            biases:   [[6, 7]],
-            weights:  [[1, 2], [3, 4]]
+            biases:   Matrix.new(1, 2, [[6, 7]]),
+            weights:  Matrix.new(2, 2, [[1, 2], [3, 4]])
           }
         ]
       }
@@ -30,16 +31,16 @@ defmodule ExLearn.NeuralNetwork.PersistenceTest do
       network: %{
         layers: [
           %{
-            biases:   [[2, 3, 4]],
-            weights:  [[2, 3, 4], [5, 6, 7], [8, 9, 10]]
+            biases:   Matrix.new(1, 3, [[2, 3, 4]]),
+            weights:  Matrix.new(3, 3, [[2, 3, 4], [5, 6, 7], [8, 9, 10]])
           },
           %{
-            biases:   [[5, 6]],
-            weights:  [[2, 3], [4, 5], [6, 7]]
+            biases:   Matrix.new(1, 2, [[5, 6]]),
+            weights:  Matrix.new(3, 2, [[2, 3], [4, 5], [6, 7]])
           },
           %{
-            biases:   [[7, 8]],
-            weights:  [[2, 3], [4, 5]]
+            biases:   Matrix.new(1, 2, [[7, 8]]),
+            weights:  Matrix.new(2, 2, [[2, 3], [4, 5]])
           }
         ]
       }

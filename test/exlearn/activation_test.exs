@@ -1,7 +1,7 @@
 defmodule ActivationTest do
   use ExUnit.Case, async: true
 
-  alias ExLearn.Activation
+  alias ExLearn.{Activation, Matrix}
 
   test "#apply_derivative for arity 1" do
     activity = %{arity: 1, derivative: &(&1 + 1)}

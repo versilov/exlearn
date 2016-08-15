@@ -78,8 +78,8 @@ defmodule ExLearn.NeuralNetwork.Builder do
 
   defp initialize_layers([layer|rest], random_function, accumulator) do
     %{columns: columns, rows: rows} = layer
-    biases  = Matrix.build(1,    columns, random_function)
-    weights = Matrix.build(rows, columns, random_function)
+    biases  = Matrix.new(1,    columns, random_function)
+    weights = Matrix.new(rows, columns, random_function)
 
     new_layer = layer
     |> Map.put(:biases,  biases)

@@ -44,9 +44,9 @@ defmodule ExLearn.NeuralNetwork.Worker do
       learning_rate:  learning_rate
     } = configuration
 
-    data = case List.first(data_source) do
-      path when is_bitstring(path) -> read_data(data_source)
-      _  -> data_source
+    data = case is_bitstring(List.first(data_source)) do
+      true -> read_data(data_source)
+      _    -> data_source
     end
 
     chunks = Enum.chunk(data, batch_size, batch_size, [])

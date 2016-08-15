@@ -1,4 +1,4 @@
-defmodule BuilderTest do
+defmodule ExLearn.NeuralNetwork.BuilderTest do
   use ExUnit.Case, async: true
 
   alias ExLearn.NeuralNetwork.Builder
@@ -136,18 +136,8 @@ defmodule BuilderTest do
         weights: weights
       } = layer
 
-      assert biases  |> is_list
-      assert weights |> is_list
-
-      assert length(biases)  == 1
-      assert length(weights) == rows
-
-      [bias_content] = biases
-      assert length(bias_content) == columns
-
-      Enum.each(weights, fn(row) ->
-        assert length(row) == columns
-      end)
+      assert biases  |> is_binary
+      assert weights |> is_binary
     end)
   end
 end
