@@ -13,7 +13,8 @@ Code.require_file("data_loader.exs", __DIR__)
 # the first time.
 # DataLoader.convert(4)
 
-# Aliasing the module name for brevity.
+# Aliasing the module names for brevity.
+alias ExLearn.Matrix
 alias ExLearn.NeuralNetwork, as: NN
 
 # Defines the network structure.
@@ -76,7 +77,9 @@ DataLoader.preview_label(first_label)
 ask_data = [first_image]
 
 # Asks the network to clasify an image.
-NN.ask(ask_data, network) |> Task.await(:infinity) |> IO.inspect
+NN.ask(ask_data, network)
+|> Task.await(:infinity)
+|> Enum.map(&Matrix.inspect/1)
 
 # Saves the network state so it can be loaded ack later.
 NN.save("samples/mnist-digits/saved_network.el1", network)

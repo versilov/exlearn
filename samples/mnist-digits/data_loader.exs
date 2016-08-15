@@ -23,13 +23,25 @@ defmodule DataLoader do
   end
 
   def preview_image(image) do
-    preview_image(image, 1)
+    <<
+      1         :: float-little-32,
+      784       :: float-little-32,
+      raw_image :: binary
+    >> = image
+
+    preview_image(raw_image, 1)
 
     image
   end
 
   def preview_label(label) do
-    IO.inspect preview_label(label, [])
+    <<
+      1         :: float-little-32,
+      10        :: float-little-32,
+      raw_label :: binary
+    >> = label
+
+    IO.inspect preview_label(raw_label, [])
 
     label
   end
@@ -40,7 +52,7 @@ defmodule DataLoader do
 
   defp preview_image(<<>>,  _),             do: :ok
   defp preview_image(image, current_column) do
-    <<pixel :: float-32, rest :: binary>> = image
+    <<pixel :: float-little-32, rest :: binary>> = image
 
     :io.format("~3..0B", [trunc(pixel)])
 
@@ -56,7 +68,7 @@ defmodule DataLoader do
 
   defp preview_label(<<>>,  accumulator), do: Enum.reverse(accumulator)
   defp preview_label(label, accumulator)  do
-    <<element :: float-32, rest :: binary>> = label
+    <<element :: float-little-32, rest :: binary>> = label
 
     preview_label(rest, [trunc(element)|accumulator])
   end
@@ -173,7 +185,8 @@ defmodule DataLoader do
   defp extract_images(images, accumulator)  do
     <<raw_image :: binary-size(784), rest :: binary>> = images
 
-    formatted_image = format_image(raw_image, <<>>)
+    initial         = <<1 :: float-little-32, 784 :: float-little-32>>
+    formatted_image = format_image(raw_image, initial)
 
     extract_images(rest, [formatted_image|accumulator])
   end
@@ -182,7 +195,7 @@ defmodule DataLoader do
   defp format_image(raw_image, accumulator)  do
     <<raw_pixel :: size(8), rest :: binary>> = raw_image
 
-    formatted_pixel = <<raw_pixel :: float-32>>
+    formatted_pixel = <<raw_pixel :: float-little-32>>
 
     format_image(rest, accumulator <> formatted_pixel)
   end
@@ -201,16 +214,17 @@ defmodule DataLoader do
   defp extract_labels(labels, ten_numbers, accumulator)  do
     <<raw_label :: size(8), rest :: binary >> = labels
 
-    formatted_label = format_label(raw_label, ten_numbers)
+    initial         = <<1 :: float-little-32, 10 :: float-little-32>>
+    formatted_label = format_label(raw_label, ten_numbers, initial)
 
     extract_labels(rest, ten_numbers, [formatted_label|accumulator])
   end
 
-  defp format_label(label, ten_numbers) do
-    Enum.reduce(ten_numbers, <<>>, fn(element, accumulator) ->
+  defp format_label(label, ten_numbers, initial) do
+    Enum.reduce(ten_numbers, initial, fn(element, accumulator) ->
       binary_element = case element do
-        ^label -> <<1.0 :: float-32>>
-        _      -> <<0.0 :: float-32>>
+        ^label -> <<1.0 :: float-little-32>>
+        _      -> <<0.0 :: float-little-32>>
       end
 
       accumulator <> binary_element
