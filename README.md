@@ -8,39 +8,52 @@ Elixir Machine Learning library. (Extreemly early pre pre alpha!!!)
 ## Example
 
 ```elixir
+alias ExLearn.Matrix
 alias ExLearn.NeuralNetwork, as: NN
 
 structure_parameters = %{
   layers: %{
     input:   %{size: 2},
     hidden: [%{activity: :logistic, name: "First Hidden", size: 2}],
-    output:  %{activity: :tanh,     name: "Output",       size: 1}
+    output:  %{activity: :logistic, name: "Output",       size: 1}
   },
-  objective: :quadratic,
-  random:    %{distribution: :uniform, range: {-1, 1}}
+  objective: :cross_entropy
 }
 
-network = NN.initialize(structure_parameters)
+network = NN.create(structure_parameters)
+
+initialization_parameters = %{distribution: :uniform, range: {-1, 1}}
+NN.initialize(initialization_parameters, network)
 
 training_data = [
-  {[0, 0], [0]},
-  {[0, 1], [0]},
-  {[1, 0], [0]},
-  {[1, 1], [1]}
+  {Matrix.new(1, 2, [[0, 0]]), Matrix.new(1, 2, [[0]])},
+  {Matrix.new(1, 2, [[0, 1]]), Matrix.new(1, 2, [[1]])},
+  {Matrix.new(1, 2, [[1, 0]]), Matrix.new(1, 2, [[1]])},
+  {Matrix.new(1, 2, [[1, 1]]), Matrix.new(1, 2, [[1]])}
 ]
 
-configuration = %{
-  batch_size:    2,
-  data_size:     4,
-  epochs:        1000,
-  learning_rate: 0.5,
-  workers:       1
+learning_parameters = %{
+  training: %{
+    batch_size:     2,
+    data:           training_data,
+    data_size:      4,
+    epochs:         50,
+    learning_rate:  4.5,
+    regularization: :none
+  },
+  workers: 2
 }
 
-NN.train(training_data, configuration, network) |> Task.await
+NN.train(learning_parameters, network) |> Task.await(:infinity)
 
-ask_data = [[0, 0], [0, 1], [1, 0], [1, 1]]
-NN.ask(ask_data, network) |> Task.await |> IO.inspect
+ask_data = [
+  Matrix.new(1, 2, [[0, 0]]),
+  Matrix.new(1, 2, [[0, 1]]),
+  Matrix.new(1, 2, [[1, 0]]),
+  Matrix.new(1, 2, [[1, 1]])
+]
+
+NN.ask(ask_data, network) |> Task.await(:infinity) |> Enum.map(&Matrix.inspect/1)
 ```
 
 ## Usage with Docker
@@ -94,27 +107,32 @@ alias docker-root-here='docker run --rm -it -v "$PWD":/work -w /work'
     docker-here exlearn mix deps.get
     ```
 
-4. Run an interactive shell
+4. Compile the C shared library
+    ```bash
+    docker-here exlearn make
+    ```
+
+5. Run an interactive shell
     ```bash
     docker-here exlearn iex -S mix
     ```
 
-5. Run a sample
+6. Run a sample
     ```bash
     docker-here exlearn mix run samples/or.exs
     ```
 
-6. Run tests
+7. Run tests
     ```bash
     docker-here exlearn mix test
     ```
 
-7. Run tests with coverage report
+8. Run tests with coverage report
     ```bash
     docker-here exlearn mix coveralls
     ```
 
-8. Run dialyzer
+9. Run dialyzer
     ```bash
     docker-here exlearn mix dialyzer
     ```

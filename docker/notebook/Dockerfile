@@ -16,6 +16,7 @@ RUN set -ex                                                 && \
     echo 'Installing python libraries'                      && \
     apt-get update                                          && \
     apt-get install -y --no-install-recommends                 \
+      libblas-dev                                              \
       python-pip                                               \
       python-dev                                            && \
                                                                \
