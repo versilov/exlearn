@@ -194,29 +194,25 @@ defmodule ExLearn.Activation do
   @spec softmax_pair :: map
   defp softmax_pair do
     function   = fn(x, all) ->
-      maximum_element = Enum.max(all)
-      normalizer = Enum.map(
+      maximum_element = Matrix.max(all)
+      normalizer = Matrix.apply(
         all,
         fn(element) -> :math.exp(element - maximum_element) end
-      ) |> Enum.sum
+      ) |> Matrix.sum
 
       :math.exp(x - maximum_element) / normalizer
     end
 
-    derivative = fn([x]) ->
-      data_with_index = Enum.with_index(x)
-
-      result = Enum.map(data_with_index, fn({hi, i}) ->
-        Enum.map(data_with_index, fn({hj, j}) ->
-          case i == j do
-            true  -> hi * (1 - hj)
-            false -> -1 * hi * hj
+    derivative = fn(matrix) ->
+      Matrix.apply(matrix, fn(first_element, first_index) ->
+        Matrix.apply(matrix, fn(second_element, second_index) ->
+          case first_index == second_index do
+            true  -> first_element * (1 - second_element)
+            false -> -1 * first_element * second_element
           end
         end)
+        |> Matrix.sum
       end)
-      |> Enum.map(&Enum.sum/1)
-
-      [result]
     end
 
     %{arity: 2, function: function, derivative: derivative}

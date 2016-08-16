@@ -21,7 +21,7 @@ defmodule ExLearn.Matrix do
   Applies the given function on each element of the matrix
   """
   @spec apply(binary, ((number) -> number)) :: [[]]
-  def apply(matrix, function) do
+  def apply(matrix, function) when is_function(function, 1) do
     <<
       rows    :: float-little-32,
       columns :: float-little-32,
@@ -33,6 +33,33 @@ defmodule ExLearn.Matrix do
     apply_on_matrix(data, function, initial)
   end
 
+  @spec apply(binary, function) :: [[]]
+  def apply(matrix, function) when is_function(function, 2) do
+    <<
+      rows    :: float-little-32,
+      columns :: float-little-32,
+      data    :: binary
+    >> = matrix
+
+    initial = <<rows :: float-little-32, columns :: float-little-32>>
+    size    = rows * columns
+
+    apply_on_matrix(data, function, 1, size, initial)
+  end
+
+  @spec apply(binary, function) :: [[]]
+  def apply(matrix, function) when is_function(function, 3) do
+    <<
+      rows    :: float-little-32,
+      columns :: float-little-32,
+      data    :: binary
+    >> = matrix
+
+    initial = <<rows :: float-little-32, columns :: float-little-32>>
+
+    apply_on_matrix(data, function, 1, 1, columns, initial)
+  end
+
   defp apply_on_matrix(<<>>, _,        accumulator), do: accumulator
   defp apply_on_matrix(data, function, accumulator)  do
     <<value :: float-little-32, rest :: binary>> = data
@@ -41,6 +68,33 @@ defmodule ExLearn.Matrix do
     new_element = <<new_value :: float-little-32>>
 
     apply_on_matrix(rest, function, accumulator <> new_element)
+  end
+
+  defp apply_on_matrix(<<>>, _, _, _, accumulator), do: accumulator
+  defp apply_on_matrix(data, function, index, size, accumulator) do
+    <<value :: float-little-32, rest :: binary>> = data
+
+    new_value       = function.(value, index)
+    new_element     = <<new_value :: float-little-32>>
+    new_accumulator = accumulator <> new_element
+
+    apply_on_matrix(rest, function, index + 1, size, new_accumulator)
+  end
+
+  defp apply_on_matrix(<<>>, _, _, _, _, accumulator), do: accumulator
+  defp apply_on_matrix(data, function, row_index, column_index, columns, accumulator) do
+    <<value :: float-little-32, rest :: binary>> = data
+
+    new_value       = function.(value, row_index, column_index)
+    new_element     = <<new_value :: float-little-32>>
+    new_accumulator = accumulator <> new_element
+
+    case column_index < columns do
+      true  ->
+        apply_on_matrix(rest, function, row_index, column_index + 1, columns, new_accumulator)
+      false ->
+        apply_on_matrix(rest, function, row_index + 1, 1, columns, new_accumulator)
+    end
   end
 
   @spec apply(binary, binary, ((number) -> number)) :: [[]]
@@ -135,18 +189,42 @@ defmodule ExLearn.Matrix do
   defp inspect_element(column, columns, elements) do
     <<element :: float-little-32, rest :: binary>> = elements
 
-    next_column = case column do
-      ^columns ->
+    next_column = case column == columns do
+      true ->
         IO.puts(element)
 
         1.0
-      _ ->
+      false ->
         IO.write("#{element} ")
 
         column + 1.0
     end
 
     inspect_element(next_column, columns, rest)
+  end
+
+  @doc """
+  Maximum element in a matrix.
+  """
+  @spec max(binary) :: number
+  def max(matrix) do
+    <<
+      _rows    :: float-little-32,
+      _columns :: float-little-32,
+      rest     :: binary
+    >> = matrix
+
+    matrix_max(rest, 10.0e-40)
+  end
+
+  defp matrix_max(<<>>,   maximum), do: maximum
+  defp matrix_max(binary, previous) do
+    <<value :: float-little-32, rest :: binary>> = binary
+
+    case value > previous do
+      true  -> matrix_max(rest, value   )
+      false -> matrix_max(rest, previous)
+    end
   end
 
   @doc """
@@ -220,14 +298,41 @@ defmodule ExLearn.Matrix do
       data     :: binary
     >> = matrix
 
-    sum(data, 0)
+    matrix_sum(data, 0)
   end
 
-  defp sum(<<>>,   accumulator), do: accumulator
-  defp sum(values, accumulator)  do
+  @spec sum(binary, atom) :: binary
+  def sum(matrix, :rows) do
+    <<
+      rows    :: float-little-32,
+      columns :: float-little-32,
+      data    :: binary
+    >> = matrix
+
+    initial = <<1.0 :: float-little-32, rows :: float-little-32>>
+
+    matrix_sum(data, 1, columns, 0, initial)
+  end
+
+  defp matrix_sum(<<>>,   accumulator), do: accumulator
+  defp matrix_sum(values, accumulator)  do
     <<value :: float-little-32, rest :: binary>> = values
 
-    sum(rest, accumulator + value)
+    matrix_sum(rest, accumulator + value)
+  end
+
+  defp matrix_sum(<<>>, _, _, _, accumulator), do: accumulator
+  defp matrix_sum(values, current_column, columns, sum, accumulator)  do
+    <<value :: float-little-32, rest :: binary>> = values
+
+    new_sum = sum + value
+
+    case current_column < columns do
+      true  ->
+        matrix_sum(rest, current_column + 1, columns, new_sum, accumulator)
+      false ->
+        matrix_sum(rest, 1, columns, 0, accumulator <> <<new_sum :: float-little-32>>)
+    end
   end
 
   @doc """

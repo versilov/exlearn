@@ -1,3 +1,4 @@
+alias ExLearn.Matrix
 alias ExLearn.NeuralNetwork, as: NN
 
 structure_parameters = %{
@@ -15,8 +16,8 @@ initialization_parameters = %{distribution: :uniform, range: {-1, 1}}
 NN.initialize(initialization_parameters, network)
 
 training_data = [
-  {[0], [1]},
-  {[1], [0]}
+  {Matrix.new(1, 1, [[0]]), Matrix.new(1, 1, [[1]])},
+  {Matrix.new(1, 1, [[1]]), Matrix.new(1, 1, [[0]])},
 ]
 
 learning_parameters = %{
@@ -33,5 +34,11 @@ learning_parameters = %{
 
 NN.train(learning_parameters, network) |> Task.await(:infinity)
 
-ask_data = [[0], [1]]
-NN.ask(ask_data, network) |> Task.await(:infinity) |> IO.inspect
+ask_data = [
+  Matrix.new(1, 1, [[0]]),
+  Matrix.new(1, 1, [[1]])
+]
+
+NN.ask(ask_data, network)
+|> Task.await(:infinity)
+|> Enum.map(&Matrix.inspect/1)

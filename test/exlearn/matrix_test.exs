@@ -12,10 +12,28 @@ defmodule MatrixTest do
     assert Matrix.add(first, second) == expected
   end
 
-  test "#apply/2 applies a function on each element of the matrix" do
+  test "#apply/2 applies a function/1 on each element of the matrix" do
     function = &(&1 + 1)
     input    = Matrix.new(2, 3, [[1, 2, 3], [4, 5, 6]])
     expected = Matrix.new(2, 3, [[2, 3, 4], [5, 6, 7]])
+
+    assert Matrix.apply(input, function) == expected
+  end
+
+  test "#apply/2 applies a function/2 on each element of the matrix" do
+    function = fn(element, index) -> element + index end
+    input    = Matrix.new(2, 3, [[1, 2, 3], [4, 5,  6 ]])
+    expected = Matrix.new(2, 3, [[2, 4, 6], [8, 10, 12]])
+
+    assert Matrix.apply(input, function) == expected
+  end
+
+  test "#apply/2 applies a function/3 on each element of the matrix" do
+    function = fn(element, row_index, column_index) ->
+      element + row_index + column_index
+    end
+    input    = Matrix.new(2, 3, [[1, 2, 3], [4, 5,  6]])
+    expected = Matrix.new(2, 3, [[3, 5, 7], [7, 9, 11]])
 
     assert Matrix.apply(input, function) == expected
   end
@@ -81,6 +99,13 @@ defmodule MatrixTest do
     assert output == expected
   end
 
+  test "#max returns the maximum element from the matrix" do
+    matrix   = Matrix.new(2, 3, [[1, 2, 3], [4,  5,  6]])
+    expected = 6
+
+    assert Matrix.max(matrix) == expected
+  end
+
   test "#multiply performs elementwise multiplication of two matrices" do
     first    = Matrix.new(2, 3, [[1, 2, 3], [4,  5,  6 ]])
     second   = Matrix.new(2, 3, [[5, 2, 1], [3,  4,  6 ]])
@@ -139,12 +164,20 @@ defmodule MatrixTest do
     assert Matrix.substract_inverse(first, second) == expected
   end
 
-  test "#sum return the sum of all elements in the matrix" do
+  test "#sum/1 returns the sum of all elements in the matrix" do
     input    = Matrix.new(2, 3, [[1, 2, 3], [4, 5, 6]])
     expected = 21
 
     assert Matrix.sum(input) == expected
   end
+
+  test "#sum|:rows returns a matrix with the sum of each row as element" do
+    input    = Matrix.new(2, 3, [[1, 2, 3], [4, 5, 6]])
+    expected = Matrix.new(1, 2, [[6, 15]])
+
+    assert Matrix.sum(input, :rows) == expected
+  end
+
 
   test "#transpose transposes a matrix" do
     input    = Matrix.new(2, 3, [[1, 2, 3], [4, 5, 6]])
