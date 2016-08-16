@@ -36,7 +36,74 @@ defmodule ExLearn.NeuralNetwork.AccumulatorTest do
     }}
   end
 
-  test "#ask returns the ask data", %{setup: setup} do
+  test "#ask with data in file returns the ask data", %{setup: setup} do
+    %{
+      args:       args,
+      name:       name = {:global, reference},
+      options:    options,
+      store_name: store_name
+    } = setup
+
+    {:ok, accumulator_pid} = Accumulator.start_link(args, options)
+
+    function   = fn(x) -> x + 1 end
+    derivative = fn(_) -> 1     end
+    objective  = fn(a, b, _c) -> Matrix.substract(b, a) end
+
+    network_state = %{
+      network: %{
+        layers: [
+          %{
+            activity: %{arity: 1, function: function, derivative: derivative},
+            biases:   Matrix.new(1, 3, [[1, 2, 3]]),
+            weights:  Matrix.new(3, 3, [[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+          },
+          %{
+            activity: %{arity: 1, function: function, derivative: derivative},
+            biases:   Matrix.new(1, 2, [[4, 5]]),
+            weights:  Matrix.new(3, 2, [[1, 2], [3, 4], [5, 6]])
+          },
+          %{
+            activity: %{arity: 1, function: function, derivative: derivative},
+            biases:   Matrix.new(1, 2, [[6, 7]]),
+            weights:  Matrix.new(2, 2, [[1, 2], [3, 4]])
+          },
+        ],
+        objective: %{error: objective}
+      }
+    }
+
+    Store.set(network_state, store_name)
+
+    data     = [
+      Matrix.new(1, 3, [[1, 2, 3]]),
+      Matrix.new(1, 3, [[2, 3, 4]])
+    ]
+
+    timestamp = :os.system_time(:micro_seconds) |> to_string
+    path      = "test/temp/exlearn-neural_network-accumulator_test" <> timestamp
+    binary    = :erlang.term_to_binary(data)
+    File.write(path, binary)
+
+    expected = [
+      Matrix.new(1, 2, [[1897, 2784]]),
+      Matrix.new(1, 2, [[2620, 3846]])
+    ]
+
+    assert Accumulator.ask(path, name) == expected
+    assert Store.get(store_name)       == network_state
+
+    pid_of_reference = :global.whereis_name(reference)
+
+    assert accumulator_pid |> is_pid
+    assert accumulator_pid |> Process.alive?
+    assert reference       |> is_reference
+    assert accumulator_pid == pid_of_reference
+
+    :ok = File.rm(path)
+  end
+
+  test "#ask with data in memory returns the ask data", %{setup: setup} do
     %{
       args:       args,
       name:       name = {:global, reference},

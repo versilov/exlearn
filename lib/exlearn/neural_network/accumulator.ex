@@ -71,7 +71,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
       path when is_bitstring(path) ->
         files = Path.wildcard(path)
 
-        trunc(Float.ceil(length(files)))
+        trunc(length(files))
       _ ->
         length(data)
     end
