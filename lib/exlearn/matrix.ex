@@ -175,13 +175,6 @@ defmodule ExLearn.Matrix do
     new_matrix_from_function(rows * columns, function, initial)
   end
 
-  defp new_matrix_from_function(0,    _,        accumulator), do: accumulator
-  defp new_matrix_from_function(size, function, accumulator)  do
-    current = <<function.() :: float-little-32>>
-
-    new_matrix_from_function(size - 1, function, accumulator <> current)
-  end
-
   @spec new(non_neg_integer, non_neg_integer, list(list)) :: binary
   def new(rows, columns, list_of_lists) when is_list(list_of_lists) do
     initial = <<rows :: float-little-32, columns :: float-little-32>>
@@ -191,6 +184,13 @@ defmodule ExLearn.Matrix do
         partial <> <<element :: float-little-32>>
       end)
     end)
+  end
+
+  defp new_matrix_from_function(0,    _,        accumulator), do: accumulator
+  defp new_matrix_from_function(size, function, accumulator)  do
+    current = <<function.() :: float-little-32>>
+
+    new_matrix_from_function(size - 1, function, accumulator <> current)
   end
 
   @doc """

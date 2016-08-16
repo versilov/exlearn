@@ -3,7 +3,7 @@ defmodule ExLearn.Objective do
   Translates objective names to functions
   """
 
-  alias ExLearn.{Activation, Matrix, Vector}
+  alias ExLearn.{Activation, Matrix}
 
   @doc """
   Returns the appropriate function
