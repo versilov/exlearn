@@ -87,5 +87,5 @@ NN.ask(ask_data, network)
 |> Task.await(:infinity)
 |> Enum.map(&Matrix.inspect/1)
 
-# Saves the network state so it can be loaded ack later.
+# Saves the network state so it can be loaded back later.
 NN.save("samples/mnist-digits/saved_network.el1", network)
