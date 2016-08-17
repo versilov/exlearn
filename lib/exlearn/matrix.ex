@@ -128,6 +128,30 @@ defmodule ExLearn.Matrix do
   end
 
   @doc """
+  """
+  @spec argmax(binary) :: non_neg_integer
+  def argmax(matrix) do
+    <<
+      _rows    :: float-little-32,
+      _columns :: float-little-32,
+      first    :: float-little-32,
+      rest     :: binary
+    >> = matrix
+
+    argmax(rest, 0, first, 0)
+  end
+
+  defp argmax(<<>>, _,     _,       argmax), do: argmax
+  defp argmax(data, index, maximum, argmax)  do
+    <<next :: float-little-32, rest :: binary>> = data
+
+    case maximum < next do
+      true  -> argmax(rest, index + 1, next,    index + 1)
+      false -> argmax(rest, index + 1, maximum, argmax   )
+    end
+  end
+
+  @doc """
   Divides two matrices
   """
   @spec divide([[number]], [[number]]) :: []

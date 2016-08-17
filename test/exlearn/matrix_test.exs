@@ -47,6 +47,16 @@ defmodule MatrixTest do
     assert Matrix.apply(first, second, function) == expected
   end
 
+  test "#argmax returns the index of the maximal element" do
+    first  = Matrix.new(2, 3, [[1, 2, 3], [4, 5, 6]])
+    second = Matrix.new(2, 3, [[8, 3, 4], [5, 6, 7]])
+    third  = Matrix.new(2, 3, [[8, 3, 4], [9, 6, 7]])
+
+    assert Matrix.argmax(first)  == 5
+    assert Matrix.argmax(second) == 0
+    assert Matrix.argmax(third)  == 3
+  end
+
   test "#divide divides two matrices" do
     first    = Matrix.new(2, 3, [[1,   2, 6], [9, 10, 18]])
     second   = Matrix.new(2, 3, [[2,   2, 3], [3, 5,  6 ]])
