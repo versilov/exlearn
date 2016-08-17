@@ -11,7 +11,7 @@ Code.require_file("data_loader.exs", __DIR__)
 # data set. The files will contain data distributed as evenly as possible.
 # You only need to do this once. Comment the following line after runing it
 # the first time.
-# DataLoader.convert(4)
+DataLoader.convert(4)
 
 # Aliasing the module names for brevity.
 alias ExLearn.Matrix
@@ -34,7 +34,13 @@ network = NN.create(structure_parameters)
 # already saved state.
 
 # Defines the initialization parameters and initializes the neural network.
-initialization_parameters = %{distribution: :uniform, range: {-1, 1}}
+initialization_parameters = %{
+  distribution: :normal,
+  deviation:    1,
+  mean:         0,
+  modifier:     fn(value, inputs, _outputs) -> value / :math.sqrt(inputs) end
+}
+
 NN.initialize(initialization_parameters, network)
 
 # If you already have a saved state you can load it with the following:

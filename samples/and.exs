@@ -12,7 +12,12 @@ structure_parameters = %{
 
 network = NN.create(structure_parameters)
 
-initialization_parameters = %{distribution: :uniform, range: {-1, 1}}
+initialization_parameters = %{
+  distribution: :uniform,
+  maximum:       1,
+  minimum:      -1
+}
+
 NN.initialize(initialization_parameters, network)
 
 training_data = [

@@ -9,11 +9,6 @@ defmodule ExLearn.NeuralNetwork.BuilderTest do
     objective_function  = fn(a, _, _) -> a     end
     objective_error     = fn(a, _)    -> a     end
 
-    initialization_parameters = %{
-      distribution: :uniform,
-      range:        {-1, 1}
-    }
-
     structure_parameters = %{
       layers: %{
         input:  %{size: 20},
@@ -53,7 +48,6 @@ defmodule ExLearn.NeuralNetwork.BuilderTest do
     {:ok, setup: %{
       activity_function:         activity_function,
       activity_derivative:       activity_derivative,
-      initialization_parameters: initialization_parameters,
       objective_function:        objective_function,
       objective_error:           objective_error,
       structure_parameters:      structure_parameters
@@ -117,11 +111,91 @@ defmodule ExLearn.NeuralNetwork.BuilderTest do
     assert Builder.create(structure_parameters) == expected
   end
 
-  test "#initialize return a map", %{setup: setup} do
-    %{
-      initialization_parameters: initialization_parameters,
-      structure_parameters:      structure_parameters
-    } = setup
+  test "#initialize with normal return a map", %{setup: setup} do
+    %{structure_parameters: structure_parameters} = setup
+
+    initialization_parameters = %{
+      distribution: :normal,
+      deviation:    2,
+      mean:         3
+    }
+
+    network_state = Builder.create(structure_parameters)
+    result        = Builder.initialize(network_state, initialization_parameters)
+    %{network: %{layers: layers}} = result
+
+    assert length(layers) == 3
+    Enum.each(layers, fn(layer) ->
+      %{
+        biases:  biases,
+        weights: weights
+      } = layer
+
+      assert biases  |> is_binary
+      assert weights |> is_binary
+    end)
+  end
+
+  test "#initialize with normal and modifier return a map", %{setup: setup} do
+    %{structure_parameters: structure_parameters} = setup
+
+    initialization_parameters = %{
+      distribution: :normal,
+      deviation:    2,
+      mean:         3,
+      modifier:     fn(x, a ,b) -> x + a + b end
+    }
+
+    network_state = Builder.create(structure_parameters)
+    result        = Builder.initialize(network_state, initialization_parameters)
+    %{network: %{layers: layers}} = result
+
+    assert length(layers) == 3
+    Enum.each(layers, fn(layer) ->
+      %{
+        biases:  biases,
+        weights: weights
+      } = layer
+
+      assert biases  |> is_binary
+      assert weights |> is_binary
+    end)
+  end
+
+  test "#initialize with uniform return a map", %{setup: setup} do
+    %{structure_parameters: structure_parameters} = setup
+
+    initialization_parameters = %{
+      distribution: :uniform,
+      maximum:        1,
+      minimum:       -1
+    }
+
+    network_state = Builder.create(structure_parameters)
+    result        = Builder.initialize(network_state, initialization_parameters)
+    %{network: %{layers: layers}} = result
+
+    assert length(layers) == 3
+    Enum.each(layers, fn(layer) ->
+      %{
+        biases:  biases,
+        weights: weights
+      } = layer
+
+      assert biases  |> is_binary
+      assert weights |> is_binary
+    end)
+  end
+
+  test "#initialize with uniform and modifier return a map", %{setup: setup} do
+    %{structure_parameters: structure_parameters} = setup
+
+    initialization_parameters = %{
+      distribution: :uniform,
+      maximum:        1,
+      minimum:       -1,
+      modifier:     fn(x, a ,b) -> x + a + b end
+    }
 
     network_state = Builder.create(structure_parameters)
     result        = Builder.initialize(network_state, initialization_parameters)
