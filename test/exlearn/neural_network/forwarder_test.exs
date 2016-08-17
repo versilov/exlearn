@@ -1,4 +1,4 @@
-defmodule ForwarderTest do
+defmodule ExLearn.NeuralNetwork.ForwarderTest do
   use ExUnit.Case, async: true
 
   alias ExLearn.Matrix
@@ -20,6 +20,8 @@ defmodule ForwarderTest do
     f = fn (x) -> x + 1 end
     d = fn (_) -> 1     end
 
+    presentation = fn(x) -> x end
+
     state = %{
       network: %{
         layers: [
@@ -38,7 +40,8 @@ defmodule ForwarderTest do
             biases:   Matrix.new(2, 2, [[6, 7]]),
             weights:  Matrix.new(2, 2, [[1, 2], [3, 4]])
           }
-        ]
+        ],
+        presentation: presentation
       }
     }
 

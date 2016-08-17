@@ -46,9 +46,10 @@ defmodule ExLearn.NeuralNetwork.AccumulatorTest do
 
     {:ok, accumulator_pid} = Accumulator.start_link(args, options)
 
-    function   = fn(x) -> x + 1 end
-    derivative = fn(_) -> 1     end
-    objective  = fn(a, b, _c) -> Matrix.substract(b, a) end
+    function     = fn(x) -> x + 1 end
+    derivative   = fn(_) -> 1     end
+    objective    = fn(a, b, _c) -> Matrix.substract(b, a) end
+    presentation = fn(x)        -> x                      end
 
     network_state = %{
       network: %{
@@ -69,7 +70,8 @@ defmodule ExLearn.NeuralNetwork.AccumulatorTest do
             weights:  Matrix.new(2, 2, [[1, 2], [3, 4]])
           },
         ],
-        objective: %{error: objective}
+        objective: %{error: objective},
+        presentation: presentation
       }
     }
 
@@ -113,9 +115,10 @@ defmodule ExLearn.NeuralNetwork.AccumulatorTest do
 
     {:ok, accumulator_pid} = Accumulator.start_link(args, options)
 
-    function   = fn(x) -> x + 1 end
-    derivative = fn(_) -> 1     end
-    objective  = fn(a, b, _c) -> Matrix.substract(b, a) end
+    function     = fn(x) -> x + 1 end
+    derivative   = fn(_) -> 1     end
+    objective    = fn(a, b, _c) -> Matrix.substract(b, a) end
+    presentation = fn(x)        -> x                      end
 
     network_state = %{
       network: %{
@@ -136,7 +139,8 @@ defmodule ExLearn.NeuralNetwork.AccumulatorTest do
             weights:  Matrix.new(2, 2, [[1, 2], [3, 4]])
           },
         ],
-        objective: %{error: objective}
+        objective: %{error: objective},
+        presentation: presentation
       }
     }
 

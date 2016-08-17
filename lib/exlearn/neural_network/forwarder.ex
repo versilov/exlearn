@@ -44,14 +44,21 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
   """
   @spec forward_for_output([number], map) :: [[number]]
   def forward_for_output(input, state) do
-    %{network: %{layers: layers}} = state
+    %{
+      network: %{
+        layers:       layers,
+        presentation: presentation
+      }
+    } = state
 
-    calculate_output(input, layers)
+    calculate_output(input, layers, presentation)
   end
 
-  defp calculate_output(output, []), do: output
+  defp calculate_output(output, [], presentation) do
+    presentation.(output)
+  end
 
-  defp calculate_output(input, layers) do
+  defp calculate_output(input, layers, presentation) do
     [layer|other_layers] = layers
 
     %{
@@ -62,7 +69,7 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
 
     Matrix.dot_and_add(input, weights, biases)
     |> Activation.apply_function(activity)
-    |> calculate_output(other_layers)
+    |> calculate_output(other_layers, presentation)
   end
 
   @spec forward_for_test([[number]], map) :: [[number]]

@@ -5,9 +5,10 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
   alias ExLearn.NeuralNetwork.Worker
 
   setup do
-    function   = fn(x)        -> x + 1                  end
-    derivative = fn(_)        -> 1                      end
-    objective  = fn(a, b, _c) -> Matrix.substract(b, a) end
+    function     = fn(x)        -> x + 1                  end
+    derivative   = fn(_)        -> 1                      end
+    objective    = fn(a, b, _c) -> Matrix.substract(b, a) end
+    presentation = fn(x)        -> x                      end
 
     timestamp = :os.system_time(:micro_seconds) |> to_string
     path      = "test/temp/exlearn-neural_network-worker_test" <> timestamp
@@ -31,7 +32,8 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
             weights:  Matrix.new(2, 2, [[1, 2], [3, 4]])
           },
         ],
-        objective: %{error: objective}
+        objective:    %{error: objective},
+        presentation: presentation
       }
     }
 
@@ -42,7 +44,8 @@ defmodule ExLearn.NeuralNetwork.WorkerTest do
       name:          name,
       network_state: network_state,
       options:       options,
-      path:          path
+      path:          path,
+      presentation:  presentation
     }}
   end
 

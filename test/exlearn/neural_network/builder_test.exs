@@ -8,6 +8,7 @@ defmodule ExLearn.NeuralNetwork.BuilderTest do
     activity_derivative = fn(_)       -> 1     end
     objective_function  = fn(a, _, _) -> a     end
     objective_error     = fn(a, _)    -> a     end
+    presentation        = fn(x)       -> x     end
 
     structure_parameters = %{
       layers: %{
@@ -42,7 +43,8 @@ defmodule ExLearn.NeuralNetwork.BuilderTest do
       objective: %{
         function: objective_function,
         error:    objective_error
-      }
+      },
+      presentation: presentation
     }
 
     {:ok, setup: %{
@@ -50,6 +52,7 @@ defmodule ExLearn.NeuralNetwork.BuilderTest do
       activity_derivative:       activity_derivative,
       objective_function:        objective_function,
       objective_error:           objective_error,
+      presentation:              presentation,
       structure_parameters:      structure_parameters
     }}
   end
@@ -60,6 +63,7 @@ defmodule ExLearn.NeuralNetwork.BuilderTest do
       activity_derivative:  activity_derivative,
       objective_function:   objective_function,
       objective_error:      objective_error,
+      presentation:         presentation,
       structure_parameters: structure_parameters
     } = setup
 
@@ -103,7 +107,8 @@ defmodule ExLearn.NeuralNetwork.BuilderTest do
         objective: %{
           function: objective_function,
           error:    objective_error
-        }
+        },
+        presentation: presentation
       },
       structure: structure_parameters
     }

@@ -6,6 +6,7 @@ defmodule ExLearn.NeuralNetwork.Builder do
   """
 
   alias ExLearn.{Activation, Distribution, Matrix, Objective}
+  alias ExLearn.NeuralNetwork.Presentation
 
   @doc """
   Creates a neural network with the given structure.
@@ -21,12 +22,21 @@ defmodule ExLearn.NeuralNetwork.Builder do
       objective: objective_setup
     } = structure
 
+    presentation = case Map.get(structure, :presentation) do
+      nil   -> Presentation.determine(:identity)
+      other -> Presentation.determine(other)
+    end
+
     layer_config = [input_layer] ++ hidden_layers ++ [output_layer]
     objective    = Objective.determine(objective_setup, output_layer)
     layers       = create_layers(layer_config, [])
 
     %{
-      network:   %{layers: layers, objective: objective},
+      network: %{
+        layers:       layers,
+        objective:    objective,
+        presentation: presentation
+      },
       structure: structure
     }
   end
