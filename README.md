@@ -62,7 +62,7 @@ NN.ask(ask_data, network) |> Task.await(:infinity) |> Enum.map(&Matrix.inspect/1
 ```
 
 For a more complex example check out
-[samples/mnist-digits/deep-feedforward.exs](samples/mnist-digits/deep-feedforward.exs).
+[samples/mnist-digits/digits-feedforward.exs](samples/mnist-digits/digits-feedforward.exs).
 
 ## Usage with Docker
 
