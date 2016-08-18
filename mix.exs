@@ -52,9 +52,9 @@ defmodule ExLearn.Mixfile do
 
   defp deps do
     [
-      {:benchfella,  "0.3.2", only: :dev },
-      {:dialyxir,    "0.3.5", only: :dev },
-      {:excoveralls, "0.5.5", only: :test}
+      {:benchfella,  "0.3.2", only: :dev         },
+      {:dialyxir,    "0.3.5", only: [:dev, :test]},
+      {:excoveralls, "0.5.5", only: :test        }
     ]
   end
 end
