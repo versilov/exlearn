@@ -45,7 +45,7 @@ defmodule ExLearn.Objective do
     end
   end
 
-  @spec cross_entropy_error_simple(binary, binary, %{}) :: binary
+  @spec cross_entropy_error_simple(binary, binary, map) :: binary
   defp cross_entropy_error_simple(expected, actual, layer) do
     %{input: input} = layer
 
@@ -59,7 +59,7 @@ defmodule ExLearn.Objective do
     |> Matrix.multiply(input_derivative)
   end
 
-  @spec cross_entropy_error_optimised(binary, binary, %{}) :: binary
+  @spec cross_entropy_error_optimised(binary, binary, map) :: binary
   defp cross_entropy_error_optimised(expected, actual, _layer) do
     Matrix.substract(actual, expected)
   end
@@ -82,7 +82,7 @@ defmodule ExLearn.Objective do
     )
   end
 
-  @spec negative_log_likelihood_error(map) :: []
+  @spec negative_log_likelihood_error(map) :: binary
   defp negative_log_likelihood_error(%{activity: activity}) do
     case activity do
       :softmax -> &negative_log_likelihood_error_optimised/3

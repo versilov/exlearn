@@ -3,42 +3,42 @@ defmodule ExLearn.NeuralNetwork.Notification do
 
   # Client API
 
-  @spec done(%{notification: {:global, reference}}) :: {}
+  @spec done(%{notification: {:global, reference}}) :: tuple
   def done(%{notification: notification = {:global, _reference}}) do
     GenServer.cast(notification, :done)
   end
 
-  @spec done({:global, reference}) :: {}
+  @spec done({:global, reference}) :: tuple
   def done(notification = {:global, _reference}) do
     GenServer.cast(notification, :done)
   end
 
-  @spec pop(%{notification: {:global, reference}}) :: {}
+  @spec pop(%{notification: {:global, reference}}) :: list
   def pop(%{notification: notification = {:global, _reference}}) do
     GenServer.call(notification, :pop)
   end
 
-  @spec pop({:global, reference}) :: {}
+  @spec pop({:global, reference}) :: list
   def pop(notification = {:global, _reference}) do
     GenServer.call(notification, :pop)
   end
 
-  @spec push(String.t, %{notification: {:global, reference}}) :: {}
+  @spec push(String.t, %{notification: {:global, reference}}) :: tuple
   def push(message, %{notification: notification = {:global, _reference}}) do
     GenServer.cast(notification, {:push, message})
   end
 
-  @spec push(String.t, {:global, reference}) :: {}
+  @spec push(String.t, {:global, reference}) :: tuple
   def push(message, notification = {:global, _reference}) do
     GenServer.cast(notification, {:push, message})
   end
 
-  @spec start(map, {}) :: reference
+  @spec start(map, list) :: reference
   def start(args, options) do
     GenServer.start(__MODULE__, args, options)
   end
 
-  @spec start_link(map, {}) :: reference
+  @spec start_link(map, list) :: reference
   def start_link(args, options) do
     GenServer.start_link(__MODULE__, args, options)
   end
@@ -74,22 +74,22 @@ defmodule ExLearn.NeuralNetwork.Notification do
 
   # Server API
 
-  @spec init([]) :: {}
+  @spec init(any) :: {:ok, any}
   def init(initial_state) do
     {:ok, initial_state}
   end
 
-  @spec handle_call(atom, any, list) :: tuple
+  @spec handle_call(atom, any, list) :: {:reply, list, []}
   def handle_call(:pop, _from, state) do
     {:reply, Enum.reverse(state), []}
   end
 
-  @spec handle_cast(tuple, list) :: tuple
+  @spec handle_cast(tuple, list) :: {:noreply, list}
   def handle_cast(:done, state) do
     {:noreply, [:done|state]}
   end
 
-  @spec handle_cast(tuple, list) :: tuple
+  @spec handle_cast(tuple, list) :: {:noreply, list}
   def handle_cast({:push, message}, state) do
     {:noreply, [{:message, message}|state]}
   end

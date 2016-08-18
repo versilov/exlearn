@@ -11,7 +11,7 @@ defmodule ExLearn.NeuralNetwork.Manager do
   end
 
   # Server API
-  @spec init({}) :: {}
+  @spec init([]) :: {:ok, any}
   def init([]) do
     children = [
       worker(Worker, [], restart: :transient)

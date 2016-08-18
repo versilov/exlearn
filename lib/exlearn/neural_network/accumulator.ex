@@ -9,6 +9,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
   # Client API
   #----------------------------------------------------------------------------
 
+  @spec ask(map, map) :: list
   def ask(data, accumulator) do
     GenServer.call(accumulator, {:ask, data}, :infinity)
   end
@@ -17,7 +18,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     GenServer.call(accumulator, {:train, learning_parameters}, :infinity)
   end
 
-  @spec start([{}], map) :: {}
+  @spec start(list(tuple), map) :: {}
   def start(args, options) do
     GenServer.start( __MODULE__, args, options)
   end
@@ -31,7 +32,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
   # Server API
   #----------------------------------------------------------------------------
 
-  @spec init(any) :: {}
+  @spec init(any) :: {:ok, map}
   def init(names) do
     %{
       manager:      manager,
@@ -48,12 +49,14 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     {:ok, state}
   end
 
+  @spec handle_call(tuple, any, map) :: {:reply, list, map}
   def handle_call({:ask, data}, _from, state) do
     result = ask_network(data, state)
 
     {:reply, result, state}
   end
 
+  @spec handle_call(tuple, any, map) :: {:reply, :ok, map}
   def handle_call({:train, learning_parameters}, _from,  state) do
     train_network(learning_parameters, state)
 
@@ -103,6 +106,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     Worker.work(:ask, network_state, worker_name)
   end
 
+  @spec train_network(map, map) :: :ok
   defp train_network(learning_parameters, state) do
     %{
       training: training_parameters,
@@ -132,6 +136,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     :ok
   end
 
+  @spec start_workers(any, any, map) :: list
   defp start_workers(worker_count, training_parameters, state) do
     %{
       batch_size:    batch_size,

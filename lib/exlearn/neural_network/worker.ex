@@ -22,12 +22,12 @@ defmodule ExLearn.NeuralNetwork.Worker do
     GenServer.cast(worker, {:train, network_state})
   end
 
-  @spec start([{}], map) :: {}
+  @spec start(list(tuple), map) :: tuple
   def start(args, options) do
     GenServer.start(__MODULE__, args, options)
   end
 
-  @spec start_link([{}], map) :: {}
+  @spec start_link([tuple], map) :: tuple
   def start_link(args, options) do
     GenServer.start_link(__MODULE__, args, options)
   end
@@ -36,7 +36,7 @@ defmodule ExLearn.NeuralNetwork.Worker do
   # Server API
   #----------------------------------------------------------------------------
 
-  @spec init(any) :: {}
+  @spec init(map) :: {:ok, map}
   def init(configuration) do
     %{
       batch_size:     batch_size,
@@ -68,7 +68,7 @@ defmodule ExLearn.NeuralNetwork.Worker do
     {:ok, state}
   end
 
-  @spec handle_call({}, any,  map) :: {}
+  @spec handle_call(tuple, any,  map) :: {:reply, list, map}
   def handle_call(:get, _from,  state) do
     %{result: result} = state
 
@@ -77,7 +77,7 @@ defmodule ExLearn.NeuralNetwork.Worker do
     {:reply, result, new_state}
   end
 
-  @spec handle_call({}, any,  map) :: {}
+  @spec handle_call(tuple, any,  map) :: {:reply, list, map}
   def handle_call({:ask, network_state}, _from,  state) do
     %{data: data} = state
 
@@ -86,7 +86,7 @@ defmodule ExLearn.NeuralNetwork.Worker do
     {:reply, result, state}
   end
 
-  @spec handle_cast({}, map) :: {}
+  @spec handle_cast(tuple, map) :: {:noreply, map}
   def handle_cast({:train, network_state}, state) do
     %{
       batch_size: batch_size,

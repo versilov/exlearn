@@ -8,7 +8,7 @@ defmodule ExLearn.NeuralNetwork.Propagator do
   @doc """
   Performs backpropagation
   """
-  @spec back_propagate(%{}, %{}) :: map
+  @spec back_propagate(map, map) :: map
   def back_propagate(forward_batch, state) do
     %{network: %{layers: network_layers}} = state
 

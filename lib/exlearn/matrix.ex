@@ -5,6 +5,7 @@ defmodule ExLearn.Matrix do
 
   @on_load :load_nifs
 
+  @spec load_nifs :: :ok
   def load_nifs do
     :ok = :erlang.load_nif('./priv/matrix', 0)
   end
@@ -13,15 +14,21 @@ defmodule ExLearn.Matrix do
   Adds two matrices
   """
   @spec add(binary, binary) :: binary
-  def add(_first, _second) do
-    exit(:nif_library_not_loaded)
+  def add(first, second)
+  when is_binary(first) and is_binary(second)
+  do
+    :erlang.nif_error(:nif_library_not_loaded)
+
+    <<>>
   end
 
   @doc """
   Applies the given function on each element of the matrix
   """
   @spec apply(binary, function) :: binary
-  def apply(matrix, function) when is_function(function, 1) do
+  def apply(matrix, function)
+  when is_binary(matrix) and is_function(function, 1)
+  do
     <<
       rows    :: float-little-32,
       columns :: float-little-32,
@@ -34,7 +41,9 @@ defmodule ExLearn.Matrix do
   end
 
   @spec apply(binary, function) :: binary
-  def apply(matrix, function) when is_function(function, 2) do
+  def apply(matrix, function)
+  when is_binary(matrix) and is_function(function, 2)
+  do
     <<
       rows    :: float-little-32,
       columns :: float-little-32,
@@ -48,7 +57,9 @@ defmodule ExLearn.Matrix do
   end
 
   @spec apply(binary, function) :: binary
-  def apply(matrix, function) when is_function(function, 3) do
+  def apply(matrix, function)
+  when is_binary(matrix) and is_function(function, 3)
+  do
     <<
       rows    :: float-little-32,
       columns :: float-little-32,
@@ -155,40 +166,60 @@ defmodule ExLearn.Matrix do
   Divides two matrices
   """
   @spec divide(binary, binary) :: binary
-  def divide(_first, _second) do
-    exit(:nif_library_not_loaded)
+  def divide(first, second)
+  when is_binary(first) and is_binary(second)
+  do
+    :erlang.nif_error(:nif_library_not_loaded)
+
+    <<>>
   end
 
   @doc """
   Matrix multiplication
   """
   @spec dot(binary, binary) :: binary
-  def dot(_first, _second) do
-    exit(:nif_library_not_loaded)
+  def dot(first, second)
+  when is_binary(first) and is_binary(second)
+  do
+    :erlang.nif_error(:nif_library_not_loaded)
+
+    <<>>
   end
 
   @doc """
   Matrix multiplication
   """
   @spec dot_and_add(binary, binary, binary) :: binary
-  def dot_and_add(_first, _second, _third) do
-    exit(:nif_library_not_loaded)
+  def dot_and_add(first, second, third)
+  when is_binary(first) and is_binary(second) and is_binary(third)
+  do
+    :erlang.nif_error(:nif_library_not_loaded)
+
+    <<>>
   end
 
   @doc """
   Matrix multiplication where the second matrix needs to be transposed.
   """
   @spec dot_nt(binary, binary) :: binary
-  def dot_nt(_first, _second) do
-    exit(:nif_library_not_loaded)
+  def dot_nt(first, second)
+  when is_binary(first) and is_binary(second)
+  do
+    :erlang.nif_error(:nif_library_not_loaded)
+
+    <<>>
   end
 
   @doc """
   Matrix multiplication where the first matrix needs to be transposed.
   """
   @spec dot_tn(binary, binary) :: binary
-  def dot_tn(_first, _second) do
-    exit(:nif_library_not_loaded)
+  def dot_tn(first, second)
+  when is_binary(first) and is_binary(second)
+  do
+    :erlang.nif_error(:nif_library_not_loaded)
+
+    <<>>
   end
 
   @doc """
@@ -255,16 +286,24 @@ defmodule ExLearn.Matrix do
   Elementwise multiplication of two matrices
   """
   @spec multiply(binary, binary) :: binary
-  def multiply(_first, _second) do
-    exit(:nif_library_not_loaded)
+  def multiply(first, second)
+  when is_binary(first) and is_binary(second)
+  do
+    :erlang.nif_error(:nif_library_not_loaded)
+
+    <<>>
   end
 
   @doc """
   Elementwise multiplication of a scalar
   """
-  @spec multiply_with_scalar(binary, binary) :: binary
-  def multiply_with_scalar(_matrix, _scalar) do
-    exit(:nif_library_not_loaded)
+  @spec multiply_with_scalar(binary, number) :: binary
+  def multiply_with_scalar(matrix, scalar)
+  when is_binary(matrix) and is_number(scalar)
+  do
+    :erlang.nif_error(:nif_library_not_loaded)
+
+    <<>>
   end
 
   @doc """
@@ -315,8 +354,12 @@ defmodule ExLearn.Matrix do
   Substracts two matrices
   """
   @spec substract(binary, binary) :: binary
-  def substract(_first, _second) do
-    exit(:nif_library_not_loaded)
+  def substract(first, second)
+  when is_binary(first) and is_binary(second)
+  do
+    :erlang.nif_error(:nif_library_not_loaded)
+
+    <<>>
   end
 
   @doc """
@@ -379,7 +422,9 @@ defmodule ExLearn.Matrix do
   Transposes a matrix
   """
   @spec transpose(binary) :: binary
-  def transpose(_matrix) do
-    exit(:nif_library_not_loaded)
+  def transpose(matrix) when is_binary(matrix) do
+    :erlang.nif_error(:nif_library_not_loaded)
+
+    <<>>
   end
 end

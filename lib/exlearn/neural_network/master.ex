@@ -11,8 +11,7 @@ defmodule ExLearn.NeuralNetwork.Master do
   end
 
   # Supervisor API
-
-  @spec init({}) :: {}
+  @spec init(map) :: any
   def init(names) do
     %{
       accumulator:  accumulator,

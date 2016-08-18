@@ -22,7 +22,7 @@ defmodule ExLearn.NeuralNetwork do
   @doc """
   Creates the neural network from the structure parameters.
   """
-  @spec create(map) :: pid
+  @spec create(map) :: map
   def create(structure) do
     network_state = Builder.create(structure)
 
@@ -45,7 +45,7 @@ defmodule ExLearn.NeuralNetwork do
       store:        store,
     }
 
-    Store.set(network_state, network)
+    :ok = Store.set(network_state, network)
 
     network
   end

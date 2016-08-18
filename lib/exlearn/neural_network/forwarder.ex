@@ -8,7 +8,7 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
   @doc """
   Propagates input forward trough a network and return the activity
   """
-  @spec forward_for_activity([number], map) :: [map]
+  @spec forward_for_activity(list(number), map) :: [map]
   def forward_for_activity(sample, state) do
     %{network: %{layers: layers}} = state
 
@@ -42,7 +42,7 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
   @doc """
   Propagates input forward trough a network and return the output
   """
-  @spec forward_for_output([number], map) :: [[number]]
+  @spec forward_for_output(list(number), map) :: [[number]]
   def forward_for_output(input, state) do
     %{
       network: %{
@@ -72,7 +72,7 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
     |> calculate_output(other_layers, presentation)
   end
 
-  @spec forward_for_test([[number]], map) :: [[number]]
+  @spec forward_for_test(tuple, map) :: binary
   def forward_for_test(sample, state) do
     %{network: %{layers: layers}} = state
 

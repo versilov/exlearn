@@ -11,24 +11,30 @@ defmodule ExLearn.Mixfile do
       deps:              deps,
       dialyzer: [
         flags: [
+          #--------------------------
+          # Flags that DISABLE checks
+          #--------------------------
           "-Wno_return",
           "-Wno_unused",
-          "-Wno_improper_lists",
-          "-Wno_fun_app",
+          # "-Wno_improper_lists",
+          # "-Wno_fun_app",
           "-Wno_match",
-          "-Wno_opaque",
+          # "-Wno_opaque",
           "-Wno_fail_call",
           "-Wno_contracts",
           "-Wno_behaviours",
-          "-Wno_missing_calls",
-          "-Wno_undefined_callbacks",
+          # "-Wno_missing_calls",
+          # "-Wno_undefined_callbacks",
+          #-------------------------
+          # Flags that ENABLE checks
+          # ------------------------
           "-Wunmatched_returns",
           "-Werror_handling",
           "-Wrace_conditions",
-          "-Wunderspecs",
+          # "-Wunderspecs",
           "-Wunknown",
-          "-Woverspecs",
-          "-Wspecdiffs"
+          # "-Woverspecs",
+          # "-Wspecdiffs"
         ]
       ],
       test_coverage:     [tool: ExCoveralls],
