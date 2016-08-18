@@ -38,10 +38,9 @@ defmodule ExLearn.NeuralNetwork.Worker do
 
   @spec init(map) :: {:ok, map}
   def init(configuration) do
+    IO.inspect configuration
     %{
       batch_size:     batch_size,
-      data:           data_source,
-      data_location:  data_location,
       learning_rate:  learning_rate
     } = configuration
 

@@ -102,12 +102,12 @@ defmodule ExLearn.NeuralNetwork do
   @doc """
   Trains the neural network.
   """
-  @spec train(map, any) :: any
-  def train(learning_parameters, network) do
+  @spec train(map, map, any) :: any
+  def train(data, parameters, network) do
     %{accumulator: accumulator} = network
 
     Task.async(fn ->
-      Accumulator.train(learning_parameters, accumulator)
+      Accumulator.train(data, parameters, accumulator)
     end)
   end
 end

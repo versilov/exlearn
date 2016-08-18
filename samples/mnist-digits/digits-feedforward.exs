@@ -46,15 +46,11 @@ NN.initialize(initialization_parameters, network)
 # If you already have a saved state you can load it with the following:
 # NN.load("samples/mnist-digits/saved_network.el1", network)
 
-# Defines the learning parameters.
-learning_parameters = %{
+# Defines the learning data and parameters.
+learning_data = %{
   training: %{
-    batch_size:     1000,
-    data:           "samples/mnist-digits/data/training_data-*.eld",
-    data_size:      50000,
-    epochs:         30,
-    learning_rate:  0.5,
-    regularization: %{type: :L2, rate: 0.005}
+    data:      "samples/mnist-digits/data/training_data-*.eld",
+    data_size: 50000,
   },
   validation: %{
     data:      "samples/mnist-digits/data/validation_data-*.eld",
@@ -63,8 +59,15 @@ learning_parameters = %{
   test: %{
     data:      "samples/mnist-digits/data/test_data-*.eld",
     data_size: 10000,
-  },
-  workers: 4
+  }
+}
+
+learning_parameters = %{
+  batch_size:     1000,
+  epochs:         30,
+  learning_rate:  0.5,
+  regularization: %{type: :L2, rate: 0.005},
+  workers:        4
 }
 
 # Starts the notifications stream which will output events to stdout without
@@ -72,7 +75,7 @@ learning_parameters = %{
 NN.notifications(:start, network)
 
 # Trains the network. Blocks untill the training finishes.
-NN.train(learning_parameters, network) |> Task.await(:infinity)
+NN.train(learning_data, learning_parameters, network) |> Task.await(:infinity)
 
 # Loading an image from the test data for preview.
 [first_sample|_] = DataLoader.load("samples/mnist-digits/data/test_data-0.eld")

@@ -186,16 +186,18 @@ defmodule ExLearn.NeuralNetwork.AccumulatorTest do
     binary    = :erlang.term_to_binary(training_data)
     File.write(path, binary)
 
-    learning_parameters = %{
+    learning_data = %{
       training: %{
-        batch_size:     2,
-        data:           path,
-        data_size:      2,
-        epochs:         1,
-        learning_rate:  4,
-        regularization: :none
-      },
-      workers: 2
+        data:      path,
+        data_size: 2,
+      }
+    }
+
+    learning_parameters = %{
+      batch_size:     2,
+      epochs:         1,
+      learning_rate:  4,
+      workers:        2
     }
 
     function   = fn(x) -> x + 1 end
@@ -261,7 +263,7 @@ defmodule ExLearn.NeuralNetwork.AccumulatorTest do
       }
     }
 
-    :ok = Accumulator.train(learning_parameters, name)
+    :ok = Accumulator.train(learning_data, learning_parameters, name)
 
     assert Store.get(store_name) == expected_network_state
 
@@ -290,16 +292,18 @@ defmodule ExLearn.NeuralNetwork.AccumulatorTest do
       {Matrix.new(1, 3, [[2, 3, 4]]), Matrix.new(1, 2, [[2600, 3800]])}
     ]
 
-    learning_parameters = %{
+    learning_data = %{
       training: %{
-        batch_size:     2,
-        data:           training_data,
-        data_size:      2,
-        epochs:         1,
-        learning_rate:  4,
-        regularization: :none
-      },
-      workers: 2
+        data:      training_data,
+        data_size: 2
+      }
+    }
+
+    learning_parameters = %{
+      batch_size:    2,
+      epochs:        1,
+      learning_rate: 4,
+      workers:       2
     }
 
     function   = fn(x) -> x + 1 end
@@ -365,7 +369,7 @@ defmodule ExLearn.NeuralNetwork.AccumulatorTest do
       }
     }
 
-    :ok = Accumulator.train(learning_parameters, name)
+    :ok = Accumulator.train(learning_data, learning_parameters, name)
 
     assert Store.get(store_name) == expected_network_state
 
@@ -392,16 +396,19 @@ defmodule ExLearn.NeuralNetwork.AccumulatorTest do
       {Matrix.new(1, 3, [[2, 3, 4]]), Matrix.new(1, 2, [[2600, 3800]])}
     ]
 
-    learning_parameters = %{
+    learning_data = %{
       training: %{
-        batch_size:     2,
-        data:           training_data,
-        data_size:      2,
-        epochs:         1,
-        learning_rate:  4,
-        regularization: %{type: :L1, rate: 2}
-      },
-      workers: 2
+        data:      training_data,
+        data_size: 2
+      }
+    }
+
+    learning_parameters = %{
+      batch_size:     2,
+      epochs:         1,
+      learning_rate:  4,
+      regularization: %{type: :L1, rate: 2},
+      workers:        2
     }
 
     function   = fn(x) -> x + 1 end
@@ -467,7 +474,7 @@ defmodule ExLearn.NeuralNetwork.AccumulatorTest do
       }
     }
 
-    :ok = Accumulator.train(learning_parameters, name)
+    :ok = Accumulator.train(learning_data, learning_parameters, name)
 
     assert Store.get(store_name) == expected_network_state
 
@@ -494,16 +501,19 @@ defmodule ExLearn.NeuralNetwork.AccumulatorTest do
       {Matrix.new(1, 3, [[2, 3, 4]]), Matrix.new(1, 2, [[2600, 3800]])}
     ]
 
-    learning_parameters = %{
+    learning_data = %{
       training: %{
-        batch_size:     2,
-        data:           training_data,
-        data_size:      2,
-        epochs:         1,
-        learning_rate:  4,
-        regularization: %{type: :L2, rate: 2}
-      },
-      workers: 2
+        data:      training_data,
+        data_size: 2
+      }
+    }
+
+    learning_parameters = %{
+      batch_size:     2,
+      epochs:         1,
+      learning_rate:  4,
+      regularization: %{type: :L2, rate: 2},
+      workers:        2
     }
 
     function   = fn(x) -> x + 1 end
@@ -569,7 +579,7 @@ defmodule ExLearn.NeuralNetwork.AccumulatorTest do
       }
     }
 
-    :ok = Accumulator.train(learning_parameters, name)
+    :ok = Accumulator.train(learning_data, learning_parameters, name)
 
     assert Store.get(store_name) == expected_network_state
 

@@ -54,14 +54,10 @@ defmodule ExLearn.NeuralNetworkTest do
       Matrix.new(1, 1, [[5]])
     ]
 
-    learning_parameters = %{
+    learning_data = %{
       training: %{
-        batch_size:     4,
-        data:           training_data,
-        data_size:      6,
-        epochs:         5,
-        learning_rate:  0.05,
-        regularization: :none
+        data:      training_data,
+        data_size: 6,
       },
       validation: %{
         data:      validation_data,
@@ -70,12 +66,19 @@ defmodule ExLearn.NeuralNetworkTest do
       test: %{
         data:      test_data,
         data_size: 2
-      },
-      workers: 2
+      }
+    }
+
+    learning_parameters = %{
+      batch_size:    4,
+      epochs:        5,
+      learning_rate: 0.05,
+      workers:       2
     }
 
     {:ok, setup: %{
       ask_data:            ask_data,
+      learning_data:       learning_data,
       learning_parameters: learning_parameters,
       network:             network
     }}
@@ -165,11 +168,12 @@ defmodule ExLearn.NeuralNetworkTest do
 
   test "#train responds with :ok", %{setup: setup} do
     %{
+      learning_data:       learning_data,
       learning_parameters: learning_parameters,
       network:             network
     } = setup
 
-    result = NeuralNetwork.train(learning_parameters, network)
+    result = NeuralNetwork.train(learning_data, learning_parameters, network)
     |> Task.await(:infinity)
 
     assert result == :ok
