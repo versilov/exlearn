@@ -12,7 +12,7 @@ defmodule ExLearn.Objective do
   def determine(setup, output_layer) do
     case setup do
       %{function: function, error: error}
-          when function |> is_function and error |> is_function ->
+      when is_function(function) and is_function(error) ->
         %{function: function, error: error}
       :cross_entropy           -> cross_entropy_pair(output_layer)
       :negative_log_likelihood -> negative_log_likelihood_pair(output_layer)
@@ -28,7 +28,7 @@ defmodule ExLearn.Objective do
     %{function: function, error: error}
   end
 
-  @spec cross_entropy_function([number], [number], non_neg_integer) :: float
+  @spec cross_entropy_function(binary, binary, non_neg_integer) :: float
   defp cross_entropy_function(expected, actual, data_size) do
     binary_entropy_sum = Matrix.apply(expected, actual, fn(x, y) ->
       x * :math.log(y) + (1 - x) * :math.log(1 - y)
@@ -45,7 +45,7 @@ defmodule ExLearn.Objective do
     end
   end
 
-  @spec cross_entropy_error_simple([number], [number], %{}) :: [number]
+  @spec cross_entropy_error_simple(binary, binary, %{}) :: binary
   defp cross_entropy_error_simple(expected, actual, layer) do
     %{input: input} = layer
 
@@ -59,7 +59,7 @@ defmodule ExLearn.Objective do
     |> Matrix.multiply(input_derivative)
   end
 
-  @spec cross_entropy_error_optimised([number], [number], %{}) :: [number]
+  @spec cross_entropy_error_optimised(binary, binary, %{}) :: binary
   defp cross_entropy_error_optimised(expected, actual, _layer) do
     Matrix.substract(actual, expected)
   end
@@ -72,7 +72,7 @@ defmodule ExLearn.Objective do
     %{function: function, error: error}
   end
 
-  @spec negative_log_likelihood_function([number], [number], non_neg_integer) :: float
+  @spec negative_log_likelihood_function(binary, binary, non_neg_integer) :: float
   defp negative_log_likelihood_function(expected, actual, data_size) do
     -1 / data_size * Matrix.sum(
       Matrix.multiply(
@@ -91,12 +91,12 @@ defmodule ExLearn.Objective do
   end
 
   # TODO: This seems to work but no idea why
-  @spec negative_log_likelihood_error_simple([number], [number], %{}) :: []
+  @spec negative_log_likelihood_error_simple(binary, binary, %{}) :: []
   defp negative_log_likelihood_error_simple(expected, actual, _layer) do
     Matrix.substract(actual, expected)
   end
 
-  @spec negative_log_likelihood_error_optimised([number], [number], %{}) :: []
+  @spec negative_log_likelihood_error_optimised(binary, binary, %{}) :: []
   defp negative_log_likelihood_error_optimised(expected, actual, _layer) do
     Matrix.substract(actual, expected)
   end
@@ -109,7 +109,7 @@ defmodule ExLearn.Objective do
     %{function: function, error: error}
   end
 
-  @spec quadratic_cost_function([number], [number], non_neg_integer) :: float
+  @spec quadratic_cost_function(binary, binary, non_neg_integer) :: float
   defp quadratic_cost_function(expected, actual, data_size) do
     1 / (2 * data_size) * Matrix.sum(
       Matrix.apply(expected, actual, fn(x, y) ->
@@ -120,7 +120,7 @@ defmodule ExLearn.Objective do
     )
   end
 
-  @spec quadratic_cost_error([], [], %{}) :: []
+  @spec quadratic_cost_error(binary, binary, map) :: binary
   defp quadratic_cost_error(expected, actual, layer) do
     %{input: input} = layer
 

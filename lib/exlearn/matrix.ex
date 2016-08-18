@@ -12,7 +12,7 @@ defmodule ExLearn.Matrix do
   @doc """
   Adds two matrices
   """
-  @spec add([[number]], [[number]]) :: []
+  @spec add(binary, binary) :: binary
   def add(_first, _second) do
     exit(:nif_library_not_loaded)
   end
@@ -20,7 +20,7 @@ defmodule ExLearn.Matrix do
   @doc """
   Applies the given function on each element of the matrix
   """
-  @spec apply(binary, ((number) -> number)) :: [[]]
+  @spec apply(binary, function) :: binary
   def apply(matrix, function) when is_function(function, 1) do
     <<
       rows    :: float-little-32,
@@ -33,7 +33,7 @@ defmodule ExLearn.Matrix do
     apply_on_matrix(data, function, initial)
   end
 
-  @spec apply(binary, function) :: [[]]
+  @spec apply(binary, function) :: binary
   def apply(matrix, function) when is_function(function, 2) do
     <<
       rows    :: float-little-32,
@@ -47,7 +47,7 @@ defmodule ExLearn.Matrix do
     apply_on_matrix(data, function, 1, size, initial)
   end
 
-  @spec apply(binary, function) :: [[]]
+  @spec apply(binary, function) :: binary
   def apply(matrix, function) when is_function(function, 3) do
     <<
       rows    :: float-little-32,
@@ -97,7 +97,7 @@ defmodule ExLearn.Matrix do
     end
   end
 
-  @spec apply(binary, binary, ((number) -> number)) :: [[]]
+  @spec apply(binary, binary, function) :: binary
   def apply(first, second, function) do
     <<
       rows       :: float-little-32,
@@ -154,7 +154,7 @@ defmodule ExLearn.Matrix do
   @doc """
   Divides two matrices
   """
-  @spec divide([[number]], [[number]]) :: []
+  @spec divide(binary, binary) :: binary
   def divide(_first, _second) do
     exit(:nif_library_not_loaded)
   end
@@ -162,7 +162,7 @@ defmodule ExLearn.Matrix do
   @doc """
   Matrix multiplication
   """
-  @spec dot([[]], [[]]) :: [[]]
+  @spec dot(binary, binary) :: binary
   def dot(_first, _second) do
     exit(:nif_library_not_loaded)
   end
@@ -170,7 +170,7 @@ defmodule ExLearn.Matrix do
   @doc """
   Matrix multiplication
   """
-  @spec dot_and_add([[]], [[]], [[]]) :: [[]]
+  @spec dot_and_add(binary, binary, binary) :: binary
   def dot_and_add(_first, _second, _third) do
     exit(:nif_library_not_loaded)
   end
@@ -178,7 +178,7 @@ defmodule ExLearn.Matrix do
   @doc """
   Matrix multiplication where the second matrix needs to be transposed.
   """
-  @spec dot_nt([[]], [[]]) :: [[]]
+  @spec dot_nt(binary, binary) :: binary
   def dot_nt(_first, _second) do
     exit(:nif_library_not_loaded)
   end
@@ -186,7 +186,7 @@ defmodule ExLearn.Matrix do
   @doc """
   Matrix multiplication where the first matrix needs to be transposed.
   """
-  @spec dot_tn([[]], [[]]) :: [[]]
+  @spec dot_tn(binary, binary) :: binary
   def dot_tn(_first, _second) do
     exit(:nif_library_not_loaded)
   end
@@ -254,7 +254,7 @@ defmodule ExLearn.Matrix do
   @doc """
   Elementwise multiplication of two matrices
   """
-  @spec multiply([[]], [[]]) :: [[]]
+  @spec multiply(binary, binary) :: binary
   def multiply(_first, _second) do
     exit(:nif_library_not_loaded)
   end
@@ -262,7 +262,7 @@ defmodule ExLearn.Matrix do
   @doc """
   Elementwise multiplication of a scalar
   """
-  @spec multiply_with_scalar([[]], [[]]) :: [[]]
+  @spec multiply_with_scalar(binary, binary) :: binary
   def multiply_with_scalar(_matrix, _scalar) do
     exit(:nif_library_not_loaded)
   end
@@ -314,7 +314,7 @@ defmodule ExLearn.Matrix do
   @doc """
   Substracts two matrices
   """
-  @spec substract([[number]], [[number]]) :: []
+  @spec substract(binary, binary) :: binary
   def substract(_first, _second) do
     exit(:nif_library_not_loaded)
   end
@@ -322,7 +322,7 @@ defmodule ExLearn.Matrix do
   @doc """
   Substracts the second matrix from the first
   """
-  @spec substract_inverse([[number]], [[number]]) :: []
+  @spec substract_inverse(binary, binary) :: binary
   def substract_inverse(first, second) do
     substract(second, first)
   end
@@ -378,7 +378,7 @@ defmodule ExLearn.Matrix do
   @doc """
   Transposes a matrix
   """
-  @spec transpose([[]]) :: [[]]
+  @spec transpose(binary) :: binary
   def transpose(_matrix) do
     exit(:nif_library_not_loaded)
   end

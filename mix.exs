@@ -9,6 +9,28 @@ defmodule ExLearn.Mixfile do
       build_embedded:    Mix.env == :prod,
       start_permanent:   Mix.env == :prod,
       deps:              deps,
+      dialyzer: [
+        flags: [
+          "-Wno_return",
+          "-Wno_unused",
+          "-Wno_improper_lists",
+          "-Wno_fun_app",
+          "-Wno_match",
+          "-Wno_opaque",
+          "-Wno_fail_call",
+          "-Wno_contracts",
+          "-Wno_behaviours",
+          "-Wno_missing_calls",
+          "-Wno_undefined_callbacks",
+          "-Wunmatched_returns",
+          "-Werror_handling",
+          "-Wrace_conditions",
+          "-Wunderspecs",
+          "-Wunknown",
+          "-Woverspecs",
+          "-Wspecdiffs"
+        ]
+      ],
       test_coverage:     [tool: ExCoveralls],
       preferred_cli_env: [
         "coveralls":        :test,
