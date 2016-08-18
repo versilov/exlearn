@@ -19,7 +19,8 @@ defmodule ExLearn.Matrix do
   do
     :erlang.nif_error(:nif_library_not_loaded)
 
-    <<>>
+    random_size = :rand.uniform(2)
+    <<1 :: size(random_size)>>
   end
 
   @doc """
@@ -171,7 +172,8 @@ defmodule ExLearn.Matrix do
   do
     :erlang.nif_error(:nif_library_not_loaded)
 
-    <<>>
+    random_size = :rand.uniform(2)
+    <<1 :: size(random_size)>>
   end
 
   @doc """
@@ -183,7 +185,8 @@ defmodule ExLearn.Matrix do
   do
     :erlang.nif_error(:nif_library_not_loaded)
 
-    <<>>
+    random_size = :rand.uniform(2)
+    <<1 :: size(random_size)>>
   end
 
   @doc """
@@ -195,7 +198,8 @@ defmodule ExLearn.Matrix do
   do
     :erlang.nif_error(:nif_library_not_loaded)
 
-    <<>>
+    random_size = :rand.uniform(2)
+    <<1 :: size(random_size)>>
   end
 
   @doc """
@@ -207,7 +211,8 @@ defmodule ExLearn.Matrix do
   do
     :erlang.nif_error(:nif_library_not_loaded)
 
-    <<>>
+    random_size = :rand.uniform(2)
+    <<1 :: size(random_size)>>
   end
 
   @doc """
@@ -219,7 +224,8 @@ defmodule ExLearn.Matrix do
   do
     :erlang.nif_error(:nif_library_not_loaded)
 
-    <<>>
+    random_size = :rand.uniform(2)
+    <<1 :: size(random_size)>>
   end
 
   @doc """
@@ -291,7 +297,8 @@ defmodule ExLearn.Matrix do
   do
     :erlang.nif_error(:nif_library_not_loaded)
 
-    <<>>
+    random_size = :rand.uniform(2)
+    <<1 :: size(random_size)>>
   end
 
   @doc """
@@ -303,7 +310,8 @@ defmodule ExLearn.Matrix do
   do
     :erlang.nif_error(:nif_library_not_loaded)
 
-    <<>>
+    random_size = :rand.uniform(2)
+    <<1 :: size(random_size)>>
   end
 
   @doc """
@@ -359,7 +367,8 @@ defmodule ExLearn.Matrix do
   do
     :erlang.nif_error(:nif_library_not_loaded)
 
-    <<>>
+    random_size = :rand.uniform(2)
+    <<1 :: size(random_size)>>
   end
 
   @doc """
@@ -425,6 +434,7 @@ defmodule ExLearn.Matrix do
   def transpose(matrix) when is_binary(matrix) do
     :erlang.nif_error(:nif_library_not_loaded)
 
-    <<>>
+    random_size = :rand.uniform(2)
+    <<1 :: size(random_size)>>
   end
 end
