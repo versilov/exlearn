@@ -7,29 +7,29 @@ defmodule ExLearn.NeuralNetwork.Worker do
   # Client API
   #----------------------------------------------------------------------------
 
+  @spec start_link([tuple], map) :: tuple
+  def start_link(args, options) do
+    GenServer.start_link(__MODULE__, args, options)
+  end
+
   @spec get(any) :: any
   def get(worker) do
     GenServer.call(worker, :get, :infinity)
   end
 
-  @spec work(:ask, map, any) :: any
-  def work(:ask, network_state, worker) do
-    GenServer.call(worker, {:ask, network_state}, :infinity)
+  @spec predict(map, any) :: any
+  def predict(network_state, worker) do
+    GenServer.cast(worker, {:predict, network_state})
   end
 
-  @spec work(:train, map,  any) :: any
-  def work(:train, network_state, worker) do
+  @spec test(map, any) :: any
+  def test(network_state, worker) do
+    GenServer.cast(worker, {:test, network_state})
+  end
+
+  @spec train(map, any) :: any
+  def train(network_state, worker) do
     GenServer.cast(worker, {:train, network_state})
-  end
-
-  @spec start(list(tuple), map) :: tuple
-  def start(args, options) do
-    GenServer.start(__MODULE__, args, options)
-  end
-
-  @spec start_link([tuple], map) :: tuple
-  def start_link(args, options) do
-    GenServer.start_link(__MODULE__, args, options)
   end
 
   #----------------------------------------------------------------------------
@@ -39,35 +39,31 @@ defmodule ExLearn.NeuralNetwork.Worker do
   @spec init([]) :: {:ok, map}
   def init([]) do
     state = %{
+      batches:       %{current: :not_set, remaining: :not_set},
       configuration: %{},
-      data: %{
-        training:   [],
-        validation: [],
-        test:       [],
-        predict:    []
-      },
-      result: :no_data
+      data:           [],
+      result:        :no_data
     }
 
     {:ok, state}
   end
 
   @spec init(map) :: {:ok, map}
-  def init(configuration) do
-    IO.inspect configuration
+  def init(setup) do
     %{
-      batch_size:     batch_size,
-      data_source:    data_source,
-      data_location:  data_location,
-      learning_rate:  learning_rate
-    } = configuration
+      data:          %{location: location, source: source},
+      configuration: configuration
+    } = setup
 
-    data = case data_location do
-      :file   -> read_data(data_source)
-      :memory -> data_source
+    data = case location do
+      :file   -> read_data(source)
+      :memory -> source
     end
 
-    chunks = Enum.chunk(data, batch_size, batch_size, [])
+    chunks = case Map.get(configuration, :batch_size) do
+      nil        -> data
+      batch_size -> Enum.chunk(data, batch_size, batch_size, [])
+    end
 
     batches = case chunks do
       []                  -> %{current: :not_set, remaining: :not_set }
@@ -75,11 +71,10 @@ defmodule ExLearn.NeuralNetwork.Worker do
     end
 
     state = %{
-      batch_size:     batch_size,
-      batches:        batches,
-      data:           data,
-      learning_rate:  learning_rate,
-      result:         :no_data
+      batches:       batches,
+      configuration: configuration,
+      data:          data,
+      result:        :no_data
     }
 
     {:ok, state}
@@ -94,51 +89,69 @@ defmodule ExLearn.NeuralNetwork.Worker do
     {:reply, result, new_state}
   end
 
-  @spec handle_call(tuple, any,  map) :: {:reply, list, map}
-  def handle_call({:ask, network_state}, _from,  state) do
+  @spec handle_cast(tuple, map) :: {:reply, list, map}
+  def handle_cast({:predict, network_state}, state) do
     %{data: data} = state
 
     result = ask_network(data, network_state)
 
-    {:reply, result, state}
+    {:noreply, result, state}
   end
 
-  @spec handle_cast(tuple, map) :: {:noreply, map}
+  @spec handle_cast(tuple, map) :: {:reply, list, map}
+  def handle_cast({:test, network_state}, state) do
+    %{data: data} = state
+
+    result = ask_network(data, network_state)
+
+    {:noreply, result, state}
+  end
+
+  @spec handle_cast(tuple, map) :: {:reply, list, map}
   def handle_cast({:train, network_state}, state) do
-    %{
-      batch_size: batch_size,
-      batches: %{
-        current:   current,
-        remaining: remaining
-      },
-      data: data
-    } = state
+    %{data: data} = state
 
-    new_state = case current do
-      :not_set ->
-        Map.put(state, :result, :no_data)
-      _ ->
-        correction = train_network(current, network_state)
+    result = ask_network(data, network_state)
 
-        case remaining do
-          [] ->
-            [new_current|new_remaining] = Enum.chunk(data, batch_size, batch_size, [])
-
-            new_batches = %{current: new_current, remaining: new_remaining}
-
-            Map.put(state, :batches, new_batches)
-            |> Map.put(:result, {:done, correction})
-
-          [new_current|new_remaining] ->
-            new_batches = %{current: new_current, remaining: new_remaining}
-
-            Map.put(state, :batches, new_batches)
-            |> Map.put(:result, {:continue, correction})
-        end
-    end
-
-    {:noreply, new_state}
+    {:noreply, result, state}
   end
+
+  # @spec handle_cast(tuple, map) :: {:noreply, map}
+  # def handle_cast({:train, network_state}, state) do
+  #   %{
+  #     batch_size: batch_size,
+  #     batches: %{
+  #       current:   current,
+  #       remaining: remaining
+  #     },
+  #     data: data
+  #   } = state
+
+  #   new_state = case current do
+  #     :not_set ->
+  #       Map.put(state, :result, :no_data)
+  #     _ ->
+  #       correction = train_network(current, network_state)
+
+  #       case remaining do
+  #         [] ->
+  #           [new_current|new_remaining] = Enum.chunk(data, batch_size, batch_size, [])
+
+  #           new_batches = %{current: new_current, remaining: new_remaining}
+
+  #           Map.put(state, :batches, new_batches)
+  #           |> Map.put(:result, {:done, correction})
+
+  #         [new_current|new_remaining] ->
+  #           new_batches = %{current: new_current, remaining: new_remaining}
+
+  #           Map.put(state, :batches, new_batches)
+  #           |> Map.put(:result, {:continue, correction})
+  #       end
+  #   end
+
+  #   {:noreply, new_state}
+  # end
 
   #----------------------------------------------------------------------------
   # Internal functions
@@ -158,7 +171,12 @@ defmodule ExLearn.NeuralNetwork.Worker do
     {:ok, binary} = File.read(path)
     data          = :erlang.binary_to_term(binary)
 
-    data ++ accumulator
+    prepend(data, accumulator)
+  end
+
+  defp prepend([],           accumulator), do: accumulator
+  defp prepend([first|rest], accumulator)  do
+    prepend(rest, [first|accumulator])
   end
 
   @spec train_network(list, map, map) :: map
