@@ -50,25 +50,12 @@ defmodule ExLearn.NeuralNetwork.Worker do
 
   @spec init(map) :: {:ok, map}
   def init(setup) do
-    %{
-      data:          %{location: location, source: source},
-      configuration: configuration
-    } = setup
+    %{data: %{location: location, source: source}} = setup
 
-    data = case location do
-      :file   -> read_data(source)
-      :memory -> source
-    end
+    configuration = Map.get(setup, :configuration, %{})
 
-    chunks = case Map.get(configuration, :batch_size) do
-      nil        -> data
-      batch_size -> Enum.chunk(data, batch_size, batch_size, [])
-    end
-
-    batches = case chunks do
-      []                  -> %{current: :not_set, remaining: :not_set }
-      [current|remaining] -> %{current: current,  remaining: remaining}
-    end
+    data    = load_data(source, location)
+    batches = split_in_batches(data, configuration)
 
     state = %{
       batches:       batches,
@@ -93,77 +80,36 @@ defmodule ExLearn.NeuralNetwork.Worker do
   def handle_cast({:predict, network_state}, state) do
     %{data: data} = state
 
-    result = ask_network(data, network_state)
+    result    = network_predict(data, network_state)
+    new_state = Map.put(state, :result, result)
 
-    {:noreply, result, state}
+    {:noreply, new_state}
   end
 
   @spec handle_cast(tuple, map) :: {:reply, list, map}
   def handle_cast({:test, network_state}, state) do
     %{data: data} = state
 
-    result = ask_network(data, network_state)
+    result    = network_predict(data, network_state)
+    new_state = Map.put(state, :result, result)
 
-    {:noreply, result, state}
+    {:noreply, new_state}
   end
 
-  @spec handle_cast(tuple, map) :: {:reply, list, map}
+  @spec handle_cast(tuple, map) :: {:noreply, map}
   def handle_cast({:train, network_state}, state) do
-    %{data: data} = state
+    new_state = network_train(network_state, state)
 
-    result = ask_network(data, network_state)
-
-    {:noreply, result, state}
+    {:noreply, new_state}
   end
-
-  # @spec handle_cast(tuple, map) :: {:noreply, map}
-  # def handle_cast({:train, network_state}, state) do
-  #   %{
-  #     batch_size: batch_size,
-  #     batches: %{
-  #       current:   current,
-  #       remaining: remaining
-  #     },
-  #     data: data
-  #   } = state
-
-  #   new_state = case current do
-  #     :not_set ->
-  #       Map.put(state, :result, :no_data)
-  #     _ ->
-  #       correction = train_network(current, network_state)
-
-  #       case remaining do
-  #         [] ->
-  #           [new_current|new_remaining] = Enum.chunk(data, batch_size, batch_size, [])
-
-  #           new_batches = %{current: new_current, remaining: new_remaining}
-
-  #           Map.put(state, :batches, new_batches)
-  #           |> Map.put(:result, {:done, correction})
-
-  #         [new_current|new_remaining] ->
-  #           new_batches = %{current: new_current, remaining: new_remaining}
-
-  #           Map.put(state, :batches, new_batches)
-  #           |> Map.put(:result, {:continue, correction})
-  #       end
-  #   end
-
-  #   {:noreply, new_state}
-  # end
 
   #----------------------------------------------------------------------------
   # Internal functions
   #----------------------------------------------------------------------------
 
-  defp ask_network(batch, state) do
-    Enum.map(batch, &Forwarder.forward_for_output(&1, state))
-  end
-
-  @spec read_data([bitstring]) :: list
-  defp read_data(paths) do
-    Enum.reduce(paths, [], &read_file/2)
+  defp load_data(source, :memory), do: source
+  defp load_data(source, :file  )  do
+    Enum.reduce(source, [], &read_file/2)
   end
 
   @spec read_file(bitstring, list) :: list
@@ -177,6 +123,81 @@ defmodule ExLearn.NeuralNetwork.Worker do
   defp prepend([],           accumulator), do: accumulator
   defp prepend([first|rest], accumulator)  do
     prepend(rest, [first|accumulator])
+  end
+
+  defp split_in_batches(data, configuration) do
+    chunks = case Map.get(configuration, :batch_size) do
+      nil        -> data
+      batch_size -> Enum.chunk(data, batch_size, batch_size, [])
+    end
+
+    batches = case chunks do
+      []                  -> %{current: :not_set, remaining: :not_set }
+      [current|remaining] -> %{current: current,  remaining: remaining}
+    end
+  end
+
+  defp network_predict(data, network_state) do
+    network_predict(data, network_state, [])
+  end
+
+  defp network_predict([], _, accumulator), do: accumulator
+  defp network_predict([sample|rest], network_state, accumulator) do
+    output = Forwarder.forward_for_output(sample, network_state)
+
+    network_predict(rest, network_state, [output|accumulator])
+  end
+
+  defp network_train(network_state, state) do
+    %{batches: %{current: current}} = state
+
+    case current do
+      :not_set -> Map.put(state, :result, :no_data)
+      _        -> train_current_batch(network_state, state)
+    end
+  end
+
+  defp train_current_batch(network_state, state) do
+    %{
+      batches: %{
+        current:   current,
+        remaining: remaining
+      },
+      configuration: configuration,
+      data:          data
+    } = state
+
+    correction = train_network(current, network_state)
+
+    case remaining do
+      [] -> state_with_done(state, correction)
+      _  -> state_with_continue(state, correction)
+    end
+  end
+
+  def state_with_done(state, correction) do
+    %{
+      configuration: configuration,
+      data:          data
+    } = state
+
+    new_batches = split_in_batches(data, configuration)
+
+    state
+    |> Map.put(:batches, new_batches        )
+    |> Map.put(:result,  {:done, correction})
+  end
+
+  def state_with_continue(state, correction) do
+    %{batches: %{
+      remaining: [new_current|new_remaining]
+    }} = state
+
+    new_batches = %{current: new_current, remaining: new_remaining}
+
+    state
+    |> Map.put(:batches, new_batches            )
+    |> Map.put(:result,  {:continue, correction})
   end
 
   @spec train_network(list, map, map) :: map

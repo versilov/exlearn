@@ -4,55 +4,54 @@ defmodule ExLearn.NeuralNetwork.Worker.PredictTest do
   alias ExLearn.{Matrix, TestUtils}
   alias ExLearn.NeuralNetwork.{Worker, WorkerFixtures}
 
-  test "#work|:ask with data in file returns the ask data", %{setup: setup} do
-    %{
-      name:          worker,
-      network_state: network_state,
-      options:       options,
-      path:          path
-    } = setup
+  setup do
+    name    = {:global, make_ref()}
+    options = [name: name]
 
-    data   = [Matrix.new(1, 3, [[1, 2, 3]])]
-    binary = :erlang.term_to_binary(data)
-    :ok    = File.write(path, binary)
+    {:ok, setup: %{
+      name:    name,
+      options: options
+    }}
+  end
 
-    args = %{
-      batch_size:     1,
-      data:           [path],
-      data_location:  :file,
-      learning_rate:  2,
-      regularization: :none
-    }
+  test "#predict with data in file returns the prediction", %{setup: setup} do
+    %{name: worker, options: options} = setup
+
+    data          = [Matrix.new(1, 3, [[1, 2, 3]])]
+    expected      = [Matrix.new(1, 2, [[1897, 2784]])]
+    network_state = WorkerFixtures.initial_network_state
+    path          = TestUtils.temp_file_path()
+
+    TestUtils.write_to_file_as_binary(data, path)
+
+    args = %{data: %{location: :file, source: [path]}}
 
     {:ok, _pid} = Worker.start_link(args, options)
 
-    expected = [Matrix.new(1, 2, [[1897, 2784]])]
-    result   = Worker.work(:ask, network_state, worker)
+    :ok    = Worker.predict(network_state, worker)
+    result = Worker.get(worker)
 
     assert result == expected
 
     :ok = File.rm(path)
   end
 
-  test "#work|:ask with data in memory returns the ask data", %{setup: setup} do
+  test "#predict with data in memory returns the prediction", %{setup: setup} do
     %{
-      name:          worker,
-      network_state: network_state,
-      options:       options
+      name:    worker,
+      options: options
     } = setup
 
-    args = %{
-      batch_size:     1,
-      data:           [Matrix.new(1, 3, [[1, 2, 3]])],
-      data_location:  :memory,
-      learning_rate:  :not_needed,
-      regularization: :none
-    }
+    data          = [Matrix.new(1, 3, [[1, 2, 3]])]
+    expected      = [Matrix.new(1, 2, [[1897, 2784]])]
+    network_state = WorkerFixtures.initial_network_state
+
+    args = %{data: %{location: :memory, source: data}}
 
     {:ok, _pid} = Worker.start_link(args, options)
 
-    expected = [Matrix.new(1, 2, [[1897, 2784]])]
-    result   = Worker.work(:ask, network_state, worker)
+    :ok    = Worker.predict(network_state, worker)
+    result = Worker.get(worker)
 
     assert result == expected
   end

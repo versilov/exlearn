@@ -37,10 +37,7 @@ defmodule ExLearn.NeuralNetwork.Worker.StartLinkTest do
       options: options
     } = setup
 
-    args = %{
-      data:          %{location: :file, source: []},
-      configuration: %{}
-    }
+    args = %{data: %{location: :file, source: []}}
 
     {:ok, worker_pid} = Worker.start_link(args, options)
 
@@ -58,10 +55,7 @@ defmodule ExLearn.NeuralNetwork.Worker.StartLinkTest do
       options: options
     } = setup
 
-    args = %{
-      data:          %{location: :memory, source: []},
-      configuration: %{}
-    }
+    args = %{data: %{location: :memory, source: []}}
 
     {:ok, worker_pid} = Worker.start_link(args, options)
 
@@ -83,10 +77,7 @@ defmodule ExLearn.NeuralNetwork.Worker.StartLinkTest do
     path = TestUtils.temp_file_path("neural_network-worker-start_test")
     TestUtils.write_to_file_as_binary(data, path)
 
-    args = %{
-      data:          %{location: :file, source: [path]},
-      configuration: %{}
-    }
+    args = %{data: %{location: :file, source: [path]}}
 
     {:ok, worker_pid} = Worker.start_link(args, options)
 
@@ -113,10 +104,7 @@ defmodule ExLearn.NeuralNetwork.Worker.StartLinkTest do
     path = TestUtils.temp_file_path("neural_network-worker-start_test")
     TestUtils.write_to_file_as_binary(data, path)
 
-    args = %{
-      data:          %{location: :file, source: [path]},
-      configuration: %{}
-    }
+    args = %{data: %{location: :file, source: [path]}}
 
     {:ok, worker_pid} = Worker.start_link(args, options)
 
@@ -145,10 +133,7 @@ defmodule ExLearn.NeuralNetwork.Worker.StartLinkTest do
     TestUtils.write_to_file_as_binary(first_data,  first_path )
     TestUtils.write_to_file_as_binary(second_data, second_path)
 
-    args = %{
-      data:          %{location: :file, source: [first_path, second_path]},
-      configuration: %{}
-    }
+    args = %{data: %{location: :file, source: [first_path, second_path]}}
 
     {:ok, worker_pid} = Worker.start_link(args, options)
 
@@ -178,10 +163,7 @@ defmodule ExLearn.NeuralNetwork.Worker.StartLinkTest do
     TestUtils.write_to_file_as_binary(first_data,  first_path )
     TestUtils.write_to_file_as_binary(second_data, second_path)
 
-    args = %{
-      data:          %{location: :file, source: [first_path, second_path]},
-      configuration: %{}
-    }
+    args = %{data: %{location: :file, source: [first_path, second_path]}}
 
     {:ok, worker_pid} = Worker.start_link(args, options)
 
@@ -211,10 +193,7 @@ defmodule ExLearn.NeuralNetwork.Worker.StartLinkTest do
     TestUtils.write_to_file_as_binary(first_data,  first_path )
     TestUtils.write_to_file_as_binary(second_data, second_path)
 
-    args = %{
-      data:          %{location: :file, source: [first_path, second_path]},
-      configuration: %{}
-    }
+    args = %{data: %{location: :file, source: [first_path, second_path]}}
 
     {:ok, worker_pid} = Worker.start_link(args, options)
 
@@ -240,10 +219,7 @@ defmodule ExLearn.NeuralNetwork.Worker.StartLinkTest do
       {Matrix.new(1, 3, [[2, 3, 4]]), Matrix.new(1, 2, [[2600, 3800]])}
     ]
 
-    args = %{
-      data:          %{location: :memory, source: data},
-      configuration: %{}
-    }
+    args = %{data: %{location: :memory, source: data}}
 
     {:ok, worker_pid} = Worker.start_link(args, options)
 

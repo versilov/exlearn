@@ -39,14 +39,7 @@ defmodule ExLearn.NeuralNetwork.Worker.GetTest do
       options: options
     } = setup
 
-    args = %{
-      data: %{
-        training:   %{location: :file,   source: []},
-        validation: %{location: :memory, source: []},
-        test:       %{location: :file,   source: []},
-        ask:        %{location: :memory, source: []}
-      }
-    }
+    args = %{data: %{location: :file, source: []}}
 
     {:ok, worker_pid} = Worker.start_link(args, options)
 
