@@ -103,7 +103,8 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
       [configuration, [name: worker_name]]
     )
 
-    Worker.work(:ask, network_state, worker_name)
+    Worker.ask(network_state, worker_name)
+    Worker.get(worker_name)
   end
 
   #----------------------------------------------------------------------------
@@ -269,7 +270,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
   end
 
   defp train_worker(worker, network_state) do
-    Worker.work(:train, network_state, elem(worker, 1))
+    Worker.train(network_state, elem(worker, 1))
 
     worker
   end

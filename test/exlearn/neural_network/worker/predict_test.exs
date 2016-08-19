@@ -17,8 +17,10 @@ defmodule ExLearn.NeuralNetwork.Worker.PredictTest do
   test "#predict with data in file returns the prediction", %{setup: setup} do
     %{name: worker, options: options} = setup
 
-    data          = [Matrix.new(1, 3, [[1, 2, 3]])]
-    expected      = [Matrix.new(1, 2, [[1897, 2784]])]
+    input         = Matrix.new(1, 3, [[1, 2, 3]])
+    output        = Matrix.new(1, 2, [[1897, 2784]])
+    data          = [input]
+    expected      = [%{input: input, output: output}]
     network_state = WorkerFixtures.initial_network_state
     path          = TestUtils.temp_file_path()
 
@@ -42,8 +44,10 @@ defmodule ExLearn.NeuralNetwork.Worker.PredictTest do
       options: options
     } = setup
 
-    data          = [Matrix.new(1, 3, [[1, 2, 3]])]
-    expected      = [Matrix.new(1, 2, [[1897, 2784]])]
+    input         = Matrix.new(1, 3, [[1, 2, 3]])
+    output        = Matrix.new(1, 2, [[1897, 2784]])
+    data          = [input]
+    expected      = [%{input: input, output: output}]
     network_state = WorkerFixtures.initial_network_state
 
     args = %{data: %{location: :memory, source: data}}

@@ -51,7 +51,9 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
       }
     } = state
 
-    calculate_output(input, layers, presentation)
+    output = calculate_output(input, layers, presentation)
+
+    %{input: input, output: output}
   end
 
   defp calculate_output(output, [], presentation) do
