@@ -1,68 +1,48 @@
 defmodule ExLearn.NeuralNetwork.WorkerTest do
   use ExUnit.Case, async: true
 
-  alias ExLearn.Matrix
-  alias ExLearn.NeuralNetwork.Worker
+  alias ExLearn.{Matrix, TestUtils}
+  alias ExLearn.NeuralNetwork.{Worker, WorkerFixtures}
 
   setup do
-    function     = fn(x)        -> x + 1                  end
-    derivative   = fn(_)        -> 1                      end
-    objective    = fn(a, b, _c) -> Matrix.substract(b, a) end
-    presentation = fn(x)        -> x                      end
-
-    timestamp = :os.system_time(:micro_seconds) |> to_string
-    path      = "test/temp/exlearn-neural_network-worker_test" <> timestamp
-
-    network_state = %{
-      network: %{
-        layers: [
-          %{
-            activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   Matrix.new(1, 3, [[1, 2, 3]]),
-            weights:  Matrix.new(3, 3, [[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-          },
-          %{
-            activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   Matrix.new(1, 2, [[4, 5]]),
-            weights:  Matrix.new(3, 2, [[1, 2], [3, 4], [5, 6]])
-          },
-          %{
-            activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   Matrix.new(1, 2, [[6, 7]]),
-            weights:  Matrix.new(2, 2, [[1, 2], [3, 4]])
-          },
-        ],
-        objective:    %{error: objective},
-        presentation: presentation
-      }
-    }
-
+    path    = TestUtils.temp_file_path("neural_network-worker_test")
     name    = {:global, make_ref()}
     options = [name: name]
 
     {:ok, setup: %{
       name:          name,
-      network_state: network_state,
       options:       options,
-      path:          path,
-      presentation:  presentation
+      path:          path
     }}
   end
 
-  test "#get returns the processed result", %{setup: setup} do
+  test "#get with empty state returns the result", %{setup: setup} do
     %{
       name:    worker = {:global, reference},
       options: options
     } = setup
 
-    args = %{
-      batch_size:     1,
-      data:           [],
-      data_location:  :memory,
-      learning_rate:  :not_needed,
-      regularization: :none
-    }
+    args              = []
+    {:ok, worker_pid} = Worker.start_link(args, options)
 
+    assert Worker.get(worker) == :no_data
+
+    pid_of_reference = :global.whereis_name(reference)
+
+    assert worker_pid |> is_pid
+    assert worker_pid |> Process.alive?
+    assert reference  |> is_reference
+    assert worker_pid == pid_of_reference
+  end
+
+
+  test "#get with empty data returns the result", %{setup: setup} do
+    %{
+      name:    worker = {:global, reference},
+      options: options
+    } = setup
+
+    args              = %{data: %{}, configuration: %{}}
     {:ok, worker_pid} = Worker.start_link(args, options)
 
     assert Worker.get(worker) == :no_data

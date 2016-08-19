@@ -36,11 +36,29 @@ defmodule ExLearn.NeuralNetwork.Worker do
   # Server API
   #----------------------------------------------------------------------------
 
+  @spec init([]) :: {:ok, map}
+  def init([]) do
+    state = %{
+      configuration: %{},
+      data: %{
+        training:   [],
+        validation: [],
+        test:       [],
+        predict:    []
+      },
+      result: :no_data
+    }
+
+    {:ok, state}
+  end
+
   @spec init(map) :: {:ok, map}
   def init(configuration) do
     IO.inspect configuration
     %{
       batch_size:     batch_size,
+      data_source:    data_source,
+      data_location:  data_location,
       learning_rate:  learning_rate
     } = configuration
 
