@@ -1,8 +1,9 @@
 defmodule ExLearn.NeuralNetwork.AccumulatorTest do
   use ExUnit.Case, async: true
 
-  alias ExLearn.Matrix
+  alias ExLearn.{Matrix, TestUtils}
   alias ExLearn.NeuralNetwork.{Accumulator, Manager, Notification, Store}
+  alias ExLearn.NeuralNetwork.WorkerFixtures
 
   setup do
     notification_name    = {:global, make_ref()}
@@ -46,51 +47,27 @@ defmodule ExLearn.NeuralNetwork.AccumulatorTest do
 
     {:ok, accumulator_pid} = Accumulator.start_link(args, options)
 
-    function     = fn(x) -> x + 1 end
-    derivative   = fn(_) -> 1     end
-    objective    = fn(a, b, _c) -> Matrix.substract(b, a) end
-    presentation = fn(x)        -> x                      end
-
-    network_state = %{
-      network: %{
-        layers: [
-          %{
-            activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   Matrix.new(1, 3, [[1, 2, 3]]),
-            weights:  Matrix.new(3, 3, [[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-          },
-          %{
-            activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   Matrix.new(1, 2, [[4, 5]]),
-            weights:  Matrix.new(3, 2, [[1, 2], [3, 4], [5, 6]])
-          },
-          %{
-            activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   Matrix.new(1, 2, [[6, 7]]),
-            weights:  Matrix.new(2, 2, [[1, 2], [3, 4]])
-          },
-        ],
-        objective: %{error: objective},
-        presentation: presentation
-      }
-    }
-
+    network_state = WorkerFixtures.initial_network_state
     Store.set(network_state, store_name)
 
-    data     = [
-      Matrix.new(1, 3, [[1, 2, 3]]),
-      Matrix.new(1, 3, [[2, 3, 4]])
-    ]
+    first_sample  = Matrix.new(1, 3, [[1, 2, 3]])
+    second_sample = Matrix.new(1, 3, [[2, 3, 4]])
 
-    timestamp = :os.system_time(:micro_seconds) |> to_string
-    path      = "test/temp/exlearn-neural_network-accumulator_test" <> timestamp
-    binary    = :erlang.term_to_binary(data)
-    File.write(path, binary)
+    first_expected  = %{
+      input:  first_sample,
+      output: Matrix.new(1, 2, [[1897, 2784]])
+    }
 
-    expected = [
-      Matrix.new(1, 2, [[1897, 2784]]),
-      Matrix.new(1, 2, [[2620, 3846]])
-    ]
+    second_expected = %{
+      input:  second_sample,
+      output: Matrix.new(1, 2, [[2620, 3846]])
+    }
+
+    data     = [first_sample,   second_sample  ]
+    expected = [first_expected, second_expected]
+
+    path = TestUtils.temp_file_path()
+    TestUtils.write_to_file_as_binary(data, path)
 
     assert Accumulator.ask(path, name) == expected
     assert Store.get(store_name)       == network_state
@@ -115,45 +92,24 @@ defmodule ExLearn.NeuralNetwork.AccumulatorTest do
 
     {:ok, accumulator_pid} = Accumulator.start_link(args, options)
 
-    function     = fn(x) -> x + 1 end
-    derivative   = fn(_) -> 1     end
-    objective    = fn(a, b, _c) -> Matrix.substract(b, a) end
-    presentation = fn(x)        -> x                      end
-
-    network_state = %{
-      network: %{
-        layers: [
-          %{
-            activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   Matrix.new(1, 3, [[1, 2, 3]]),
-            weights:  Matrix.new(3, 3, [[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-          },
-          %{
-            activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   Matrix.new(1, 2, [[4, 5]]),
-            weights:  Matrix.new(3, 2, [[1, 2], [3, 4], [5, 6]])
-          },
-          %{
-            activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   Matrix.new(1, 2, [[6, 7]]),
-            weights:  Matrix.new(2, 2, [[1, 2], [3, 4]])
-          },
-        ],
-        objective: %{error: objective},
-        presentation: presentation
-      }
-    }
-
+    network_state = WorkerFixtures.initial_network_state
     Store.set(network_state, store_name)
 
-    data     = [
-      Matrix.new(1, 3, [[1, 2, 3]]),
-      Matrix.new(1, 3, [[2, 3, 4]])
-    ]
-    expected = [
-      Matrix.new(1, 2, [[1897, 2784]]),
-      Matrix.new(1, 2, [[2620, 3846]])
-    ]
+    first_sample  = Matrix.new(1, 3, [[1, 2, 3]])
+    second_sample = Matrix.new(1, 3, [[2, 3, 4]])
+
+    first_expected  = %{
+      input:  first_sample,
+      output: Matrix.new(1, 2, [[1897, 2784]])
+    }
+
+    second_expected = %{
+      input:  second_sample,
+      output: Matrix.new(1, 2, [[2620, 3846]])
+    }
+
+    data     = [first_sample,    second_sample ]
+    expected = [second_expected, first_expected]
 
     assert Accumulator.ask(data, name) == expected
     assert Store.get(store_name)       == network_state

@@ -70,15 +70,6 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
   defp ask_network(data, state) do
     %{manager: manager} = state
 
-    batch_size = case data do
-      path when is_bitstring(path) ->
-        files = Path.wildcard(path)
-
-        trunc(length(files))
-      _ ->
-        length(data)
-    end
-
     data_list = case data do
       path when is_bitstring(path) -> Path.wildcard(path)
       _  -> data
@@ -91,19 +82,14 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
 
     network_state = Store.get(state)
     worker_name   = {:global, make_ref()}
-    configuration = %{
-      batch_size:    batch_size,
-      data:          data_list,
-      data_location: data_location,
-      learning_rate: :not_needed
-    }
+    configuration = %{data: %{location: data_location, source: data_list}}
 
     {:ok, _pid} = Supervisor.start_child(
       manager,
       [configuration, [name: worker_name]]
     )
 
-    Worker.ask(network_state, worker_name)
+    Worker.predict(network_state, worker_name)
     Worker.get(worker_name)
   end
 
