@@ -90,7 +90,7 @@ defmodule ExLearn.NeuralNetwork.Worker do
   def handle_cast({:test, network_state}, state) do
     %{data: data} = state
 
-    result    = network_predict(data, network_state)
+    result    = network_test(data, network_state)
     new_state = Map.put(state, :result, result)
 
     {:noreply, new_state}
@@ -218,5 +218,16 @@ defmodule ExLearn.NeuralNetwork.Worker do
   defp train_sample(sample, network_state) do
     Forwarder.forward_for_activity(sample, network_state)
     |> Propagator.back_propagate(network_state)
+  end
+
+  defp network_test(data, network_state) do
+    network_test(data, network_state, [])
+  end
+
+  defp network_test([], _, accumulator), do: accumulator
+  defp network_test([sample|rest], network_state, accumulator) do
+    output = Forwarder.forward_for_test(sample, network_state)
+
+    network_test(rest, network_state, [output|accumulator])
   end
 end
