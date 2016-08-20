@@ -3,7 +3,7 @@ defmodule ExLearn.NeuralNetwork.AccumulatorTest do
 
   alias ExLearn.{Matrix, TestUtils}
   alias ExLearn.NeuralNetwork.{Accumulator, Manager, Notification, Store}
-  alias ExLearn.NeuralNetwork.WorkerFixtures
+  alias ExLearn.NeuralNetwork.AccumulatorFixtures
 
   setup do
     notification_name    = {:global, make_ref()}
@@ -47,7 +47,7 @@ defmodule ExLearn.NeuralNetwork.AccumulatorTest do
 
     {:ok, accumulator_pid} = Accumulator.start_link(args, options)
 
-    network_state = WorkerFixtures.initial_network_state
+    network_state = AccumulatorFixtures.initial_network_state
     Store.set(network_state, store_name)
 
     first_sample  = Matrix.new(1, 3, [[1, 2, 3]])
@@ -92,7 +92,7 @@ defmodule ExLearn.NeuralNetwork.AccumulatorTest do
 
     {:ok, accumulator_pid} = Accumulator.start_link(args, options)
 
-    network_state = WorkerFixtures.initial_network_state
+    network_state = AccumulatorFixtures.initial_network_state
     Store.set(network_state, store_name)
 
     first_sample  = Matrix.new(1, 3, [[1, 2, 3]])
@@ -132,15 +132,13 @@ defmodule ExLearn.NeuralNetwork.AccumulatorTest do
 
     {:ok, accumulator_pid} = Accumulator.start_link(args, options)
 
-    training_data = [
+    data = [
       {Matrix.new(1, 3, [[1, 2, 3]]), Matrix.new(1, 2, [[1900, 2800]])},
       {Matrix.new(1, 3, [[2, 3, 4]]), Matrix.new(1, 2, [[2600, 3800]])}
     ]
 
-    timestamp = :os.system_time(:micro_seconds) |> to_string
-    path      = "test/temp/exlearn-neural_network-accumulator_test" <> timestamp
-    binary    = :erlang.term_to_binary(training_data)
-    File.write(path, binary)
+    path = TestUtils.temp_file_path("neural_network-accumulator_test")
+    TestUtils.write_to_file_as_binary(data, path)
 
     learning_data = %{
       training: %{
@@ -156,68 +154,10 @@ defmodule ExLearn.NeuralNetwork.AccumulatorTest do
       workers:        2
     }
 
-    function   = fn(x) -> x + 1 end
-    derivative = fn(_) -> 1     end
-    objective  = fn(a, b, _c) -> Matrix.substract(b, a) end
-
-    initial_network_state = %{
-      network: %{
-        layers: [
-          %{
-            activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   Matrix.new(1, 3, [[1, 2, 3]]),
-            weights:  Matrix.new(3, 3, [[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-          },
-          %{
-            activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   Matrix.new(1, 2, [[4, 5]]),
-            weights:  Matrix.new(3, 2, [[1, 2], [3, 4], [5, 6]])
-          },
-          %{
-            activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   Matrix.new(1, 2, [[6, 7]]),
-            weights:  Matrix.new(2, 2, [[1, 2], [3, 4]])
-          },
-        ],
-        objective: %{error: objective}
-      }
-    }
-
+    initial_network_state = AccumulatorFixtures.initial_network_state
     Store.set(initial_network_state, store_name)
 
-    expected_network_state = %{
-      network: %{
-        layers: [
-          %{
-            activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   Matrix.new(1, 3, [[-837, -1828, -2819]]),
-            weights:  Matrix.new(3, 3, [
-              [-2037, -4452, -6867 ],
-              [-2872, -6279, -9686 ],
-              [-3707, -8106, -12505]
-            ])
-          },
-          %{
-            activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   Matrix.new(1, 2, [[-150, -337]]),
-            weights:  Matrix.new(3, 2, [
-              [-7615,  -16798],
-              [-9363,  -20654],
-              [-11111, -24510]
-            ])
-          },
-          %{
-            activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   Matrix.new(1, 2, [[-28, -53]]),
-            weights:  Matrix.new(2, 2, [
-              [-18935, -36562],
-              [-24745, -47780]
-            ])
-          }
-        ],
-        objective: %{error: objective}
-      }
-    }
+    expected_network_state = AccumulatorFixtures.expected_network_state
 
     :ok = Accumulator.train(learning_data, learning_parameters, name)
 
@@ -262,68 +202,10 @@ defmodule ExLearn.NeuralNetwork.AccumulatorTest do
       workers:       2
     }
 
-    function   = fn(x) -> x + 1 end
-    derivative = fn(_) -> 1     end
-    objective  = fn(a, b, _c) -> Matrix.substract(b, a) end
-
-    initial_network_state = %{
-      network: %{
-        layers: [
-          %{
-            activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   Matrix.new(1, 3, [[1, 2, 3]]),
-            weights:  Matrix.new(3, 3, [[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-          },
-          %{
-            activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   Matrix.new(1, 2, [[4, 5]]),
-            weights:  Matrix.new(3, 2, [[1, 2], [3, 4], [5, 6]])
-          },
-          %{
-            activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   Matrix.new(1, 2, [[6, 7]]),
-            weights:  Matrix.new(2, 2, [[1, 2], [3, 4]])
-          },
-        ],
-        objective: %{error: objective}
-      }
-    }
-
+    initial_network_state = AccumulatorFixtures.initial_network_state
     Store.set(initial_network_state, store_name)
 
-    expected_network_state = %{
-      network: %{
-        layers: [
-          %{
-            activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   Matrix.new(1, 3, [[-837, -1828, -2819]]),
-            weights:  Matrix.new(3, 3, [
-              [-2037, -4452, -6867 ],
-              [-2872, -6279, -9686 ],
-              [-3707, -8106, -12505]
-            ])
-          },
-          %{
-            activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   Matrix.new(1, 2, [[-150, -337]]),
-            weights:  Matrix.new(3, 2, [
-              [-7615,  -16798],
-              [-9363,  -20654],
-              [-11111, -24510]
-            ])
-          },
-          %{
-            activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   Matrix.new(1, 2, [[-28, -53]]),
-            weights:  Matrix.new(2, 2, [
-              [-18935, -36562],
-              [-24745, -47780]
-            ])
-          }
-        ],
-        objective: %{error: objective}
-      }
-    }
+    expected_network_state = AccumulatorFixtures.expected_network_state
 
     :ok = Accumulator.train(learning_data, learning_parameters, name)
 
@@ -367,68 +249,10 @@ defmodule ExLearn.NeuralNetwork.AccumulatorTest do
       workers:        2
     }
 
-    function   = fn(x) -> x + 1 end
-    derivative = fn(_) -> 1     end
-    objective  = fn(a, b, _c) -> Matrix.substract(b, a) end
-
-    initial_network_state = %{
-      network: %{
-        layers: [
-          %{
-            activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   Matrix.new(1, 3, [[1, 2, 3]]),
-            weights:  Matrix.new(3, 3, [[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-          },
-          %{
-            activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   Matrix.new(1, 2, [[4, 5]]),
-            weights:  Matrix.new(3, 2, [[1, 2], [3, 4], [5, 6]])
-          },
-          %{
-            activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   Matrix.new(1, 2, [[6, 7]]),
-            weights:  Matrix.new(2, 2, [[1, 2], [3, 4]])
-          },
-        ],
-        objective: %{error: objective}
-      }
-    }
-
+    initial_network_state = AccumulatorFixtures.initial_network_state
     Store.set(initial_network_state, store_name)
 
-    expected_network_state = %{
-      network: %{
-        layers: [
-          %{
-            activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   Matrix.new(1, 3, [[-837, -1828, -2819]]),
-            weights:  Matrix.new(3, 3, [
-              [-2041, -4456, -6871 ],
-              [-2876, -6283, -9690 ],
-              [-3711, -8110, -12509]
-            ])
-          },
-          %{
-            activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   Matrix.new(1, 2, [[-150, -337]]),
-            weights:  Matrix.new(3, 2, [
-              [-7619,  -16802],
-              [-9367,  -20658],
-              [-11115, -24514]
-            ])
-          },
-          %{
-            activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   Matrix.new(1, 2, [[-28, -53]]),
-            weights:  Matrix.new(2, 2, [
-              [-18939, -36566],
-              [-24749, -47784]
-            ])
-          }
-        ],
-        objective: %{error: objective}
-      }
-    }
+    expected_network_state = AccumulatorFixtures.expected_network_states_for_l1
 
     :ok = Accumulator.train(learning_data, learning_parameters, name)
 
@@ -472,89 +296,13 @@ defmodule ExLearn.NeuralNetwork.AccumulatorTest do
       workers:        2
     }
 
-    function   = fn(x) -> x + 1 end
-    derivative = fn(_) -> 1     end
-    objective  = fn(a, b, _c) -> Matrix.substract(b, a) end
-
-    initial_network_state = %{
-      network: %{
-        layers: [
-          %{
-            activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   Matrix.new(1, 3, [[1, 2, 3]]),
-            weights:  Matrix.new(3, 3, [[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-          },
-          %{
-            activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   Matrix.new(1, 2, [[4, 5]]),
-            weights:  Matrix.new(3, 2, [[1, 2], [3, 4], [5, 6]])
-          },
-          %{
-            activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   Matrix.new(1, 2, [[6, 7]]),
-            weights:  Matrix.new(2, 2, [[1, 2], [3, 4]])
-          },
-        ],
-        objective: %{error: objective}
-      }
-    }
-
+    initial_network_state = AccumulatorFixtures.initial_network_state
     Store.set(initial_network_state, store_name)
 
-    expected_network_state = %{
-      network: %{
-        layers: [
-          %{
-            activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   Matrix.new(1, 3, [[-837, -1828, -2819]]),
-            weights:  Matrix.new(3, 3, [
-              [-2041, -4460, -6879 ],
-              [-2888, -6299, -9710 ],
-              [-3735, -8138, -12541]
-            ])
-          },
-          %{
-            activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   Matrix.new(1, 2, [[-150, -337]]),
-            weights:  Matrix.new(3, 2, [
-              [-7619,  -16806],
-              [-9375,  -20670],
-              [-11131, -24534]
-            ])
-          },
-          %{
-            activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   Matrix.new(1, 2, [[-28, -53]]),
-            weights:  Matrix.new(2, 2, [
-              [-18939, -36570],
-              [-24757, -47796]
-            ])
-          }
-        ],
-        objective: %{error: objective}
-      }
-    }
-
+    expected_network_state = AccumulatorFixtures.expected_network_states_for_l2
     :ok = Accumulator.train(learning_data, learning_parameters, name)
 
     assert Store.get(store_name) == expected_network_state
-
-    pid_of_reference = :global.whereis_name(reference)
-
-    assert accumulator_pid |> is_pid
-    assert accumulator_pid |> Process.alive?
-    assert reference       |> is_reference
-    assert accumulator_pid == pid_of_reference
-  end
-
-  test "#start returns a running process", %{setup: setup} do
-    %{
-      args:    args,
-      name:    {:global, reference},
-      options: options
-    } = setup
-
-    {:ok, accumulator_pid} = Accumulator.start(args, options)
 
     pid_of_reference = :global.whereis_name(reference)
 

@@ -18,11 +18,6 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     GenServer.call(accumulator, {:train, data, parameters}, :infinity)
   end
 
-  @spec start(list(tuple), map) :: {}
-  def start(args, options) do
-    GenServer.start( __MODULE__, args, options)
-  end
-
   @spec start_link([{}], map) :: {}
   def start_link(args, options) do
     GenServer.start_link(__MODULE__, args, options)
