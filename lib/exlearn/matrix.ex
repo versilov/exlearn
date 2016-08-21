@@ -269,23 +269,9 @@ defmodule ExLearn.Matrix do
   """
   @spec max(binary) :: number
   def max(matrix) do
-    <<
-      _rows    :: float-little-32,
-      _columns :: float-little-32,
-      rest     :: binary
-    >> = matrix
+    :erlang.nif_error(:nif_library_not_loaded)
 
-    matrix_max(rest, 10.0e-40)
-  end
-
-  defp matrix_max(<<>>,   maximum), do: maximum
-  defp matrix_max(binary, previous) do
-    <<value :: float-little-32, rest :: binary>> = binary
-
-    case value > previous do
-      true  -> matrix_max(rest, value   )
-      false -> matrix_max(rest, previous)
-    end
+    :rand.uniform
   end
 
   @doc """
