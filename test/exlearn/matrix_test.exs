@@ -181,14 +181,6 @@ defmodule MatrixTest do
     assert Matrix.sum(input) == expected
   end
 
-  test "#sum|:rows returns a matrix with the sum of each row as element" do
-    input    = Matrix.new(2, 3, [[1, 2, 3], [4, 5, 6]])
-    expected = Matrix.new(1, 2, [[6, 15]])
-
-    assert Matrix.sum(input, :rows) == expected
-  end
-
-
   test "#transpose transposes a matrix" do
     input    = Matrix.new(2, 3, [[1, 2, 3], [4, 5, 6]])
     expected = Matrix.new(3, 2, [[1, 4], [2, 5], [3, 6]])

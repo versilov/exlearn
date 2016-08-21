@@ -353,6 +353,26 @@ substract(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   return result;
 }
 
+static ERL_NIF_TERM
+sum(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
+  ErlNifBinary  matrix;
+  float         sum;
+  float        *matrix_data;
+  int           data_size;
+
+  if (!enif_inspect_binary(env, argv[0], &matrix)) return enif_make_badarg(env);
+
+  matrix_data = (float *) matrix.data;
+  data_size   = matrix_data[0] * matrix_data[1] + 2;
+  sum         = 0;
+
+  for (int index = 2; index < data_size; index += 1) {
+    sum += matrix_data[index];
+  }
+
+  return enif_make_double(env, sum);
+}
+
 static ErlNifFunc nif_functions[] = {
   {"add",                  2, add                 },
   {"divide",               2, divide              },
@@ -363,7 +383,8 @@ static ErlNifFunc nif_functions[] = {
   {"multiply",             2, multiply            },
   {"multiply_with_scalar", 2, multiply_with_scalar},
   {"transpose",            1, transpose           },
-  {"substract",            2, substract           }
+  {"substract",            2, substract           },
+  {"sum",                  1, sum                 }
 };
 
 ERL_NIF_INIT(Elixir.ExLearn.Matrix, nif_functions, NULL, NULL, NULL, NULL)

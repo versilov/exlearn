@@ -384,47 +384,10 @@ defmodule ExLearn.Matrix do
   """
   @spec sum(binary) :: number
   def sum(matrix) do
-    <<
-      _rows    :: float-little-32,
-      _columns :: float-little-32,
-      data     :: binary
-    >> = matrix
+    :erlang.nif_error(:nif_library_not_loaded)
 
-    matrix_sum(data, 0)
-  end
-
-  @spec sum(binary, atom) :: binary
-  def sum(matrix, :rows) do
-    <<
-      rows    :: float-little-32,
-      columns :: float-little-32,
-      data    :: binary
-    >> = matrix
-
-    initial = <<1.0 :: float-little-32, rows :: float-little-32>>
-
-    matrix_sum(data, 1, columns, 0, initial)
-  end
-
-  defp matrix_sum(<<>>,   accumulator), do: accumulator
-  defp matrix_sum(values, accumulator)  do
-    <<value :: float-little-32, rest :: binary>> = values
-
-    matrix_sum(rest, accumulator + value)
-  end
-
-  defp matrix_sum(<<>>, _, _, _, accumulator), do: accumulator
-  defp matrix_sum(values, current_column, columns, sum, accumulator)  do
-    <<value :: float-little-32, rest :: binary>> = values
-
-    new_sum = sum + value
-
-    case current_column < columns do
-      true  ->
-        matrix_sum(rest, current_column + 1, columns, new_sum, accumulator)
-      false ->
-        matrix_sum(rest, 1, columns, 0, accumulator <> <<new_sum :: float-little-32>>)
-    end
+    random_size = :rand.uniform(2)
+    <<1 :: size(random_size)>>
   end
 
   @doc """
