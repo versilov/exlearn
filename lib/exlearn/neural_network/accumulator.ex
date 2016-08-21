@@ -77,11 +77,11 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
 
     network_state = Store.get(state)
     worker_name   = {:global, make_ref()}
-    configuration = %{data: %{location: data_location, source: data_list}}
+    setup         = %{data: %{location: data_location, source: data_list}}
 
     {:ok, _pid} = Supervisor.start_child(
       manager,
-      [configuration, [name: worker_name]]
+      [setup, [name: worker_name]]
     )
 
     Worker.predict(network_state, worker_name)
@@ -98,9 +98,10 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
 
     network_state = Store.get(state)
     workers       = start_workers(data, parameters, state)
+    %{training: training_workers} = workers
 
     Notification.push("Started training", state)
-    train_for_epochs(workers, network_state, state, epochs, 0)
+    train_for_epochs(training_workers, network_state, state, epochs, 0)
     Notification.push("Finished training", state)
   end
 
@@ -110,72 +111,74 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
 
     initial_configuration = prepare_learning_configuration(parameters)
 
-    prepare_workers_configuration(initial_configuration, data, maximum_workers)
-    |> prepare_workers(maximum_workers, state)
+    training_workers = prepare_worker_setup(
+      data,
+      :training,
+      maximum_workers
+    )
+    |> start_workers(
+      initial_configuration,
+      maximum_workers,
+      state
+    )
+
+    validation_workers = prepare_worker_setup(
+      data,
+      :validation,
+      maximum_workers
+    )
+    |> start_workers(
+      %{},
+      maximum_workers,
+      state
+    )
+
+    test_workers = prepare_worker_setup(
+      data,
+      :test,
+      maximum_workers
+    )
+    |> start_workers(
+      %{},
+      maximum_workers,
+      state
+    )
+
+    predict_workers = prepare_worker_setup(
+      data,
+      :predict,
+      maximum_workers
+    )
+    |> start_workers(
+      %{},
+      maximum_workers,
+      state
+    )
+
+    %{
+      training:   training_workers,
+      validation: validation_workers,
+      test:       test_workers,
+      predict:    predict_workers
+    }
   end
 
   defp prepare_learning_configuration(parameters) do
-    regularization = Regularization.determine(
-      Map.get(parameters, :regularization, :none)
-    )
-
-    Map.put(parameters, :regularization, regularization)
+    parameters
     |> Map.delete(:workers)
+    |> Map.delete(:epochs)
   end
 
-  defp prepare_workers_configuration(configuration, data, maximum_workers) do
-    training   = Map.get(data, :training,   :no_data)
-    validation = Map.get(data, :validation, :no_data)
-    test       = Map.get(data, :test,       :no_data)
-
-    training_chunks   = extract_chunks(training,   maximum_workers)
-    validation_chunks = extract_chunks(validation, maximum_workers)
-    test_chunks       = extract_chunks(test,       maximum_workers)
-
-    configuation_from_chunks(
-      configuration,
-      training_chunks,
-      validation_chunks,
-      test_chunks
-    )
+  defp prepare_worker_setup(data, type, maximum_workers) do
+    data_source = Map.get(data, type, :no_data)
+    extract_chunks(data_source, maximum_workers)
   end
 
-  defp configuation_from_chunks(initial, training, validation, test) do
-    []
-    |> add_data_to_configuration(training,   initial, :training,   [])
-    |> add_data_to_configuration(validation, initial, :validation, [])
-    |> add_data_to_configuration(test,       initial, :test,       [])
+  defp extract_chunks(:no_data, worker_count) do
+    %{location: :memory, sources: []}
   end
 
-  defp add_data_to_configuration(configuration, {_, []}, _, _, accumulator) do
-    configuration ++ accumulator
-  end
-
-  defp add_data_to_configuration([], {location, [b|chunks]}, initial, key, accumulator) do
-    data = %{
-      data:          b,
-      data_location: location
-    }
-
-    new_configuration = Map.put(initial, key, data)
-    new_accumulator   = [new_configuration|accumulator]
-
-    add_data_to_configuration([], {location, chunks}, initial, key, new_accumulator)
-  end
-
-  defp add_data_to_configuration([a|configuration], {location, [b|chunks]}, initial, key, accumulator) do
-    data     = Map.get(a, key, %{})
-    new_data = Map.put(data, :data, b)
-    |> Map.put(:data_location, location)
-
-    new_configuration = Map.put(a, key, new_data)
-    new_accumulator   = [new_configuration|accumulator]
-
-    add_data_to_configuration(configuration, {location, chunks}, initial, key, new_accumulator)
-  end
-
-  defp extract_chunks(:no_data, worker_count), do: {:memory, []}
-  defp extract_chunks(data,     worker_count)  do
+  defp extract_chunks(data,     worker_count) do
     %{
       data:      data_source,
       data_size: data_size
@@ -197,21 +200,36 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
 
     chunks = split_in_chunks(data_source, chunk_size)
 
-    {data_location, chunks}
+    %{location: data_location, sources: chunks}
   end
 
-  defp prepare_workers(worker_configurations, maximum_workers, state) do
+  defp start_workers(data, configuration, maximum_workers, state) do
     %{manager: manager} = state
+    %{
+      location: location,
+      sources:  sources
+    } = data
 
     workers = Enum.to_list(1..maximum_workers)
     |> Enum.map(fn(index) -> {index, {:global, make_ref()}} end)
 
-    Enum.zip(workers, worker_configurations)
-    |> Enum.each(fn({worker, configuration}) ->
-      Supervisor.start_child(manager, [configuration, [name: elem(worker, 1)]])
+
+    necessary_workers = Enum.map(sources, fn(source) ->
+      %{
+        data: %{location: location, source: source},
+        configuration: configuration
+      }
+    end)
+    |> Enum.zip(workers)
+
+    Enum.each(necessary_workers, fn({setup, worker}) ->
+      {:ok, _pid} = Supervisor.start_child(
+        manager,
+        [setup, [name: elem(worker, 1)]]
+      )
     end)
 
-    workers
+    Enum.map(necessary_workers, fn({_setup, worker}) -> worker end)
   end
 
   defp split_in_chunks(data_source, chunk_size) do
