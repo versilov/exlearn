@@ -34,6 +34,27 @@ add(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
 }
 
 static ERL_NIF_TERM
+argmax(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
+  ErlNifBinary  matrix;
+  float        *matrix_data;
+  int           argmax, data_size;
+
+  if (!enif_inspect_binary(env, argv[0], &matrix)) return enif_make_badarg(env);
+
+  matrix_data = (float *) matrix.data;
+  data_size   = matrix_data[0] * matrix_data[1] + 2;
+  argmax      = 2;
+
+  for (int index = 3; index < data_size; index += 1) {
+    if (matrix_data[argmax] < matrix_data[index]) {
+      argmax = index;
+    }
+  }
+
+  return enif_make_int(env, argmax - 2);
+}
+
+static ERL_NIF_TERM
 divide(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   ErlNifBinary  first, second;
   ERL_NIF_TERM  result;
@@ -397,6 +418,7 @@ transpose(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
 
 static ErlNifFunc nif_functions[] = {
   {"add",                  2, add                 },
+  {"argmax",               1, argmax              },
   {"divide",               2, divide              },
   {"dot",                  2, dot                 },
   {"dot_and_add",          3, dot_and_add         },

@@ -143,24 +143,9 @@ defmodule ExLearn.Matrix do
   """
   @spec argmax(binary) :: non_neg_integer
   def argmax(matrix) do
-    <<
-      _rows    :: float-little-32,
-      _columns :: float-little-32,
-      first    :: float-little-32,
-      rest     :: binary
-    >> = matrix
+    :erlang.nif_error(:nif_library_not_loaded)
 
-    argmax(rest, 0, first, 0)
-  end
-
-  defp argmax(<<>>, _,     _,       argmax), do: argmax
-  defp argmax(data, index, maximum, argmax)  do
-    <<next :: float-little-32, rest :: binary>> = data
-
-    case maximum < next do
-      true  -> argmax(rest, index + 1, next,    index + 1)
-      false -> argmax(rest, index + 1, maximum, argmax   )
-    end
+    :rand.uniform
   end
 
   @doc """
@@ -372,8 +357,7 @@ defmodule ExLearn.Matrix do
   def sum(matrix) do
     :erlang.nif_error(:nif_library_not_loaded)
 
-    random_size = :rand.uniform(2)
-    <<1 :: size(random_size)>>
+    :rand.uniform
   end
 
   @doc """
