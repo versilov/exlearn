@@ -3,18 +3,8 @@ defmodule ActivationTest do
 
   alias ExLearn.{Activation, Matrix}
 
-  test "#apply_derivative for arity 1" do
-    activity = %{arity: 1, derivative: &(&1 + 1)}
-    data     = Matrix.new(1, 3, [[1, 2, 3]])
-    expected = Matrix.new(1, 3, [[2, 3, 4]])
-
-    result = Activation.apply_derivative(data, activity)
-
-    assert expected == result
-  end
-
-  test "#apply_derivative for arity 2" do
-    activity = %{arity: 2, derivative: &Matrix.sum/1}
+  test "#apply_derivative" do
+    activity = %{derivative: &Matrix.sum/1}
     data     = Matrix.new(1, 3, [[1, 2, 3]])
     expected = 6
 
@@ -23,20 +13,10 @@ defmodule ActivationTest do
     assert expected == result
   end
 
-  test "#apply_function for arity 1" do
-    activity = %{arity: 1, function: &(&1 + 1)}
+  test "#apply_function" do
+    activity = %{function: fn(x, _all) -> x + 1 end}
     data     = Matrix.new(1, 3, [[1, 2, 3]])
     expected = Matrix.new(1, 3, [[2, 3, 4]])
-
-    result = Activation.apply_function(data, activity)
-
-    assert expected == result
-  end
-
-  test "#apply_function for arity 2" do
-    activity = %{arity: 2, function: &(&1 + Matrix.sum(&2))}
-    data     = Matrix.new(1, 3, [[1, 2, 3]])
-    expected = Matrix.new(1, 3, [[7, 8, 9]])
 
     result = Activation.apply_function(data, activity)
 
@@ -49,15 +29,15 @@ defmodule ActivationTest do
     expected_from_function   = 2
     expected_from_derivative = 3
 
-    given_function   = &(&1 + 1)
+    given_function   = fn(x, _all) -> x + 1 end
     given_derivative = &(&1 + 2)
 
     setup = %{function: given_function, derivative: given_derivative}
 
     %{function: function, derivative: derivative} = Activation.determine(setup)
 
-    assert function.(argument)   == expected_from_function
-    assert derivative.(argument) == expected_from_derivative
+    assert function.(argument, :not_needed) == expected_from_function
+    assert derivative.(argument)            == expected_from_derivative
   end
 
   test "#determine the identity pair" do
@@ -70,8 +50,8 @@ defmodule ActivationTest do
 
     %{function: function, derivative: derivative} = Activation.determine(setup)
 
-    assert function.(argument)   == expected_from_function
-    assert derivative.(argument) == expected_from_derivative
+    assert function.(argument, :non_needed) == expected_from_function
+    assert derivative.(argument)            == expected_from_derivative
   end
 
   test "#determine the binary pair" do
@@ -84,24 +64,24 @@ defmodule ActivationTest do
     expected_from_function   = 0
     expected_from_derivative = 0
 
-    assert function.(argument)   == expected_from_function
-    assert derivative.(argument) == expected_from_derivative
+    assert function.(argument, :not_needed) == expected_from_function
+    assert derivative.(argument)            == expected_from_derivative
 
     argument = 0
 
     expected_from_function   = 1
-    expected_from_derivative = :undefined
+    expected_from_derivative = 0
 
-    assert function.(argument)   == expected_from_function
-    assert derivative.(argument) == expected_from_derivative
+    assert function.(argument, :not_needed) == expected_from_function
+    assert derivative.(argument)            == expected_from_derivative
 
     argument = 1
 
     expected_from_function   = 1
     expected_from_derivative = 0
 
-    assert function.(argument)   == expected_from_function
-    assert derivative.(argument) == expected_from_derivative
+    assert function.(argument, :not_needed) == expected_from_function
+    assert derivative.(argument)            == expected_from_derivative
   end
 
   test "#determine the logistic pair" do
@@ -109,9 +89,9 @@ defmodule ActivationTest do
 
     %{function: function, derivative: derivative} = Activation.determine(setup)
 
-    assert function.(  10) == 0.9999546021312976
-    assert function.( 710) == 1
-    assert function.(-710) == 0
+    assert function.(  10, :not_needed) == 0.9999546021312976
+    assert function.( 710, :not_needed) == 1
+    assert function.(-710, :not_needed) == 0
     assert derivative.(10) == 4.5395807735907655e-5
   end
 
@@ -125,8 +105,8 @@ defmodule ActivationTest do
 
     %{function: function, derivative: derivative} = Activation.determine(setup)
 
-    assert function.(argument)   == expected_from_function
-    assert derivative.(argument) == expected_from_derivative
+    assert function.(argument, :not_needed) == expected_from_function
+    assert derivative.(argument)            == expected_from_derivative
   end
 
   test "#determine the arctan pair" do
@@ -139,8 +119,8 @@ defmodule ActivationTest do
 
     %{function: function, derivative: derivative} = Activation.determine(setup)
 
-    assert function.(argument)   == expected_from_function
-    assert derivative.(argument) == expected_from_derivative
+    assert function.(argument, :not_needed) == expected_from_function
+    assert derivative.(argument)            == expected_from_derivative
   end
 
   test "#determine the softsign pair" do
@@ -153,8 +133,8 @@ defmodule ActivationTest do
 
     %{function: function, derivative: derivative} = Activation.determine(setup)
 
-    assert function.(argument)   == expected_from_function
-    assert derivative.(argument) == expected_from_derivative
+    assert function.(argument, :not_needed) == expected_from_function
+    assert derivative.(argument)            == expected_from_derivative
   end
 
   test "#determine the relu pair" do
@@ -167,24 +147,24 @@ defmodule ActivationTest do
     expected_from_function   = 0
     expected_from_derivative = 0
 
-    assert function.(argument)   == expected_from_function
-    assert derivative.(argument) == expected_from_derivative
+    assert function.(argument, :not_needed) == expected_from_function
+    assert derivative.(argument)            == expected_from_derivative
 
     argument = 0
 
     expected_from_function   = 0
     expected_from_derivative = 1
 
-    assert function.(argument)   == expected_from_function
-    assert derivative.(argument) == expected_from_derivative
+    assert function.(argument, :not_needed) == expected_from_function
+    assert derivative.(argument)            == expected_from_derivative
 
     argument = 2
 
     expected_from_function   = 2
     expected_from_derivative = 1
 
-    assert function.(argument)   == expected_from_function
-    assert derivative.(argument) == expected_from_derivative
+    assert function.(argument, :not_needed) == expected_from_function
+    assert derivative.(argument)            == expected_from_derivative
   end
 
   test "#determine the softplus pair" do
@@ -197,8 +177,8 @@ defmodule ActivationTest do
 
     %{function: function, derivative: derivative} = Activation.determine(setup)
 
-    assert function.(argument)   == expected_from_function
-    assert derivative.(argument) == expected_from_derivative
+    assert function.(argument, :not_needed) == expected_from_function
+    assert derivative.(argument)            == expected_from_derivative
   end
 
   test "#determine the bent_identity pair" do
@@ -211,8 +191,8 @@ defmodule ActivationTest do
 
     %{function: function, derivative: derivative} = Activation.determine(setup)
 
-    assert function.(argument)   == expected_from_function
-    assert derivative.(argument) == expected_from_derivative
+    assert function.(argument, :not_needed) == expected_from_function
+    assert derivative.(argument)            == expected_from_derivative
   end
 
   test "#determine the sinusoid pair" do
@@ -225,15 +205,15 @@ defmodule ActivationTest do
 
     %{function: function, derivative: derivative} = Activation.determine(setup)
 
-    assert function.(argument)   == expected_from_function
-    assert derivative.(argument) == expected_from_derivative
+    assert function.(argument, :not_needed) == expected_from_function
+    assert derivative.(argument)            == expected_from_derivative
   end
 
   test "#determine the softmax pair" do
     all      = Matrix.new(1, 4, [[-1.5, 0.2, 0.3, 3]])
     argument = 3
 
-    expected_from_function   = 0.8778671147758589
+    expected_from_function   = 0.8778670674060531
     expected_from_derivative = Matrix.new(1, 4,
       [[1.5, -0.20000001788139343, -0.30000001192092896, -3.0]]
     )
@@ -273,16 +253,16 @@ defmodule ActivationTest do
     expected_from_function   = 1
     expected_from_derivative = 0
 
-    assert function.(argument)   == expected_from_function
-    assert derivative.(argument) == expected_from_derivative
+    assert function.(argument, :not_needed) == expected_from_function
+    assert derivative.(argument)            == expected_from_derivative
 
     argument = 1
 
     expected_from_function   = 0.8414709848078965
     expected_from_derivative = -0.30116867893975674
 
-    assert function.(argument)   == expected_from_function
-    assert derivative.(argument) == expected_from_derivative
+    assert function.(argument, :not_needed) == expected_from_function
+    assert derivative.(argument)            == expected_from_derivative
   end
 
   test "#determine the gaussian pair" do
@@ -295,8 +275,8 @@ defmodule ActivationTest do
 
     %{function: function, derivative: derivative} = Activation.determine(setup)
 
-    assert function.(argument)   == expected_from_function
-    assert derivative.(argument) == expected_from_derivative
+    assert function.(argument, :not_needed) == expected_from_function
+    assert derivative.(argument)            == expected_from_derivative
   end
 
   test "#determine the prelu pair" do
@@ -309,24 +289,24 @@ defmodule ActivationTest do
     expected_from_function   = -20
     expected_from_derivative = 10
 
-    assert function.(argument)   == expected_from_function
-    assert derivative.(argument) == expected_from_derivative
+    assert function.(argument, :not_needed) == expected_from_function
+    assert derivative.(argument)            == expected_from_derivative
 
     argument = 0
 
     expected_from_function   = 0
     expected_from_derivative = 1
 
-    assert function.(argument)   == expected_from_function
-    assert derivative.(argument) == expected_from_derivative
+    assert function.(argument, :not_needed) == expected_from_function
+    assert derivative.(argument)            == expected_from_derivative
 
     argument = 2
 
     expected_from_function   = 2
     expected_from_derivative = 1
 
-    assert function.(argument)   == expected_from_function
-    assert derivative.(argument) == expected_from_derivative
+    assert function.(argument, :not_needed) == expected_from_function
+    assert derivative.(argument)            == expected_from_derivative
   end
 
   test "#determine the elu pair" do
@@ -339,23 +319,23 @@ defmodule ActivationTest do
     expected_from_function   = -8.646647167633873
     expected_from_derivative = 1.3533528323661272
 
-    assert function.(argument)   == expected_from_function
-    assert derivative.(argument) == expected_from_derivative
+    assert function.(argument, :not_needed) == expected_from_function
+    assert derivative.(argument)            == expected_from_derivative
 
     argument = 0
 
     expected_from_function   = 0
     expected_from_derivative = 1
 
-    assert function.(argument)   == expected_from_function
-    assert derivative.(argument) == expected_from_derivative
+    assert function.(argument, :not_needed) == expected_from_function
+    assert derivative.(argument)            == expected_from_derivative
 
     argument = 2
 
     expected_from_function   = 2
     expected_from_derivative = 1
 
-    assert function.(argument)   == expected_from_function
-    assert derivative.(argument) == expected_from_derivative
+    assert function.(argument, :not_needed) == expected_from_function
+    assert derivative.(argument)            == expected_from_derivative
   end
 end
