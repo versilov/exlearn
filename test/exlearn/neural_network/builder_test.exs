@@ -4,11 +4,11 @@ defmodule ExLearn.NeuralNetwork.BuilderTest do
   alias ExLearn.NeuralNetwork.Builder
 
   setup do
-    activity_function   = fn(x)       -> x + 1 end
-    activity_derivative = fn(_)       -> 1     end
-    objective_function  = fn(a, _, _) -> a     end
-    objective_error     = fn(a, _)    -> a     end
-    presentation        = fn(x)       -> x     end
+    activity_function   = fn(x,  _all) -> x + 1 end
+    activity_derivative = fn(_x, _all) -> 1     end
+    objective_function  = fn(a, _, _)  -> a     end
+    objective_error     = fn(a, _)     -> a     end
+    presentation        = fn(x)        -> x     end
 
     structure_parameters = %{
       layers: %{

@@ -8,18 +8,6 @@ defmodule ExLearn.NeuralNetwork do
   }
 
   @doc """
-  Makes a prediction.
-  """
-  @spec ask(any, any) :: any
-  def ask(data, network) do
-    %{accumulator: accumulator} = network
-
-    Task.async(fn ->
-      Accumulator.ask(data, accumulator)
-    end)
-  end
-
-  @doc """
   Creates the neural network from the structure parameters.
   """
   @spec create(map) :: map
@@ -91,6 +79,50 @@ defmodule ExLearn.NeuralNetwork do
   end
 
   @doc """
+  Makes a prediction.
+  """
+  @spec predict(any, any) :: any
+  def predict(data, network) do
+    %{accumulator: accumulator} = network
+
+    %{predict: predict} = data
+    predict_data        = %{predict: predict}
+    Accumulator.process(predict_data, %{}, accumulator)
+
+    network
+  end
+
+  @spec predict(any, any, any) :: any
+  def predict(data, parameters, network) do
+    %{accumulator: accumulator} = network
+
+    %{predict: predict} = data
+    predict_data        = %{predict: predict}
+    Accumulator.process(predict_data, parameters, accumulator)
+
+    network
+  end
+
+  @spec process(any, any, any) :: any
+  def process(data, parameters, network) do
+    %{accumulator: accumulator} = network
+
+    Accumulator.process(data, parameters, accumulator)
+
+    network
+  end
+
+  @doc """
+  Returns the result.
+  """
+  @spec result(any) :: any
+  def result(network) do
+    %{accumulator: accumulator} = network
+
+    Accumulator.get(accumulator)
+  end
+
+  @doc """
   Saves the network biases and weights to a file.
   """
   @spec save(String.t, any) :: :ok
@@ -100,14 +132,30 @@ defmodule ExLearn.NeuralNetwork do
   end
 
   @doc """
+  Tests the neural network.
+  """
+  @spec test(map, map, any) :: any
+  def test(data, parameters, network) do
+    %{accumulator: accumulator} = network
+
+    %{test: test} = data
+    test_data     = %{test: test}
+    Accumulator.process(test_data, parameters, accumulator)
+
+    network
+  end
+
+  @doc """
   Trains the neural network.
   """
   @spec train(map, map, any) :: any
   def train(data, parameters, network) do
     %{accumulator: accumulator} = network
 
-    Task.async(fn ->
-      Accumulator.train(data, parameters, accumulator)
-    end)
+    %{train: train} = data
+    train_data      = %{train: train}
+    Accumulator.process(train_data, parameters, accumulator)
+
+    network
   end
 end

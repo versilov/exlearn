@@ -13,7 +13,8 @@ defmodule ExLearn.NeuralNetworkTest do
         hidden: [%{activity: :identity, name: "First Hidden", size: 1}],
         output:  %{activity: :identity, name: "Output",       size: 1}
       },
-      objective: :quadratic
+      objective:    :quadratic,
+      presentation: :identity
     }
 
     network = NeuralNetwork.create(structure_parameters)
@@ -45,7 +46,7 @@ defmodule ExLearn.NeuralNetworkTest do
       {Matrix.new(1, 1, [[9]]), Matrix.new(1, 1, [[9]])}
     ]
 
-    ask_data = [
+    predict_data = [
       Matrix.new(1, 1, [[0]]),
       Matrix.new(1, 1, [[1]]),
       Matrix.new(1, 1, [[2]]),
@@ -54,22 +55,14 @@ defmodule ExLearn.NeuralNetworkTest do
       Matrix.new(1, 1, [[5]])
     ]
 
-    learning_data = %{
-      training: %{
-        data:      training_data,
-        data_size: 6,
-      },
-      validation: %{
-        data:      validation_data,
-        data_size: 2
-      },
-      test: %{
-        data:      test_data,
-        data_size: 2
-      }
+    data = %{
+      train:    %{data: training_data,   size: 6},
+      validate: %{data: validation_data, size: 2},
+      test:     %{data: test_data,       size: 2},
+      predict:  %{data: predict_data,    size: 6}
     }
 
-    learning_parameters = %{
+    parameters = %{
       batch_size:    4,
       epochs:        5,
       learning_rate: 0.05,
@@ -77,23 +70,10 @@ defmodule ExLearn.NeuralNetworkTest do
     }
 
     {:ok, setup: %{
-      ask_data:            ask_data,
-      learning_data:       learning_data,
-      learning_parameters: learning_parameters,
-      network:             network
+      data:       data,
+      parameters: parameters,
+      network:    network
     }}
-  end
-
-  test "#ask responds with a list of numbers", %{setup: setup} do
-    %{ask_data: ask_data, network: network} = setup
-
-    result = NeuralNetwork.ask(ask_data, network)
-    |> Task.await(:infinity)
-
-    assert result |> is_list
-    assert length(result) == length(ask_data)
-
-    Enum.each(result, fn(element) -> assert element |> is_binary end)
   end
 
   test "#initialize returns a running process tree", %{setup: setup} do
@@ -145,7 +125,7 @@ defmodule ExLearn.NeuralNetworkTest do
     result = capture_io(fn ->
       Task.start(fn ->
         NeuralNetwork.notifications(:start, network)
-        |> Task.await
+        |> Task.await(:infinity)
       end)
       NeuralNetwork.notifications(:stop, network)
 
@@ -153,6 +133,54 @@ defmodule ExLearn.NeuralNetworkTest do
     end)
 
     assert result == "Message\n"
+  end
+
+  test "#predict responds with a list of numbers", %{setup: setup} do
+    %{data: data, network: network} = setup
+
+    result = NeuralNetwork.predict(data, network)
+    |> NeuralNetwork.result
+
+    assert result |> is_list
+
+    Enum.each(result, fn(element) ->
+      %{input: input, output: output} = element
+
+      assert input  |> is_binary
+      assert output |> is_binary
+    end)
+  end
+
+  test "#predict with parameters responds with a list of numbers", %{setup: setup} do
+    %{data: data, parameters: parameters, network: network} = setup
+
+    result = NeuralNetwork.predict(data, parameters, network)
+    |> NeuralNetwork.result
+
+    assert result |> is_list
+
+    Enum.each(result, fn(element) ->
+      %{input: input, output: output} = element
+
+      assert input  |> is_binary
+      assert output |> is_binary
+    end)
+  end
+
+  test "#process responds with a list of numbers", %{setup: setup} do
+    %{data: data, parameters: parameters, network: network} = setup
+
+    result = NeuralNetwork.process(data, parameters, network)
+    |> NeuralNetwork.result
+
+    assert result |> is_list
+
+    Enum.each(result, fn(element) ->
+      %{input: input, output: output} = element
+
+      assert input  |> is_binary
+      assert output |> is_binary
+    end)
   end
 
   test "#save responds with :ok", %{setup: setup} do
@@ -166,15 +194,20 @@ defmodule ExLearn.NeuralNetworkTest do
     :ok = File.rm(path)
   end
 
-  test "#train responds with :ok", %{setup: setup} do
-    %{
-      learning_data:       learning_data,
-      learning_parameters: learning_parameters,
-      network:             network
-    } = setup
+  test "#test responds with :ok", %{setup: setup} do
+    %{data: data, parameters: parameters, network: network} = setup
 
-    result = NeuralNetwork.train(learning_data, learning_parameters, network)
-    |> Task.await(:infinity)
+    result = NeuralNetwork.test(data, parameters, network)
+    |> NeuralNetwork.result
+
+    assert result == :ok
+  end
+
+  test "#train responds with :ok", %{setup: setup} do
+    %{data: data, parameters: parameters, network: network} = setup
+
+    result = NeuralNetwork.train(data, parameters, network)
+    |> NeuralNetwork.result
 
     assert result == :ok
   end

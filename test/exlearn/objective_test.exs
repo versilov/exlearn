@@ -27,10 +27,10 @@ defmodule ObjectiveTest do
     first      = Matrix.new(1, 3, [[0.2, 0.2, 0.6]])
     second     = Matrix.new(1, 3, [[0.4, 0.5, 0.6]])
     input      = Matrix.new(1, 3, [[2,   3,   4  ]])
-    derivative = fn(x) -> x - 1 end
+    derivative = fn(x, _all) -> x - 1 end
     data_size  = 1
 
-    expected_from_function = 1.9580774903297424
+    expected_from_function = 1.9580775499343872
     expected_from_error    = Matrix.new(1, 3, [[0.2, 0.3, 0.0]])
 
     setup           = :cross_entropy
@@ -47,10 +47,10 @@ defmodule ObjectiveTest do
     first      = Matrix.new(1, 3, [[0.2, 0.2, 0.6]])
     second     = Matrix.new(1, 3, [[0.4, 0.5, 0.3]])
     input      = Matrix.new(1, 3, [[1,   2,   3  ]])
-    derivative = fn(x) -> x - 1 end
+    derivative = fn(x, _all) -> x - 1 end
     data_size  = 1
 
-    expected_from_function = 2.1501194834709167
+    expected_from_function = 2.1501195430755615
     expected_from_error    = Matrix.new(1, 3, [[0.0, 1.2, -2.857142857142857]])
 
     setup           = :cross_entropy
@@ -107,7 +107,7 @@ defmodule ObjectiveTest do
     first      = Matrix.new(1, 3, [[1, 2, 3]])
     second     = Matrix.new(1, 3, [[1, 2, 7]])
     input      = Matrix.new(1, 3, [[2, 3, 4]])
-    derivative = fn(x) -> x - 1 end
+    derivative = fn(x, _all) -> x - 1 end
     data_size  = 1
 
     expected_from_function = 8
