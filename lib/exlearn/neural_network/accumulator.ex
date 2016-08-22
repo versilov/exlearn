@@ -75,13 +75,25 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     maybe_process_prediction(data, state)
   end
 
+  #----------------------------------------------------------------------------
+  # Training and Validation
+  #----------------------------------------------------------------------------
+
   defp maybe_process_training_and_validation(data, parameters, state) do
 
   end
 
+  #----------------------------------------------------------------------------
+  # Testing
+  #----------------------------------------------------------------------------
+
   defp maybe_process_testing(data, parameters, state) do
 
   end
+
+  #----------------------------------------------------------------------------
+  # Prediction
+  #----------------------------------------------------------------------------
 
   defp maybe_process_prediction(data, state) do
     case Map.get(data, :predict) do
@@ -129,8 +141,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     workers       = start_workers(data, parameters, state)
 
     Notification.push("Started training", state)
-    %{training: training_workers} = workers
-    train_for_epochs(training_workers, network_state, state, epochs, 0)
+    train_for_epochs(workers, network_state, state, epochs, 0)
     Notification.push("Finished training", state)
   end
 
@@ -140,56 +151,8 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
 
     initial_configuration = prepare_learning_configuration(parameters)
 
-    training_workers = prepare_worker_setup(
-      data,
-      :training,
-      maximum_workers
-    )
-    |> start_workers(
-      initial_configuration,
-      maximum_workers,
-      state
-    )
-
-    validation_workers = prepare_worker_setup(
-      data,
-      :validation,
-      maximum_workers
-    )
-    |> start_workers(
-      %{},
-      maximum_workers,
-      state
-    )
-
-    test_workers = prepare_worker_setup(
-      data,
-      :test,
-      maximum_workers
-    )
-    |> start_workers(
-      %{},
-      maximum_workers,
-      state
-    )
-
-    predict_workers = prepare_worker_setup(
-      data,
-      :predict,
-      maximum_workers
-    )
-    |> start_workers(
-      %{},
-      maximum_workers,
-      state
-    )
-
-    %{
-      training:   training_workers,
-      validation: validation_workers,
-      test:       test_workers,
-      predict:    predict_workers
-    }
+    prepare_worker_setup(data, :training, maximum_workers)
+    |> start_workers(initial_configuration, maximum_workers, state)
   end
 
   defp prepare_learning_configuration(parameters) do

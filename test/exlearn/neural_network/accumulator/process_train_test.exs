@@ -1,7 +1,7 @@
 Code.require_file("test/test_util.exs")
 Code.require_file("test/fixtures/neural_network/accumulator_fixtures.exs")
 
-defmodule ExLearn.NeuralNetwork.Accumulator.TrainTest do
+defmodule ExLearn.NeuralNetwork.Accumulator.ProcessTrainTest do
   use ExUnit.Case, async: true
 
   alias ExLearn.Matrix
@@ -45,42 +45,35 @@ defmodule ExLearn.NeuralNetwork.Accumulator.TrainTest do
   test "#train with data in file updates the network state", %{setup: setup} do
     %{
       args:       args,
-      name:       name = {:global, reference},
+      name:       accumulator = {:global, reference},
       options:    options,
       store_name: store_name
     } = setup
 
     {:ok, accumulator_pid} = Accumulator.start_link(args, options)
 
-    data = [
+    data_samples = [
       {Matrix.new(1, 3, [[1, 2, 3]]), Matrix.new(1, 2, [[1900, 2800]])},
       {Matrix.new(1, 3, [[2, 3, 4]]), Matrix.new(1, 2, [[2600, 3800]])}
     ]
 
     path = TestUtil.temp_file_path("neural_network-accumulator_test")
-    TestUtils.write_to_file_as_binary(data, path)
+    TestUtil.write_to_file_as_binary(data_samples, path)
 
-    learning_data = %{
-      training: %{
-        data:      path,
-        data_size: 2,
-      }
+    data = %{training: %{data: path, size: 2}}
+    parameters = %{
+      batch_size:    2,
+      epochs:        1,
+      learning_rate: 4,
+      workers:       2
     }
 
-    learning_parameters = %{
-      batch_size:     2,
-      epochs:         1,
-      learning_rate:  4,
-      workers:        2
-    }
-
-    initial_network_state = AccumulatorFixtures.initial_network_state
+    initial_network_state  = AccumulatorFixtures.initial_network_state
+    expected_network_state = AccumulatorFixtures.expected_network_state
     Store.set(initial_network_state, store_name)
 
-    expected_network_state = AccumulatorFixtures.expected_network_state
-
-    :ok = Accumulator.train(learning_data, learning_parameters, name)
-
+    :ok = Accumulator.process(data, parameters, accumulator)
+    assert Accumulator.get(accumulator) == :ok
     assert Store.get(store_name) == expected_network_state
 
     pid_of_reference = :global.whereis_name(reference)
@@ -96,39 +89,32 @@ defmodule ExLearn.NeuralNetwork.Accumulator.TrainTest do
   test "#train with data in memory updates the network state", %{setup: setup} do
     %{
       args:       args,
-      name:       name = {:global, reference},
+      name:       accumulator = {:global, reference},
       options:    options,
       store_name: store_name
     } = setup
 
     {:ok, accumulator_pid} = Accumulator.start_link(args, options)
 
-    training_data = [
+    data_samples = [
       {Matrix.new(1, 3, [[1, 2, 3]]), Matrix.new(1, 2, [[1900, 2800]])},
       {Matrix.new(1, 3, [[2, 3, 4]]), Matrix.new(1, 2, [[2600, 3800]])}
     ]
 
-    learning_data = %{
-      training: %{
-        data:      training_data,
-        data_size: 2
-      }
-    }
-
-    learning_parameters = %{
+    data = %{training: %{data: data_samples, size: 2}}
+    parameters = %{
       batch_size:    2,
       epochs:        1,
       learning_rate: 4,
       workers:       2
     }
 
-    initial_network_state = AccumulatorFixtures.initial_network_state
+    initial_network_state  = AccumulatorFixtures.initial_network_state
+    expected_network_state = AccumulatorFixtures.expected_network_state
     Store.set(initial_network_state, store_name)
 
-    expected_network_state = AccumulatorFixtures.expected_network_state
-
-    :ok = Accumulator.train(learning_data, learning_parameters, name)
-
+    :ok = Accumulator.process(data, parameters, accumulator)
+    assert Accumulator.get(accumulator) == :ok
     assert Store.get(store_name) == expected_network_state
 
     pid_of_reference = :global.whereis_name(reference)
@@ -142,40 +128,33 @@ defmodule ExLearn.NeuralNetwork.Accumulator.TrainTest do
   test "#train with data with L1 regularization updates the network state", %{setup: setup} do
     %{
       args:       args,
-      name:       name = {:global, reference},
+      name:       accumulator = {:global, reference},
       options:    options,
       store_name: store_name
     } = setup
 
     {:ok, accumulator_pid} = Accumulator.start_link(args, options)
 
-    training_data = [
+    data_samples = [
       {Matrix.new(1, 3, [[1, 2, 3]]), Matrix.new(1, 2, [[1900, 2800]])},
       {Matrix.new(1, 3, [[2, 3, 4]]), Matrix.new(1, 2, [[2600, 3800]])}
     ]
 
-    learning_data = %{
-      training: %{
-        data:      training_data,
-        data_size: 2
-      }
-    }
-
-    learning_parameters = %{
+    data = %{training: %{data: data_samples, data_size: 2}}
+    parameters = %{
       batch_size:     2,
       epochs:         1,
       learning_rate:  4,
-      regularization: %{type: :L1, rate: 2},
+      regularization: {:L1, rate: 2},
       workers:        2
     }
 
-    initial_network_state = AccumulatorFixtures.initial_network_state
+    initial_network_state  = AccumulatorFixtures.initial_network_state
+    expected_network_state = AccumulatorFixtures.expected_network_states_for_l1
     Store.set(initial_network_state, store_name)
 
-    expected_network_state = AccumulatorFixtures.expected_network_states_for_l1
-
-    :ok = Accumulator.train(learning_data, learning_parameters, name)
-
+    :ok = Accumulator.process(data, parameters, accumulator)
+    assert Accumulator.get(accumulator) == :ok
     assert Store.get(store_name) == expected_network_state
 
     pid_of_reference = :global.whereis_name(reference)
@@ -189,39 +168,33 @@ defmodule ExLearn.NeuralNetwork.Accumulator.TrainTest do
   test "#train with data with L2 regularization updates the network state", %{setup: setup} do
     %{
       args:       args,
-      name:       name = {:global, reference},
+      name:       accumulator = {:global, reference},
       options:    options,
       store_name: store_name
     } = setup
 
     {:ok, accumulator_pid} = Accumulator.start_link(args, options)
 
-    training_data = [
+    data_samples = [
       {Matrix.new(1, 3, [[1, 2, 3]]), Matrix.new(1, 2, [[1900, 2800]])},
       {Matrix.new(1, 3, [[2, 3, 4]]), Matrix.new(1, 2, [[2600, 3800]])}
     ]
 
-    learning_data = %{
-      training: %{
-        data:      training_data,
-        data_size: 2
-      }
-    }
-
-    learning_parameters = %{
+    data = %{training: %{data: data_samples, data_size: 2}}
+    parameters = %{
       batch_size:     2,
       epochs:         1,
       learning_rate:  4,
-      regularization: %{type: :L2, rate: 2},
+      regularization: {:L2, rate: 2},
       workers:        2
     }
 
-    initial_network_state = AccumulatorFixtures.initial_network_state
+    initial_network_state  = AccumulatorFixtures.initial_network_state
+    expected_network_state = AccumulatorFixtures.expected_network_states_for_l2
     Store.set(initial_network_state, store_name)
 
-    expected_network_state = AccumulatorFixtures.expected_network_states_for_l2
-    :ok = Accumulator.train(learning_data, learning_parameters, name)
-
+    :ok = Accumulator.process(data, parameters, accumulator)
+    assert Accumulator.get(accumulator) == :ok
     assert Store.get(store_name) == expected_network_state
 
     pid_of_reference = :global.whereis_name(reference)

@@ -1,7 +1,7 @@
 Code.require_file("test/test_util.exs")
 Code.require_file("test/fixtures/neural_network/accumulator_fixtures.exs")
 
-defmodule ExLearn.NeuralNetwork.Accumulator.ProcessPredictTest do
+defmodule ExLearn.NeuralNetwork.Accumulator.ProcessTestTest do
   use ExUnit.Case, async: true
 
   alias ExLearn.Matrix
@@ -42,7 +42,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator.ProcessPredictTest do
     }}
   end
 
-  test "#process|:predict with data in file returns the prediction data", %{setup: setup} do
+  test "#process|:test with data in file returns the test data", %{setup: setup} do
     %{
       args:       args,
       name:       accumulator = {:global, reference},
@@ -74,11 +74,11 @@ defmodule ExLearn.NeuralNetwork.Accumulator.ProcessPredictTest do
     path = TestUtil.temp_file_path()
     TestUtil.write_to_file_as_binary(data_samples, path)
 
-    data       = %{predict: %{data: path, size: 2}}
+    data       = %{test: %{data: path, size: 2}}
     parameters = %{}
 
     :ok = Accumulator.process(data, parameters, accumulator)
-    assert Accumulator.get(accumulator) == expected
+    assert Accumulator.get(accumulator) == :ok
     assert Store.get(store_name)        == network_state
 
     pid_of_reference = :global.whereis_name(reference)
@@ -91,7 +91,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator.ProcessPredictTest do
     :ok = File.rm(path)
   end
 
-  test "#process|:predict with data in memory returns the prediction data", %{setup: setup} do
+  test "#process|:test with data in memory returns the test data", %{setup: setup} do
     %{
       args:       args,
       name:       accumulator = {:global, reference},
@@ -120,11 +120,11 @@ defmodule ExLearn.NeuralNetwork.Accumulator.ProcessPredictTest do
     data_samples = [first_sample,    second_sample ]
     expected     = [second_expected, first_expected]
 
-    data       = %{predict: %{data: data_samples, size: 2}}
+    data       = %{test: %{data: data_samples, size: 2}}
     parameters = %{}
 
     :ok = Accumulator.process(data, parameters, accumulator)
-    assert Accumulator.get(accumulator) == expected
+    assert Accumulator.get(accumulator) == :ok
     assert Store.get(store_name)        == network_state
 
     pid_of_reference = :global.whereis_name(reference)
