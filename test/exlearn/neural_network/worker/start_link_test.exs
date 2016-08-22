@@ -1,8 +1,12 @@
+Code.require_file("test/test_util.exs")
+
 defmodule ExLearn.NeuralNetwork.Worker.StartLinkTest do
   use ExUnit.Case, async: true
 
-  alias ExLearn.{Matrix, TestUtils}
+  alias ExLearn.Matrix
   alias ExLearn.NeuralNetwork.Worker
+
+  alias ExLearn.TestUtil
 
   setup do
     name    = {:global, make_ref()}
@@ -74,8 +78,8 @@ defmodule ExLearn.NeuralNetwork.Worker.StartLinkTest do
     } = setup
 
     data = []
-    path = TestUtils.temp_file_path("neural_network-worker-start_test")
-    TestUtils.write_to_file_as_binary(data, path)
+    path = TestUtil.temp_file_path("neural_network-worker-start_test")
+    TestUtil.write_to_file_as_binary(data, path)
 
     args = %{data: %{location: :file, source: [path]}}
 
@@ -101,8 +105,8 @@ defmodule ExLearn.NeuralNetwork.Worker.StartLinkTest do
       {Matrix.new(1, 3, [[1, 2, 3]]), Matrix.new(1, 2, [[1900, 2800]])},
       {Matrix.new(1, 3, [[2, 3, 4]]), Matrix.new(1, 2, [[2600, 3800]])}
     ]
-    path = TestUtils.temp_file_path("neural_network-worker-start_test")
-    TestUtils.write_to_file_as_binary(data, path)
+    path = TestUtil.temp_file_path("neural_network-worker-start_test")
+    TestUtil.write_to_file_as_binary(data, path)
 
     args = %{data: %{location: :file, source: [path]}}
 
@@ -127,11 +131,11 @@ defmodule ExLearn.NeuralNetwork.Worker.StartLinkTest do
     first_data  = [{Matrix.new(1, 3, [[1, 2, 3]]), Matrix.new(1, 2, [[1900, 2800]])}]
     second_data = [{Matrix.new(1, 3, [[2, 3, 4]]), Matrix.new(1, 2, [[2600, 3800]])}]
 
-    first_path  = TestUtils.temp_file_path("neural_network-worker-start_test-1")
-    second_path = TestUtils.temp_file_path("neural_network-worker-start_test-2")
+    first_path  = TestUtil.temp_file_path("neural_network-worker-start_test-1")
+    second_path = TestUtil.temp_file_path("neural_network-worker-start_test-2")
 
-    TestUtils.write_to_file_as_binary(first_data,  first_path )
-    TestUtils.write_to_file_as_binary(second_data, second_path)
+    TestUtil.write_to_file_as_binary(first_data,  first_path )
+    TestUtil.write_to_file_as_binary(second_data, second_path)
 
     args = %{data: %{location: :file, source: [first_path, second_path]}}
 
@@ -157,11 +161,11 @@ defmodule ExLearn.NeuralNetwork.Worker.StartLinkTest do
     first_data  = [{Matrix.new(1, 3, [[1, 2, 3]]), Matrix.new(1, 2, [[1900, 2800]])}]
     second_data = []
 
-    first_path  = TestUtils.temp_file_path("neural_network-worker-start_test-1")
-    second_path = TestUtils.temp_file_path("neural_network-worker-start_test-2")
+    first_path  = TestUtil.temp_file_path("neural_network-worker-start_test-1")
+    second_path = TestUtil.temp_file_path("neural_network-worker-start_test-2")
 
-    TestUtils.write_to_file_as_binary(first_data,  first_path )
-    TestUtils.write_to_file_as_binary(second_data, second_path)
+    TestUtil.write_to_file_as_binary(first_data,  first_path )
+    TestUtil.write_to_file_as_binary(second_data, second_path)
 
     args = %{data: %{location: :file, source: [first_path, second_path]}}
 
@@ -187,11 +191,11 @@ defmodule ExLearn.NeuralNetwork.Worker.StartLinkTest do
     first_data  = []
     second_data = []
 
-    first_path  = TestUtils.temp_file_path("neural_network-worker-start_test-1")
-    second_path = TestUtils.temp_file_path("neural_network-worker-start_test-2")
+    first_path  = TestUtil.temp_file_path("neural_network-worker-start_test-1")
+    second_path = TestUtil.temp_file_path("neural_network-worker-start_test-2")
 
-    TestUtils.write_to_file_as_binary(first_data,  first_path )
-    TestUtils.write_to_file_as_binary(second_data, second_path)
+    TestUtil.write_to_file_as_binary(first_data,  first_path )
+    TestUtil.write_to_file_as_binary(second_data, second_path)
 
     args = %{data: %{location: :file, source: [first_path, second_path]}}
 

@@ -1,4 +1,4 @@
-defmodule ExLearn.TestUtils do
+defmodule ExLearn.TestUtil do
   def temp_file_path do
     timestamp = :os.system_time(:micro_seconds) |> to_string
 

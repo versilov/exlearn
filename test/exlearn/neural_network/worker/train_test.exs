@@ -1,8 +1,14 @@
+Code.require_file("test/test_util.exs"                              )
+Code.require_file("test/fixtures/neural_network/worker_fixtures.exs")
+
 defmodule ExLearn.NeuralNetwork.Worker.TrainTest do
   use ExUnit.Case, async: true
 
-  alias ExLearn.{Matrix, TestUtils}
-  alias ExLearn.NeuralNetwork.{Worker, WorkerFixtures}
+  alias ExLearn.Matrix
+  alias ExLearn.NeuralNetwork.Worker
+
+  alias ExLearn.TestUtil
+  alias ExLearn.NeuralNetwork.WorkerFixtures
 
   setup do
     name    = {:global, make_ref()}
@@ -22,9 +28,9 @@ defmodule ExLearn.NeuralNetwork.Worker.TrainTest do
       {Matrix.new(1, 3, [[2, 3, 4]]), Matrix.new(1, 2, [[2600, 3800]])}
     ]
     network_state = WorkerFixtures.initial_network_state
-    path          = TestUtils.temp_file_path()
+    path          = TestUtil.temp_file_path()
 
-    TestUtils.write_to_file_as_binary(data, path)
+    TestUtil.write_to_file_as_binary(data, path)
 
     args = %{
       configuration: %{
