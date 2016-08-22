@@ -1,7 +1,7 @@
 Code.require_file("test/test_util.exs")
 Code.require_file("test/fixtures/neural_network/accumulator_fixtures.exs")
 
-defmodule ExLearn.NeuralNetwork.Accumulator.AskTest do
+defmodule ExLearn.NeuralNetwork.Accumulator.ProcessPredictTest do
   use ExUnit.Case, async: true
 
   alias ExLearn.Matrix
@@ -42,10 +42,10 @@ defmodule ExLearn.NeuralNetwork.Accumulator.AskTest do
     }}
   end
 
-  test "#ask with data in file returns the ask data", %{setup: setup} do
+  test "#process|:predict with data in file returns the prediction data", %{setup: setup} do
     %{
       args:       args,
-      name:       name = {:global, reference},
+      name:       accumulator = {:global, reference},
       options:    options,
       store_name: store_name
     } = setup
@@ -68,14 +68,18 @@ defmodule ExLearn.NeuralNetwork.Accumulator.AskTest do
       output: Matrix.new(1, 2, [[2620, 3846]])
     }
 
-    data     = [first_sample,   second_sample  ]
-    expected = [first_expected, second_expected]
+    data_samples = [first_sample,   second_sample  ]
+    expected     = [first_expected, second_expected]
 
     path = TestUtil.temp_file_path()
-    TestUtil.write_to_file_as_binary(data, path)
+    TestUtil.write_to_file_as_binary(data_samples, path)
 
-    assert Accumulator.ask(path, name) == expected
-    assert Store.get(store_name)       == network_state
+    data       = %{predict: %{data: path, size: 2}}
+    parameters = %{}
+
+    Accumulator.process(data, parameters, accumulator) == expected
+    assert Accumulator.get(accumulator) == expected
+    assert Store.get(store_name)        == network_state
 
     pid_of_reference = :global.whereis_name(reference)
 
@@ -87,10 +91,10 @@ defmodule ExLearn.NeuralNetwork.Accumulator.AskTest do
     :ok = File.rm(path)
   end
 
-  test "#ask with data in memory returns the ask data", %{setup: setup} do
+  test "#process|:predict with data in memory returns the prediction data", %{setup: setup} do
     %{
       args:       args,
-      name:       name = {:global, reference},
+      name:       accumulator = {:global, reference},
       options:    options,
       store_name: store_name
     } = setup
@@ -113,11 +117,15 @@ defmodule ExLearn.NeuralNetwork.Accumulator.AskTest do
       output: Matrix.new(1, 2, [[2620, 3846]])
     }
 
-    data     = [first_sample,    second_sample ]
-    expected = [second_expected, first_expected]
+    data_samples = [first_sample,    second_sample ]
+    expected     = [second_expected, first_expected]
 
-    assert Accumulator.ask(data, name) == expected
-    assert Store.get(store_name)       == network_state
+    data       = %{predict: %{data: data_samples, size: 2}}
+    parameters = %{}
+
+    Accumulator.process(data, parameters, accumulator) == expected
+    assert Accumulator.get(accumulator) == expected
+    assert Store.get(store_name)        == network_state
 
     pid_of_reference = :global.whereis_name(reference)
 

@@ -49,16 +49,16 @@ NN.initialize(initialization_parameters, network)
 # Defines the learning data and parameters.
 learning_data = %{
   training: %{
-    data:      "samples/mnist-digits/data/training_data-*.eld",
-    data_size: 50000,
+    data: "samples/mnist-digits/data/training_data-*.eld",
+    size: 50000,
   },
   validation: %{
-    data:      "samples/mnist-digits/data/validation_data-*.eld",
-    data_size: 10000,
+    data: "samples/mnist-digits/data/validation_data-*.eld",
+    size: 10000,
   },
   test: %{
-    data:      "samples/mnist-digits/data/test_data-*.eld",
-    data_size: 10000,
+    data: "samples/mnist-digits/data/test_data-*.eld",
+    size: 10000,
   }
 }
 
@@ -66,7 +66,7 @@ learning_parameters = %{
   batch_size:     1000,
   epochs:         30,
   learning_rate:  0.5,
-  regularization: %{type: :L2, rate: 0.005},
+  regularization: {:L2, rate: 0.005},
   workers:        4
 }
 

@@ -9,18 +9,19 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
   # Client API
   #----------------------------------------------------------------------------
 
-  @spec ask(map, map) :: list
-  def ask(data, accumulator) do
-    GenServer.call(accumulator, {:ask, data}, :infinity)
-  end
-
-  def train(data, parameters, accumulator) do
-    GenServer.call(accumulator, {:train, data, parameters}, :infinity)
-  end
-
   @spec start_link([{}], map) :: {}
   def start_link(args, options) do
     GenServer.start_link(__MODULE__, args, options)
+  end
+
+  @spec get(any) :: any
+  def get(accumulator) do
+    GenServer.call(accumulator, :get, :infinity)
+  end
+
+  @spec process(map, map, any) :: any
+  def process(data, parameters, accumulator) do
+    GenServer.cast(accumulator, {:process, data, parameters})
   end
 
   #----------------------------------------------------------------------------
@@ -36,41 +37,69 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     } = names
 
     state = %{
-      manager:       manager,
-      notification:  notification,
-      store:         store
+      manager:      manager,
+      notification: notification,
+      store:        store,
+      result:       :no_data
     }
 
     {:ok, state}
   end
 
-  @spec handle_call(tuple, any, map) :: {:reply, list, map}
-  def handle_call({:ask, data}, _from, state) do
-    result = ask_network(data, state)
+  @spec handle_call(tuple, any,  map) :: {:reply, list, map}
+  def handle_call(:get, _from,  state) do
+    %{result: result} = state
 
-    {:reply, result, state}
+    new_state = Map.put(state, :result, :no_data)
+
+    {:reply, result, new_state}
   end
 
-  @spec handle_call(tuple, any, map) :: {:reply, :ok, map}
-  def handle_call({:train, data, parameters}, _from,  state) do
-    train_network(data, parameters, state)
+  @spec handle_cast(tuple, map) :: {:reply, map}
+  def handle_cast({:process, data, parameters}, state) do
+    result = process_input(data, parameters, state)
 
-    {:reply, :ok, state}
+    new_state = Map.put(state, :result, result)
+
+    {:noreply, new_state}
   end
 
   #----------------------------------------------------------------------------
   # Internal functions
   #----------------------------------------------------------------------------
 
-  defp ask_network(data, state) do
-    %{manager: manager} = state
+  @spec process_input(map, map, map) :: any
+  defp process_input(data, parameters, state) do
+    maybe_process_training_and_validation(data, parameters, state)
+    maybe_process_testing(data, parameters, state)
+    maybe_process_prediction(data, state)
+  end
 
-    data_list = case data do
+  defp maybe_process_training_and_validation(data, parameters, state) do
+
+  end
+
+  defp maybe_process_testing(data, parameters, state) do
+
+  end
+
+  defp maybe_process_prediction(data, state) do
+    case Map.get(data, :predict) do
+      nil             -> :ok
+      prediction_data -> process_prediction(prediction_data, state)
+    end
+  end
+
+  defp process_prediction(data, state) do
+    %{manager: manager    } = state
+    %{data:    data_source} = data
+
+    data_list = case data_source do
       path when is_bitstring(path) -> Path.wildcard(path)
-      _  -> data
+      _  -> data_source
     end
 
-    data_location = case data do
+    data_location = case data_source do
       path when is_bitstring(path) -> :file
       _                            -> :memory
     end
@@ -98,9 +127,9 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
 
     network_state = Store.get(state)
     workers       = start_workers(data, parameters, state)
-    %{training: training_workers} = workers
 
     Notification.push("Started training", state)
+    %{training: training_workers} = workers
     train_for_epochs(training_workers, network_state, state, epochs, 0)
     Notification.push("Finished training", state)
   end
