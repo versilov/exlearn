@@ -9,9 +9,9 @@ defmodule ExLearn.NeuralNetwork.Regularization do
   @spec determine(atom | map) :: map
   def determine(setup) do
     case setup do
-      :none                    -> &identity/3
-      %{type: :L1, rate: rate} -> l1_function(rate)
-      %{type: :L2, rate: rate} -> l2_function(rate)
+       :none            -> &identity/3
+      {:L1, rate: rate} -> l1_function(rate)
+      {:L2, rate: rate} -> l2_function(rate)
     end
   end
 

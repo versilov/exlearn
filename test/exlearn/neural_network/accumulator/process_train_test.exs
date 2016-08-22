@@ -42,7 +42,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator.ProcessTrainTest do
     }}
   end
 
-  test "#train with data in file updates the network state", %{setup: setup} do
+  test "#process|:train with data in file updates the network state", %{setup: setup} do
     %{
       args:       args,
       name:       accumulator = {:global, reference},
@@ -60,7 +60,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator.ProcessTrainTest do
     path = TestUtil.temp_file_path("neural_network-accumulator_test")
     TestUtil.write_to_file_as_binary(data_samples, path)
 
-    data = %{training: %{data: path, size: 2}}
+    data = %{train: %{data: path, size: 2}}
     parameters = %{
       batch_size:    2,
       epochs:        1,
@@ -86,7 +86,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator.ProcessTrainTest do
     :ok = File.rm(path)
   end
 
-  test "#train with data in memory updates the network state", %{setup: setup} do
+  test "#process|:train with data in memory updates the network state", %{setup: setup} do
     %{
       args:       args,
       name:       accumulator = {:global, reference},
@@ -101,7 +101,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator.ProcessTrainTest do
       {Matrix.new(1, 3, [[2, 3, 4]]), Matrix.new(1, 2, [[2600, 3800]])}
     ]
 
-    data = %{training: %{data: data_samples, size: 2}}
+    data = %{train: %{data: data_samples, size: 2}}
     parameters = %{
       batch_size:    2,
       epochs:        1,
@@ -125,7 +125,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator.ProcessTrainTest do
     assert accumulator_pid == pid_of_reference
   end
 
-  test "#train with data with L1 regularization updates the network state", %{setup: setup} do
+  test "#process|:train with data with L1 regularization updates the network state", %{setup: setup} do
     %{
       args:       args,
       name:       accumulator = {:global, reference},
@@ -140,7 +140,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator.ProcessTrainTest do
       {Matrix.new(1, 3, [[2, 3, 4]]), Matrix.new(1, 2, [[2600, 3800]])}
     ]
 
-    data = %{training: %{data: data_samples, data_size: 2}}
+    data = %{train: %{data: data_samples, size: 2}}
     parameters = %{
       batch_size:     2,
       epochs:         1,
@@ -165,7 +165,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator.ProcessTrainTest do
     assert accumulator_pid == pid_of_reference
   end
 
-  test "#train with data with L2 regularization updates the network state", %{setup: setup} do
+  test "#process|:train with data with L2 regularization updates the network state", %{setup: setup} do
     %{
       args:       args,
       name:       accumulator = {:global, reference},
@@ -180,7 +180,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator.ProcessTrainTest do
       {Matrix.new(1, 3, [[2, 3, 4]]), Matrix.new(1, 2, [[2600, 3800]])}
     ]
 
-    data = %{training: %{data: data_samples, data_size: 2}}
+    data = %{train: %{data: data_samples, size: 2}}
     parameters = %{
       batch_size:     2,
       epochs:         1,

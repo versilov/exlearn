@@ -80,7 +80,22 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
   #----------------------------------------------------------------------------
 
   defp maybe_process_training_and_validation(data, parameters, state) do
+    case Map.get(data, :train) do
+      nil -> :ok
+      _   -> process_training_and_validation(data, parameters, state)
+    end
+  end
 
+  defp process_training_and_validation(data, parameters, state) do
+    %{epochs: epochs} = parameters
+
+    network_state       = Store.get(state)
+    workers             = start_workers(data, parameters, state)
+    training_parameters = prepare_training_parameters(data, parameters)
+
+    Notification.push("Started training",  state)
+    train_for_epochs(workers, training_parameters, network_state, state, epochs, 0)
+    Notification.push("Finished training", state)
   end
 
   #----------------------------------------------------------------------------
@@ -88,7 +103,13 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
   #----------------------------------------------------------------------------
 
   defp maybe_process_testing(data, parameters, state) do
+    case Map.get(data, :test) do
+      nil -> :ok
+      _   -> process_testing(data, parameters, state)
+    end
+  end
 
+  defp process_testing(data, parameters, state) do
   end
 
   #----------------------------------------------------------------------------
@@ -133,36 +154,26 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
   # Network training
   #----------------------------------------------------------------------------
 
-  @spec train_network(map, map, map) :: :ok
-  defp train_network(data, parameters, state) do
-    %{epochs: epochs} = parameters
-
-    network_state = Store.get(state)
-    workers       = start_workers(data, parameters, state)
-
-    Notification.push("Started training", state)
-    train_for_epochs(workers, network_state, state, epochs, 0)
-    Notification.push("Finished training", state)
-  end
-
   @spec start_workers(any, any, map) :: list
   defp start_workers(data, parameters, state) do
     %{workers: maximum_workers} = parameters
 
-    initial_configuration = prepare_learning_configuration(parameters)
+    initial_configuration = prepare_training_configuration(parameters)
 
-    prepare_worker_setup(data, :training, maximum_workers)
+    prepare_worker_setup(data, :train, maximum_workers)
     |> start_workers(initial_configuration, maximum_workers, state)
   end
 
-  defp prepare_learning_configuration(parameters) do
-    parameters
-    |> Map.delete(:workers)
-    |> Map.delete(:epochs)
+  defp prepare_training_configuration(parameters) do
+    case Map.get(parameters, :batch_size) do
+      nil        -> %{}
+      batch_size -> %{batch_size: batch_size}
+    end
   end
 
   defp prepare_worker_setup(data, type, maximum_workers) do
     data_source = Map.get(data, type, :no_data)
+
     extract_chunks(data_source, maximum_workers)
   end
 
@@ -170,11 +181,8 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     %{location: :memory, sources: []}
   end
 
-  defp extract_chunks(data,     worker_count) do
-    %{
-      data:      data_source,
-      data_size: data_size
-    } = data
+  defp extract_chunks(data,  worker_count) do
+    %{data: data_source, size: data_size} = data
 
     chunk_size = case data_source do
       path when is_bitstring(path) ->
@@ -233,31 +241,49 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     Enum.chunk(data_list, chunk_size, chunk_size, [])
   end
 
-  defp train_for_epochs(_, _, _, epochs, current_epoch)
-  when epochs == current_epoch, do: :ok
+  defp prepare_training_parameters(data, parameters) do
+    %{train: %{size: data_size}} = data
+    %{
+      batch_size:    batch_size,
+      learning_rate: learning_rate
+    } = parameters
 
-  defp train_for_epochs(workers, network_state, state, epochs, current_epoch) do
-    Notification.push("Epoch: #{current_epoch + 1}", state)
+    regularization_setup = Map.get(parameters, :regularization, :none)
+    regularization = Regularization.determine(regularization_setup)
 
-    new_network_state = train_each_batch(workers, network_state, state)
-
-    train_for_epochs(workers, new_network_state, state, epochs, current_epoch + 1)
+    %{
+      batch_size:     batch_size,
+      data_size:      data_size,
+      learning_rate:  learning_rate,
+      regularization: regularization
+    }
   end
 
-  defp train_each_batch([], network_state, _) do
+  defp train_for_epochs(_, _, _, _, epochs, current_epoch)
+  when epochs == current_epoch, do: :ok
+
+  defp train_for_epochs(workers, parameters, network_state, state, epochs, current_epoch) do
+    Notification.push("Epoch: #{current_epoch + 1}", state)
+
+    new_network_state = train_each_batch(workers, parameters, network_state, state)
+
+    train_for_epochs(workers, parameters, new_network_state, state, epochs, current_epoch + 1)
+  end
+
+  defp train_each_batch([], parameters, network_state, _) do
     network_state
   end
 
-  defp train_each_batch(workers, network_state, state) do
+  defp train_each_batch(workers, parameters, network_state, state) do
     {remaining_workers, correction} = Enum.map(workers, &train_worker(&1, network_state))
     |> Enum.map(&await_worker/1)
     |> accumulate_correction
 
-    new_network_state = Propagator.apply_changes(correction, network_state)
+    new_network_state = Propagator.apply_changes(correction, parameters, network_state)
 
     Store.set(new_network_state, state)
 
-    train_each_batch(remaining_workers, new_network_state, state)
+    train_each_batch(remaining_workers, parameters, new_network_state, state)
   end
 
   defp train_worker(worker, network_state) do

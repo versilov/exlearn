@@ -11,7 +11,7 @@ defmodule ExLearn.NeuralNetwork.RegularizationTest do
   end
 
   test "#determine :L1 gives back the L1 function" do
-    regularization = %{type: :L1, rate: 2}
+    regularization = {:L1, rate: 2}
     learning_rate  = 3
     data_size      = 4
 
@@ -25,7 +25,7 @@ defmodule ExLearn.NeuralNetwork.RegularizationTest do
   end
 
   test "#determine :L2 gives back the L2 function" do
-    regularization = %{type: :L2, rate: 2}
+    regularization = {:L2, rate: 2}
     learning_rate  = 3
     data_size      = 4
 
