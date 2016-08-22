@@ -5,7 +5,7 @@ defmodule ExLearn.NeuralNetwork.PropagatorTest do
   alias ExLearn.NeuralNetwork.Propagator
 
   setup do
-    derivative     = fn(_)        -> 1                      end
+    derivative     = fn(_x, _all) -> 1                      end
     objective      = fn(a, b, _c) -> Matrix.substract(b, a) end
     regularization = fn(x, _, _)  -> x + 1                  end
 

@@ -17,8 +17,8 @@ defmodule ExLearn.NeuralNetwork.ForwarderTest do
   # O     O     O     O
   # O     O
   setup do
-    f = fn (x) -> x + 1 end
-    d = fn (_) -> 1     end
+    f = fn (x, _all) -> x + 1 end
+    d = fn (_all)    -> 1     end
 
     presentation = fn(x) -> x end
 
@@ -26,17 +26,17 @@ defmodule ExLearn.NeuralNetwork.ForwarderTest do
       network: %{
         layers: [
           %{
-            activity: %{arity: 1, function: f, derivative: d},
+            activity: %{function: f, derivative: d},
             biases:   Matrix.new(1, 3, [[1, 2, 3]]),
             weights:  Matrix.new(3, 3, [[1, 2, 3], [4, 5, 6], [7, 8, 9]])
           },
           %{
-            activity: %{arity: 1, function: f, derivative: d},
+            activity: %{function: f, derivative: d},
             biases:   Matrix.new(1, 2, [[4, 5]]),
             weights:  Matrix.new(3, 2, [[1, 2], [3, 4], [5, 6]])
           },
           %{
-            activity: %{arity: 1, function: f, derivative: d},
+            activity: %{function: f, derivative: d},
             biases:   Matrix.new(2, 2, [[6, 7]]),
             weights:  Matrix.new(2, 2, [[1, 2], [3, 4]])
           }
@@ -65,21 +65,18 @@ defmodule ExLearn.NeuralNetwork.ForwarderTest do
     first_activity = %{
       activity: [
         %{
-          arity:      1,
           function:   function,
           derivative: derivative,
           input:      Matrix.new(1, 3, [[31, 38, 45]]),
           output:     Matrix.new(1, 3, [[32, 39, 46]])
         },
         %{
-          arity:      1,
           function:   function,
           derivative: derivative,
           input:      Matrix.new(1, 2, [[383, 501]]),
           output:     Matrix.new(1, 2, [[384, 502]])
         },
         %{
-          arity:      1,
           function:   function,
           derivative: derivative,
           input:      Matrix.new(1, 2, [[1896, 2783]]),
@@ -94,21 +91,18 @@ defmodule ExLearn.NeuralNetwork.ForwarderTest do
     second_activity = %{
       activity: [
         %{
-          arity:      1,
           function:   function,
           derivative: derivative,
           input:      Matrix.new(1, 3, [[43, 53, 63]]),
           output:     Matrix.new(1, 3, [[44, 54, 64]])
         },
         %{
-          arity:      1,
           function:   function,
           derivative: derivative,
           input:      Matrix.new(1, 2, [[530, 693]]),
           output:     Matrix.new(1, 2, [[531, 694]])
         },
         %{
-          arity:      1,
           function:   function,
           derivative: derivative,
           input:      Matrix.new(1, 2, [[2619, 3845]]),

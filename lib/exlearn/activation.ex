@@ -6,22 +6,18 @@ defmodule ExLearn.Activation do
   alias ExLearn.Matrix
 
   @doc """
-  Applies the given derivative based on arity
-  """
-  @spec apply_derivative([[number]], map) :: [[number]]
-  def apply_derivative(data, activity) do
-    %{derivative: derivative} = activity
-
-    derivative.(data)
-  end
-
-  @doc """
   Applies the given function based on arity
   """
-  @spec apply_function([[number]], map) :: [[number]]
-  def apply_function(data, activity) do
-    %{function: function} = activity
+  @spec apply(binary, function) :: binary
+  def apply(data, function)
+  when is_function(function, 1)
+  do
+    function.(data)
+  end
 
+  def apply(data, function)
+  when is_function(function, 2)
+  do
     Matrix.apply(data, &function.(&1, data))
   end
 
@@ -32,7 +28,7 @@ defmodule ExLearn.Activation do
   def determine(setup) do
     case setup do
       %{function: function, derivative: derivative}
-      when is_function(function, 2) and is_function(derivative, 1) ->
+      when is_function(function, 2) and is_function(derivative, 2) ->
         %{function: function, derivative: derivative}
       :arctan        -> arctan_pair
       :bent_identity -> bent_identity_pair
@@ -55,7 +51,7 @@ defmodule ExLearn.Activation do
   @spec arctan_pair :: map
   defp arctan_pair do
     function   = fn(x, _all) -> :math.atan(x)   end
-    derivative = fn(x)       -> 1 / (x * x + 1) end
+    derivative = fn(x, _all) -> 1 / (x * x + 1) end
 
     %{function: function, derivative: derivative}
   end
@@ -63,7 +59,7 @@ defmodule ExLearn.Activation do
   @spec bent_identity_pair :: map
   defp bent_identity_pair do
     function   = fn(x, _all) -> (:math.sqrt(x * x + 1) - 1) / 2 + x end
-    derivative = fn(x)       -> x / (2 * :math.sqrt(x * x + 1)) + 1 end
+    derivative = fn(x, _all) -> x / (2 * :math.sqrt(x * x + 1)) + 1 end
 
     %{function: function, derivative: derivative}
   end
@@ -76,7 +72,7 @@ defmodule ExLearn.Activation do
     end
 
     # Derivative at 0 should be :undefined but no one really cares.
-    derivative = fn(x) -> 0 end
+    derivative = fn(_x, _all) -> 0 end
 
     %{function: function, derivative: derivative}
   end
@@ -89,8 +85,8 @@ defmodule ExLearn.Activation do
     end
 
     derivative = fn
-      x when x < 0 -> function.(x, :not_needed) + alpha
-      _            -> 1
+      (x,  _all) when x < 0 -> function.(x, :not_needed) + alpha
+      (_x, _all)            -> 1
     end
 
     %{function: function, derivative: derivative}
@@ -99,15 +95,15 @@ defmodule ExLearn.Activation do
   @spec gaussian_pair :: map
   defp gaussian_pair do
     function   = fn(x, _all) -> :math.exp(-x * x)          end
-    derivative = fn(x)       -> -2 * x * :math.exp(-x * x) end
+    derivative = fn(x, _all) -> -2 * x * :math.exp(-x * x) end
 
     %{function: function, derivative: derivative}
   end
 
   @spec identity_pair :: map
   defp identity_pair do
-    function   = fn(x, _all) -> x end
-    derivative = fn(_)       -> 1 end
+    function   = fn(x,  _all) -> x end
+    derivative = fn(_x, _all) -> 1 end
 
     %{function: function, derivative: derivative}
   end
@@ -120,7 +116,7 @@ defmodule ExLearn.Activation do
       (x, _all)               -> 1 / (1 + :math.exp(-x))
     end
 
-    derivative = fn(x) ->
+    derivative = fn(x, _all) ->
       result = function.(x, :not_needed)
 
       result * (1 - result)
@@ -137,8 +133,8 @@ defmodule ExLearn.Activation do
     end
 
     derivative = fn
-      x when x < 0 -> alpha
-      _            -> 1
+      (x,  _all) when x < 0 -> alpha
+      (_x, _all)            -> 1
     end
 
     %{function: function, derivative: derivative}
@@ -152,8 +148,8 @@ defmodule ExLearn.Activation do
     end
 
     derivative = fn
-      x when x < 0 -> 0
-      _            -> 1
+      (x,  _all) when x < 0 -> 0
+      (_x, _all)            -> 1
     end
 
     %{function: function, derivative: derivative}
@@ -167,8 +163,8 @@ defmodule ExLearn.Activation do
     end
 
     derivative = fn
-      x when x == 0 -> 0
-      x             -> :math.cos(x) / x - :math.sin(x) / (x * x)
+      (x, _all) when x == 0 -> 0
+      (x, _all)             -> :math.cos(x) / x - :math.sin(x) / (x * x)
     end
 
     %{function: function, derivative: derivative}
@@ -177,7 +173,7 @@ defmodule ExLearn.Activation do
   @spec sinusoid_pair :: map
   defp sinusoid_pair do
     function   = fn(x, _all) -> :math.sin(x) end
-    derivative = fn(x)       -> :math.cos(x) end
+    derivative = fn(x, _all) -> :math.cos(x) end
 
     %{function: function, derivative: derivative}
   end
@@ -212,7 +208,7 @@ defmodule ExLearn.Activation do
   @spec softplus_pair :: map
   defp softplus_pair do
     function   = fn(x, _all) -> :math.log(1 + :math.exp(x)) end
-    derivative = fn(x)       -> 1 / (1 + :math.exp(-x))     end
+    derivative = fn(x, _all) -> 1 / (1 + :math.exp(-x))     end
 
     %{function: function, derivative: derivative}
   end
@@ -220,7 +216,7 @@ defmodule ExLearn.Activation do
   @spec softsign_pair :: map
   defp softsign_pair do
     function   = fn(x, _all) -> x / (1 + abs(x)) end
-    derivative = fn(x) ->
+    derivative = fn(x, _all) ->
       base = 1 + abs(x)
 
       1 / (base * base)
@@ -232,7 +228,7 @@ defmodule ExLearn.Activation do
   @spec tanh_pair :: map
   defp tanh_pair do
     function   = fn(x, _all) -> :math.tanh(x) end
-    derivative = fn(x) ->
+    derivative = fn(x, _all) ->
       result = function.(x, :not_needed)
 
       1 - result * result

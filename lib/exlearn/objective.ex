@@ -47,9 +47,12 @@ defmodule ExLearn.Objective do
 
   @spec cross_entropy_error_simple(binary, binary, map) :: binary
   defp cross_entropy_error_simple(expected, actual, layer) do
-    %{input: input} = layer
+    %{
+      derivative: derivative,
+      input:      input
+    } = layer
 
-    input_derivative = Activation.apply_derivative(input, layer)
+    input_derivative = Activation.apply(input, derivative)
     top              = Matrix.substract(actual, expected)
     bottom           = Matrix.apply(actual, fn(element) ->
       element * (1 - element)
@@ -122,10 +125,13 @@ defmodule ExLearn.Objective do
 
   @spec quadratic_cost_error(binary, binary, map) :: binary
   defp quadratic_cost_error(expected, actual, layer) do
-    %{input: input} = layer
+    %{
+      derivative: derivative,
+      input:      input
+    } = layer
 
     cost_gradient    = Matrix.substract(actual, expected)
-    input_derivative = Activation.apply_derivative(input, layer)
+    input_derivative = Activation.apply(input, derivative)
 
     Matrix.multiply(cost_gradient, input_derivative)
   end

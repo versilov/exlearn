@@ -49,13 +49,17 @@ defmodule ExLearn.NeuralNetwork.Propagator do
     [activity_layer|other_activity_layers] = activity_layers
     [network_layer|other_network_layers]   = network_layers
 
-    %{input: input}     = activity_layer
+    %{
+      derivative: derivative,
+      input:      input
+    } = activity_layer
+
     %{weights: weights} = network_layer
 
     [delta|_] = deltas
 
     output_gradient = Matrix.dot_nt(delta, weights)
-    input_gradient  = Activation.apply_derivative(input, activity_layer)
+    input_gradient  = Activation.apply(input, derivative)
 
     next_delta = Matrix.multiply(output_gradient, input_gradient)
 

@@ -25,13 +25,13 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
 
   defp calculate_activity(layer_input, [layer|rest], activities) do
     %{
-      activity: activity,
+      activity: activity = %{function: function},
       biases:   biases,
       weights:  weights
     } = layer
 
     input  = Matrix.dot_and_add(layer_input, weights, biases)
-    output = Activation.apply_function(input, activity)
+    output = Activation.apply(input, function)
 
     new_activity = Map.put(activity, :input, input)
     |> Map.put(:output, output)
@@ -64,13 +64,13 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
     [layer|other_layers] = layers
 
     %{
-      activity: activity,
+      activity: activity = %{function: function},
       biases:   biases,
       weights:  weights
     } = layer
 
     Matrix.dot_and_add(input, weights, biases)
-    |> Activation.apply_function(activity)
+    |> Activation.apply(function)
     |> calculate_output(other_layers, presentation)
   end
 
@@ -89,13 +89,13 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
 
   defp calculate_test(sample, input, [layer|rest]) do
     %{
-      activity: activity,
+      activity: activity = %{function: function},
       biases:   biases,
       weights:  weights
     } = layer
 
     output = Matrix.dot_and_add(input, weights, biases)
-    |> Activation.apply_function(activity)
+    |> Activation.apply(function)
 
     calculate_test(sample, output, rest)
   end
