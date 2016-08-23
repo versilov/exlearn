@@ -87,16 +87,57 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
   end
 
   defp process_training_and_validation(data, parameters, state) do
-    %{epochs: epochs} = parameters
-    training_data = Map.get(data, :train)
+    training_data   = Map.get(data, :train)
+    validation_data = Map.get(data, :validate, %{data: [], size: 1})
 
-    network_state       = Store.get(state)
-    workers             = start_workers(training_data, parameters, state)
+    training_workers   = start_workers(training_data,   parameters, state)
+    validation_workers = start_workers(validation_data, parameters, state)
+
+    train_and_validate(training_workers, validation_workers, data, parameters, state)
+  end
+
+  defp train_and_validate(training_workers, validation_workers, data, parameters, state) do
+    %{epochs: epochs} = parameters
+
+    network_state = Store.get(state)
+
     training_parameters = prepare_training_parameters(data, parameters)
 
     Notification.push("Started training",  state)
-    train_for_epochs(workers, training_parameters, network_state, state, epochs, 0)
-    Notification.push("Finished training", state)
+
+    Enum.to_list(1..epochs)
+    |> Enum.reduce(network_state, fn(epoch, current_network_state) ->
+      new_network_state = train_each_batch(
+        training_workers,
+        training_parameters,
+        current_network_state,
+        state,
+        0
+      )
+
+      validate_data(
+        validation_workers,
+        new_network_state,
+        state,
+        epoch
+      )
+
+      new_network_state
+    end)
+  end
+
+  defp validate_data([], _, _, _), do: :ok
+  defp validate_data(workers, network_state, state, epoch) do
+    %{
+      matching: matching,
+      percent:  percent,
+      total:    total
+    } = process_accuracy(workers, network_state)
+
+    Notification.push(
+      "Epoch: #{epoch}; Validation accuracy: #{matching}/#{total} (#{percent}%)",
+      state
+    )
   end
 
   #----------------------------------------------------------------------------
@@ -116,12 +157,23 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     test_parameters = %{workers: Map.get(parameters, :workers, 1)}
 
     workers = start_workers(test_data, test_parameters, state)
+
     Notification.push("Started testing", state)
     test_data(workers, network_state, state)
-    Notification.push("Finished testing", state)
   end
 
-  defp test_data(workers, network_state, state) do
+  defp test_data([], _, _), do: :ok
+  defp test_data(workers, network_state, state)  do
+    %{
+      matching: matching,
+      percent:  percent,
+      total:    total
+    } = process_accuracy(workers, network_state)
+
+    Notification.push("Test accuracy: #{matching}/#{total} (#{percent}%)", state)
+  end
+
+  defp process_accuracy(workers, network_state) do
     %{network: %{presentation: presentation}} = network_state
 
     result = Enum.map(workers, fn(worker) ->
@@ -149,9 +201,13 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
         false -> accumulator
       end
     end)
-    percent = Float.round(matching/total, 2)
+    percent = Float.round(matching / total * 100, 2)
 
-    Notification.push("Test accuracy: #{matching}/#{total} (#{percent}%)", state)
+    %{
+      matching: matching,
+      percent:  percent,
+      total:    total
+    }
   end
 
   #----------------------------------------------------------------------------
@@ -298,24 +354,11 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     }
   end
 
-  defp train_for_epochs(_, _, _, _, epochs, current_epoch)
-  when epochs == current_epoch, do: :ok
-
-  defp train_for_epochs(workers, parameters, network_state, state, epochs, current_epoch) do
-    Notification.push("Epoch: #{current_epoch + 1}", state)
-
-    new_network_state = train_each_batch(workers, parameters, network_state, state, 1)
-
-    train_for_epochs(workers, parameters, new_network_state, state, epochs, current_epoch + 1)
-  end
-
   defp train_each_batch([], _parameters, network_state, _, _) do
     network_state
   end
 
   defp train_each_batch(workers, parameters, network_state, state, current_batch) do
-    Notification.push("Training batch: #{current_batch}", state)
-
     {remaining_workers, correction} = Enum.map(workers, &train_worker(&1, network_state))
     |> Enum.map(&await_worker/1)
     |> accumulate_correction
