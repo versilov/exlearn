@@ -17,10 +17,10 @@ defmodule ExLearn.Matrix do
   def add(first, second)
   when is_binary(first) and is_binary(second)
   do
-    :erlang.nif_error(:nif_library_not_loaded)
+    :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
 
-    random_size = :rand.uniform(2)
-    <<1 :: size(random_size)>>
+    random_size = :rand.uniform(2)             # excoveralls ignore
+    <<1 :: size(random_size)>>                 # excoveralls ignore
   end
 
   @doc """
@@ -144,9 +144,9 @@ defmodule ExLearn.Matrix do
   """
   @spec argmax(binary) :: non_neg_integer
   def argmax(_matrix) do
-    :erlang.nif_error(:nif_library_not_loaded)
+    :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
 
-    :rand.uniform
+    :rand.uniform                              # excoveralls ignore
   end
 
   @doc """
@@ -156,10 +156,10 @@ defmodule ExLearn.Matrix do
   def divide(first, second)
   when is_binary(first) and is_binary(second)
   do
-    :erlang.nif_error(:nif_library_not_loaded)
+    :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
 
-    random_size = :rand.uniform(2)
-    <<1 :: size(random_size)>>
+    random_size = :rand.uniform(2)             # excoveralls ignore
+    <<1 :: size(random_size)>>                 # excoveralls ignore
   end
 
   @doc """
@@ -169,10 +169,10 @@ defmodule ExLearn.Matrix do
   def dot(first, second)
   when is_binary(first) and is_binary(second)
   do
-    :erlang.nif_error(:nif_library_not_loaded)
+    :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
 
-    random_size = :rand.uniform(2)
-    <<1 :: size(random_size)>>
+    random_size = :rand.uniform(2)             # excoveralls ignore
+    <<1 :: size(random_size)>>                 # excoveralls ignore
   end
 
   @doc """
@@ -182,10 +182,10 @@ defmodule ExLearn.Matrix do
   def dot_and_add(first, second, third)
   when is_binary(first) and is_binary(second) and is_binary(third)
   do
-    :erlang.nif_error(:nif_library_not_loaded)
+    :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
 
-    random_size = :rand.uniform(2)
-    <<1 :: size(random_size)>>
+    random_size = :rand.uniform(2)             # excoveralls ignore
+    <<1 :: size(random_size)>>                 # excoveralls ignore
   end
 
   @doc """
@@ -195,10 +195,10 @@ defmodule ExLearn.Matrix do
   def dot_nt(first, second)
   when is_binary(first) and is_binary(second)
   do
-    :erlang.nif_error(:nif_library_not_loaded)
+    :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
 
-    random_size = :rand.uniform(2)
-    <<1 :: size(random_size)>>
+    random_size = :rand.uniform(2)             # excoveralls ignore
+    <<1 :: size(random_size)>>                 # excoveralls ignore
   end
 
   @doc """
@@ -208,10 +208,10 @@ defmodule ExLearn.Matrix do
   def dot_tn(first, second)
   when is_binary(first) and is_binary(second)
   do
-    :erlang.nif_error(:nif_library_not_loaded)
+    :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
 
-    random_size = :rand.uniform(2)
-    <<1 :: size(random_size)>>
+    random_size = :rand.uniform(2)             # excoveralls ignore
+    <<1 :: size(random_size)>>                 # excoveralls ignore
   end
 
   @doc """
@@ -255,9 +255,9 @@ defmodule ExLearn.Matrix do
   """
   @spec max(binary) :: number
   def max(_matrix) do
-    :erlang.nif_error(:nif_library_not_loaded)
+    :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
 
-    :rand.uniform
+    :rand.uniform                              # excoveralls ignore
   end
 
   @doc """
@@ -267,10 +267,10 @@ defmodule ExLearn.Matrix do
   def multiply(first, second)
   when is_binary(first) and is_binary(second)
   do
-    :erlang.nif_error(:nif_library_not_loaded)
+    :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
 
-    random_size = :rand.uniform(2)
-    <<1 :: size(random_size)>>
+    random_size = :rand.uniform(2)             # excoveralls ignore
+    <<1 :: size(random_size)>>                 # excoveralls ignore
   end
 
   @doc """
@@ -280,10 +280,10 @@ defmodule ExLearn.Matrix do
   def multiply_with_scalar(matrix, scalar)
   when is_binary(matrix) and is_number(scalar)
   do
-    :erlang.nif_error(:nif_library_not_loaded)
+    :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
 
-    random_size = :rand.uniform(2)
-    <<1 :: size(random_size)>>
+    random_size = :rand.uniform(2)             # excoveralls ignore
+    <<1 :: size(random_size)>>                 # excoveralls ignore
   end
 
   @doc """
@@ -337,10 +337,10 @@ defmodule ExLearn.Matrix do
   def substract(first, second)
   when is_binary(first) and is_binary(second)
   do
-    :erlang.nif_error(:nif_library_not_loaded)
+    :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
 
-    random_size = :rand.uniform(2)
-    <<1 :: size(random_size)>>
+    random_size = :rand.uniform(2)             # excoveralls ignore
+    <<1 :: size(random_size)>>                 # excoveralls ignore
   end
 
   @doc """
@@ -356,9 +356,9 @@ defmodule ExLearn.Matrix do
   """
   @spec sum(binary) :: number
   def sum(_matrix) do
-    :erlang.nif_error(:nif_library_not_loaded)
+    :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
 
-    :rand.uniform
+    :rand.uniform                              # excoveralls ignore
   end
 
   @doc """
@@ -366,9 +366,9 @@ defmodule ExLearn.Matrix do
   """
   @spec transpose(binary) :: binary
   def transpose(matrix) when is_binary(matrix) do
-    :erlang.nif_error(:nif_library_not_loaded)
+    :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
 
-    random_size = :rand.uniform(2)
-    <<1 :: size(random_size)>>
+    random_size = :rand.uniform(2)             # excoveralls ignore
+    <<1 :: size(random_size)>>                 # excoveralls ignore
   end
 end
