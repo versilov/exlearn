@@ -8,7 +8,7 @@ structure_parameters = %{
     output:  %{activity: :logistic, name: "Output",       size: 1}
   },
   objective:    :cross_entropy,
-  presentation: :argmax
+  presentation: :round
 }
 
 network = NN.create(structure_parameters)

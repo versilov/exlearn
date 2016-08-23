@@ -22,10 +22,8 @@ defmodule ExLearn.NeuralNetwork.Builder do
       objective: objective_setup
     } = structure
 
-    presentation = case Map.get(structure, :presentation) do
-      nil   -> Presentation.determine(:identity)
-      other -> Presentation.determine(other)
-    end
+    presentation_setup = Map.get(structure, :presentation, :raw)
+    presentation       = Presentation.determine(presentation_setup)
 
     layer_config = [input_layer] ++ hidden_layers ++ [output_layer]
     objective    = Objective.determine(objective_setup, output_layer)

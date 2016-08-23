@@ -98,6 +98,12 @@ defmodule MatrixTest do
     assert Matrix.dot_tn(first, second) == expected
   end
 
+  test "#first returns the first element of the matrix" do
+    matrix = Matrix.new(2, 3, [[1, 2, 3], [4,  5,  6 ]])
+
+    assert Matrix.first(matrix) == 1
+  end
+
   test "#inspect displays a matrix visualization to stdout" do
     matrix   = Matrix.new(2, 3, [[1, 2, 3], [4,  5,  6 ]])
     expected = "Rows: 2 Columns: 3\n1.0 2.0 3.0\n4.0 5.0 6.0\n"

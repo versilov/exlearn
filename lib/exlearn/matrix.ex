@@ -214,6 +214,17 @@ defmodule ExLearn.Matrix do
     <<1 :: size(random_size)>>                 # excoveralls ignore
   end
 
+  def first(matrix) do
+    <<
+      _rows    :: float-little-32,
+      _columns :: float-little-32,
+      element  :: float-little-32,
+      _rest    :: binary
+    >> = matrix
+
+    element
+  end
+
   @doc """
   Displays a visualization of the matrix.
   """

@@ -8,7 +8,7 @@ structure_parameters = %{
     output:  %{activity: :tanh,     name: "Output",       size: 1}
   },
   objective:    :quadratic,
-  presentation: :argmax
+  presentation: :round
 }
 
 network = NN.create(structure_parameters)
