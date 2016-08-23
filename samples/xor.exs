@@ -7,7 +7,8 @@ structure_parameters = %{
     hidden: [%{activity: :logistic, name: "First Hidden", size: 4}],
     output:  %{activity: :softmax,  name: "Output",       size: 2}
   },
-  objective: :negative_log_likelihood
+  objective:    :negative_log_likelihood,
+  presentation: :argmax
 }
 
 network = NN.create(structure_parameters)
@@ -28,27 +29,33 @@ training_data = [
   {Matrix.new(1, 2, [[1, 1]]), Matrix.new(1, 2, [[1, 0]])}
 ]
 
-learning_parameters = %{
-  training: %{
-    batch_size:     2,
-    data:           training_data,
-    data_size:      4,
-    epochs:         600,
-    learning_rate:  0.4,
-    regularization: :none
-  },
-  workers: 2
-}
-
-NN.train(learning_parameters, network) |> Task.await(:infinity)
-
-ask_data = [
+prediction_data = [
   Matrix.new(1, 2, [[0, 0]]),
   Matrix.new(1, 2, [[0, 1]]),
   Matrix.new(1, 2, [[1, 0]]),
   Matrix.new(1, 2, [[1, 1]])
 ]
 
-NN.ask(ask_data, network)
-|> Task.await(:infinity)
-|> Enum.map(&Matrix.inspect/1)
+data = %{
+  train:   %{data: training_data,   size: 4},
+  predict: %{data: prediction_data, size: 4}
+}
+
+parameters = %{
+  batch_size:    2,
+  epochs:        600,
+  learning_rate: 0.4,
+  workers:       2
+}
+
+NN.process(data, parameters, network) |> NN.result
+
+|> Enum.map(fn(result) ->
+  %{input: input, output: output} = result
+
+  IO.puts "------------------------------"
+  IO.puts "Input:"
+  Matrix.inspect input
+
+  IO.puts "Output: #{output}"
+end)

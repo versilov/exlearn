@@ -14,7 +14,6 @@ Code.require_file("data_loader.exs", __DIR__)
 DataLoader.convert(4)
 
 # Aliasing the module names for brevity.
-alias ExLearn.Matrix
 alias ExLearn.NeuralNetwork, as: NN
 
 # Defines the network structure.
@@ -24,7 +23,8 @@ structure_parameters = %{
     hidden: [%{activity: :logistic, name: "First Hidden", size: 30}],
     output:  %{activity: :logistic, name: "Output",       size: 10}
   },
-  objective: :cross_entropy
+  objective:    :cross_entropy,
+  presentation: :argmax
 }
 
 # Creates the neural network structure.
@@ -46,23 +46,30 @@ NN.initialize(initialization_parameters, network)
 # If you already have a saved state you can load it with the following:
 # NN.load("samples/mnist-digits/saved_network.el1", network)
 
+# Loading an image from the test data to be added as a prediction input.
+[first_sample|_] = DataLoader.load("samples/mnist-digits/data/test_data-0.eld")
+{first_image, _} = first_sample
+
+prediction_data = [first_image]
+
 # Defines the learning data and parameters.
-learning_data = %{
-  training: %{
+data = %{
+  train: %{
     data: "samples/mnist-digits/data/training_data-*.eld",
     size: 50000,
   },
-  validation: %{
+  validate: %{
     data: "samples/mnist-digits/data/validation_data-*.eld",
     size: 10000,
   },
   test: %{
     data: "samples/mnist-digits/data/test_data-*.eld",
     size: 10000,
-  }
+  },
+  predict: %{data: prediction_data, size: 1}
 }
 
-learning_parameters = %{
+parameters = %{
   batch_size:     1000,
   epochs:         30,
   learning_rate:  0.5,
@@ -74,21 +81,20 @@ learning_parameters = %{
 # blocking execution or the prompt.
 NN.notifications(:start, network)
 
-# Trains the network. Blocks untill the training finishes.
-NN.train(learning_data, learning_parameters, network) |> Task.await(:infinity)
+# Trains the network. Blocks untill the training finishes and returns the
+# prediction.
+NN.process(data, parameters, network) |> NN.result
 
-# Loading an image from the test data for preview.
-[first_sample|_] = DataLoader.load("samples/mnist-digits/data/test_data-0.eld")
-{first_image, first_label} = first_sample
-DataLoader.preview_image(first_image)
-DataLoader.preview_label(first_label)
+# Displays the prediction to stdout.
+|> Enum.map(fn(result) ->
+  %{input: input, output: output} = result
 
-ask_data = [first_image]
+  IO.puts "------------------------------"
+  IO.puts "Input:"
+  DataLoader.preview_image(input)
 
-# Asks the network to clasify an image.
-NN.ask(ask_data, network)
-|> Task.await(:infinity)
-|> Enum.map(&Matrix.inspect/1)
+  IO.puts "Output: #{output}"
+end)
 
 # Saves the network state so it can be loaded back later.
 NN.save("samples/mnist-digits/saved_network.el1", network)
