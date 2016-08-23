@@ -11,7 +11,7 @@ Code.require_file("data_loader.exs", __DIR__)
 # data set. The files will contain data distributed as evenly as possible.
 # You only need to do this once. Comment the following line after runing it
 # the first time.
-DataLoader.convert(4)
+# DataLoader.convert(4)
 
 # Aliasing the module names for brevity.
 alias ExLearn.NeuralNetwork, as: NN
@@ -70,8 +70,8 @@ data = %{
 }
 
 parameters = %{
-  batch_size:     1000,
-  epochs:         30,
+  batch_size:     10000,
+  epochs:         1,
   learning_rate:  0.5,
   regularization: {:L2, rate: 0.005},
   workers:        4
@@ -83,10 +83,13 @@ NN.notifications(:start, network)
 
 # Trains the network. Blocks untill the training finishes and returns the
 # prediction.
-NN.process(data, parameters, network) |> NN.result
+result = NN.process(data, parameters, network) |> NN.result
+
+# Stops the notification stream.
+NN.notifications(:stop, network)
 
 # Displays the prediction to stdout.
-|> Enum.map(fn(result) ->
+Enum.map(result, fn(result) ->
   %{input: input, output: output} = result
 
   IO.puts "------------------------------"

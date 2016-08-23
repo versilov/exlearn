@@ -88,9 +88,10 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
 
   defp process_training_and_validation(data, parameters, state) do
     %{epochs: epochs} = parameters
+    training_data = Map.get(data, :train)
 
     network_state       = Store.get(state)
-    workers             = start_workers(data, parameters, state)
+    workers             = start_workers(training_data, parameters, state)
     training_parameters = prepare_training_parameters(data, parameters)
 
     Notification.push("Started training",  state)
@@ -109,7 +110,48 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     end
   end
 
-  defp process_testing(_data, _parameters, _state) do
+  defp process_testing(data, parameters, state) do
+    network_state = Store.get(state)
+    test_data       = Map.get(data, :test)
+    test_parameters = %{workers: Map.get(parameters, :workers, 1)}
+
+    workers = start_workers(test_data, test_parameters, state)
+    Notification.push("Started testing", state)
+    test_data(workers, network_state, state)
+    Notification.push("Finished testing", state)
+  end
+
+  defp test_data(workers, network_state, state) do
+    %{network: %{presentation: presentation}} = network_state
+
+    result = Enum.map(workers, fn(worker) ->
+      {_id, worker_name} = worker
+
+      Worker.test(network_state, worker_name)
+
+      worker
+    end)
+    |> Enum.flat_map(fn(worker) ->
+      {_id, worker_name} = worker
+
+      Worker.get(worker_name)
+    end)
+
+    total    = length(result)
+    matching = Enum.reduce(result, 0, fn(element, accumulator) ->
+      %{expected: expected, output: output} = element
+
+      expected_result = presentation.(expected)
+      output_result   = presentation.(output)
+
+      case expected_result == output_result do
+        true  -> accumulator + 1
+        false -> accumulator
+      end
+    end)
+    percent = Float.round(matching/total, 2)
+
+    Notification.push("Test accuracy: #{matching}/#{total} (#{percent}%)", state)
   end
 
   #----------------------------------------------------------------------------
@@ -160,7 +202,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
 
     initial_configuration = prepare_training_configuration(parameters)
 
-    prepare_worker_setup(data, :train, maximum_workers)
+    prepare_worker_setup(data, maximum_workers)
     |> start_workers(initial_configuration, maximum_workers, state)
   end
 
@@ -171,10 +213,8 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     end
   end
 
-  defp prepare_worker_setup(data, type, maximum_workers) do
-    data_source = Map.get(data, type, :no_data)
-
-    extract_chunks(data_source, maximum_workers)
+  defp prepare_worker_setup(data, maximum_workers) do
+    extract_chunks(data, maximum_workers)
   end
 
   defp extract_chunks(:no_data, _worker_count) do
@@ -212,7 +252,6 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
 
     workers = Enum.to_list(1..maximum_workers)
     |> Enum.map(fn(index) -> {index, {:global, make_ref()}} end)
-
 
     necessary_workers = Enum.map(sources, fn(source) ->
       %{
@@ -265,16 +304,18 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
   defp train_for_epochs(workers, parameters, network_state, state, epochs, current_epoch) do
     Notification.push("Epoch: #{current_epoch + 1}", state)
 
-    new_network_state = train_each_batch(workers, parameters, network_state, state)
+    new_network_state = train_each_batch(workers, parameters, network_state, state, 1)
 
     train_for_epochs(workers, parameters, new_network_state, state, epochs, current_epoch + 1)
   end
 
-  defp train_each_batch([], _parameters, network_state, _) do
+  defp train_each_batch([], _parameters, network_state, _, _) do
     network_state
   end
 
-  defp train_each_batch(workers, parameters, network_state, state) do
+  defp train_each_batch(workers, parameters, network_state, state, current_batch) do
+    Notification.push("Training batch: #{current_batch}", state)
+
     {remaining_workers, correction} = Enum.map(workers, &train_worker(&1, network_state))
     |> Enum.map(&await_worker/1)
     |> accumulate_correction
@@ -283,7 +324,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
 
     Store.set(new_network_state, state)
 
-    train_each_batch(remaining_workers, parameters, new_network_state, state)
+    train_each_batch(remaining_workers, parameters, new_network_state, state, current_batch + 1)
   end
 
   defp train_worker(worker, network_state) do

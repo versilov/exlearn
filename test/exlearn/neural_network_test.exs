@@ -127,8 +127,6 @@ defmodule ExLearn.NeuralNetworkTest do
         |> Task.await(:infinity)
       end)
       NeuralNetwork.notifications(:stop, network)
-
-      Process.sleep(100)
     end)
 
     assert result == "Message\n"

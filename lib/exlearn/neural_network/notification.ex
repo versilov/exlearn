@@ -5,12 +5,20 @@ defmodule ExLearn.NeuralNetwork.Notification do
 
   @spec done(%{notification: {:global, reference}}) :: tuple
   def done(%{notification: notification = {:global, _reference}}) do
-    GenServer.cast(notification, :done)
+    GenServer.call(notification, :done, :infinity)
+    |> Enum.each(fn
+      :done               -> :done
+      {:message, message} -> IO.puts(message)
+    end)
   end
 
   @spec done({:global, reference}) :: tuple
   def done(notification = {:global, _reference}) do
-    GenServer.cast(notification, :done)
+    GenServer.call(notification, :done, :infinity)
+    |> Enum.each(fn
+      :done               -> :done
+      {:message, message} -> IO.puts(message)
+    end)
   end
 
   @spec pop(%{notification: {:global, reference}}) :: list
@@ -84,9 +92,9 @@ defmodule ExLearn.NeuralNetwork.Notification do
     {:reply, Enum.reverse(state), []}
   end
 
-  @spec handle_cast(tuple, list) :: {:noreply, list}
-  def handle_cast(:done, state) do
-    {:noreply, [:done|state]}
+  @spec handle_call(tuple, any, list) :: {:noreply, list}
+  def handle_call(:done, _from, state) do
+    {:reply, Enum.reverse(state), [:done]}
   end
 
   @spec handle_cast(tuple, list) :: {:noreply, list}

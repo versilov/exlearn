@@ -55,9 +55,10 @@ defmodule ExLearn.NeuralNetwork.Accumulator.ProcessTestTest do
     network_state = AccumulatorFixtures.initial_network_state
     Store.set(network_state, store_name)
 
-    first_sample  = Matrix.new(1, 3, [[1, 2, 3]])
-    second_sample = Matrix.new(1, 3, [[2, 3, 4]])
-    data_samples  = [first_sample,   second_sample  ]
+    data_samples  = [
+      {Matrix.new(1, 3, [[1, 2, 3]]), Matrix.new(1, 2, [[1897, 2784]])},
+      {Matrix.new(1, 3, [[2, 3, 4]]), Matrix.new(1, 2, [[2620, 3846]])}
+    ]
 
     path = TestUtil.temp_file_path()
     TestUtil.write_to_file_as_binary(data_samples, path)
@@ -92,9 +93,10 @@ defmodule ExLearn.NeuralNetwork.Accumulator.ProcessTestTest do
     network_state = AccumulatorFixtures.initial_network_state
     Store.set(network_state, store_name)
 
-    first_sample  = Matrix.new(1, 3, [[1, 2, 3]])
-    second_sample = Matrix.new(1, 3, [[2, 3, 4]])
-    data_samples  = [first_sample,    second_sample ]
+    data_samples  = [
+      {Matrix.new(1, 3, [[1, 2, 3]]), Matrix.new(1, 2, [[1897, 2784]])},
+      {Matrix.new(1, 3, [[2, 3, 4]]), Matrix.new(1, 2, [[2620, 3846]])}
+    ]
 
     data       = %{test: %{data: data_samples, size: 2}}
     parameters = %{}
