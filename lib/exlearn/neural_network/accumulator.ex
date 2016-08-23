@@ -109,7 +109,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     end
   end
 
-  defp process_testing(data, parameters, state) do
+  defp process_testing(_data, _parameters, _state) do
   end
 
   #----------------------------------------------------------------------------
@@ -177,7 +177,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     extract_chunks(data_source, maximum_workers)
   end
 
-  defp extract_chunks(:no_data, worker_count) do
+  defp extract_chunks(:no_data, _worker_count) do
     %{location: :memory, sources: []}
   end
 
@@ -270,7 +270,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     train_for_epochs(workers, parameters, new_network_state, state, epochs, current_epoch + 1)
   end
 
-  defp train_each_batch([], parameters, network_state, _) do
+  defp train_each_batch([], _parameters, network_state, _) do
     network_state
   end
 

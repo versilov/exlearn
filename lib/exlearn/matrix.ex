@@ -140,9 +140,10 @@ defmodule ExLearn.Matrix do
   end
 
   @doc """
+  Returns the index of the biggest element.
   """
   @spec argmax(binary) :: non_neg_integer
-  def argmax(matrix) do
+  def argmax(_matrix) do
     :erlang.nif_error(:nif_library_not_loaded)
 
     :rand.uniform
@@ -253,7 +254,7 @@ defmodule ExLearn.Matrix do
   Maximum element in a matrix.
   """
   @spec max(binary) :: number
-  def max(matrix) do
+  def max(_matrix) do
     :erlang.nif_error(:nif_library_not_loaded)
 
     :rand.uniform
@@ -354,7 +355,7 @@ defmodule ExLearn.Matrix do
   Sums all elements.
   """
   @spec sum(binary) :: number
-  def sum(matrix) do
+  def sum(_matrix) do
     :erlang.nif_error(:nif_library_not_loaded)
 
     :rand.uniform

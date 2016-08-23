@@ -131,7 +131,7 @@ defmodule ExLearn.NeuralNetwork.Worker do
       batch_size -> Enum.chunk(data, batch_size, batch_size, [])
     end
 
-    batches = case chunks do
+    case chunks do
       []                  -> %{current: :not_set, remaining: :not_set }
       [current|remaining] -> %{current: current,  remaining: remaining}
     end
@@ -162,9 +162,7 @@ defmodule ExLearn.NeuralNetwork.Worker do
       batches: %{
         current:   current,
         remaining: remaining
-      },
-      configuration: configuration,
-      data:          data
+      }
     } = state
 
     correction = train_network(current, network_state)

@@ -57,19 +57,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator.ProcessTestTest do
 
     first_sample  = Matrix.new(1, 3, [[1, 2, 3]])
     second_sample = Matrix.new(1, 3, [[2, 3, 4]])
-
-    first_expected  = %{
-      input:  first_sample,
-      output: Matrix.new(1, 2, [[1897, 2784]])
-    }
-
-    second_expected = %{
-      input:  second_sample,
-      output: Matrix.new(1, 2, [[2620, 3846]])
-    }
-
-    data_samples = [first_sample,   second_sample  ]
-    expected     = [first_expected, second_expected]
+    data_samples  = [first_sample,   second_sample  ]
 
     path = TestUtil.temp_file_path()
     TestUtil.write_to_file_as_binary(data_samples, path)
@@ -106,19 +94,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator.ProcessTestTest do
 
     first_sample  = Matrix.new(1, 3, [[1, 2, 3]])
     second_sample = Matrix.new(1, 3, [[2, 3, 4]])
-
-    first_expected  = %{
-      input:  first_sample,
-      output: Matrix.new(1, 2, [[1897, 2784]])
-    }
-
-    second_expected = %{
-      input:  second_sample,
-      output: Matrix.new(1, 2, [[2620, 3846]])
-    }
-
-    data_samples = [first_sample,    second_sample ]
-    expected     = [second_expected, first_expected]
+    data_samples  = [first_sample,    second_sample ]
 
     data       = %{test: %{data: data_samples, size: 2}}
     parameters = %{}

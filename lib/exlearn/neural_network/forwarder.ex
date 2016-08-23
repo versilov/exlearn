@@ -64,7 +64,7 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
     [layer|other_layers] = layers
 
     %{
-      activity: activity = %{function: function},
+      activity: %{function: function},
       biases:   biases,
       weights:  weights
     } = layer
@@ -89,7 +89,7 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
 
   defp calculate_test(sample, input, [layer|rest]) do
     %{
-      activity: activity = %{function: function},
+      activity: %{function: function},
       biases:   biases,
       weights:  weights
     } = layer
