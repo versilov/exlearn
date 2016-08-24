@@ -36,18 +36,6 @@ defmodule ExLearn.NeuralNetwork.Worker do
   # Server API
   #----------------------------------------------------------------------------
 
-  @spec init([]) :: {:ok, map}
-  def init([]) do
-    state = %{
-      batches:       %{current: :not_set, remaining: :not_set},
-      configuration: %{},
-      data:           [],
-      result:        :no_data
-    }
-
-    {:ok, state}
-  end
-
   @spec init(map) :: {:ok, map}
   def init(setup) do
     %{data: %{location: location, source: source}} = setup

@@ -18,23 +18,6 @@ defmodule ExLearn.NeuralNetwork.Worker.StartLinkTest do
     }}
   end
 
-  test "#start_link with no data returns a running process", %{setup: setup} do
-    %{
-      name:    {:global, reference},
-      options: options
-    } = setup
-
-    args = []
-    {:ok, worker_pid} = Worker.start_link(args, options)
-
-    pid_of_reference = :global.whereis_name(reference)
-
-    assert worker_pid |> is_pid
-    assert worker_pid |> Process.alive?
-    assert reference  |> is_reference
-    assert worker_pid == pid_of_reference
-  end
-
   test "#start_link with empty file list returns a running process", %{setup: setup} do
     %{
       name:    {:global, reference},
