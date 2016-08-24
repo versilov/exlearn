@@ -207,13 +207,21 @@ defmodule ExLearn.NeuralNetwork.Worker do
   end
 
   defp network_test(data, network_state) do
-    network_test(data, network_state, [])
+    network_test(data, network_state, {0, 0})
   end
 
   defp network_test([], _, accumulator), do: accumulator
-  defp network_test([sample|rest], network_state, accumulator) do
-    output = Forwarder.forward_for_test(sample, network_state)
+  defp network_test([sample|rest], network_state, {total_error, total_match}) do
+    %{network: %{presentation: presentation}} = network_state
 
-    network_test(rest, network_state, [output|accumulator])
+    activity = Forwarder.forward_for_test(sample, network_state)
+    %{error: error, expected: expected, output: output} = activity
+
+    new_match = case presentation.(expected) == presentation.(output) do
+      true  -> total_match + 1
+      false -> total_match
+    end
+
+    network_test(rest, network_state, {total_error + error, new_match})
   end
 end

@@ -24,21 +24,8 @@ defmodule ExLearn.NeuralNetwork.Worker.TestTest do
     first_sample = {Matrix.new(1, 3, [[1, 2, 3]]), Matrix.new(1, 2, [[1900, 2800]])}
     second_sample = {Matrix.new(1, 3, [[2, 3, 4]]), Matrix.new(1, 2, [[2600, 3800]])}
 
-    first_expected = %{
-        input:    Matrix.new(1, 3, [[1, 2, 3]]),
-        error:    -19,
-        expected: Matrix.new(1, 2, [[1900, 2800]]),
-        output:   Matrix.new(1, 2, [[1897, 2784]])
-      }
-    second_expected = %{
-        input:    Matrix.new(1, 3, [[2, 3, 4]]),
-        error:    66,
-        expected: Matrix.new(1, 2, [[2600, 3800]]),
-        output:   Matrix.new(1, 2, [[2620, 3846]])
-      }
-
     data          = [first_sample,    second_sample ]
-    expected      = [second_expected, first_expected]
+    expected      = {47.0, 0}
     network_state = WorkerFixtures.initial_network_state
 
     args = %{data: %{location: :memory, source: data}}

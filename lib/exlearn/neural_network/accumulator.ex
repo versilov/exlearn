@@ -116,39 +116,51 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
         0
       )
 
-      process_training_accuracy(training_workers, current_network_state, state)
-      process_validation_accuracy(validation_workers, current_network_state, state)
+      process_training_accuracy(
+        training_workers,
+        current_network_state,
+        data,
+        state
+      )
+      process_validation_accuracy(
+        validation_workers,
+        current_network_state,
+        data,
+        state
+      )
 
       new_network_state
     end)
   end
 
-  defp process_training_accuracy([], _, _), do: :ok
-  defp process_training_accuracy(workers, network_state, state) do
+  defp process_training_accuracy([], _, _, _), do: :ok
+  defp process_training_accuracy(workers, network_state, data, state) do
+    %{train: %{size: size}} = data
+
     %{
       error:    error,
       matching: matching,
-      percent:  percent,
-      total:    total
-    } = process_accuracy(workers, network_state)
+      percent:  percent
+    } = process_accuracy(workers, network_state, size)
 
     Notification.push(
-      "Training accuracy: #{matching}/#{total} (#{percent}%) Error: #{error}",
+      "Training accuracy: #{matching}/#{size} (#{percent}%) Error: #{error}",
       state
     )
   end
 
-  defp process_validation_accuracy([], _, _), do: :ok
-  defp process_validation_accuracy(workers, network_state, state) do
+  defp process_validation_accuracy([], _, _, _), do: :ok
+  defp process_validation_accuracy(workers, network_state, data, state) do
+    %{validate: %{size: size}} = data
+
     %{
       error:    error,
       matching: matching,
-      percent:  percent,
-      total:    total
-    } = process_accuracy(workers, network_state)
+      percent:  percent
+    } = process_accuracy(workers, network_state, size)
 
     Notification.push(
-      "Validation accuracy: #{matching}/#{total} (#{percent}%) Error: #{error}",
+      "Validation accuracy: #{matching}/#{size} (#{percent}%) Error: #{error}",
       state
     )
   end
@@ -172,27 +184,26 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     workers = start_workers(test_data, test_parameters, state)
 
     Notification.push("Started testing", state)
-    test_data(workers, network_state, state)
+    test_data(workers, network_state, data, state)
   end
 
-  defp test_data([], _, _), do: :ok
-  defp test_data(workers, network_state, state)  do
+  defp test_data([], _, _, _), do: :ok
+  defp test_data(workers, network_state, data, state)  do
+    %{test: %{size: size}} = data
+
     %{
       error:    error,
       matching: matching,
-      percent:  percent,
-      total:    total
-    } = process_accuracy(workers, network_state)
+      percent:  percent
+    } = process_accuracy(workers, network_state, size)
 
     Notification.push(
-      "Test accuracy: #{matching}/#{total} (#{percent}%) Error: #{error}",
+      "Test accuracy: #{matching}/#{size} (#{percent}%) Error: #{error}",
       state
     )
   end
 
-  defp process_accuracy(workers, network_state) do
-    %{network: %{presentation: presentation}} = network_state
-
+  defp process_accuracy(workers, network_state, data_size) do
     result = Enum.map(workers, fn(worker) ->
       {_id, worker_name} = worker
 
@@ -200,37 +211,20 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
 
       worker
     end)
-    |> Enum.flat_map(fn(worker) ->
+    |> Enum.map(fn(worker) ->
       {_id, worker_name} = worker
 
       Worker.get(worker_name)
     end)
 
-    total = length(result)
-    {error, matching} = Enum.reduce(result, {0, 0}, fn(element, accumulator) ->
-      %{
-        error:    error,
-        expected: expected,
-        output:   output
-      } = element
-
-      {current_error, current_matching} = accumulator
-
-      expected_result = presentation.(expected)
-      output_result   = presentation.(output)
-
-      case expected_result == output_result do
-        true  -> {current_error + error, current_matching + 1}
-        false -> {current_error + error, current_matching    }
-      end
-    end)
-    percent = Float.round(matching / total * 100, 2)
+    error    = Enum.reduce(result, 0, fn({e, _}, acc) -> acc + e end)
+    matching = Enum.reduce(result, 0, fn({_, m}, acc) -> acc + m end)
+    percent  = matching / data_size * 100
 
     %{
-      error:    error / total,
+      error:    error / data_size,
       matching: matching,
-      percent:  percent,
-      total:    total
+      percent:  percent
     }
   end
 
