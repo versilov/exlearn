@@ -4,23 +4,12 @@ defmodule ExLearn.NeuralNetwork.ForwarderTest do
   alias ExLearn.Matrix
   alias ExLearn.NeuralNetwork.Forwarder
 
-  # Netowrk mocked as following:
-  # - input layer has 3 features
-  # - there are 2 hidden layers
-  # - h1 has 3 neurons
-  # - h2 has 2 neurons
-  # - output has 2 values
-  #
-  # I     H1    H2    O
-  #   3x3   3x2   2x2
-  # O     O     O     O
-  # O     O     O     O
-  # O     O
   setup do
     f = fn (x, _all) -> x + 1 end
     d = fn (_all)    -> 1     end
 
-    presentation = fn(x) -> x end
+    objective    = fn(x, y) -> Matrix.substract(y, x) |> Matrix.sum end
+    presentation = fn(x)    -> x end
 
     state = %{
       network: %{
@@ -41,6 +30,7 @@ defmodule ExLearn.NeuralNetwork.ForwarderTest do
             weights:  Matrix.new(2, 2, [[1, 2], [3, 4]])
           }
         ],
+        objective:    %{function: objective},
         presentation: presentation
       }
     }
@@ -142,12 +132,14 @@ defmodule ExLearn.NeuralNetwork.ForwarderTest do
 
     first_expected = %{
       input:    Matrix.new(1, 3, [[1, 2, 3]]),
+      error:    -19,
       expected: Matrix.new(1, 2, [[1900, 2800]]),
       output:   Matrix.new(1, 2, [[1897, 2784]])
     }
 
     second_expected = %{
       input:    Matrix.new(1, 3, [[2, 3, 4]]),
+      error:    66,
       expected: Matrix.new(1, 2, [[2600, 3800]]),
       output:   Matrix.new(1, 2, [[2620, 3846]])
     }

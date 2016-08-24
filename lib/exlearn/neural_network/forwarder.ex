@@ -80,14 +80,26 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
 
     {input, expected} = sample
 
-    calculate_test(%{input: input, expected: expected}, input, layers)
+    calculate_test(
+      %{input: input, expected: expected},
+      input,
+      layers,
+      state
+    )
   end
 
-  defp calculate_test(sample, output, []) do
-    Map.put(sample, :output, output)
+  defp calculate_test(sample, output, [], state) do
+    %{network: %{objective: %{function: function}}} = state
+    %{expected: expected} = sample
+
+    error = function.(expected, output)
+
+    sample
+    |> Map.put(:error,  error)
+    |> Map.put(:output, output)
   end
 
-  defp calculate_test(sample, input, [layer|rest]) do
+  defp calculate_test(sample, input, [layer|rest], state) do
     %{
       activity: %{function: function},
       biases:   biases,
@@ -97,6 +109,6 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
     output = Matrix.dot_and_add(input, weights, biases)
     |> Activation.apply(function)
 
-    calculate_test(sample, output, rest)
+    calculate_test(sample, output, rest, state)
   end
 end

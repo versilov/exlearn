@@ -4,8 +4,15 @@ defmodule ExLearn.NeuralNetwork.WorkerFixtures do
   def initial_network_state do
     function     = fn(x, _all)  -> x + 1                  end
     derivative   = fn(_x, _all) -> 1                      end
-    objective    = fn(a, b, _c) -> Matrix.substract(b, a) end
-    presentation = fn(x)        -> x                      end
+
+    objective_function = &(Matrix.substract(&2, &1) |> Matrix.sum)
+    objective_error    = fn(a, b, _c) -> Matrix.substract(b, a) end
+    presentation       = fn(x) -> x end
+
+    objective = %{
+      function: objective_function,
+      error:    objective_error
+    }
 
     %{
       network: %{
@@ -26,7 +33,7 @@ defmodule ExLearn.NeuralNetwork.WorkerFixtures do
             weights:  Matrix.new(2, 2, [[1, 2], [3, 4]])
           },
         ],
-        objective:    %{error: objective},
+        objective:    objective,
         presentation: presentation
       }
     }

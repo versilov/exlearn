@@ -103,7 +103,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
 
     training_parameters = prepare_training_parameters(data, parameters)
 
-    Notification.push("Started training",  state)
+    Notification.push("Started training", state)
 
     Enum.to_list(1..epochs)
     |> Enum.reduce(network_state, fn(epoch, current_network_state) ->
@@ -129,13 +129,16 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
   defp validate_data([], _, _, _), do: :ok
   defp validate_data(workers, network_state, state, epoch) do
     %{
+      error:    error,
       matching: matching,
       percent:  percent,
       total:    total
     } = process_accuracy(workers, network_state)
 
     Notification.push(
-      "Epoch: #{epoch}; Validation accuracy: #{matching}/#{total} (#{percent}%)",
+      "Epoch: #{epoch} " <>
+      "Validation accuracy: #{matching}/#{total} (#{percent}%) " <>
+      "Error: #{error}",
       state
     )
   end
@@ -165,12 +168,16 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
   defp test_data([], _, _), do: :ok
   defp test_data(workers, network_state, state)  do
     %{
+      error:    error,
       matching: matching,
       percent:  percent,
       total:    total
     } = process_accuracy(workers, network_state)
 
-    Notification.push("Test accuracy: #{matching}/#{total} (#{percent}%)", state)
+    Notification.push(
+      "Test accuracy: #{matching}/#{total} (#{percent}%) Error: #{error}",
+      state
+    )
   end
 
   defp process_accuracy(workers, network_state) do
@@ -189,21 +196,28 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
       Worker.get(worker_name)
     end)
 
-    total    = length(result)
-    matching = Enum.reduce(result, 0, fn(element, accumulator) ->
-      %{expected: expected, output: output} = element
+    total = length(result)
+    {error, matching} = Enum.reduce(result, {0, 0}, fn(element, accumulator) ->
+      %{
+        error:    error,
+        expected: expected,
+        output:   output
+      } = element
+
+      {current_error, current_matching} = accumulator
 
       expected_result = presentation.(expected)
       output_result   = presentation.(output)
 
       case expected_result == output_result do
-        true  -> accumulator + 1
-        false -> accumulator
+        true  -> {current_error + error, current_matching + 1}
+        false -> {current_error + error, current_matching    }
       end
     end)
     percent = Float.round(matching / total * 100, 2)
 
     %{
+      error:    error / total,
       matching: matching,
       percent:  percent,
       total:    total

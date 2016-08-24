@@ -13,7 +13,7 @@ defmodule ExLearn.NeuralNetworkTest do
         hidden: [%{activity: :identity, name: "First Hidden", size: 1}],
         output:  %{activity: :identity, name: "Output",       size: 1}
       },
-      objective:    :quadratic
+      objective: :quadratic
     }
 
     network = NeuralNetwork.create(structure_parameters)

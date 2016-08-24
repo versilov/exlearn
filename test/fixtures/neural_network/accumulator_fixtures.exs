@@ -2,10 +2,17 @@ defmodule ExLearn.NeuralNetwork.AccumulatorFixtures do
   alias ExLearn.Matrix
 
   def network_state_functions do
-    function     = fn(x,  _all) -> x + 1                  end
-    derivative   = fn(_x, _all) -> 1                      end
-    objective    = fn(a, b, _c) -> Matrix.substract(b, a) end
-    presentation = fn(x)        -> x                      end
+    function   = fn(x,  _all) -> x + 1 end
+    derivative = fn(_x, _all) -> 1     end
+
+    objective_function = &(Matrix.substract(&2, &1) |> Matrix.sum)
+    objective_error    = fn(a, b, _c) -> Matrix.substract(b, a) end
+    presentation       = fn(x) -> x end
+
+    objective = %{
+      function: objective_function,
+      error:    objective_error
+    }
 
     %{
       function:     function,
@@ -42,7 +49,7 @@ defmodule ExLearn.NeuralNetwork.AccumulatorFixtures do
             weights:  Matrix.new(2, 2, [[1, 2], [3, 4]])
           },
         ],
-        objective:    %{error: objective},
+        objective:    objective,
         presentation: presentation
       }
     }
@@ -86,7 +93,7 @@ defmodule ExLearn.NeuralNetwork.AccumulatorFixtures do
             ])
           }
         ],
-        objective:    %{error: objective},
+        objective:    objective,
         presentation: presentation
       }
     }
@@ -130,7 +137,7 @@ defmodule ExLearn.NeuralNetwork.AccumulatorFixtures do
             ])
           }
         ],
-        objective:    %{error: objective},
+        objective:    objective,
         presentation: presentation
       }
     }
@@ -174,7 +181,7 @@ defmodule ExLearn.NeuralNetwork.AccumulatorFixtures do
             ])
           }
         ],
-        objective:    %{error: objective},
+        objective:    objective,
         presentation: presentation
       }
     }

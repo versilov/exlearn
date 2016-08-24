@@ -28,7 +28,6 @@ defmodule ObjectiveTest do
     second     = Matrix.new(1, 3, [[0.4, 0.5, 0.6]])
     input      = Matrix.new(1, 3, [[2,   3,   4  ]])
     derivative = fn(x, _all) -> x - 1 end
-    data_size  = 1
 
     expected_from_function = 1.9580775499343872
     expected_from_error    = Matrix.new(1, 3, [[0.2, 0.3, 0.0]])
@@ -39,7 +38,7 @@ defmodule ObjectiveTest do
 
     %{function: function, error: error} = Objective.determine(setup, output_layer)
 
-    assert function.(first, second, data_size)    == expected_from_function
+    assert function.(first, second)               == expected_from_function
     assert error.(first, second, output_activity) == expected_from_error
   end
 
@@ -48,7 +47,6 @@ defmodule ObjectiveTest do
     second     = Matrix.new(1, 3, [[0.4, 0.5, 0.3]])
     input      = Matrix.new(1, 3, [[1,   2,   3  ]])
     derivative = fn(x, _all) -> x - 1 end
-    data_size  = 1
 
     expected_from_function = 2.1501195430755615
     expected_from_error    = Matrix.new(1, 3, [[0.0, 1.2, -2.857142857142857]])
@@ -59,7 +57,7 @@ defmodule ObjectiveTest do
 
     %{function: function, error: error} = Objective.determine(setup, output_layer)
 
-    assert function.(first, second, data_size)    == expected_from_function
+    assert function.(first, second)               == expected_from_function
     assert error.(first, second, output_activity) == expected_from_error
   end
 
@@ -68,7 +66,6 @@ defmodule ObjectiveTest do
     second     = Matrix.new(1, 3, [[0.6, 0.3, 0.1]])
     input      = Matrix.new(1, 3, [[2,   3,   4  ]])
     derivative = fn(x) -> x - 1 end
-    data_size  = 1
 
     expected_from_function = 0.5108255743980408
     expected_from_error    = Matrix.new(1, 3, [[-0.39999997, 0.3, 0.1]])
@@ -79,7 +76,7 @@ defmodule ObjectiveTest do
 
     %{function: function, error: error} = Objective.determine(setup, output_layer)
 
-    assert function.(first, second, data_size)    == expected_from_function
+    assert function.(first, second)               == expected_from_function
     assert error.(first, second, output_activity) == expected_from_error
   end
 
@@ -88,7 +85,6 @@ defmodule ObjectiveTest do
     second     = Matrix.new(1, 3, [[0.6, 0.3, 0.1]])
     input      = Matrix.new(1, 3, [[2,   3,   4  ]])
     derivative = fn(x) -> x - 1 end
-    data_size  = 1
 
     expected_from_function = 0.5108255743980408
     expected_from_error    = Matrix.new(1, 3, [[-0.39999997, 0.3, 0.1]])
@@ -99,7 +95,7 @@ defmodule ObjectiveTest do
 
     %{function: function, error: error} = Objective.determine(setup, output_layer)
 
-    assert function.(first, second, data_size)    == expected_from_function
+    assert function.(first, second)               == expected_from_function
     assert error.(first, second, output_activity) == expected_from_error
   end
 
@@ -108,7 +104,6 @@ defmodule ObjectiveTest do
     second     = Matrix.new(1, 3, [[1, 2, 7]])
     input      = Matrix.new(1, 3, [[2, 3, 4]])
     derivative = fn(x, _all) -> x - 1 end
-    data_size  = 1
 
     expected_from_function = 8
     expected_from_error    = Matrix.new(1, 3, [[0, 0, 12]])
@@ -119,7 +114,7 @@ defmodule ObjectiveTest do
 
     %{function: function, error: error} = Objective.determine(setup, output_layer)
 
-    assert function.(first, second, data_size)    == expected_from_function
+    assert function.(first, second)               == expected_from_function
     assert error.(first, second, output_activity) == expected_from_error
   end
 end

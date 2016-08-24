@@ -26,11 +26,13 @@ defmodule ExLearn.NeuralNetwork.Worker.TestTest do
 
     first_expected = %{
         input:    Matrix.new(1, 3, [[1, 2, 3]]),
+        error:    -19,
         expected: Matrix.new(1, 2, [[1900, 2800]]),
         output:   Matrix.new(1, 2, [[1897, 2784]])
       }
     second_expected = %{
         input:    Matrix.new(1, 3, [[2, 3, 4]]),
+        error:    66,
         expected: Matrix.new(1, 2, [[2600, 3800]]),
         output:   Matrix.new(1, 2, [[2620, 3846]])
       }

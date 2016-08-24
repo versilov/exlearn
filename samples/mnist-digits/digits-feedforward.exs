@@ -11,7 +11,7 @@ Code.require_file("data_loader.exs", __DIR__)
 # data set. The files will contain data distributed as evenly as possible.
 # You only need to do this once. Comment the following line after runing it
 # the first time.
-DataLoader.convert(4)
+DataLoader.convert(16)
 
 # Aliasing the module names for brevity.
 alias ExLearn.NeuralNetwork, as: NN
@@ -20,8 +20,8 @@ alias ExLearn.NeuralNetwork, as: NN
 structure_parameters = %{
   layers: %{
     input:   %{size: 784},
-    hidden: [%{activity: :logistic, name: "First Hidden", size: 30}],
-    output:  %{activity: :logistic, name: "Output",       size: 10}
+    hidden: [%{activity: :logistic, name: "First Hidden", size: 100}],
+    output:  %{activity: :logistic, name: "Output",       size: 10 }
   },
   objective:    :cross_entropy,
   presentation: :argmax
@@ -69,10 +69,10 @@ data = %{
 }
 
 parameters = %{
-  batch_size:     1000,
-  epochs:         30,
-  learning_rate:  0.5,
-  regularization: {:L2, rate: 0.005},
+  batch_size:     100,
+  epochs:         50,
+  learning_rate:  0.2,
+  regularization: {:L2, rate: 0.0008},
   workers:        4
 }
 

@@ -22,19 +22,19 @@ defmodule ExLearn.Objective do
 
   @spec cross_entropy_pair(map) :: map
   defp cross_entropy_pair(output_layer) do
-    function = &cross_entropy_function/3
+    function = &cross_entropy_function/2
     error    = cross_entropy_error(output_layer)
 
     %{function: function, error: error}
   end
 
-  @spec cross_entropy_function(binary, binary, non_neg_integer) :: float
-  defp cross_entropy_function(expected, actual, data_size) do
+  @spec cross_entropy_function(binary, binary) :: float
+  defp cross_entropy_function(expected, actual) do
     binary_entropy_sum = Matrix.apply(expected, actual, fn(x, y) ->
       x * :math.log(y) + (1 - x) * :math.log(1 - y)
     end) |> Matrix.sum
 
-    -1 / data_size * binary_entropy_sum
+    -1 * binary_entropy_sum
   end
 
   @spec cross_entropy_error(map) :: function
@@ -69,15 +69,15 @@ defmodule ExLearn.Objective do
 
   @spec negative_log_likelihood_pair(map) :: map
   defp negative_log_likelihood_pair(output_layer) do
-    function = &negative_log_likelihood_function/3
+    function = &negative_log_likelihood_function/2
     error    = negative_log_likelihood_error(output_layer)
 
     %{function: function, error: error}
   end
 
-  @spec negative_log_likelihood_function(binary, binary, non_neg_integer) :: float
-  defp negative_log_likelihood_function(expected, actual, data_size) do
-    -1 / data_size * Matrix.sum(
+  @spec negative_log_likelihood_function(binary, binary) :: float
+  defp negative_log_likelihood_function(expected, actual) do
+    -1 * Matrix.sum(
       Matrix.multiply(
         expected,
         Matrix.apply(actual, &:math.log/1)
@@ -106,15 +106,15 @@ defmodule ExLearn.Objective do
 
   @spec quadratic_pair :: map
   defp quadratic_pair do
-    function = &quadratic_cost_function/3
+    function = &quadratic_cost_function/2
     error    = &quadratic_cost_error/3
 
     %{function: function, error: error}
   end
 
-  @spec quadratic_cost_function(binary, binary, non_neg_integer) :: float
-  defp quadratic_cost_function(expected, actual, data_size) do
-    1 / (2 * data_size) * Matrix.sum(
+  @spec quadratic_cost_function(binary, binary) :: float
+  defp quadratic_cost_function(expected, actual) do
+    0.5 * Matrix.sum(
       Matrix.apply(expected, actual, fn(x, y) ->
         product = x - y
 
