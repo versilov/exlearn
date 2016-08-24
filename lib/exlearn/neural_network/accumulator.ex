@@ -99,14 +99,15 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
   defp train_and_validate(training_workers, validation_workers, data, parameters, state) do
     %{epochs: epochs} = parameters
 
-    network_state = Store.get(state)
-
+    network_state       = Store.get(state)
     training_parameters = prepare_training_parameters(data, parameters)
 
     Notification.push("Started training", state)
 
     Enum.to_list(1..epochs)
     |> Enum.reduce(network_state, fn(epoch, current_network_state) ->
+      Notification.push("Epoch: #{epoch}", state)
+
       new_network_state = train_each_batch(
         training_workers,
         training_parameters,
@@ -115,19 +116,15 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
         0
       )
 
-      validate_data(
-        validation_workers,
-        new_network_state,
-        state,
-        epoch
-      )
+      process_training_accuracy(training_workers, current_network_state, state)
+      process_validation_accuracy(validation_workers, current_network_state, state)
 
       new_network_state
     end)
   end
 
-  defp validate_data([], _, _, _), do: :ok
-  defp validate_data(workers, network_state, state, epoch) do
+  defp process_training_accuracy([], _, _), do: :ok
+  defp process_training_accuracy(workers, network_state, state) do
     %{
       error:    error,
       matching: matching,
@@ -136,9 +133,22 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     } = process_accuracy(workers, network_state)
 
     Notification.push(
-      "Epoch: #{epoch} " <>
-      "Validation accuracy: #{matching}/#{total} (#{percent}%) " <>
-      "Error: #{error}",
+      "Training accuracy: #{matching}/#{total} (#{percent}%) Error: #{error}",
+      state
+    )
+  end
+
+  defp process_validation_accuracy([], _, _), do: :ok
+  defp process_validation_accuracy(workers, network_state, state) do
+    %{
+      error:    error,
+      matching: matching,
+      percent:  percent,
+      total:    total
+    } = process_accuracy(workers, network_state)
+
+    Notification.push(
+      "Validation accuracy: #{matching}/#{total} (#{percent}%) Error: #{error}",
       state
     )
   end
