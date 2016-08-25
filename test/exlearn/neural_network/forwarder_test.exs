@@ -111,14 +111,11 @@ defmodule ExLearn.NeuralNetwork.ForwarderTest do
   test "#forward_for_output returns the outputs", %{setup: setup} do
     %{state: state} = setup
 
-    first_input  = Matrix.new(1, 3, [[1, 2, 3]])
-    second_input = Matrix.new(1, 3, [[2, 3, 4]])
+    first_input  = {1, Matrix.new(1, 3, [[1, 2, 3]])}
+    second_input = {2, Matrix.new(1, 3, [[2, 3, 4]])}
 
-    first_output  = Matrix.new(1, 2, [[1897, 2784]])
-    second_output = Matrix.new(1, 2, [[2620, 3846]])
-
-    first_expected  = %{input: first_input,  output: first_output }
-    second_expected = %{input: second_input, output: second_output}
+    first_expected  = {1, Matrix.new(1, 2, [[1897, 2784]])}
+    second_expected = {2, Matrix.new(1, 2, [[2620, 3846]])}
 
     assert Forwarder.forward_for_output(first_input,  state) == first_expected
     assert Forwarder.forward_for_output(second_input, state) == second_expected

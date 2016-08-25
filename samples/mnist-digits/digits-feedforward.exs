@@ -49,7 +49,7 @@ NN.initialize(initialization_parameters, network)
 [first_sample|_] = DataLoader.load("samples/mnist-digits/data/test_data-0.eld")
 {first_image, _} = first_sample
 
-prediction_data = [first_image]
+prediction_data = [{1, first_image}]
 
 # Defines the learning data and parameters.
 data = %{
@@ -88,12 +88,10 @@ result = NN.process(data, parameters, network) |> NN.result
 NN.notifications(:stop, network)
 
 # Displays the prediction to stdout.
-Enum.map(result, fn(result) ->
-  %{input: input, output: output} = result
-
+Enum.map(result, fn({id, output}) ->
   IO.puts "------------------------------"
-  IO.puts "Input:"
-  DataLoader.preview_image(input)
+  IO.puts "Input ID: #{id}"
+  DataLoader.preview_image(first_image)
 
   IO.puts "Output: #{output}"
 end)

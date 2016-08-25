@@ -30,10 +30,10 @@ training_data = [
 ]
 
 prediction_data = [
-  Matrix.new(1, 2, [[0, 0]]),
-  Matrix.new(1, 2, [[0, 1]]),
-  Matrix.new(1, 2, [[1, 0]]),
-  Matrix.new(1, 2, [[1, 1]])
+  {0, Matrix.new(1, 2, [[0, 0]])},
+  {1, Matrix.new(1, 2, [[0, 1]])},
+  {2, Matrix.new(1, 2, [[1, 0]])},
+  {3, Matrix.new(1, 2, [[1, 1]])}
 ]
 
 data = %{
@@ -50,12 +50,8 @@ parameters = %{
 
 NN.process(data, parameters, network) |> NN.result
 
-|> Enum.map(fn(result) ->
-  %{input: input, output: output} = result
-
+|> Enum.map(fn({id, output}) ->
   IO.puts "------------------------------"
-  IO.puts "Input:"
-  Matrix.inspect input
-
+  IO.puts "Input ID: #{id}"
   IO.puts "Output: #{output}"
 end)

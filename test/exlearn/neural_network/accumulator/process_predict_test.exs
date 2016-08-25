@@ -55,18 +55,11 @@ defmodule ExLearn.NeuralNetwork.Accumulator.ProcessPredictTest do
     network_state = AccumulatorFixtures.initial_network_state
     Store.set(network_state, store_name)
 
-    first_sample  = Matrix.new(1, 3, [[1, 2, 3]])
-    second_sample = Matrix.new(1, 3, [[2, 3, 4]])
+    first_sample  = {1, Matrix.new(1, 3, [[1, 2, 3]])}
+    second_sample = {2, Matrix.new(1, 3, [[2, 3, 4]])}
 
-    first_expected  = %{
-      input:  first_sample,
-      output: Matrix.new(1, 2, [[1897, 2784]])
-    }
-
-    second_expected = %{
-      input:  second_sample,
-      output: Matrix.new(1, 2, [[2620, 3846]])
-    }
+    first_expected  = {1, Matrix.new(1, 2, [[1897, 2784]])}
+    second_expected = {2, Matrix.new(1, 2, [[2620, 3846]])}
 
     data_samples = [first_sample,   second_sample  ]
     expected     = [first_expected, second_expected]
@@ -104,18 +97,11 @@ defmodule ExLearn.NeuralNetwork.Accumulator.ProcessPredictTest do
     network_state = AccumulatorFixtures.initial_network_state
     Store.set(network_state, store_name)
 
-    first_sample  = Matrix.new(1, 3, [[1, 2, 3]])
-    second_sample = Matrix.new(1, 3, [[2, 3, 4]])
+    first_sample  = {1, Matrix.new(1, 3, [[1, 2, 3]])}
+    second_sample = {2, Matrix.new(1, 3, [[2, 3, 4]])}
 
-    first_expected  = %{
-      input:  first_sample,
-      output: Matrix.new(1, 2, [[1897, 2784]])
-    }
-
-    second_expected = %{
-      input:  second_sample,
-      output: Matrix.new(1, 2, [[2620, 3846]])
-    }
+    first_expected  = {1, Matrix.new(1, 2, [[1897, 2784]])}
+    second_expected = {2, Matrix.new(1, 2, [[2620, 3846]])}
 
     data_samples = [first_sample,    second_sample ]
     expected     = [second_expected, first_expected]

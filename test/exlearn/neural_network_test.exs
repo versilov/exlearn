@@ -46,12 +46,12 @@ defmodule ExLearn.NeuralNetworkTest do
     ]
 
     predict_data = [
-      Matrix.new(1, 1, [[0]]),
-      Matrix.new(1, 1, [[1]]),
-      Matrix.new(1, 1, [[2]]),
-      Matrix.new(1, 1, [[3]]),
-      Matrix.new(1, 1, [[4]]),
-      Matrix.new(1, 1, [[5]])
+      {0, Matrix.new(1, 1, [[0]])},
+      {1, Matrix.new(1, 1, [[1]])},
+      {2, Matrix.new(1, 1, [[2]])},
+      {3, Matrix.new(1, 1, [[3]])},
+      {4, Matrix.new(1, 1, [[4]])},
+      {5, Matrix.new(1, 1, [[5]])}
     ]
 
     data = %{
@@ -140,10 +140,7 @@ defmodule ExLearn.NeuralNetworkTest do
 
     assert result |> is_list
 
-    Enum.each(result, fn(element) ->
-      %{input: input, output: output} = element
-
-      assert input  |> is_binary
+    Enum.each(result, fn({_id, output}) ->
       assert output |> is_binary
     end)
   end
@@ -156,10 +153,7 @@ defmodule ExLearn.NeuralNetworkTest do
 
     assert result |> is_list
 
-    Enum.each(result, fn(element) ->
-      %{input: input, output: output} = element
-
-      assert input  |> is_binary
+    Enum.each(result, fn({_id, output}) ->
       assert output |> is_binary
     end)
   end
@@ -172,10 +166,7 @@ defmodule ExLearn.NeuralNetworkTest do
 
     assert result |> is_list
 
-    Enum.each(result, fn(element) ->
-      %{input: input, output: output} = element
-
-      assert input  |> is_binary
+    Enum.each(result, fn({_id, output}) ->
       assert output |> is_binary
     end)
   end

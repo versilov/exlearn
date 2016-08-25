@@ -51,16 +51,15 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
       }
     } = state
 
-    output = calculate_output(input, layers, presentation)
+    {id, data} = input
+    output     = calculate_output(data, layers)
+    result     = presentation.(output)
 
-    %{input: input, output: output}
+    {id, result}
   end
 
-  defp calculate_output(output, [], presentation) do
-    presentation.(output)
-  end
-
-  defp calculate_output(input, layers, presentation) do
+  defp calculate_output(output, []    ), do: output
+  defp calculate_output(input,  layers)  do
     [layer|other_layers] = layers
 
     %{
@@ -71,7 +70,7 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
 
     Matrix.dot_and_add(input, weights, biases)
     |> Activation.apply(function)
-    |> calculate_output(other_layers, presentation)
+    |> calculate_output(other_layers)
   end
 
   @spec forward_for_test(tuple, map) :: binary
