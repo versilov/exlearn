@@ -35,7 +35,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator.GetTest do
     }}
   end
 
-  test "#get with empty data returns the result", %{setup: setup} do
+  test "#get returns the initial result", %{setup: setup} do
     %{
       args:    args,
       name:    accumulator = {:global, reference},

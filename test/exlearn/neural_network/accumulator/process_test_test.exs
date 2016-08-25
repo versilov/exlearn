@@ -60,7 +60,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator.ProcessTestTest do
       {Matrix.new(1, 3, [[2, 3, 4]]), Matrix.new(1, 2, [[2620, 3846]])}
     ]
 
-    path = TestUtil.temp_file_path()
+    path = TestUtil.temp_file_path("exlearn-neural_network-accumulator-process_predict_test")
     TestUtil.write_to_file_as_binary(data_samples, path)
 
     data       = %{test: %{data: path, size: 2}}
