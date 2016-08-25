@@ -118,13 +118,13 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
 
       process_training_accuracy(
         training_workers,
-        current_network_state,
+        new_network_state,
         data,
         state
       )
       process_validation_accuracy(
         validation_workers,
-        current_network_state,
+        new_network_state,
         data,
         state
       )
@@ -274,27 +274,19 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
   defp start_workers(data, parameters, state) do
     %{workers: maximum_workers} = parameters
 
-    initial_configuration = prepare_training_configuration(parameters)
-
-    prepare_worker_setup(data, maximum_workers)
-    |> start_workers(initial_configuration, maximum_workers, state)
-  end
-
-  defp prepare_training_configuration(parameters) do
-    case Map.get(parameters, :batch_size) do
+    configuration = case Map.get(parameters, :batch_size) do
       nil        -> %{}
       batch_size -> %{batch_size: batch_size}
     end
-  end
 
-  defp prepare_worker_setup(data, maximum_workers) do
-    extract_chunks(data, maximum_workers)
+    data
+    |> extract_chunks(maximum_workers)
+    |> start_workers(configuration, maximum_workers, state)
   end
 
   defp extract_chunks(:no_data, _worker_count) do
     %{location: :memory, sources: []}
   end
-
   defp extract_chunks(data,  worker_count) do
     %{data: data_source, size: data_size} = data
 
@@ -375,7 +367,6 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
   defp train_each_batch([], _parameters, network_state, _, _) do
     network_state
   end
-
   defp train_each_batch(workers, parameters, network_state, state, current_batch) do
     {remaining_workers, correction} = Enum.map(workers, &train_worker(&1, network_state))
     |> Enum.map(&await_worker/1)
@@ -407,11 +398,8 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     {workers, correction}
   end
 
-  defp filter_workers([], workers) do
-    workers
-  end
-
-  defp filter_workers([worker_data|rest], workers) do
+  defp filter_workers([],                 workers), do: workers
+  defp filter_workers([worker_data|rest], workers)  do
     case worker_data do
       {_worker, {:done,     _}} -> filter_workers(rest, workers)
       {worker,  {:continue, _}} -> filter_workers(rest, [worker|workers])
@@ -419,12 +407,12 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
   end
 
   defp reduce_correction(worker_data) do
-    corrections = Enum.reduce(worker_data, [], fn(data, accumulator) ->
+    worker_data
+    |> Enum.reduce([], fn(data, accumulator) ->
       {_, {_, correction}} = data
 
       [correction|accumulator]
     end)
-
-    Enum.reduce(corrections, &Propagator.reduce_correction/2)
+    |> Enum.reduce(&Propagator.reduce_correction/2)
   end
 end

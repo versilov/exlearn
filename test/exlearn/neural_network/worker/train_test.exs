@@ -28,8 +28,7 @@ defmodule ExLearn.NeuralNetwork.Worker.TrainTest do
       {Matrix.new(1, 3, [[2, 3, 4]]), Matrix.new(1, 2, [[2600, 3800]])}
     ]
     network_state = WorkerFixtures.initial_network_state
-    path          = TestUtil.temp_file_path()
-
+    path          = TestUtil.temp_file_path("neural_network-worker-train_test")
     TestUtil.write_to_file_as_binary(data, path)
 
     args = %{
@@ -207,7 +206,7 @@ defmodule ExLearn.NeuralNetwork.Worker.TrainTest do
     network_state = WorkerFixtures.initial_network_state
 
     data = []
-    path = TestUtil.temp_file_path()
+    path = TestUtil.temp_file_path("neural_network-worker-train_test")
     TestUtil.write_to_file_as_binary(data, path)
 
     args = %{data: %{location: :file, source: [path]}}
@@ -226,6 +225,8 @@ defmodule ExLearn.NeuralNetwork.Worker.TrainTest do
     assert worker_pid |> Process.alive?
     assert reference  |> is_reference
     assert worker_pid == pid_of_reference
+
+    :ok = File.rm(path)
   end
 
   test "#train with no data from memory can be called", %{setup: setup} do

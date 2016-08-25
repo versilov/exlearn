@@ -152,15 +152,6 @@ defmodule ExLearn.NeuralNetwork.Worker do
   end
 
   defp network_train(network_state, state) do
-    %{batches: %{current: current}} = state
-
-    case current do
-      :not_set -> Map.put(state, :result, :no_data)
-      _        -> train_current_batch(network_state, state)
-    end
-  end
-
-  defp train_current_batch(network_state, state) do
     %{
       batches: %{
         current:   current,
@@ -183,10 +174,11 @@ defmodule ExLearn.NeuralNetwork.Worker do
     } = state
 
     new_batches = split_in_batches(data, configuration)
+    result      = {:done, correction}
 
     state
-    |> Map.put(:batches, new_batches        )
-    |> Map.put(:result,  {:done, correction})
+    |> Map.put(:batches, new_batches)
+    |> Map.put(:result,  result     )
   end
 
   def state_with_continue(state, correction) do
@@ -195,10 +187,11 @@ defmodule ExLearn.NeuralNetwork.Worker do
     }} = state
 
     new_batches = %{current: new_current, remaining: new_remaining}
+    result      = {:continue, correction}
 
     state
-    |> Map.put(:batches, new_batches            )
-    |> Map.put(:result,  {:continue, correction})
+    |> Map.put(:batches, new_batches)
+    |> Map.put(:result,  result     )
   end
 
   @spec train_network(list, map, map) :: map
@@ -222,11 +215,11 @@ defmodule ExLearn.NeuralNetwork.Worker do
   end
 
   defp network_test(data, network_state) do
-    network_test(data, network_state, {0, 0})
+    network_test(data, network_state, 0, 0)
   end
 
-  defp network_test([], _, accumulator), do: accumulator
-  defp network_test([sample|rest], network_state, {total_error, total_match}) do
+  defp network_test([], _, error, match), do: {error, match}
+  defp network_test([sample|rest], network_state, total_error, total_match) do
     {error, match} = Forwarder.forward_for_test(sample, network_state)
 
     new_match = case match do
@@ -234,6 +227,6 @@ defmodule ExLearn.NeuralNetwork.Worker do
       false -> total_match
     end
 
-    network_test(rest, network_state, {total_error + error, new_match})
+    network_test(rest, network_state, total_error + error, new_match)
   end
 end
