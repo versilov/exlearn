@@ -13,7 +13,7 @@ defmodule ExLearn.NeuralNetwork.Worker.GetTest do
     }}
   end
 
-  test "#get with empty data returns the result", %{setup: setup} do
+  test "#get returns the initial result", %{setup: setup} do
     %{
       name:    worker = {:global, reference},
       options: options
@@ -32,6 +32,4 @@ defmodule ExLearn.NeuralNetwork.Worker.GetTest do
     assert reference  |> is_reference
     assert worker_pid == pid_of_reference
   end
-
-  # TODO: get after training, validation, test, ask
 end

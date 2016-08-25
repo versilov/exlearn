@@ -68,8 +68,13 @@ defmodule ExLearn.NeuralNetwork.Worker do
   def handle_cast({:predict, network_state}, state) do
     %{data: data} = state
 
-    result    = network_predict(data, network_state)
-    new_state = Map.put(state, :result, result)
+    new_state = case data do
+      [] -> state
+      _  ->
+        result = network_predict(data, network_state)
+
+        Map.put(state, :result, result)
+    end
 
     {:noreply, new_state}
   end
@@ -78,15 +83,25 @@ defmodule ExLearn.NeuralNetwork.Worker do
   def handle_cast({:test, network_state}, state) do
     %{data: data} = state
 
-    result    = network_test(data, network_state)
-    new_state = Map.put(state, :result, result)
+    new_state = case data do
+      [] -> state
+      _  ->
+        result = network_test(data, network_state)
+
+        Map.put(state, :result, result)
+    end
 
     {:noreply, new_state}
   end
 
   @spec handle_cast(tuple, map) :: {:noreply, map}
   def handle_cast({:train, network_state}, state) do
-    new_state = network_train(network_state, state)
+    %{data: data} = state
+
+    new_state = case data do
+      [] -> state
+      _  -> network_train(network_state, state)
+    end
 
     {:noreply, new_state}
   end

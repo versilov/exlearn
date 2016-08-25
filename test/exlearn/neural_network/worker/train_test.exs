@@ -42,6 +42,8 @@ defmodule ExLearn.NeuralNetwork.Worker.TrainTest do
 
     {:ok, worker_pid} = Worker.start_link(args, options)
 
+    assert Worker.get(worker) == :no_data
+
     Worker.train(network_state, worker)
     {:continue, first_correction } = Worker.get(worker)
 
@@ -130,6 +132,8 @@ defmodule ExLearn.NeuralNetwork.Worker.TrainTest do
 
     {:ok, worker_pid} = Worker.start_link(args, options)
 
+    assert Worker.get(worker) == :no_data
+
     Worker.train(network_state, worker)
     {:continue, first_correction } = Worker.get(worker)
 
@@ -197,14 +201,43 @@ defmodule ExLearn.NeuralNetwork.Worker.TrainTest do
     assert worker_pid == pid_of_reference
   end
 
-  test "#train with no data can be called", %{setup: setup} do
+  test "#train with no data from file can be called", %{setup: setup} do
     %{name: worker = {:global, reference}, options: options} = setup
 
     network_state = WorkerFixtures.initial_network_state
 
-    args = %{data: %{location: :memory, source: []}}
+    data = []
+    path = TestUtil.temp_file_path()
+    TestUtil.write_to_file_as_binary(data, path)
+
+    args = %{data: %{location: :file, source: [path]}}
 
     {:ok, worker_pid} = Worker.start_link(args, options)
+
+    assert Worker.get(worker) == :no_data
+
+    Worker.train(network_state, worker)
+
+    assert Worker.get(worker) == :no_data
+
+    pid_of_reference = :global.whereis_name(reference)
+
+    assert worker_pid |> is_pid
+    assert worker_pid |> Process.alive?
+    assert reference  |> is_reference
+    assert worker_pid == pid_of_reference
+  end
+
+  test "#train with no data from memory can be called", %{setup: setup} do
+    %{name: worker = {:global, reference}, options: options} = setup
+
+    network_state = WorkerFixtures.initial_network_state
+
+    args = %{data: %{location: :file, source: []}}
+
+    {:ok, worker_pid} = Worker.start_link(args, options)
+
+    assert Worker.get(worker) == :no_data
 
     Worker.train(network_state, worker)
 
