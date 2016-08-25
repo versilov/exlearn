@@ -281,4 +281,44 @@ defmodule ExLearn.NeuralNetwork.Accumulator.ProcessTrainTest do
     assert reference       |> is_reference
     assert accumulator_pid == pid_of_reference
   end
+
+  test "#process|:train with data in memory with multiple batches", %{setup: setup} do
+    %{
+      args:       args,
+      name:       accumulator = {:global, reference},
+      options:    options,
+      store_name: store_name
+    } = setup
+
+    {:ok, accumulator_pid} = Accumulator.start_link(args, options)
+
+    data_samples = [
+      {Matrix.new(1, 3, [[1, 2, 3]]), Matrix.new(1, 2, [[1900, 2800]])},
+      {Matrix.new(1, 3, [[2, 3, 4]]), Matrix.new(1, 2, [[2600, 3800]])}
+    ]
+
+    data = %{train: %{data: data_samples, size: 2}}
+    parameters = %{
+      batch_size:    1,
+      epochs:        1,
+      learning_rate: 0.01,
+      workers:       1
+    }
+
+    initial_network_state  = AccumulatorFixtures.initial_network_state
+    expected_network_state = AccumulatorFixtures.expected_network_state_for_multi_batches
+    Store.set(initial_network_state, store_name)
+
+    assert Accumulator.get(accumulator) == :no_data
+    Accumulator.process(data, parameters, accumulator)
+    assert Accumulator.get(accumulator) == :no_data
+    assert Store.get(store_name) == expected_network_state
+
+    pid_of_reference = :global.whereis_name(reference)
+
+    assert accumulator_pid |> is_pid
+    assert accumulator_pid |> Process.alive?
+    assert reference       |> is_reference
+    assert accumulator_pid == pid_of_reference
+  end
 end
