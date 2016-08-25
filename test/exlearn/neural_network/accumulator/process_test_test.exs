@@ -66,8 +66,9 @@ defmodule ExLearn.NeuralNetwork.Accumulator.ProcessTestTest do
     data       = %{test: %{data: path, size: 2}}
     parameters = %{}
 
+    assert Accumulator.get(accumulator) == :no_data
     :ok = Accumulator.process(data, parameters, accumulator)
-    assert Accumulator.get(accumulator) == :ok
+    assert Accumulator.get(accumulator) == :no_data
     assert Store.get(store_name)        == network_state
 
     pid_of_reference = :global.whereis_name(reference)
@@ -101,8 +102,72 @@ defmodule ExLearn.NeuralNetwork.Accumulator.ProcessTestTest do
     data       = %{test: %{data: data_samples, size: 2}}
     parameters = %{}
 
+    assert Accumulator.get(accumulator) == :no_data
     :ok = Accumulator.process(data, parameters, accumulator)
-    assert Accumulator.get(accumulator) == :ok
+    assert Accumulator.get(accumulator) == :no_data
+    assert Store.get(store_name)        == network_state
+
+    pid_of_reference = :global.whereis_name(reference)
+
+    assert accumulator_pid |> is_pid
+    assert accumulator_pid |> Process.alive?
+    assert reference       |> is_reference
+    assert accumulator_pid == pid_of_reference
+  end
+
+  test "#process|:test with no data in file can be called", %{setup: setup} do
+    %{
+      args:       args,
+      name:       accumulator = {:global, reference},
+      options:    options,
+      store_name: store_name
+    } = setup
+
+    {:ok, accumulator_pid} = Accumulator.start_link(args, options)
+
+    network_state = AccumulatorFixtures.initial_network_state
+    Store.set(network_state, store_name)
+
+    path = TestUtil.temp_file_path("exlearn-neural_network-accumulator-process_test_test")
+    TestUtil.write_to_file_as_binary([], path)
+
+    data       = %{test: %{data: path, size: 1}}
+    parameters = %{}
+
+    assert Accumulator.get(accumulator) == :no_data
+    :ok = Accumulator.process(data, parameters, accumulator)
+    assert Accumulator.get(accumulator) == :no_data
+    assert Store.get(store_name)        == network_state
+
+    pid_of_reference = :global.whereis_name(reference)
+
+    assert accumulator_pid |> is_pid
+    assert accumulator_pid |> Process.alive?
+    assert reference       |> is_reference
+    assert accumulator_pid == pid_of_reference
+
+    :ok = File.rm(path)
+  end
+
+  test "#process|:test with no data in memory can be called", %{setup: setup} do
+    %{
+      args:       args,
+      name:       accumulator = {:global, reference},
+      options:    options,
+      store_name: store_name
+    } = setup
+
+    {:ok, accumulator_pid} = Accumulator.start_link(args, options)
+
+    network_state = AccumulatorFixtures.initial_network_state
+    Store.set(network_state, store_name)
+
+    data       = %{test: %{data: [], size: 1}}
+    parameters = %{}
+
+    assert Accumulator.get(accumulator) == :no_data
+    :ok = Accumulator.process(data, parameters, accumulator)
+    assert Accumulator.get(accumulator) == :no_data
     assert Store.get(store_name)        == network_state
 
     pid_of_reference = :global.whereis_name(reference)

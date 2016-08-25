@@ -72,8 +72,9 @@ defmodule ExLearn.NeuralNetwork.Accumulator.ProcessTrainTest do
     expected_network_state = AccumulatorFixtures.expected_network_state
     Store.set(initial_network_state, store_name)
 
-    :ok = Accumulator.process(data, parameters, accumulator)
-    assert Accumulator.get(accumulator) == :ok
+    assert Accumulator.get(accumulator) == :no_data
+    Accumulator.process(data, parameters, accumulator)
+    assert Accumulator.get(accumulator) == :no_data
     assert Store.get(store_name) == expected_network_state
 
     pid_of_reference = :global.whereis_name(reference)
@@ -113,8 +114,9 @@ defmodule ExLearn.NeuralNetwork.Accumulator.ProcessTrainTest do
     expected_network_state = AccumulatorFixtures.expected_network_state
     Store.set(initial_network_state, store_name)
 
-    :ok = Accumulator.process(data, parameters, accumulator)
-    assert Accumulator.get(accumulator) == :ok
+    assert Accumulator.get(accumulator) == :no_data
+    Accumulator.process(data, parameters, accumulator)
+    assert Accumulator.get(accumulator) == :no_data
     assert Store.get(store_name) == expected_network_state
 
     pid_of_reference = :global.whereis_name(reference)
@@ -153,8 +155,9 @@ defmodule ExLearn.NeuralNetwork.Accumulator.ProcessTrainTest do
     expected_network_state = AccumulatorFixtures.expected_network_states_for_l1
     Store.set(initial_network_state, store_name)
 
+    assert Accumulator.get(accumulator) == :no_data
     :ok = Accumulator.process(data, parameters, accumulator)
-    assert Accumulator.get(accumulator) == :ok
+    assert Accumulator.get(accumulator) == :no_data
     assert Store.get(store_name) == expected_network_state
 
     pid_of_reference = :global.whereis_name(reference)
@@ -193,8 +196,9 @@ defmodule ExLearn.NeuralNetwork.Accumulator.ProcessTrainTest do
     expected_network_state = AccumulatorFixtures.expected_network_states_for_l2
     Store.set(initial_network_state, store_name)
 
-    :ok = Accumulator.process(data, parameters, accumulator)
-    assert Accumulator.get(accumulator) == :ok
+    assert Accumulator.get(accumulator) == :no_data
+    Accumulator.process(data, parameters, accumulator)
+    assert Accumulator.get(accumulator) == :no_data
     assert Store.get(store_name) == expected_network_state
 
     pid_of_reference = :global.whereis_name(reference)

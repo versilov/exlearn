@@ -188,7 +188,7 @@ defmodule ExLearn.NeuralNetworkTest do
     result = NeuralNetwork.test(data, parameters, network)
     |> NeuralNetwork.result
 
-    assert result == :ok
+    assert result == :no_data
   end
 
   test "#train responds with :ok", %{setup: setup} do
@@ -197,6 +197,6 @@ defmodule ExLearn.NeuralNetworkTest do
     result = NeuralNetwork.train(data, parameters, network)
     |> NeuralNetwork.result
 
-    assert result == :ok
+    assert result == :no_data
   end
 end

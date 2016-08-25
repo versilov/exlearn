@@ -171,7 +171,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
 
   defp maybe_process_testing(data, parameters, state) do
     case Map.get(data, :test) do
-      nil -> :ok
+      nil -> :no_data
       _   -> process_testing(data, parameters, state)
     end
   end
@@ -216,6 +216,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
 
       Worker.get(worker_name)
     end)
+    |> Enum.filter(&is_tuple/1)
 
     error    = Enum.reduce(result, 0, fn({e, _}, acc) -> acc + e end)
     matching = Enum.reduce(result, 0, fn({_, m}, acc) -> acc + m end)
@@ -234,7 +235,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
 
   defp maybe_process_prediction(data, state) do
     case Map.get(data, :predict) do
-      nil             -> :ok
+      nil             -> :no_data
       prediction_data -> process_prediction(prediction_data, state)
     end
   end
