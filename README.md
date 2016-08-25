@@ -14,36 +14,36 @@ alias ExLearn.NeuralNetwork, as: NN
 structure_parameters = %{
   layers: %{
     input:   %{size: 2},
-    hidden: [%{activity: :logistic, name: "First Hidden", size: 2}],
-    output:  %{activity: :logistic, name: "Output",       size: 1}
+    hidden: [%{activity: :logistic, name: "First Hidden", size: 4}],
+    output:  %{activity: :softmax,  name: "Output",       size: 2}
   },
-  objective:    :cross_entropy,
+  objective:    :negative_log_likelihood,
   presentation: :argmax
 }
 
 network = NN.create(structure_parameters)
 
 initialization_parameters = %{
-  distribution: :uniform,
-  maximum:       1,
-  minimum:      -1,
-  modifier:     fn(value, _inputs, _outputs) -> value + 1 end
+  distribution: :normal,
+  deviation:    1,
+  mean:         0,
+  modifier:     fn(value, inputs, _outputs) -> value / :math.sqrt(inputs) end
 }
 
 NN.initialize(initialization_parameters, network)
 
 training_data = [
-  {Matrix.new(1, 2, [[0, 0]]), Matrix.new(1, 2, [[0]])},
-  {Matrix.new(1, 2, [[0, 1]]), Matrix.new(1, 2, [[1]])},
-  {Matrix.new(1, 2, [[1, 0]]), Matrix.new(1, 2, [[1]])},
-  {Matrix.new(1, 2, [[1, 1]]), Matrix.new(1, 2, [[1]])}
+  {Matrix.new(1, 2, [[0, 0]]), Matrix.new(1, 2, [[1, 0]])},
+  {Matrix.new(1, 2, [[0, 1]]), Matrix.new(1, 2, [[0, 1]])},
+  {Matrix.new(1, 2, [[1, 0]]), Matrix.new(1, 2, [[0, 1]])},
+  {Matrix.new(1, 2, [[1, 1]]), Matrix.new(1, 2, [[1, 0]])}
 ]
 
 prediction_data = [
-  Matrix.new(1, 2, [[0, 0]]),
-  Matrix.new(1, 2, [[0, 1]]),
-  Matrix.new(1, 2, [[1, 0]]),
-  Matrix.new(1, 2, [[1, 1]])
+  {0, Matrix.new(1, 2, [[0, 0]])},
+  {1, Matrix.new(1, 2, [[0, 1]])},
+  {2, Matrix.new(1, 2, [[1, 0]])},
+  {3, Matrix.new(1, 2, [[1, 1]])}
 ]
 
 data = %{
@@ -53,20 +53,16 @@ data = %{
 
 parameters = %{
   batch_size:    2,
-  epochs:        50,
-  learning_rate: 4.5,
+  epochs:        600,
+  learning_rate: 0.4,
   workers:       2
 }
 
 NN.process(data, parameters, network) |> NN.result
 
-|> Enum.map(fn(result) ->
-  %{input: input, output: output} = result
-
+|> Enum.map(fn({id, output}) ->
   IO.puts "------------------------------"
-  IO.puts "Input:"
-  Matrix.inspect input
-
+  IO.puts "Input ID: #{id}"
   IO.puts "Output: #{output}"
 end)
 ```
