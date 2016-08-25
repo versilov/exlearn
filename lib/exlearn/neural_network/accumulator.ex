@@ -373,7 +373,10 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     |> Enum.map(&await_worker/1)
     |> accumulate_correction
 
-    new_network_state = Propagator.apply_changes(correction, parameters, network_state)
+    new_network_state = case correction do
+      [] -> network_state
+      _  -> Propagator.apply_changes(correction, parameters, network_state)
+    end
 
     Store.set(new_network_state, state)
 
@@ -402,18 +405,21 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
   defp filter_workers([],                 workers), do: workers
   defp filter_workers([worker_data|rest], workers)  do
     case worker_data do
+      {_worker, :no_data      } -> filter_workers(rest, workers)
       {_worker, {:done,     _}} -> filter_workers(rest, workers)
       {worker,  {:continue, _}} -> filter_workers(rest, [worker|workers])
     end
   end
 
   defp reduce_correction(worker_data) do
-    worker_data
-    |> Enum.reduce([], fn(data, accumulator) ->
-      {_, {_, correction}} = data
-
-      [correction|accumulator]
+    corrections = Enum.reduce(worker_data, [], fn
+      ({_, :no_data       }, accumulator) -> accumulator
+      ({_, {_, correction}}, accumulator) -> [correction|accumulator]
     end)
-    |> Enum.reduce(&Propagator.reduce_correction/2)
+
+    case corrections do
+      [] -> []
+      _  -> Enum.reduce(corrections, &Propagator.reduce_correction/2)
+    end
   end
 end
