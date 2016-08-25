@@ -81,7 +81,7 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
 
   defp maybe_process_training_and_validation(data, parameters, state) do
     case Map.get(data, :train) do
-      nil -> :ok
+      nil -> :no_data
       _   -> process_training_and_validation(data, parameters, state)
     end
   end
@@ -285,9 +285,6 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     |> start_workers(configuration, maximum_workers, state)
   end
 
-  defp extract_chunks(:no_data, _worker_count) do
-    %{location: :memory, sources: []}
-  end
   defp extract_chunks(data,  worker_count) do
     %{data: data_source, size: data_size} = data
 
