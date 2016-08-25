@@ -116,19 +116,32 @@ defmodule ExLearn.NeuralNetworkTest do
     :ok = File.rm(path)
   end
 
-  test "#notifications returns an async task", %{setup: setup} do
+  test "#notifications outputs to stdout", %{setup: setup} do
     %{network: network} = setup
 
-    :ok = Notification.push("Message", network)
+    :ok = Notification.push("Message 1", network)
 
-    result = capture_io(fn ->
-      Task.start(fn ->
-        NeuralNetwork.notifications(:start, network)
-      end)
-      NeuralNetwork.notifications(:stop, network)
-    end)
+    assert capture_io(fn ->
+      NeuralNetwork.notifications(:start, network)
+      :ok = Notification.push("Message 2", network)
+      NeuralNetwork.notifications(:stop,  network)
+    end) == "Message 1\nMessage 2\n"
+  end
 
-    assert result == "Message\n"
+  test "#notifications stops the outputing process when done", %{setup: setup} do
+    %{network: network} = setup
+
+    :ok = Notification.push("Message 1", network)
+
+    assert capture_io(fn ->
+      network_with_pid = NeuralNetwork.notifications(:start, network)
+      %{notification_pid: notification_pid} = network_with_pid
+
+      :ok = Notification.push("Message 2", network)
+      NeuralNetwork.notifications(:stop,  network_with_pid)
+
+      refute Process.alive?(notification_pid)
+    end) == "Message 1\nMessage 2\n"
   end
 
   test "#predict responds with a list of numbers", %{setup: setup} do

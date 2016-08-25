@@ -79,7 +79,7 @@ defmodule ExLearn.NeuralNetwork do
 
     Notification.done(notification)
 
-    case Map.get(network, :notificatin_pid) do
+    case Map.get(network, :notification_pid) do
       nil -> network
       pid ->
         Process.exit(pid, :normal)

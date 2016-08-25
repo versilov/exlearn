@@ -25,10 +25,14 @@ defmodule NotificationTest do
 
     {:ok, notification_pid} = Notification.start_link(args, options)
 
-    :ok   = Notification.done(%{notification: name})
-    state = Notification.pop(name)
+    assert capture_io(fn ->
+      :ok   = Notification.push("Message", name)
+      :ok   = Notification.done(%{notification: name})
+      state = Notification.pop(name)
 
-    assert state == [:done]
+      assert state == [:done]
+    end) == "Message\n"
+
     assert notification_pid |> Process.alive?
   end
 
@@ -41,10 +45,14 @@ defmodule NotificationTest do
 
     {:ok, notification_pid} = Notification.start_link(args, options)
 
-    :ok   = Notification.done(name)
-    state = Notification.pop(name)
+    assert capture_io(fn ->
+      :ok   = Notification.push("Message", name)
+      :ok   = Notification.done(%{notification: name})
+      state = Notification.pop(name)
 
-    assert state == [:done]
+      assert state == [:done]
+    end) == "Message\n"
+
     assert notification_pid |> Process.alive?
   end
 
@@ -171,7 +179,7 @@ defmodule NotificationTest do
     :ok        = Notification.push(second_log, name)
 
     result = capture_io(fn ->
-      Task.start(fn -> Notification.stream(name) end)
+      Notification.stream(name)
 
       # Sleeping to allow the internal loop to continue.
       Process.sleep(501)
