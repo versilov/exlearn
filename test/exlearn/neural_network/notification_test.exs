@@ -171,17 +171,12 @@ defmodule NotificationTest do
     :ok        = Notification.push(second_log, name)
 
     result = capture_io(fn ->
-      Task.start(fn -> Notification.stream(name) |> Task.await end)
+      Task.start(fn -> Notification.stream(name) end)
 
       # Sleeping to allow the internal loop to continue.
       Process.sleep(501)
     end)
     assert result == first_log <> "\n" <> second_log <> "\n"
-
-    :ok = Notification.done(name)
-
-    # Allowing the :done message to be received.
-    Process.sleep(50)
 
     assert notification_pid |> Process.alive?
   end

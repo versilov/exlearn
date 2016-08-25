@@ -53,7 +53,7 @@ defmodule ExLearn.NeuralNetwork.Notification do
 
   @spec stream(map) :: no_return
   def stream(logger) do
-    Task.async(fn -> stream_loop(logger) end)
+    spawn fn -> stream_loop(logger) end
   end
 
   @spec stream_loop(map) :: no_return

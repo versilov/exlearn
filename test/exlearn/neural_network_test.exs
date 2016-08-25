@@ -124,7 +124,6 @@ defmodule ExLearn.NeuralNetworkTest do
     result = capture_io(fn ->
       Task.start(fn ->
         NeuralNetwork.notifications(:start, network)
-        |> Task.await(:infinity)
       end)
       NeuralNetwork.notifications(:stop, network)
     end)

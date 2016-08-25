@@ -65,7 +65,9 @@ defmodule ExLearn.NeuralNetwork do
   def notifications(:start, network) do
     %{notification: notification} = network
 
-    Notification.stream(notification)
+    pid = Notification.stream(notification)
+
+    Map.put(network, :notification_pid, pid)
   end
 
   @doc """
@@ -76,6 +78,14 @@ defmodule ExLearn.NeuralNetwork do
     %{notification: notification} = network
 
     Notification.done(notification)
+
+    case Map.get(network, :notificatin_pid) do
+      nil -> network
+      pid ->
+        Process.exit(pid, :normal)
+
+        Map.delete(network, :notification_pid)
+    end
   end
 
   @doc """
