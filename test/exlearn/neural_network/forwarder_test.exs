@@ -121,25 +121,14 @@ defmodule ExLearn.NeuralNetwork.ForwarderTest do
     assert Forwarder.forward_for_output(second_input, state) == second_expected
   end
 
-  test "#forward_for_test returns the outputs and expected", %{setup: setup} do
+  test "#forward_for_test returns the error and match", %{setup: setup} do
     %{state: state} = setup
 
     first_input  = {Matrix.new(1, 3, [[1, 2, 3]]), Matrix.new(1, 2, [[1900, 2800]])}
     second_input = {Matrix.new(1, 3, [[2, 3, 4]]), Matrix.new(1, 2, [[2600, 3800]])}
 
-    first_expected = %{
-      input:    Matrix.new(1, 3, [[1, 2, 3]]),
-      error:    -19,
-      expected: Matrix.new(1, 2, [[1900, 2800]]),
-      output:   Matrix.new(1, 2, [[1897, 2784]])
-    }
-
-    second_expected = %{
-      input:    Matrix.new(1, 3, [[2, 3, 4]]),
-      error:    66,
-      expected: Matrix.new(1, 2, [[2600, 3800]]),
-      output:   Matrix.new(1, 2, [[2620, 3846]])
-    }
+    first_expected  = {-19, false}
+    second_expected = { 66, false}
 
     assert Forwarder.forward_for_test(first_input,  state) == first_expected
     assert Forwarder.forward_for_test(second_input, state) == second_expected

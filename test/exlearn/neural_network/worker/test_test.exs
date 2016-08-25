@@ -21,10 +21,9 @@ defmodule ExLearn.NeuralNetwork.Worker.TestTest do
   test "#test returns the test results", %{setup: setup} do
     %{name: worker, options: options} = setup
 
-    first_sample = {Matrix.new(1, 3, [[1, 2, 3]]), Matrix.new(1, 2, [[1900, 2800]])}
+    first_sample  = {Matrix.new(1, 3, [[1, 2, 3]]), Matrix.new(1, 2, [[1900, 2800]])}
     second_sample = {Matrix.new(1, 3, [[2, 3, 4]]), Matrix.new(1, 2, [[2600, 3800]])}
-
-    data          = [first_sample,    second_sample ]
+    data          = [first_sample, second_sample]
     expected      = {47.0, 0}
     network_state = WorkerFixtures.initial_network_state
 

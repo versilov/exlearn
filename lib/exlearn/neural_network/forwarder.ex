@@ -75,39 +75,18 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
 
   @spec forward_for_test(tuple, map) :: binary
   def forward_for_test(sample, state) do
-    %{network: %{layers: layers}} = state
+    %{network: %{
+      layers:       layers,
+      objective:    %{function: function},
+      presentation: presentation
+    }} = state
 
     {input, expected} = sample
+    output            = calculate_output(input, layers)
+    error             = function.(expected, output)
 
-    calculate_test(
-      %{input: input, expected: expected},
-      input,
-      layers,
-      state
-    )
-  end
+    match = presentation.(expected) == presentation.(output)
 
-  defp calculate_test(sample, output, [], state) do
-    %{network: %{objective: %{function: function}}} = state
-    %{expected: expected} = sample
-
-    error = function.(expected, output)
-
-    sample
-    |> Map.put(:error,  error)
-    |> Map.put(:output, output)
-  end
-
-  defp calculate_test(sample, input, [layer|rest], state) do
-    %{
-      activity: %{function: function},
-      biases:   biases,
-      weights:  weights
-    } = layer
-
-    output = Matrix.dot_and_add(input, weights, biases)
-    |> Activation.apply(function)
-
-    calculate_test(sample, output, rest, state)
+    {error, match}
   end
 end
