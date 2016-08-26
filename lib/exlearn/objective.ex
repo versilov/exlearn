@@ -31,7 +31,13 @@ defmodule ExLearn.Objective do
   @spec cross_entropy_function(binary, binary) :: float
   defp cross_entropy_function(expected, actual) do
     binary_entropy_sum = Matrix.apply(expected, actual, fn(x, y) ->
-      x * :math.log(y) + (1 - x) * :math.log(1 - y)
+      normalized = case y do
+        0.0 -> 0.0000000001
+        1.0 -> 0.9999999999
+        _   -> y
+      end
+
+      x * :math.log(normalized) + (1 - x) * :math.log(1 - normalized)
     end) |> Matrix.sum
 
     -1 * binary_entropy_sum
