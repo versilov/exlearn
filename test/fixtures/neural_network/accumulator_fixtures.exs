@@ -33,6 +33,7 @@ defmodule ExLearn.NeuralNetwork.AccumulatorFixtures do
     %{
       network: %{
         layers: [
+          %{},
           %{
             activity: %{arity: 1, function: function, derivative: derivative},
             biases:   Matrix.new(1, 3, [[1, 2, 3]]),
@@ -66,6 +67,7 @@ defmodule ExLearn.NeuralNetwork.AccumulatorFixtures do
     %{
       network: %{
         layers: [
+          %{},
           %{
             activity: %{arity: 1, function: function, derivative: derivative},
             biases:   Matrix.new(1, 3, [[-837, -1828, -2819]]),
@@ -110,6 +112,7 @@ defmodule ExLearn.NeuralNetwork.AccumulatorFixtures do
     %{
       network: %{
         layers: [
+          %{},
           %{
             activity: %{arity: 1, function: function, derivative: derivative},
             biases:   Matrix.new(1, 3, [[-837, -1828, -2819]]),
@@ -154,6 +157,7 @@ defmodule ExLearn.NeuralNetwork.AccumulatorFixtures do
     %{
       network: %{
         layers: [
+          %{},
           %{
             activity: %{arity: 1, function: function, derivative: derivative},
             biases:   Matrix.new(1, 3, [[-837, -1828, -2819]]),

@@ -17,6 +17,7 @@ defmodule ExLearn.NeuralNetwork.WorkerFixtures do
     %{
       network: %{
         layers: [
+          %{},
           %{
             activity: %{function: function, derivative: derivative},
             biases:   Matrix.new(1, 3, [[1, 2, 3]]),

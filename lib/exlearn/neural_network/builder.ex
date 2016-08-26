@@ -27,7 +27,7 @@ defmodule ExLearn.NeuralNetwork.Builder do
 
     layer_config = [input_layer] ++ hidden_layers ++ [output_layer]
     objective    = Objective.determine(objective_setup, output_layer)
-    layers       = create_layers(layer_config, 1, [])
+    layers       = create_layers(layer_config)
 
     %{
       network: %{
@@ -37,6 +37,14 @@ defmodule ExLearn.NeuralNetwork.Builder do
       },
       structure: structure
     }
+  end
+
+  defp create_layers(layers) do
+    [first|_rest] = layers
+    dropout      = Map.get(first, :dropout, :no_dropout)
+    input_layer  = %{dropout: dropout}
+
+    create_layers(layers, 2, [input_layer])
   end
 
   defp create_layers([_|[]], _, accumulator) do
@@ -51,11 +59,12 @@ defmodule ExLearn.NeuralNetwork.Builder do
       size:     columns,
     } = second
 
-    name = Map.get(second, :name, "Layer #{count}")
+    name    = Map.get(second, :name,    "Layer #{count}")
+    dropout = Map.get(second, :dropout, :no_dropout     )
 
     activity = Activation.determine(function_setup)
 
-    layer = %{
+    initial_layer_config = %{
       activity: activity,
       biases:   :not_initialized,
       columns:  columns,
@@ -64,7 +73,12 @@ defmodule ExLearn.NeuralNetwork.Builder do
       weights:  :not_initialized,
     }
 
-    create_layers([second|rest], count + 1, [layer|accumulator])
+    new_layer_config = case rest do
+      [] -> initial_layer_config
+      _  -> initial_layer_config |> Map.put(:dropout, dropout)
+    end
+
+    create_layers([second|rest], count + 1, [new_layer_config|accumulator])
   end
 
   @doc """
@@ -74,8 +88,10 @@ defmodule ExLearn.NeuralNetwork.Builder do
   def initialize(network_state, parameters) do
     %{network: network = %{layers: layers}} = network_state
 
-    random_function = Distribution.determine(parameters)
-    new_layers      = initialize_layers(layers, random_function, [])
+    random_function    = Distribution.determine(parameters)
+    [first|rest]       = layers
+    initialized_layers = initialize_layers(rest, random_function, [])
+    new_layers         = [first|initialized_layers]
 
     new_network = Map.put(network, :layers, new_layers)
     Map.put(network_state, :network, new_network)

@@ -9,12 +9,13 @@ defmodule ExLearn.NeuralNetwork.Propagator do
   Performs backpropagation
   """
   @spec back_propagate(map, map) :: map
-  def back_propagate(forward_batch, state) do
-    %{network: %{layers: network_layers}} = state
+  def back_propagate(forward_state, state) do
+    %{network: %{layers: layers}} = state
 
-    deltas = calculate_deltas(forward_batch, network_layers, state)
+    [_first|rest] = layers
+    deltas        = calculate_deltas(forward_state, rest, state)
 
-    %{activity: activity, input: input} = forward_batch
+    %{activity: activity, input: input} = forward_state
 
     full_activity  = [%{output: input}|activity]
     bias_change    = deltas
@@ -82,17 +83,17 @@ defmodule ExLearn.NeuralNetwork.Propagator do
   end
 
   def apply_changes({bias_change, weight_change}, configuration, state) do
-    %{network: %{layers: layers}}     = state
+    %{network: network = %{layers: layers}} = state
+    [first|rest]       = layers
 
-    apply_changes({bias_change, weight_change}, configuration, layers, state, [])
-  end
-
-  def apply_changes({[], []}, _, [], state, new_layers) do
-    %{network: network} = state
-
-    new_network = put_in(network, [:layers], Enum.reverse(new_layers))
+    new_layers  = apply_changes({bias_change, weight_change}, configuration, rest, state, [])
+    new_network = put_in(network, [:layers], [first|new_layers])
 
     put_in(state, [:network], new_network)
+  end
+
+  def apply_changes({[], []}, _, [], _state, new_layers) do
+    Enum.reverse(new_layers)
   end
 
   def apply_changes({bias_changes, weight_changes}, configuration, layers, state, new_layers) do

@@ -20,6 +20,7 @@ defmodule ExLearn.NeuralNetwork.PropagatorTest do
     network_state = %{
       network: %{
         layers: [
+          %{},
           %{
             activity: %{derivative: derivative},
             biases:   Matrix.new(1, 3, [[1, 2, 3]]),
@@ -83,6 +84,7 @@ defmodule ExLearn.NeuralNetwork.PropagatorTest do
     expected = %{
       network: %{
         layers: [
+          %{},
           %{
             activity: %{derivative: derivative},
             biases:   Matrix.new(1, 3, [[-837, -1828, -2819]]),
@@ -156,6 +158,7 @@ defmodule ExLearn.NeuralNetwork.PropagatorTest do
     expected = %{
       network: %{
         layers: [
+          %{},
           %{
             activity: %{derivative: derivative},
             biases:   Matrix.new(1, 3, [[-837, -1828, -2819]]),

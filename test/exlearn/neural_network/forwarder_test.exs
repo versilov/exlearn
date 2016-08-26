@@ -14,6 +14,7 @@ defmodule ExLearn.NeuralNetwork.ForwarderTest do
     state = %{
       network: %{
         layers: [
+          %{},
           %{
             activity: %{function: f, derivative: d},
             biases:   Matrix.new(1, 3, [[1, 2, 3]]),

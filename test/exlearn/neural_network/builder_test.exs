@@ -70,6 +70,7 @@ defmodule ExLearn.NeuralNetwork.BuilderTest do
     expected = %{
       network: %{
         layers: [
+          %{dropout: :no_dropout},
           %{
             activity: %{
               function:   activity_function,
@@ -77,6 +78,7 @@ defmodule ExLearn.NeuralNetwork.BuilderTest do
             },
             biases:  :not_initialized,
             columns: 3,
+            dropout: :no_dropout,
             name:    "First Hidden",
             rows:    20,
             weights: :not_initialized
@@ -88,6 +90,7 @@ defmodule ExLearn.NeuralNetwork.BuilderTest do
             },
             biases:  :not_initialized,
             columns: 4,
+            dropout: :no_dropout,
             name:    "Second Hidden",
             rows:    3,
             weights: :not_initialized
@@ -129,8 +132,12 @@ defmodule ExLearn.NeuralNetwork.BuilderTest do
     result        = Builder.initialize(network_state, initialization_parameters)
     %{network: %{layers: layers}} = result
 
-    assert length(layers) == 3
-    Enum.each(layers, fn(layer) ->
+    assert length(layers) == 4
+
+    [first|rest] = layers
+    assert first == %{dropout: :no_dropout}
+
+    Enum.each(rest, fn(layer) ->
       %{
         biases:  biases,
         weights: weights
@@ -155,8 +162,12 @@ defmodule ExLearn.NeuralNetwork.BuilderTest do
     result        = Builder.initialize(network_state, initialization_parameters)
     %{network: %{layers: layers}} = result
 
-    assert length(layers) == 3
-    Enum.each(layers, fn(layer) ->
+    assert length(layers) == 4
+
+    [first|rest] = layers
+    assert first == %{dropout: :no_dropout}
+
+    Enum.each(rest, fn(layer) ->
       %{
         biases:  biases,
         weights: weights
@@ -180,8 +191,12 @@ defmodule ExLearn.NeuralNetwork.BuilderTest do
     result        = Builder.initialize(network_state, initialization_parameters)
     %{network: %{layers: layers}} = result
 
-    assert length(layers) == 3
-    Enum.each(layers, fn(layer) ->
+    assert length(layers) == 4
+
+    [first|rest] = layers
+    assert first == %{dropout: :no_dropout}
+
+    Enum.each(rest, fn(layer) ->
       %{
         biases:  biases,
         weights: weights
@@ -206,8 +221,12 @@ defmodule ExLearn.NeuralNetwork.BuilderTest do
     result        = Builder.initialize(network_state, initialization_parameters)
     %{network: %{layers: layers}} = result
 
-    assert length(layers) == 3
-    Enum.each(layers, fn(layer) ->
+    assert length(layers) == 4
+
+    [first|rest] = layers
+    assert first == %{dropout: :no_dropout}
+
+    Enum.each(rest, fn(layer) ->
       %{
         biases:  biases,
         weights: weights

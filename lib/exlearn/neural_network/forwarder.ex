@@ -12,9 +12,10 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
   def forward_for_activity(sample, state) do
     %{network: %{layers: layers}} = state
 
+    [_first|rest]     = layers
     {input, expected} = sample
 
-    calculate_activity(input, layers, [])
+    calculate_activity(input, rest, [])
     |> Map.put(:expected, expected)
     |> Map.put(:input, input)
   end
@@ -51,9 +52,10 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
       }
     } = state
 
-    {id, data} = input
-    output     = calculate_output(data, layers)
-    result     = presentation.(output)
+    [_first|rest] = layers
+    {id, data}    = input
+    output        = calculate_output(data, rest)
+    result        = presentation.(output)
 
     {id, result}
   end
@@ -81,8 +83,9 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
       presentation: presentation
     }} = state
 
+    [_first|rest]     = layers
     {input, expected} = sample
-    output            = calculate_output(input, layers)
+    output            = calculate_output(input, rest)
     error             = function.(expected, output)
 
     match = presentation.(expected) == presentation.(output)
