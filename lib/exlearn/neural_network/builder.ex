@@ -27,7 +27,7 @@ defmodule ExLearn.NeuralNetwork.Builder do
 
     layer_config = [input_layer] ++ hidden_layers ++ [output_layer]
     objective    = Objective.determine(objective_setup, output_layer)
-    layers       = create_layers(layer_config, [])
+    layers       = create_layers(layer_config, 1, [])
 
     %{
       network: %{
@@ -39,18 +39,19 @@ defmodule ExLearn.NeuralNetwork.Builder do
     }
   end
 
-  defp create_layers([_|[]], accumulator) do
+  defp create_layers([_|[]], _, accumulator) do
     Enum.reverse(accumulator)
   end
 
-  defp create_layers([first, second|rest], accumulator) do
+  defp create_layers([first, second|rest], count, accumulator) do
     %{size: rows} = first
 
     %{
       activity: function_setup,
-      name:     name,
       size:     columns,
     } = second
+
+    name = Map.get(second, :name, "Layer #{count}")
 
     activity = Activation.determine(function_setup)
 
@@ -63,7 +64,7 @@ defmodule ExLearn.NeuralNetwork.Builder do
       weights:  :not_initialized,
     }
 
-    create_layers([second|rest], [layer|accumulator])
+    create_layers([second|rest], count + 1, [layer|accumulator])
   end
 
   @doc """

@@ -20,8 +20,8 @@ alias ExLearn.NeuralNetwork, as: NN
 structure_parameters = %{
   layers: %{
     input:   %{size: 784},
-    hidden: [%{activity: :logistic, name: "First Hidden", size: 100}],
-    output:  %{activity: :logistic, name: "Output",       size: 10 }
+    hidden: [%{activity: :logistic, size: 100}],
+    output:  %{activity: :logistic, size: 10 }
   },
   objective:    :cross_entropy,
   presentation: :argmax

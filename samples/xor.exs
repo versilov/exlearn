@@ -4,8 +4,8 @@ alias ExLearn.NeuralNetwork, as: NN
 structure_parameters = %{
   layers: %{
     input:   %{size: 2},
-    hidden: [%{activity: :logistic, name: "First Hidden", size: 4}],
-    output:  %{activity: :softmax,  name: "Output",       size: 2}
+    hidden: [%{activity: :logistic, size: 4}],
+    output:  %{activity: :softmax,  size: 2}
   },
   objective:    :negative_log_likelihood,
   presentation: :argmax
