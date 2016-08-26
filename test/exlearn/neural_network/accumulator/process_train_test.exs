@@ -306,13 +306,12 @@ defmodule ExLearn.NeuralNetwork.Accumulator.ProcessTrainTest do
     }
 
     initial_network_state  = AccumulatorFixtures.initial_network_state
-    expected_network_state = AccumulatorFixtures.expected_network_state_for_multi_batches
     Store.set(initial_network_state, store_name)
 
     assert Accumulator.get(accumulator) == :no_data
     Accumulator.process(data, parameters, accumulator)
     assert Accumulator.get(accumulator) == :no_data
-    assert Store.get(store_name) == expected_network_state
+    refute Store.get(store_name) == initial_network_state
 
     pid_of_reference = :global.whereis_name(reference)
 

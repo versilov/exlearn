@@ -186,48 +186,4 @@ defmodule ExLearn.NeuralNetwork.AccumulatorFixtures do
       }
     }
   end
-
-  def expected_network_state_for_multi_batches do
-    %{
-      function:     function,
-      derivative:   derivative,
-      objective:    objective,
-      presentation: presentation
-    } = network_state_functions()
-
-    %{
-      network: %{
-        layers: [
-          %{
-            activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   Matrix.new(1, 3, [[-50407136, -65667148, -80927144]]),
-            weights:  Matrix.new(3, 3, [
-              [-100814280, -131334296, -161854288],
-              [-151221424, -197001440, -242781456],
-              [-201628544, -262668592, -323708576]
-            ])
-          },
-          %{
-            activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   Matrix.new(1, 2, [[-1095320.125, -1460727.125]]),
-            weights:  Matrix.new(3, 2, [
-              [-89827536,  -119794672],
-              [-150464704, -200660848],
-              [-211101856, -281527008]
-            ])
-          },
-          %{
-            activity: %{arity: 1, function: function, derivative: derivative},
-            biases:   Matrix.new(1, 2, [[-3449.5068359375, -16576.400390625]]),
-            weights:  Matrix.new(2, 2, [
-              [-25431652, -122049728],
-              [-48982768, -235074560]
-            ])
-          }
-        ],
-        objective:    objective,
-        presentation: presentation
-      }
-    }
-  end
 end

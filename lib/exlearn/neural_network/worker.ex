@@ -129,9 +129,11 @@ defmodule ExLearn.NeuralNetwork.Worker do
   end
 
   defp split_in_batches(data, configuration) do
+    shuffled_data = Enum.shuffle(data)
+
     chunks = case Map.get(configuration, :batch_size) do
-      nil        -> data
-      batch_size -> Enum.chunk(data, batch_size, batch_size, [])
+      nil        -> shuffled_data
+      batch_size -> Enum.chunk(shuffled_data, batch_size, batch_size, [])
     end
 
     case chunks do
