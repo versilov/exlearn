@@ -56,6 +56,9 @@ defmodule ExLearn.NeuralNetwork.ForwarderTest do
     first_activity = %{
       activity: [
         %{
+          output: Matrix.new(1, 3, [[1, 2, 3]])
+        },
+        %{
           function:   function,
           derivative: derivative,
           input:      Matrix.new(1, 3, [[31, 38, 45]]),
@@ -81,6 +84,9 @@ defmodule ExLearn.NeuralNetwork.ForwarderTest do
 
     second_activity = %{
       activity: [
+        %{
+          output: Matrix.new(1, 3, [[2, 3, 4]])
+        },
         %{
           function:   function,
           derivative: derivative,

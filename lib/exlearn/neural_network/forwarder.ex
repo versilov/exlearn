@@ -12,10 +12,37 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
   def forward_for_activity(sample, state) do
     %{network: %{layers: layers}} = state
 
-    [_first|rest]     = layers
+    [first|rest]      = layers
     {input, expected} = sample
 
-    calculate_activity(input, rest, [])
+    activity = case Map.get(first, :dropout, :no_dropout) do
+      :no_dropout ->
+        calculate_activity(input, rest, [%{output: input}])
+      dropout
+      when is_number(dropout) and dropout > 0.0 and dropout < 1.0
+      ->
+        %{size: size}  = first
+        dropout_matrix = Matrix.new(
+          1,
+          size,
+          fn ->
+            case :rand.uniform do
+              x when x < dropout -> 0
+              _                  -> 1 / (1 - dropout)
+            end
+          end
+        )
+
+        initial_input = Matrix.multiply(input, dropout_matrix)
+
+        calculate_activity(
+          initial_input,
+          rest,
+          [%{dropout: dropout_matrix, output: initial_input}]
+        )
+    end
+
+    activity
     |> Map.put(:expected, expected)
     |> Map.put(:input, input)
   end

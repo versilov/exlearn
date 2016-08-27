@@ -19,9 +19,9 @@ alias ExLearn.NeuralNetwork, as: NN
 # Defines the network structure.
 structure_parameters = %{
   layers: %{
-    input:   %{size: 784},
-    hidden: [%{activity: :logistic, size: 100}],
-    output:  %{activity: :logistic, size: 10 }
+    input:   %{size: 784, dropout: 0.2                     },
+    hidden: [%{size: 100, dropout: 0.5, activity: :logistic}],
+    output:  %{size: 10,                activity: :logistic}
   },
   objective:    :cross_entropy,
   presentation: :argmax

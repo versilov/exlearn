@@ -15,31 +15,30 @@ defmodule ExLearn.NeuralNetwork.Propagator do
     [_first|rest] = layers
     deltas        = calculate_deltas(forward_state, rest, state)
 
-    %{activity: activity, input: input} = forward_state
+    %{activity: activity} = forward_state
 
-    full_activity  = [%{output: input}|activity]
     bias_change    = deltas
-    weight_change  = calculate_weight_change(full_activity, deltas, [])
+    weight_change  = calculate_weight_change(activity, deltas, [])
 
     {bias_change, weight_change}
   end
 
   defp calculate_deltas(forward_state, network_layers, state) do
     %{
-      activity: activity_layers,
+      activity: [_first|rest],
       expected: expected,
       output:   output
     } = forward_state
 
-    reversed_activity_layers = Enum.reverse(activity_layers)
+    reversed_activity_layers = Enum.reverse(rest)
     reversed_network_layers  = Enum.reverse(network_layers)
 
-    [last_activity_layer|rest] = reversed_activity_layers
+    [last_activity_layer|other] = reversed_activity_layers
 
     %{network: %{objective: %{error: error_function}}} = state
     starting_delta = error_function.(expected, output, last_activity_layer)
 
-    calculate_remaning_deltas(rest, reversed_network_layers, [starting_delta])
+    calculate_remaning_deltas(other, reversed_network_layers, [starting_delta])
   end
 
   defp calculate_remaning_deltas([], _, deltas) do

@@ -206,19 +206,19 @@ defmodule ExLearn.NeuralNetwork.PropagatorTest do
     first_forward_state = %{
       activity: [
         %{
-          arity:      1,
+          output: Matrix.new(1, 3, [[1, 2, 3]])
+        },
+        %{
           derivative: derivative,
           input:      Matrix.new(1, 3, [[31, 38, 45]]),
           output:     Matrix.new(1, 3, [[32, 39, 46]])
         },
         %{
-          arity:      1,
           derivative: derivative,
           input:      Matrix.new(1, 2, [[383, 501]]),
           output:     Matrix.new(1, 2, [[384, 502]])
         },
         %{
-          arity:      1,
           derivative: derivative,
           input:      Matrix.new(1, 2, [[1896, 2783]]),
           output:     Matrix.new(1, 2, [[1897, 2784]])
@@ -256,19 +256,19 @@ defmodule ExLearn.NeuralNetwork.PropagatorTest do
     second_forward_state = %{
       activity: [
         %{
-          arity:      1,
+          output: Matrix.new(1, 3, [[2, 3, 4]])
+        },
+        %{
           derivative: derivative,
           input:      Matrix.new(1, 3, [[43, 53, 63]]),
           output:     Matrix.new(1, 3, [[44, 54, 64]])
         },
         %{
-          arity:      1,
           derivative: derivative,
           input:      Matrix.new(1, 2, [[530, 693]]),
           output:     Matrix.new(1, 2, [[531, 694]])
         },
         %{
-          arity:      1,
           derivative: derivative,
           input:      Matrix.new(1, 2, [[2619, 3845]]),
           output:     Matrix.new(1, 2, [[2620, 3846]])

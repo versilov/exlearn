@@ -70,7 +70,10 @@ defmodule ExLearn.NeuralNetwork.BuilderTest do
     expected = %{
       network: %{
         layers: [
-          %{dropout: :no_dropout},
+          %{
+            dropout: :no_dropout,
+            size:    20
+          },
           %{
             activity: %{
               function:   activity_function,
@@ -135,7 +138,10 @@ defmodule ExLearn.NeuralNetwork.BuilderTest do
     assert length(layers) == 4
 
     [first|rest] = layers
-    assert first == %{dropout: :no_dropout}
+    assert first == %{
+      dropout: :no_dropout,
+      size:    20
+    }
 
     Enum.each(rest, fn(layer) ->
       %{
@@ -165,7 +171,10 @@ defmodule ExLearn.NeuralNetwork.BuilderTest do
     assert length(layers) == 4
 
     [first|rest] = layers
-    assert first == %{dropout: :no_dropout}
+    assert first == %{
+      dropout: :no_dropout,
+      size:    20
+    }
 
     Enum.each(rest, fn(layer) ->
       %{
@@ -194,7 +203,10 @@ defmodule ExLearn.NeuralNetwork.BuilderTest do
     assert length(layers) == 4
 
     [first|rest] = layers
-    assert first == %{dropout: :no_dropout}
+    assert first == %{
+      dropout: :no_dropout,
+      size:    20
+    }
 
     Enum.each(rest, fn(layer) ->
       %{
@@ -224,7 +236,10 @@ defmodule ExLearn.NeuralNetwork.BuilderTest do
     assert length(layers) == 4
 
     [first|rest] = layers
-    assert first == %{dropout: :no_dropout}
+    assert first == %{
+      dropout: :no_dropout,
+      size:    20
+    }
 
     Enum.each(rest, fn(layer) ->
       %{

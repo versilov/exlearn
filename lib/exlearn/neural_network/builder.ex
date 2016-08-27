@@ -41,8 +41,12 @@ defmodule ExLearn.NeuralNetwork.Builder do
 
   defp create_layers(layers) do
     [first|_rest] = layers
-    dropout      = Map.get(first, :dropout, :no_dropout)
-    input_layer  = %{dropout: dropout}
+    dropout       = Map.get(first, :dropout, :no_dropout)
+    %{size: size} = first
+    input_layer   = %{
+      dropout: dropout,
+      size:    size
+    }
 
     create_layers(layers, 2, [input_layer])
   end
