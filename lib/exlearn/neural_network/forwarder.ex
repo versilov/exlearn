@@ -22,7 +22,7 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
       when is_number(dropout) and dropout > 0.0 and dropout < 1.0
       ->
         %{size: size}  = first
-        dropout_matrix = Matrix.new(
+        mask = Matrix.new(
           1,
           size,
           fn ->
@@ -33,12 +33,12 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
           end
         )
 
-        initial_input = Matrix.multiply(input, dropout_matrix)
+        initial_input = Matrix.multiply(input, mask)
 
         calculate_activity(
           initial_input,
           rest,
-          [%{dropout: dropout_matrix, output: initial_input}]
+          [%{mask: mask, output: initial_input}]
         )
     end
 
@@ -59,12 +59,39 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
     } = layer
 
     input  = Matrix.dot_and_add(layer_input, weights, biases)
-    output = Activation.apply(input, function)
 
-    new_activity = Map.put(activity, :input, input)
-    |> Map.put(:output, output)
+    case Map.get(layer, :dropout, :no_dropout) do
+      :no_dropout ->
+        output = Activation.apply(input, function)
 
-    calculate_activity(output, rest, [new_activity|activities])
+        new_activity = Map.put(activity, :input, input)
+        |> Map.put(:output, output)
+
+        calculate_activity(output, rest, [new_activity|activities])
+      dropout
+      when is_number(dropout) and dropout > 0.0 and dropout < 1.0
+      ->
+        %{columns: columns} = layer
+        mask = Matrix.new(
+          1,
+          columns,
+          fn ->
+            case :rand.uniform do
+              x when x < dropout -> 0
+              _                  -> 1 / (1 - dropout)
+            end
+          end
+        )
+
+        output = Activation.apply(input, function)
+        |> Matrix.multiply(mask)
+
+        new_activity =  Map.put(activity, :input,  input )
+        |> Map.put(:mask,   mask  )
+        |> Map.put(:output, output)
+
+        calculate_activity(output, rest, [new_activity|activities])
+    end
   end
 
   @doc """

@@ -56,7 +56,12 @@ defmodule ExLearn.NeuralNetwork.Propagator do
 
     %{weights: weights} = network_layer
 
-    [delta|_] = deltas
+    [initial_delta|_] = deltas
+
+    delta = case Map.get(activity_layer, :mask) do
+      nil  -> initial_delta
+      mask -> Matrix.multiply(initial_delta, mask)
+    end
 
     output_gradient = Matrix.dot_nt(delta, weights)
     input_gradient  = Activation.apply(input, derivative)
@@ -76,7 +81,8 @@ defmodule ExLearn.NeuralNetwork.Propagator do
 
   defp calculate_weight_change([a|as], [d|ds], total) do
     %{output: output} = a
-    result            = Matrix.dot_tn(output, d)
+
+    result = Matrix.dot_tn(output, d)
 
     calculate_weight_change(as, ds, [result|total])
   end
