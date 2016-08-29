@@ -13,7 +13,7 @@ defmodule ExLearn.NeuralNetwork.PropagatorTest do
     expected      = PropagatorFixtures.expected_from_correction
 
     assert Propagator.apply_changes(
-      correction, configuration, network_state
+      [], correction, configuration, network_state
     ) == expected
   end
 
@@ -24,8 +24,19 @@ defmodule ExLearn.NeuralNetwork.PropagatorTest do
     expected      = PropagatorFixtures.expected_from_correction_with_regularization
 
     assert Propagator.apply_changes(
-      correction, configuration, network_state
+      [], correction, configuration, network_state
     ) == expected
+  end
+
+  test "#apply_changes with momentum returns the new state" do
+    network_state   = PropagatorFixtures.network_state
+    configuration   = PropagatorFixtures.configuration_with_momentum
+    last_correction = PropagatorFixtures.first_correction
+    correction      = PropagatorFixtures.second_correction
+
+    assert Propagator.apply_changes(
+      last_correction, correction, configuration, network_state
+    ) |> is_map
   end
 
   test "#back_propagate returns the correction" do

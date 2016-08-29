@@ -105,32 +105,35 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     Notification.push("Started training", state)
 
     Enum.to_list(1..epochs)
-    |> Enum.reduce(network_state, fn(epoch, current_network_state) ->
-      Notification.push("Epoch: #{epoch}", state)
+    |> Enum.reduce(
+      {network_state, []},
+      fn(epoch, {current_network_state, last_correction}) ->
+        Notification.push("Epoch: #{epoch}", state)
 
-      new_network_state = train_each_batch(
-        training_workers,
-        training_parameters,
-        current_network_state,
-        state,
-        0
-      )
+        {new_network_state, correction} = train_each_batch(
+          training_workers,
+          training_parameters,
+          current_network_state,
+          last_correction,
+          state
+        )
 
-      process_training_accuracy(
-        training_workers,
-        new_network_state,
-        data,
-        state
-      )
-      process_validation_accuracy(
-        validation_workers,
-        new_network_state,
-        data,
-        state
-      )
+        process_training_accuracy(
+          training_workers,
+          new_network_state,
+          data,
+          state
+        )
+        process_validation_accuracy(
+          validation_workers,
+          new_network_state,
+          data,
+          state
+        )
 
-      new_network_state
-    end)
+        {new_network_state, correction}
+      end
+    )
   end
 
   defp process_training_accuracy([], _, _, _), do: :ok
@@ -362,22 +365,22 @@ defmodule ExLearn.NeuralNetwork.Accumulator do
     }
   end
 
-  defp train_each_batch([], _parameters, network_state, _, _) do
-    network_state
+  defp train_each_batch([], _parameters, network_state, correction, _) do
+    {network_state, correction}
   end
-  defp train_each_batch(workers, parameters, network_state, state, current_batch) do
+  defp train_each_batch(workers, parameters, network_state, last_correction, state) do
     {remaining_workers, correction} = Enum.map(workers, &train_worker(&1, network_state))
     |> Enum.map(&await_worker/1)
     |> accumulate_correction
 
     new_network_state = case correction do
       [] -> network_state
-      _  -> Propagator.apply_changes(correction, parameters, network_state)
+      _  -> Propagator.apply_changes(last_correction, correction, parameters, network_state)
     end
 
     Store.set(new_network_state, state)
 
-    train_each_batch(remaining_workers, parameters, new_network_state, state, current_batch + 1)
+    train_each_batch(remaining_workers, parameters, new_network_state, correction, state)
   end
 
   defp train_worker(worker, network_state) do

@@ -87,21 +87,28 @@ defmodule ExLearn.NeuralNetwork.Propagator do
     calculate_weight_change(as, ds, [result|total])
   end
 
-  def apply_changes({bias_change, weight_change}, configuration, state) do
+  def apply_changes(last_correction, correction, configuration, state) do
     %{network: network = %{layers: layers}} = state
-    [first|rest]       = layers
+    [first|rest] = layers
 
-    new_layers  = apply_changes({bias_change, weight_change}, configuration, rest, state, [])
-    new_network = put_in(network, [:layers], [first|new_layers])
+    new_layers = apply_changes(
+      last_correction, correction, configuration, rest, state, []
+    )
+    new_network = Map.put(network, :layers, [first|new_layers])
 
-    put_in(state, [:network], new_network)
+    Map.put(state, :network, new_network)
   end
 
-  def apply_changes({[], []}, _, [], _state, new_layers) do
+  def apply_changes(_, {[], []}, _, [], _state, new_layers) do
     Enum.reverse(new_layers)
   end
 
-  def apply_changes({bias_changes, weight_changes}, configuration, layers, state, new_layers) do
+  def apply_changes(last_correction, correction, configuration, layers, state, new_layers) do
+    {
+      [bias_change  |other_bias_changes  ],
+      [weight_change|other_weight_changes]
+    } = correction
+
     %{
       batch_size:     batch_size,
       data_size:      data_size,
@@ -110,9 +117,6 @@ defmodule ExLearn.NeuralNetwork.Propagator do
     } = configuration
 
     scale = learning_rate / batch_size
-
-    [bias_change|other_bias_changes]     = bias_changes
-    [weight_change|other_weight_changes] = weight_changes
 
     [%{activity: activity, biases: biases, weights: weights}|other_layers] = layers
 
@@ -126,9 +130,14 @@ defmodule ExLearn.NeuralNetwork.Propagator do
     new_weights = Matrix.multiply_with_scalar(weight_change, scale)
     |> Matrix.substract_inverse(scaled_weights)
 
-    new_layer = %{activity: activity, biases: new_biases, weights: new_weights}
+    {remaining_correction, final_weights} = apply_momentum(
+      last_correction, new_weights, configuration
+    )
+
+    new_layer = %{activity: activity, biases: new_biases, weights: final_weights}
 
     apply_changes(
+      remaining_correction,
       {other_bias_changes,
       other_weight_changes},
       configuration,
@@ -136,6 +145,26 @@ defmodule ExLearn.NeuralNetwork.Propagator do
       state,
       [new_layer|new_layers]
     )
+  end
+
+  defp apply_momentum([], weights, _), do: {[], weights}
+  defp apply_momentum(last_correction, weights, configuration) do
+    {
+      [_bias_change |other_bias_changes  ],
+      [weight_change|other_weight_changes]
+    } = last_correction
+
+    final_weights = case Map.get(configuration, :momentum) do
+      nil      -> weights
+      momentum
+      when is_number(momentum) and momentum > 0.0 and momentum < 1.0
+      ->
+        weight_change
+        |> Matrix.multiply_with_scalar(momentum)
+        |> Matrix.add(weights)
+    end
+
+    {{other_bias_changes, other_weight_changes}, final_weights}
   end
 
   def reduce_correction(correction, total) do
