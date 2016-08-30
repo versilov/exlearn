@@ -1,6 +1,7 @@
 defmodule ExLearn.NeuralNetwork.Worker do
   use GenServer
 
+  alias ExLearn.Util
   alias ExLearn.NeuralNetwork.{Forwarder, Propagator}
 
   #----------------------------------------------------------------------------
@@ -118,14 +119,30 @@ defmodule ExLearn.NeuralNetwork.Worker do
   @spec read_file(bitstring, list) :: list
   defp read_file(path, accumulator) do
     {:ok, binary} = File.read(path)
-    data          = :erlang.binary_to_term(binary)
 
-    prepend(data, accumulator)
-  end
+    version = 1.0
 
-  defp prepend([],           accumulator), do: accumulator
-  defp prepend([first|rest], accumulator)  do
-    prepend(rest, [first|accumulator])
+    <<
+      ^version      :: float-little-32,
+      count         :: float-little-32,
+      first_length  :: float-little-32,
+      second_length :: float-little-32,
+      step          :: float-little-32,
+      data          :: binary
+    >> = binary
+
+    first_size  = round(first_length ) * 4
+    second_size = round(second_length) * 4
+
+    Util.times(count, data, accumulator, fn(current, total) ->
+      <<
+        first  :: binary-size(first_size ),
+        second :: binary-size(second_size),
+        rest   :: binary
+      >> = current
+
+      {rest, [{first}|total]}
+    end)
   end
 
   defp split_in_batches(data, configuration) do

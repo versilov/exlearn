@@ -85,37 +85,52 @@ defmodule DataLoader do
   defp convert_training_data(data, number_of_files) do
     chunk_size = trunc(Float.ceil(50000 / number_of_files))
     chunks     = Enum.chunk(data, chunk_size, chunk_size, [])
+    path       = "samples/mnist-digits/data/training_data"
 
-    Enum.with_index(chunks)
-    |> Enum.each(fn({chunk, index}) ->
-      binary = :erlang.term_to_binary(chunk)
-
-      File.write("samples/mnist-digits/data/training_data-#{index}.eld", binary)
-    end)
+    write_chunks_to_file(chunks, path)
   end
 
   defp convert_validation_data(data, number_of_files) do
     chunk_size = trunc(Float.ceil(10000 / number_of_files))
     chunks     = Enum.chunk(data, chunk_size, chunk_size, [])
+    path       = "samples/mnist-digits/data/validation_data"
 
-    Enum.with_index(chunks)
-    |> Enum.each(fn({chunk, index}) ->
-      binary = :erlang.term_to_binary(chunk)
-
-      File.write("samples/mnist-digits/data/validation_data-#{index}.eld", binary)
-    end)
+    write_chunks_to_file(chunks, path)
   end
 
   defp convert_test_data(number_of_files) do
     data       = read_test_data()
     chunk_size = trunc(Float.ceil(10000 / number_of_files))
     chunks     = Enum.chunk(data, chunk_size, chunk_size, [])
+    path       = "samples/mnist-digits/data/test_data"
 
+    write_chunks_to_file(chunks, path)
+  end
+
+  defp write_chunks_to_file(chunks, path) do
     Enum.with_index(chunks)
     |> Enum.each(fn({chunk, index}) ->
-      binary = :erlang.term_to_binary(chunk)
+      version    = 1
+      count      = length(chunk)
+      input_size = 784
+      label_size = 10
+      step       = 1
 
-      File.write("samples/mnist-digits/data/test_data-#{index}.eld", binary)
+      initial = <<
+        version      :: float-little-32,
+        count        :: float-little-32,
+        input_length :: float-little-32,
+        label_length :: float-little-32,
+        step         :: float-little-32
+      >>
+
+      Enum.reduce(chunk, initial, fn(sample, accumulator) ->
+        {input, expected} = sample
+
+        accumulator <> input <> expected
+      end)
+
+      File.write(path <> "-#{index}.eld", binary)
     end)
   end
 
