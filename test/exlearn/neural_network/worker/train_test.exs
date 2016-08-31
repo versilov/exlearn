@@ -23,10 +23,19 @@ defmodule ExLearn.NeuralNetwork.Worker.TrainTest do
   test "#train with data in file returns the correction", %{setup: setup} do
     %{name: worker = {:global, reference}, options: options} = setup
 
-    data = [{Matrix.new(1, 3, [[1, 2, 3]]), Matrix.new(1, 2, [[1900, 2800]])}]
+    data = <<
+      1 :: float-little-32, # version
+      1 :: float-little-32, # number of elements
+      5 :: float-little-32, # length of input
+      4 :: float-little-32, # length of label
+      1 :: float-little-32  # length of step
+    >>
+    <> Matrix.new(1, 3, [[1, 2, 3]]) <> Matrix.new(1, 2, [[1900, 2800]])
+
     network_state = WorkerFixtures.initial_network_state
-    path          = TestUtil.temp_file_path("exlearn-neural_network-worker-train_test")
-    TestUtil.write_to_file_as_binary(data, path)
+
+    path = TestUtil.temp_file_path("exlearn-neural_network-worker-train_test")
+    :ok  = File.write(path, data)
 
     args = %{
       configuration: %{
