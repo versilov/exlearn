@@ -19,7 +19,7 @@ defmodule DataLoader do
   def load(file) do
     {:ok, binary} = File.read(file)
 
-    binary |> :erlang.binary_to_term
+    binary
   end
 
   def preview_image(image) do
@@ -110,11 +110,11 @@ defmodule DataLoader do
   defp write_chunks_to_file(chunks, path) do
     Enum.with_index(chunks)
     |> Enum.each(fn({chunk, index}) ->
-      version    = 1
-      count      = length(chunk)
-      input_size = 784
-      label_size = 10
-      step       = 1
+      version      = 1
+      count        = length(chunk)
+      input_length = 784
+      label_length = 10
+      step         = 1
 
       initial = <<
         version      :: float-little-32,
@@ -124,7 +124,7 @@ defmodule DataLoader do
         step         :: float-little-32
       >>
 
-      Enum.reduce(chunk, initial, fn(sample, accumulator) ->
+      binary = Enum.reduce(chunk, initial, fn(sample, accumulator) ->
         {input, expected} = sample
 
         accumulator <> input <> expected
