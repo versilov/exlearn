@@ -45,4 +45,27 @@ defmodule ExLearn.DataFixtures do
     >>
     <> <<1 :: float-little-32>> <> Matrix.new(1, 3, [[1, 2, 3]])
   end
+
+  def first_expected do
+    {<<1 :: float-little-32>>, Matrix.new(1, 2, [[1897, 2784]])}
+  end
+
+  def both_predict do
+    <<
+      1 :: float-little-32, # version
+      2 :: float-little-32, # number of elements
+      1 :: float-little-32, # length of ID
+      5 :: float-little-32, # length of sample
+      1 :: float-little-32  # length of step
+    >>
+    <> <<1 :: float-little-32>> <> Matrix.new(1, 3, [[1, 2, 3]])
+    <> <<2 :: float-little-32>> <> Matrix.new(1, 3, [[2, 3, 4]])
+  end
+
+  def both_expected do
+    [
+      {<<1 :: float-little-32>>, Matrix.new(1, 2, [[1897, 2784]])},
+      {<<2 :: float-little-32>>, Matrix.new(1, 2, [[2620, 3846]])}
+    ]
+  end
 end

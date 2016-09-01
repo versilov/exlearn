@@ -29,7 +29,7 @@ defmodule ExLearn.NeuralNetwork.Worker.PredictTest do
     %{name: worker, options: options} = setup
 
     data          = DataFixtures.first_predict
-    expected      = [{<<1 :: float-little-32>>, Matrix.new(1, 2, [[1897, 2784]])}]
+    expected      = [DataFixtures.first_expected]
     network_state = WorkerFixtures.initial_network_state
 
     path = TestUtil.temp_file_path("exlearn-neural_network-worker-predict_test")

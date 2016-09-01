@@ -13,7 +13,7 @@ defmodule ExLearn.UtilTest do
       {rest, total + first}
     end
 
-    assert Util.times(3, data, accumulator, function) == 6
+    assert Util.times(count, data, accumulator, function) == 6
    end
 
   test "#zip_map appplies a function on each pair of its arguments" do
