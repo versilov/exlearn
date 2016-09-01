@@ -1,5 +1,9 @@
-Code.require_file("test/test_util.exs")
-Code.require_file("test/fixtures/neural_network/worker_fixtures.exs")
+[
+  "test/test_util.exs",
+  "test/fixtures/data_fixtures.exs",
+  "test/fixtures/neural_network/worker_fixtures.exs"
+]
+|> Enum.map(&Code.require_file/1)
 
 defmodule ExLearn.NeuralNetwork.Worker.TrainTest do
   use ExUnit.Case, async: true
@@ -8,6 +12,7 @@ defmodule ExLearn.NeuralNetwork.Worker.TrainTest do
   alias ExLearn.NeuralNetwork.Worker
 
   alias ExLearn.TestUtil
+  alias ExLearn.DataFixtures
   alias ExLearn.NeuralNetwork.WorkerFixtures
 
   setup do
@@ -23,15 +28,7 @@ defmodule ExLearn.NeuralNetwork.Worker.TrainTest do
   test "#train with data in file returns the correction", %{setup: setup} do
     %{name: worker = {:global, reference}, options: options} = setup
 
-    data = <<
-      1 :: float-little-32, # version
-      1 :: float-little-32, # number of elements
-      5 :: float-little-32, # length of input
-      4 :: float-little-32, # length of label
-      1 :: float-little-32  # length of step
-    >>
-    <> Matrix.new(1, 3, [[1, 2, 3]]) <> Matrix.new(1, 2, [[1900, 2800]])
-
+    data          = DataFixtures.first_sample
     network_state = WorkerFixtures.initial_network_state
 
     path = TestUtil.temp_file_path("exlearn-neural_network-worker-train_test")
@@ -134,54 +131,6 @@ defmodule ExLearn.NeuralNetwork.Worker.TrainTest do
 
     assert correction == expected_correction
 
-    assert Worker.get(worker) == :no_data
-
-    pid_of_reference = :global.whereis_name(reference)
-
-    assert worker_pid |> is_pid
-    assert worker_pid |> Process.alive?
-    assert reference  |> is_reference
-    assert worker_pid == pid_of_reference
-  end
-
-  test "#train with no data in file can be called", %{setup: setup} do
-    %{name: worker = {:global, reference}, options: options} = setup
-
-    network_state = WorkerFixtures.initial_network_state
-
-    data = []
-    path = TestUtil.temp_file_path("exlearn-neural_network-worker-train_test")
-    TestUtil.write_to_file_as_binary(data, path)
-
-    args = %{data: %{location: :file, source: [path]}}
-
-    {:ok, worker_pid} = Worker.start_link(args, options)
-
-    assert Worker.get(worker) == :no_data
-    Worker.train(network_state, worker)
-    assert Worker.get(worker) == :no_data
-
-    pid_of_reference = :global.whereis_name(reference)
-
-    assert worker_pid |> is_pid
-    assert worker_pid |> Process.alive?
-    assert reference  |> is_reference
-    assert worker_pid == pid_of_reference
-
-    :ok = File.rm(path)
-  end
-
-  test "#train with no data in memory can be called", %{setup: setup} do
-    %{name: worker = {:global, reference}, options: options} = setup
-
-    network_state = WorkerFixtures.initial_network_state
-
-    args = %{data: %{location: :file, source: []}}
-
-    {:ok, worker_pid} = Worker.start_link(args, options)
-
-    assert Worker.get(worker) == :no_data
-    Worker.train(network_state, worker)
     assert Worker.get(worker) == :no_data
 
     pid_of_reference = :global.whereis_name(reference)

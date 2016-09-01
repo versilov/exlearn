@@ -127,7 +127,7 @@ defmodule ExLearn.NeuralNetwork.Worker do
       count         :: float-little-32,
       first_length  :: float-little-32,
       second_length :: float-little-32,
-      step          :: float-little-32,
+      _step         :: float-little-32,
       data          :: binary
     >> = binary
 
@@ -141,7 +141,7 @@ defmodule ExLearn.NeuralNetwork.Worker do
         rest   :: binary
       >> = current
 
-      {rest, [{first}|total]}
+      {rest, [{first, second}|total]}
     end)
   end
 
@@ -229,7 +229,8 @@ defmodule ExLearn.NeuralNetwork.Worker do
   end
 
   defp train_sample(sample, network_state) do
-    Forwarder.forward_for_activity(sample, network_state)
+    sample
+    |> Forwarder.forward_for_activity(network_state)
     |> Propagator.back_propagate(network_state)
   end
 
