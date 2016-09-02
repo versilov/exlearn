@@ -46,6 +46,28 @@ defmodule DataLoader do
     label
   end
 
+  def load_one_sample(path) do
+    {:ok, binary} = File.read(path)
+
+    <<
+      1             :: float-little-32,
+      _count        :: float-little-32,
+      input_length  :: float-little-32,
+      _label_length :: float-little-32,
+      _step         :: float-little-32,
+      data          :: binary
+    >> = binary
+
+    input_size  = round(input_length) * 4
+
+    <<
+      input  :: binary-size(input_size),
+      _rest  :: binary
+    >> = data
+
+    input
+  end
+
   #----------------------------------------------------------------------------
   # Internal Functions
   #----------------------------------------------------------------------------

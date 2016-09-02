@@ -46,10 +46,8 @@ NN.initialize(initialization_parameters, network)
 # NN.load("samples/mnist-digits/saved_network.el1", network)
 
 # Loading an image from the test data to be added as a prediction input.
-# [first_sample|_] = DataLoader.load("samples/mnist-digits/data/test_data-0.eld")
-# {first_image, _} = first_sample
-#
-# prediction_data = [{1, first_image}]
+first_image     = DataLoader.load_one_sample("samples/mnist-digits/data/test_data-0.eld")
+prediction_data = [{1, first_image}]
 
 # Defines the learning data and parameters.
 data = %{
@@ -64,8 +62,8 @@ data = %{
   test: %{
     data: "samples/mnist-digits/data/test_data-*.eld",
     size: 10000
-  }
-  # predict: %{data: prediction_data, size: 1}
+  },
+  predict: %{data: prediction_data, size: 1}
 }
 
 parameters = %{
@@ -89,13 +87,13 @@ result = NN.process(data, parameters, network) |> NN.result
 NN.notifications(:stop, network)
 
 # Displays the prediction to stdout.
-# Enum.map(result, fn({id, output}) ->
-#   IO.puts "------------------------------"
-#   IO.puts "Input ID: #{id}"
-#   DataLoader.preview_image(first_image)
-#
-#   IO.puts "Output: #{output}"
-# end)
+Enum.map(result, fn({id, output}) ->
+  IO.puts "------------------------------"
+  IO.puts "Input ID: #{id}"
+  DataLoader.preview_image(first_image)
+
+  IO.puts "Output: #{output}"
+end)
 
 # Saves the network state so it can be loaded back later.
 NN.save("samples/mnist-digits/saved_network.el1", network)
