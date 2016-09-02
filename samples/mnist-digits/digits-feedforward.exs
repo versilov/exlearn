@@ -55,15 +55,15 @@ NN.initialize(initialization_parameters, network)
 data = %{
   train: %{
     data: "samples/mnist-digits/data/training_data-*.eld",
-    size: 50000,
+    size: 50000
   },
   validate: %{
     data: "samples/mnist-digits/data/validation_data-*.eld",
-    size: 10000,
+    size: 10000
   },
   test: %{
     data: "samples/mnist-digits/data/test_data-*.eld",
-    size: 10000,
+    size: 10000
   }
   # predict: %{data: prediction_data, size: 1}
 }

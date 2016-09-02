@@ -112,8 +112,8 @@ defmodule DataLoader do
     |> Enum.each(fn({chunk, index}) ->
       version      = 1
       count        = length(chunk)
-      input_length = 784
-      label_length = 10
+      input_length = 784 + 2
+      label_length = 10  + 2
       step         = 1
 
       initial = <<
