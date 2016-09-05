@@ -40,7 +40,7 @@ argmax(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   matrix_data = (float *) matrix.data;
   argmax      = matrix_argmax(matrix_data);
 
-  return enif_make_int(env, argmax - 2);
+  return enif_make_int(env, argmax);
 }
 
 static ERL_NIF_TERM

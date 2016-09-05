@@ -23,7 +23,7 @@ matrix_argmax(const float *matrix) {
     }
   }
 
-  return argmax;
+  return argmax - 2;
 }
 
 static inline void
