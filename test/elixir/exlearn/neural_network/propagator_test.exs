@@ -1,4 +1,4 @@
-Code.require_file("test/fixtures/neural_network/propagator_fixtures.exs")
+Code.require_file("test/elixir/fixtures/neural_network/propagator_fixtures.exs")
 
 defmodule ExLearn.NeuralNetwork.PropagatorTest do
   use ExUnit.Case, async: true

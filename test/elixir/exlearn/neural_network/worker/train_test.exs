@@ -1,7 +1,7 @@
 [
-  "test/test_util.exs",
-  "test/fixtures/data_fixtures.exs",
-  "test/fixtures/neural_network/worker_fixtures.exs"
+  "test/elixir/test_util.exs",
+  "test/elixir/fixtures/data_fixtures.exs",
+  "test/elixir/fixtures/neural_network/worker_fixtures.exs"
 ]
 |> Enum.map(&Code.require_file/1)
 

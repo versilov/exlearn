@@ -1,3 +1,5 @@
+Code.require_file("test/elixir/test_util.exs")
+
 defmodule ExLearn.NeuralNetworkTest do
   use    ExUnit.Case, async: true
   import ExUnit.CaptureIO
@@ -5,6 +7,8 @@ defmodule ExLearn.NeuralNetworkTest do
   alias ExLearn.Matrix
   alias ExLearn.NeuralNetwork
   alias ExLearn.NeuralNetwork.Notification
+
+  alias ExLearn.TestUtil
 
   setup do
     structure_parameters = %{
@@ -106,9 +110,7 @@ defmodule ExLearn.NeuralNetworkTest do
   test "#load responds with :ok", %{setup: setup} do
     %{network: network} = setup
 
-    timestamp = :os.system_time(:micro_seconds) |> to_string
-    path      = "test/temp/exlearn-neural_network_test" <> timestamp
-
+    path = TestUtil.temp_file_path("exlearn-neural_network_test")
     :ok = NeuralNetwork.save(path, network)
 
     assert NeuralNetwork.load(path, network) == :ok
@@ -186,8 +188,7 @@ defmodule ExLearn.NeuralNetworkTest do
   test "#save responds with :ok", %{setup: setup} do
     %{network: network} = setup
 
-    timestamp = :os.system_time(:micro_seconds) |> to_string
-    path      = "test/temp/exlearn-neural_network_test" <> timestamp
+    path = TestUtil.temp_file_path("exlearn-neural_network_test")
 
     assert NeuralNetwork.save(path, network) == :ok
 

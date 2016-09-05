@@ -1,5 +1,5 @@
-Code.require_file("test/test_util.exs")
-Code.require_file("test/fixtures/data_fixtures.exs")
+Code.require_file("test/elixir/test_util.exs")
+Code.require_file("test/elixir/fixtures/data_fixtures.exs")
 
 defmodule ExLearn.NeuralNetwork.Worker.StartLinkTest do
   use ExUnit.Case, async: true

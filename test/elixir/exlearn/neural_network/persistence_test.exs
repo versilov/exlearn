@@ -1,12 +1,15 @@
+Code.require_file("test/elixir/test_util.exs")
+
 defmodule ExLearn.NeuralNetwork.PersistenceTest do
   use ExUnit.Case, async: true
 
   alias ExLearn.Matrix
   alias ExLearn.NeuralNetwork.Persistence
 
+  alias ExLearn.TestUtil
+
   setup do
-    timestamp = :os.system_time(:micro_seconds) |> to_string
-    path      = "test/temp/exlearn-neural_network-persistence_test" <> timestamp
+    path = TestUtil.temp_file_path("exlearn-neural_network-persistence_test")
 
     first_network_state = %{
       network: %{
@@ -47,9 +50,9 @@ defmodule ExLearn.NeuralNetwork.PersistenceTest do
     }
 
     {:ok, setup: %{
-      first_network_state:  first_network_state,
       path:                 path,
-      second_network_state: second_network_state,
+      first_network_state:  first_network_state,
+      second_network_state: second_network_state
     }}
   end
 
