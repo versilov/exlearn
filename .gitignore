@@ -2,6 +2,8 @@
 /cover
 /deps
 /priv
+/test/c/temp/*
+!/test/c/temp/.keep
 /test/elixir/temp/*
 !/test/elixir/temp/.keep
 *.ez
