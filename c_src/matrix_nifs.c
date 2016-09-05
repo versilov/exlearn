@@ -1,5 +1,6 @@
-#include <cblas.h>
 #include "erl_nif.h"
+
+#include "lib/matrix.c"
 
 //-----------------------------------------------------------------------------
 // Exported nifs
@@ -23,12 +24,7 @@ add(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   result_size = sizeof(float) * data_size;
   result_data = (float *) enif_make_new_binary(env, result_size, &result);
 
-  result_data[0] = first_data[0];
-  result_data[1] = first_data[1];
-
-  for (int index = 2; index < data_size; index += 1) {
-    result_data[index] = first_data[index] + second_data[index];
-  }
+  matrix_add(first_data, second_data, result_data);
 
   return result;
 }
@@ -37,19 +33,12 @@ static ERL_NIF_TERM
 argmax(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   ErlNifBinary  matrix;
   float        *matrix_data;
-  int           argmax, data_size;
+  int           argmax;
 
   if (!enif_inspect_binary(env, argv[0], &matrix)) return enif_make_badarg(env);
 
   matrix_data = (float *) matrix.data;
-  data_size   = matrix_data[0] * matrix_data[1] + 2;
-  argmax      = 2;
-
-  for (int index = 3; index < data_size; index += 1) {
-    if (matrix_data[argmax] < matrix_data[index]) {
-      argmax = index;
-    }
-  }
+  argmax      = matrix_argmax(matrix_data);
 
   return enif_make_int(env, argmax - 2);
 }
@@ -72,12 +61,7 @@ divide(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   result_size = sizeof(float) * data_size;
   result_data = (float *) enif_make_new_binary(env, result_size, &result);
 
-  result_data[0] = first_data[0];
-  result_data[1] = first_data[1];
-
-  for (int index = 2; index < data_size; index += 1) {
-    result_data[index] = first_data[index] / second_data[index];
-  }
+  matrix_divide(first_data, second_data, result_data);
 
   return result;
 }
@@ -100,25 +84,7 @@ dot(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   result_size = sizeof(float) * data_size;
   result_data = (float *) enif_make_new_binary(env, result_size, &result);
 
-  result_data[0] = first_data[0];
-  result_data[1] = second_data[1];
-
-  cblas_sgemm(
-    CblasRowMajor,
-    CblasNoTrans,
-    CblasNoTrans,
-    first_data[0],
-    second_data[1],
-    first_data[1],
-    1.0,
-    first_data + 2,
-    first_data[1],
-    second_data + 2,
-    second_data[1],
-    0.0,
-    result_data + 2,
-    result_data[1]
-  );
+  matrix_dot(first_data, second_data, result_data);
 
   return result;
 }
@@ -143,29 +109,7 @@ dot_and_add(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   result_size = sizeof(float) * data_size;
   result_data = (float *) enif_make_new_binary(env, result_size, &result);
 
-  result_data[0] = first_data[0];
-  result_data[1] = second_data[1];
-
-  cblas_sgemm(
-    CblasRowMajor,
-    CblasNoTrans,
-    CblasNoTrans,
-    first_data[0],
-    second_data[1],
-    first_data[1],
-    1.0,
-    first_data + 2,
-    first_data[1],
-    second_data + 2,
-    second_data[1],
-    0.0,
-    result_data + 2,
-    result_data[1]
-  );
-
-  for(int index = 2; index < data_size; index += 1) {
-    result_data[index] += third_data[index];
-  }
+  matrix_dot_and_add(first_data, second_data, third_data, result_data);
 
   return result;
 }
@@ -188,25 +132,7 @@ dot_nt(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   result_size = sizeof(float) * data_size;
   result_data = (float *) enif_make_new_binary(env, result_size, &result);
 
-  result_data[0] = first_data[0];
-  result_data[1] = second_data[0];
-
-  cblas_sgemm(
-    CblasRowMajor,
-    CblasNoTrans,
-    CblasTrans,
-    first_data[0],
-    second_data[0],
-    first_data[1],
-    1.0,
-    first_data + 2,
-    first_data[1],
-    second_data + 2,
-    second_data[1],
-    0.0,
-    result_data + 2,
-    result_data[1]
-  );
+  matrix_dot_nt(first_data, second_data, result_data);
 
   return result;
 }
@@ -229,25 +155,7 @@ dot_tn(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   result_size = sizeof(float) * data_size;
   result_data = (float *) enif_make_new_binary(env, result_size, &result);
 
-  result_data[0] = first_data[1];
-  result_data[1] = second_data[1];
-
-  cblas_sgemm(
-    CblasRowMajor,
-    CblasTrans,
-    CblasNoTrans,
-    first_data[1],
-    second_data[1],
-    first_data[0],
-    1.0,
-    first_data + 2,
-    first_data[1],
-    second_data + 2,
-    second_data[1],
-    0.0,
-    result_data + 2,
-    result_data[1]
-  );
+  matrix_dot_tn(first_data, second_data, result_data);
 
   return result;
 }
@@ -257,19 +165,12 @@ max(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   ErlNifBinary  matrix;
   float         max;
   float        *matrix_data;
-  int           data_size;
 
   if (!enif_inspect_binary(env, argv[0], &matrix)) return enif_make_badarg(env);
 
   matrix_data = (float *) matrix.data;
-  data_size   = matrix_data[0] * matrix_data[1] + 2;
-  max         = matrix_data[2];
 
-  for (int index = 3; index < data_size; index += 1) {
-    if (max < matrix_data[index]) {
-      max = matrix_data[index];
-    }
-  }
+  max = matrix_max(matrix_data);
 
   return enif_make_double(env, max);
 }
@@ -292,12 +193,7 @@ multiply(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   result_size = sizeof(float) * data_size;
   result_data = (float *) enif_make_new_binary(env, result_size, &result);
 
-  result_data[0] = first_data[0];
-  result_data[1] = first_data[1];
-
-  for (int index = 2; index < data_size; index += 1) {
-    result_data[index] = first_data[index] * second_data[index];
-  }
+  matrix_multiply(first_data, second_data, result_data);
 
   return result;
 }
@@ -327,12 +223,7 @@ multiply_with_scalar(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   result_size = sizeof(float) * data_size;
   result_data = (float *) enif_make_new_binary(env, result_size, &result);
 
-  result_data[0] = matrix_data[0];
-  result_data[1] = matrix_data[1];
-
-  for (int index = 2; index < data_size; index += 1) {
-    result_data[index] = matrix_data[index] * scalar;
-  }
+  matrix_multiply_with_scalar(matrix_data, scalar, result_data);
 
   return result;
 }
@@ -355,12 +246,7 @@ substract(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   result_size = sizeof(float) * data_size;
   result_data = (float *) enif_make_new_binary(env, result_size, &result);
 
-  result_data[0] = first_data[0];
-  result_data[1] = first_data[1];
-
-  for (int index = 2; index < data_size; index += 1) {
-    result_data[index] = first_data[index] - second_data[index];
-  }
+  matrix_substract(first_data, second_data, result_data);
 
   return result;
 }
@@ -370,17 +256,12 @@ sum(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   ErlNifBinary  matrix;
   float         sum;
   float        *matrix_data;
-  int           data_size;
 
   if (!enif_inspect_binary(env, argv[0], &matrix)) return enif_make_badarg(env);
 
   matrix_data = (float *) matrix.data;
-  data_size   = matrix_data[0] * matrix_data[1] + 2;
-  sum         = 0;
 
-  for (int index = 2; index < data_size; index += 1) {
-    sum += matrix_data[index];
-  }
+  sum = matrix_sum(matrix_data);
 
   return enif_make_double(env, sum);
 }
@@ -401,17 +282,7 @@ transpose(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   result_size = sizeof(float) * data_size;
   result_data = (float *) enif_make_new_binary(env, result_size, &result);
 
-  result_data[0] = matrix_data[1];
-  result_data[1] = matrix_data[0];
-
-  for (int row = 0; row < matrix_data[0]; row += 1) {
-    for (int column = 0; column < matrix_data[1]; column += 1) {
-      int result_index = column * result_data[1] + row    + 2;
-      int matrix_index = row *    matrix_data[1] + column + 2;
-
-      result_data[result_index] = matrix_data[matrix_index];
-    }
-  }
+  matrix_transpose(matrix_data, result_data);
 
   return result;
 }

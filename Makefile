@@ -6,10 +6,10 @@ ERL_INCLUDE_PATH = $(shell erl -eval 'io:format("~s", [lists:concat([code:root_d
 all: clean mkpriv compile
 
 clean:
-	rm -f priv/matrix.so
+	rm -f priv/matrix_nifs.so
 
 compile:
-	$(CC) -fPIC -I$(ERL_INCLUDE_PATH) -o priv/matrix.so -O3 -shared -std=c11 -Wall c_src/matrix.c -lblas
+	$(CC) -fPIC -I$(ERL_INCLUDE_PATH) -o priv/matrix_nifs.so -O3 -shared -std=c11 -Wall c_src/matrix_nifs.c -lblas
 
 mkpriv:
 	mkdir -p priv
