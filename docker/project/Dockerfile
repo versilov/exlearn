@@ -14,10 +14,11 @@ RUN set -ex                                                 && \
     echo 'Giving notroot permissions to /work'              && \
     chown -R notroot:notroot /work                          && \
                                                                \
-    echo 'Installing libblas-dev'                           && \
+    echo 'Installing blas and gsl'                          && \
     apt-get update                                          && \
     apt-get install -y --no-install-recommends                 \
-      libblas-dev                                           && \
+      libblas-dev                                              \
+      libgsl0-dev                                           && \
                                                                \
     echo 'Installing mix packages as notroot'               && \
     runuser notroot -c "                                       \
