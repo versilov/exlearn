@@ -13,5 +13,9 @@ compile:
 	$(CC) -fPIC -I$(ERL_INCLUDE_PATH) -o priv/matrix_nifs.so -O3 -shared -std=c11 -Wall native/matrix_nifs.c -lblas
 
 test:
+	rm -f test/c/temp/matrix_test
 	$(CC) -o test/c/temp/matrix_test -O3 -std=c11 -Wall test/c/matrix_test.c -lblas
 	./test/c/temp/matrix_test
+	rm -f test/c/temp/worker_file_io
+	$(CC) -o test/c/temp/worker_file_io -O3 -std=c11 -Wall test/c/worker/file_io_test.c
+	./test/c/temp/worker_file_io
