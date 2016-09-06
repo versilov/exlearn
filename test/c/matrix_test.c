@@ -1,6 +1,6 @@
 #include <assert.h>
 
-#include "../../c_src/lib/matrix.c"
+#include "../../native/lib/matrix.c"
 
 static void test_matrix_add() {
   float first[8]    = {2, 3, 1, 2, 3, 4, 5, 6 };

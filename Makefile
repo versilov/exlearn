@@ -10,7 +10,7 @@ clean:
 
 compile:
 	mkdir -p priv
-	$(CC) -fPIC -I$(ERL_INCLUDE_PATH) -o priv/matrix_nifs.so -O3 -shared -std=c11 -Wall c_src/matrix_nifs.c -lblas
+	$(CC) -fPIC -I$(ERL_INCLUDE_PATH) -o priv/matrix_nifs.so -O3 -shared -std=c11 -Wall native/matrix_nifs.c -lblas
 
 test:
 	$(CC) -o test/c/temp/matrix_test -O3 -std=c11 -Wall test/c/matrix_test.c -lblas
