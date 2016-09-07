@@ -151,6 +151,13 @@ alias docker-root-here='docker run --rm -it -v "$PWD":/work -w /work'
     docker-here exlearn mix dialyzer
     ```
 
+10. Debug C code
+    ```bash
+    docker-here --security-opt seccomp=unconfined exlearn bash
+
+    gdb
+    ```
+
 ## LICENSE
 
 This plugin is covered by the BSD license, see [LICENSE](LICENSE) for details.

@@ -8,7 +8,37 @@ typedef struct WorkerData {
   float **first, **second;
 } WorkerData;
 
-static void read_worker_data(const char *path, WorkerData *data) {
+static void
+free_worker_data(WorkerData *data) {
+  int index;
+
+  for(index = 0; index < data->count; index += 1) {
+    free(data->first[index] );
+    free(data->second[index]);
+  }
+
+  free(data->first);
+  free(data->second);
+
+  free(data);
+}
+
+static WorkerData *
+new_worker_data() {
+  WorkerData *data = malloc(sizeof(WorkerData));
+
+  data->count         = 0;
+  data->first_length  = 0;
+  data->second_length = 0;
+  data->step          = 0;
+  data->first         = NULL;
+  data->second        = NULL;
+
+  return data;
+}
+
+static void
+read_worker_data(const char *path, WorkerData *data) {
   float  float_buffer;
   float *first_buffer, *second_buffer;
   FILE  *file;

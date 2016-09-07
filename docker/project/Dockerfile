@@ -14,9 +14,10 @@ RUN set -ex                                                 && \
     echo 'Giving notroot permissions to /work'              && \
     chown -R notroot:notroot /work                          && \
                                                                \
-    echo 'Installing blas and gsl'                          && \
+    echo 'Installing debugger and libraries'                && \
     apt-get update                                          && \
     apt-get install -y --no-install-recommends                 \
+      gdb                                                      \
       libblas-dev                                              \
       libgsl0-dev                                           && \
                                                                \

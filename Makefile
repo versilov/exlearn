@@ -14,8 +14,8 @@ compile:
 
 test:
 	rm -f test/c/temp/matrix_test
-	$(CC) -o test/c/temp/matrix_test -O3 -std=c11 -Wall test/c/matrix_test.c -lblas
+	$(CC) -g -o test/c/temp/matrix_test -O3 -std=c11 -Wall test/c/matrix_test.c -lblas
 	./test/c/temp/matrix_test
-	rm -f test/c/temp/worker_file_io
-	$(CC) -o test/c/temp/worker_file_io -O3 -std=c11 -Wall test/c/worker/file_io_test.c
-	./test/c/temp/worker_file_io
+	rm -f test/c/temp/worker_data
+	$(CC) -g -o test/c/temp/worker_data -O3 -std=c11 -Wall test/c/worker/worker_data_test.c
+	./test/c/temp/worker_data
