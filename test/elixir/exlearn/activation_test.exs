@@ -54,36 +54,6 @@ defmodule ActivationTest do
     assert derivative.(argument, :not_needed) == expected_from_derivative
   end
 
-  test "#determine the binary pair" do
-    setup = :binary
-
-    %{function: function, derivative: derivative} = Activation.determine(setup)
-
-    argument = -1
-
-    expected_from_function   = 0
-    expected_from_derivative = 0
-
-    assert function.(argument, :not_needed)   == expected_from_function
-    assert derivative.(argument, :not_needed) == expected_from_derivative
-
-    argument = 0
-
-    expected_from_function   = 1
-    expected_from_derivative = 0
-
-    assert function.(argument, :not_needed)   == expected_from_function
-    assert derivative.(argument, :not_needed) == expected_from_derivative
-
-    argument = 1
-
-    expected_from_function   = 1
-    expected_from_derivative = 0
-
-    assert function.(argument, :not_needed)   == expected_from_function
-    assert derivative.(argument, :not_needed) == expected_from_derivative
-  end
-
   test "#determine the logistic pair" do
     setup = :logistic
 

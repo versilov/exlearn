@@ -30,21 +30,20 @@ defmodule ExLearn.Activation do
       %{function: function, derivative: derivative}
       when is_function(function, 2) and is_function(derivative, 2) ->
         %{function: function, derivative: derivative}
-      :arctan        -> arctan_pair
-      :bent_identity -> bent_identity_pair
-      :binary        -> binary_pair
-      :gaussian      -> gaussian_pair
-      :identity      -> identity_pair
-      :logistic      -> logistic_pair
-      :relu          -> relu_pair
-      :sinc          -> sinc_pair
-      :sinusoid      -> sinusoid_pair
-      :softmax       -> softmax_pair
-      :softplus      -> softplus_pair
-      :softsign      -> softsign_pair
-      :tanh          -> tanh_pair
-      {:elu,   alpha: alpha} -> elu_pair(alpha)
-      {:prelu, alpha: alpha} -> prelu_pair(alpha)
+      :arctan        -> arctan_pair               # 1
+      :bent_identity -> bent_identity_pair        # 2
+      :gaussian      -> gaussian_pair             # 3
+      :identity      -> identity_pair             # 4
+      :logistic      -> logistic_pair             # 5
+      :relu          -> relu_pair                 # 6
+      :sinc          -> sinc_pair                 # 7
+      :sinusoid      -> sinusoid_pair             # 8
+      :softmax       -> softmax_pair              # 9
+      :softplus      -> softplus_pair             # 10
+      :softsign      -> softsign_pair             # 11
+      :tanh          -> tanh_pair                 # 12
+      {:elu,   alpha: alpha} -> elu_pair(alpha)   # 13
+      {:prelu, alpha: alpha} -> prelu_pair(alpha) # 14
     end
   end
 
@@ -60,19 +59,6 @@ defmodule ExLearn.Activation do
   defp bent_identity_pair do
     function   = fn(x, _all) -> (:math.sqrt(x * x + 1) - 1) / 2 + x end
     derivative = fn(x, _all) -> x / (2 * :math.sqrt(x * x + 1)) + 1 end
-
-    %{function: function, derivative: derivative}
-  end
-
-  @spec binary_pair :: map
-  defp binary_pair do
-    function = fn
-      (x,  _all) when x < 0 -> 0
-      (_x, _all)            -> 1
-    end
-
-    # Derivative at 0 should be :undefined but no one really cares.
-    derivative = fn(_x, _all) -> 0 end
 
     %{function: function, derivative: derivative}
   end
