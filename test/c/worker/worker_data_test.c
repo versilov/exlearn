@@ -73,13 +73,15 @@ static void test_read_worker_data() {
   assert(data->second_length == 3);
   assert(data->step          == 1);
 
-  assert(data->first[0][0]  == 1);
+  assert(data->first[0][0] == 1);
+  assert(data->first[0][1] == 1);
+  assert(data->first[0][2] == 2);
+
   assert(data->second[0][0] == 1);
-  assert(data->first[0][1]  == 1);
   assert(data->second[0][1] == 1);
-  assert(data->first[0][2]  == 2);
   assert(data->second[0][2] == 4);
 
+  free(file);
   free_worker_data(data);
 }
 

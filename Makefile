@@ -18,6 +18,8 @@ test:
 	./test/c/temp/matrix_test
 	$(CC) -g -o test/c/temp/worker_data -O0 -std=c11 -Wall --coverage test/c/worker/worker_data_test.c
 	./test/c/temp/worker_data
+	$(CC) -g -o test/c/temp/batch_data -O0 -std=c11 -Wall --coverage test/c/worker/batch_data_test.c -lgsl -lgslcblas -lm
+	./test/c/temp/batch_data
 	for i in *.gcda; do gcov $$i > test/c/temp/$$i.coverage; done
 	grep -h -A1 "File 'native" test/c/temp/*.coverage
 	grep -C3 '#####' *.c.gcov | cat
