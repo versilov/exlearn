@@ -13,9 +13,12 @@ compile:
 	$(CC) -fPIC -I$(ERL_INCLUDE_PATH) -o priv/matrix_nifs.so -O3 -shared -std=c11 -Wall native/matrix_nifs.c -lblas
 
 test:
-	rm -f test/c/temp/matrix_test
-	$(CC) -g -o test/c/temp/matrix_test -O3 -std=c11 -Wall test/c/matrix_test.c -lblas
+	find test/c/temp/ ! -name '.keep' -type f -exec rm -f {} +
+	$(CC) -g -o test/c/temp/matrix_test -O0 -std=c11 -Wall --coverage test/c/matrix_test.c -lblas
 	./test/c/temp/matrix_test
-	rm -f test/c/temp/worker_data
-	$(CC) -g -o test/c/temp/worker_data -O3 -std=c11 -Wall test/c/worker/worker_data_test.c
+	$(CC) -g -o test/c/temp/worker_data -O0 -std=c11 -Wall --coverage test/c/worker/worker_data_test.c
 	./test/c/temp/worker_data
+	for i in *.gcda; do gcov $$i > test/c/temp/$$i.coverage; done
+	grep -h -A1 "File 'native" test/c/temp/*.coverage
+	grep -C3 '#####' *.c.gcov | cat
+	rm -f *.gcov *.gcda *.gcno
