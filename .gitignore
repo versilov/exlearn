@@ -12,3 +12,6 @@ erl_crash.dump
 notebooks/**/.ipynb_checkpoints
 samples/**/*.eld
 samples/**/*.el1
+*.gcda
+*.gcno
+*.gcov
