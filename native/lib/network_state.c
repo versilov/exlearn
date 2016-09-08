@@ -1,9 +1,3 @@
-typedef struct NetworkState {
-  int  layers;
-  int *biases;
-  int *weights;
-} NetworkState;
-
 static void
 free_network_state(NetworkState *state) {
   free(state->biases );

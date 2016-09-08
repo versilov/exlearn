@@ -1,13 +1,14 @@
 #include <math.h>
 #include <stdlib.h>
 
-typedef void (*ActivityFunction)(float *);
+#include "matrix.c"
+#include "structs.c"
 
 //-----------------------------------------------------------------------------
 // Activity function pairs
 //-----------------------------------------------------------------------------
 
-static void arctan_function(float *matrix) {
+static void arctan_function(ActivityClosure *_closure, float *matrix) {
   int length = matrix[0] * matrix[1] + 2;
 
   for (int index = 2; index < length; index += 1) {
@@ -15,7 +16,7 @@ static void arctan_function(float *matrix) {
   }
 }
 
-static void arctan_derivative(float *matrix) {
+static void arctan_derivative(ActivityClosure *_closure, float *matrix) {
   int   length = matrix[0] * matrix[1] + 2;
   float element;
 
@@ -26,7 +27,7 @@ static void arctan_derivative(float *matrix) {
   }
 }
 
-static void bent_identity_function(float *matrix) {
+static void bent_identity_function(ActivityClosure *_closure, float *matrix) {
   int   length = matrix[0] * matrix[1] + 2;
   float element;
 
@@ -37,7 +38,7 @@ static void bent_identity_function(float *matrix) {
   }
 }
 
-static void bent_identity_derivative(float *matrix) {
+static void bent_identity_derivative(ActivityClosure *_closure, float *matrix) {
   int   length = matrix[0] * matrix[1] + 2;
   float element;
 
@@ -48,7 +49,7 @@ static void bent_identity_derivative(float *matrix) {
   }
 }
 
-static void gaussian_function(float *matrix) {
+static void gaussian_function(ActivityClosure *_closure, float *matrix) {
   int   length = matrix[0] * matrix[1] + 2;
   float element;
 
@@ -59,7 +60,7 @@ static void gaussian_function(float *matrix) {
   }
 }
 
-static void gaussian_derivative(float *matrix) {
+static void gaussian_derivative(ActivityClosure *_closure, float *matrix) {
   int   length = matrix[0] * matrix[1] + 2;
   float element;
 
@@ -70,11 +71,11 @@ static void gaussian_derivative(float *matrix) {
   }
 }
 
-static void identity_function(float *matrix) {
+static void identity_function(ActivityClosure *_closure, float *matrix) {
   // Nothing to do here :)
 }
 
-static void identity_derivative(float *matrix) {
+static void identity_derivative(ActivityClosure *_closure, float *matrix) {
   int length = matrix[0] * matrix[1] + 2;
 
   for (int index = 2; index < length; index += 1) {
@@ -82,7 +83,7 @@ static void identity_derivative(float *matrix) {
   }
 }
 
-static void logistic_function(float *matrix) {
+static void logistic_function(ActivityClosure *_closure, float *matrix) {
   int length = matrix[0] * matrix[1] + 2;
 
   for (int index = 2; index < length; index += 1) {
@@ -92,7 +93,7 @@ static void logistic_function(float *matrix) {
   }
 }
 
-static void logistic_derivative(float *matrix) {
+static void logistic_derivative(ActivityClosure *_closure, float *matrix) {
   int   length = matrix[0] * matrix[1] + 2;
   float element;
 
@@ -105,7 +106,7 @@ static void logistic_derivative(float *matrix) {
   }
 }
 
-static void relu_function(float *matrix) {
+static void relu_function(ActivityClosure *_closure, float *matrix) {
   int length = matrix[0] * matrix[1] + 2;
 
   for (int index = 2; index < length; index += 1) {
@@ -113,7 +114,7 @@ static void relu_function(float *matrix) {
   }
 }
 
-static void relu_derivative(float *matrix) {
+static void relu_derivative(ActivityClosure *_closure, float *matrix) {
   int length = matrix[0] * matrix[1] + 2;
 
   for (int index = 2; index < length; index += 1) {
@@ -122,7 +123,7 @@ static void relu_derivative(float *matrix) {
   }
 }
 
-static void sinc_function(float *matrix) {
+static void sinc_function(ActivityClosure *_closure, float *matrix) {
   int   length = matrix[0] * matrix[1] + 2;
   float element;
 
@@ -134,7 +135,7 @@ static void sinc_function(float *matrix) {
   }
 }
 
-static void sinc_derivative(float *matrix) {
+static void sinc_derivative(ActivityClosure *_closure, float *matrix) {
   int   length = matrix[0] * matrix[1] + 2;
   float element;
 
@@ -146,7 +147,7 @@ static void sinc_derivative(float *matrix) {
   }
 }
 
-static void sinusoid_function(float *matrix) {
+static void sinusoid_function(ActivityClosure *_closure, float *matrix) {
   int length = matrix[0] * matrix[1] + 2;
 
   for (int index = 2; index < length; index += 1) {
@@ -154,7 +155,7 @@ static void sinusoid_function(float *matrix) {
   }
 }
 
-static void sinusoid_derivative(float *matrix) {
+static void sinusoid_derivative(ActivityClosure *_closure, float *matrix) {
   int length = matrix[0] * matrix[1] + 2;
 
   for (int index = 2; index < length; index += 1) {
@@ -162,48 +163,205 @@ static void sinusoid_derivative(float *matrix) {
   }
 }
 
+static void softmax_function(ActivityClosure *_closure, float *matrix) {
+  int   length     = matrix[0] * matrix[1] + 2;
+  float maximum    = matrix_max(matrix);
+  float normalizer = 0.0;
+
+  for (int index = 2; index < length; index += 1) {
+    normalizer += exp(matrix[index] - maximum);
+  }
+
+  for (int index = 2; index < length; index += 1) {
+    matrix[index] = exp(matrix[index] - maximum) / normalizer;
+  }
+}
+
+static void softmax_derivative(ActivityClosure *_closure, float *matrix) {
+  int    length = matrix[0] * matrix[1] + 2;
+  float *temp   = malloc(sizeof(float) * length);
+  float  sum;
+
+  for (int first_index = 2; first_index < length; first_index += 1) {
+    sum = 0.0;
+
+    for (int second_index = 2; second_index < length; second_index += 1) {
+      if (first_index == second_index)
+        sum += matrix[first_index] * (1.0 - matrix[second_index]);
+      else
+        sum += -matrix[first_index] * matrix[second_index];
+    }
+
+    temp[first_index] = sum;
+  }
+
+  for (int index = 2; index < length; index += 1) {
+    matrix[index] = temp[index];
+  }
+
+  free(temp);
+}
+
+static void softplus_function(ActivityClosure *_closure, float *matrix) {
+  int length = matrix[0] * matrix[1] + 2;
+
+  for (int index = 2; index < length; index += 1) {
+    matrix[index] = log(1.0 + exp(matrix[index]));
+  }
+}
+
+static void softplus_derivative(ActivityClosure *_closure, float *matrix) {
+  int length = matrix[0] * matrix[1] + 2;
+
+  for (int index = 2; index < length; index += 1) {
+    matrix[index] = 1.0 / (1.0 + exp(-matrix[index]));
+  }
+}
+
+static void softsign_function(ActivityClosure *_closure, float *matrix) {
+  int   length = matrix[0] * matrix[1] + 2;
+  float element;
+
+  for (int index = 2; index < length; index += 1) {
+    element = matrix[index];
+
+    matrix[index] = element / (1.0 + abs(element));
+  }
+}
+
+static void softsign_derivative(ActivityClosure *_closure, float *matrix) {
+  int   length = matrix[0] * matrix[1] + 2;
+  float element;
+
+  for (int index = 2; index < length; index += 1) {
+    element = 1.0 + abs(matrix[index]);
+
+    matrix[index] = 1.0 / (element * element);
+  }
+}
+
+static void tanh_function(ActivityClosure *_closure, float *matrix) {
+  int length = matrix[0] * matrix[1] + 2;
+
+  for (int index = 2; index < length; index += 1) {
+    matrix[index] = tanh(matrix[index]);
+  }
+}
+
+static void tanh_derivative(ActivityClosure *_closure, float *matrix) {
+  int   length = matrix[0] * matrix[1] + 2;
+  float element;
+
+  for (int index = 2; index < length; index += 1) {
+    element = tanh(matrix[index]);
+
+    matrix[index] = 1.0 - (element * element);
+  }
+}
+
+static void elu_function(ActivityClosure *closure, float *matrix) {
+  int length = matrix[0] * matrix[1] + 2;
+
+  for (int index = 2; index < length; index += 1) {
+    if (matrix[index] < 0.0)
+      matrix[index] = closure->alpha * (exp(matrix[index]) - 1.0);
+  }
+}
+
+static void elu_derivative(ActivityClosure *closure, float *matrix) {
+  int length = matrix[0] * matrix[1] + 2;
+
+  for (int index = 2; index < length; index += 1) {
+    if (matrix[index] < 0.0)
+      matrix[index] = closure->alpha * exp(matrix[index]);
+    else
+      matrix[index] = 1.0;
+  }
+}
+
+static void prelu_function(ActivityClosure *closure, float *matrix) {
+  int length = matrix[0] * matrix[1] + 2;
+
+  for (int index = 2; index < length; index += 1) {
+    if (matrix[index] < 0.0)
+      matrix[index] = closure->alpha * matrix[index];
+  }
+}
+
+static void prelu_derivative(ActivityClosure *closure, float *matrix) {
+  int length = matrix[0] * matrix[1] + 2;
+
+  for (int index = 2; index < length; index += 1) {
+    if (matrix[index] < 0.0)
+      matrix[index] = closure->alpha;
+    else
+      matrix[index] = 1.0;
+  }
+}
+
 //-----------------------------------------------------------------------------
 // Public API
 //-----------------------------------------------------------------------------
 
-static ActivityFunction
+static void
+call_activity_closure(ActivityClosure *closure, float* matrix) {
+  if (closure != NULL)
+    closure->function(closure, matrix);
+}
+
+static void
+free_activity_closure(ActivityClosure *closure) {
+  free(closure);
+}
+
+static ActivityClosure *
+new_activity_closure(ActivityFunction function, float alpha) {
+  ActivityClosure *closure = malloc(sizeof(ActivityClosure));
+
+  closure->function = function;
+  closure->alpha    = alpha;
+
+  return closure;
+}
+
+static ActivityClosure *
 activity_determine_function(int function_id, float alpha) {
   switch (function_id) {
-    case  0: return arctan_function;
-    case  1: return bent_identity_function;
-    case  2: return gaussian_function;
-    case  3: return identity_function;
-    case  4: return logistic_function;
-    case  5: return relu_function;
-    case  6: return sinc_function;
-    case  7: return sinusoid_function;
-    // case  8: return softmax_function;
-    // case  9: return softplus_function;
-    // case 10: return softsign_function;
-    // case 11: return tanh_function;
-    // case 12: return elu_function(alpha);
-    // case 13: return prelu_function(alpha);
+    case  0: return new_activity_closure(arctan_function,        0    );
+    case  1: return new_activity_closure(bent_identity_function, 0    );
+    case  2: return new_activity_closure(gaussian_function,      0    );
+    case  3: return new_activity_closure(identity_function,      0    );
+    case  4: return new_activity_closure(logistic_function,      0    );
+    case  5: return new_activity_closure(relu_function,          0    );
+    case  6: return new_activity_closure(sinc_function,          0    );
+    case  7: return new_activity_closure(sinusoid_function,      0    );
+    case  8: return new_activity_closure(softmax_function,       0    );
+    case  9: return new_activity_closure(softplus_function,      0    );
+    case 10: return new_activity_closure(softsign_function,      0    );
+    case 11: return new_activity_closure(tanh_function,          0    );
+    case 12: return new_activity_closure(elu_function,           alpha);
+    case 13: return new_activity_closure(prelu_function,         alpha);
     default: return NULL;
   }
 }
 
-static ActivityFunction
+static ActivityClosure *
 activity_determine_derivative(int function_id, float alpha) {
   switch (function_id) {
-    case  0: return arctan_derivative;
-    case  1: return bent_identity_derivative;
-    case  2: return gaussian_derivative;
-    case  3: return identity_derivative;
-    case  4: return logistic_derivative;
-    case  5: return relu_derivative;
-    case  6: return sinc_derivative;
-    case  7: return sinusoid_derivative;
-    // case  8: return softmax_derivative;
-    // case  9: return softplus_derivative;
-    // case 10: return softsign_derivative;
-    // case 11: return tanh_derivative;
-    // case 12: return elu_derivative(alpha);
-    // case 13: return prelu_derivative(alpha);
+    case  0: return new_activity_closure(arctan_derivative,        0    );
+    case  1: return new_activity_closure(bent_identity_derivative, 0    );
+    case  2: return new_activity_closure(gaussian_derivative,      0    );
+    case  3: return new_activity_closure(identity_derivative,      0    );
+    case  4: return new_activity_closure(logistic_derivative,      0    );
+    case  5: return new_activity_closure(relu_derivative,          0    );
+    case  6: return new_activity_closure(sinc_derivative,          0    );
+    case  7: return new_activity_closure(sinusoid_derivative,      0    );
+    case  8: return new_activity_closure(softmax_derivative,       0    );
+    case  9: return new_activity_closure(softplus_derivative,      0    );
+    case 10: return new_activity_closure(softsign_derivative,      0    );
+    case 11: return new_activity_closure(tanh_derivative,          0    );
+    case 12: return new_activity_closure(elu_derivative,           alpha);
+    case 13: return new_activity_closure(prelu_derivative,         alpha);
     default: return NULL;
   }
 }

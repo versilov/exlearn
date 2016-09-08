@@ -29,6 +29,12 @@ int main() {
   test_the_relu_pair();
   test_the_sinc_pair();
   test_the_sinusoid_pair();
+  test_the_softmax_pair();
+  test_the_softplus_pair();
+  test_the_softsign_pair();
+  test_the_tanh_pair();
+  test_the_elu_pair();
+  test_the_prelu_pair();
 
   // Tests for: c/matrix_test.c
   test_matrix_add();

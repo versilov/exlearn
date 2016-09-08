@@ -1,3 +1,6 @@
+#ifndef INCLUDED_MATRIX_C
+#define INCLUDED_MATRIX_C
+
 #include <cblas.h>
 
 static inline void
@@ -216,3 +219,5 @@ matrix_transpose(const float *matrix, float *result) {
     }
   }
 }
+
+#endif

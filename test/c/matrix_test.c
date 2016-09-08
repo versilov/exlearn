@@ -1,4 +1,8 @@
-#include "../../native/lib/matrix.c"
+#ifndef INCLUDED_MATRIX_C
+  #define INCLUDED_MATRIX_C
+
+  #include "../../native/lib/matrix.c"
+#endif
 
 static void test_matrix_add() {
   float first[8]    = {2, 3, 1, 2, 3, 4, 5, 6 };

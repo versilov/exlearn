@@ -1,13 +1,4 @@
-typedef void (*ActivityFunction)(float *);
-
-typedef struct NetworkStructure {
-  int               layers;
-  int              *rows;
-  int              *columns;
-  float            *dropout;
-  ActivityFunction *activity;
-
-} NetworkStructure;
+#include "structs.c"
 
 static void
 free_network_structure(NetworkStructure *structure) {
@@ -27,7 +18,7 @@ new_network_structure(int layers) {
   structure->rows     = malloc(sizeof(int)   * layers);
   structure->columns  = malloc(sizeof(int)   * layers);
   structure->dropout  = malloc(sizeof(float) * layers);
-  structure->activity = malloc(sizeof(ActivityFunction) * layers);
+  structure->activity = malloc(sizeof(ActivityClosure *) * layers);
 
   return structure;
 }
