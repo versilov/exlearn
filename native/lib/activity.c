@@ -1,21 +1,129 @@
-typedef float* (*ActivityFunction)(float *);
+#include <math.h>
+#include <stdlib.h>
 
-static ActivityFunction *
-activity_determine(int function_id, float alpha) {
+typedef void (*ActivityFunction)(float *);
+
+//-----------------------------------------------------------------------------
+// Activity function pairs
+//-----------------------------------------------------------------------------
+
+static void arctan_function(float *matrix) {
+  int length = matrix[0] * matrix[1] + 2;
+
+  for(int index = 2; index < length; index += 1) {
+    matrix[index] = atan(matrix[index]);
+  }
+}
+
+static void arctan_derivative(float *matrix) {
+  int length = matrix[0] * matrix[1] + 2;
+  int element;
+
+  for(int index = 2; index < length; index += 1) {
+    element = matrix[index];
+
+    matrix[index] = 1.0 / (element * element + 1.0);
+  }
+}
+
+static void bent_identity_function(float *matrix) {
+  int length = matrix[0] * matrix[1] + 2;
+  int element;
+
+  for(int index = 2; index < length; index += 1) {
+    element = matrix[index];
+
+    matrix[index] = (sqrt(element * element + 1.0) - 1.0) / 2.0 + element;
+  }
+}
+
+static void bent_identity_derivative(float *matrix) {
+  int length = matrix[0] * matrix[1] + 2;
+  int element;
+
+  for(int index = 2; index < length; index += 1) {
+    element = matrix[index];
+
+    matrix[index] = element / (2.0 * sqrt(element * element + 1.0)) + 1.0;
+  }
+}
+
+static void gaussian_function(float *matrix) {
+  int length = matrix[0] * matrix[1] + 2;
+  int element;
+
+  for(int index = 2; index < length; index += 1) {
+    element = matrix[index];
+
+    matrix[index] = exp(-element * element);
+  }
+}
+
+static void gaussian_derivative(float *matrix) {
+  int length = matrix[0] * matrix[1] + 2;
+  int element;
+
+  for(int index = 2; index < length; index += 1) {
+    element = matrix[index];
+
+    matrix[index] = -2.0 * element * exp(-element * element);
+  }
+}
+
+static void identity_function(float *matrix) {
+  // Nothing to do here :)
+}
+
+static void identity_derivative(float *matrix) {
+  int length = matrix[0] * matrix[1] + 2;
+
+  for(int index = 2; index < length; index += 1) {
+    matrix[index] = 1.0;
+  }
+}
+
+//-----------------------------------------------------------------------------
+// Public API
+//-----------------------------------------------------------------------------
+
+static ActivityFunction
+activity_determine_function(int function_id, float alpha) {
   switch(function_id) {
-    case  1: return arctan_pair();
-    case  2: return bent_identity_pair();
-    case  3: return gaussian_pair();
-    case  4: return identity_pair();
-    case  5: return logistic_pair();
-    case  6: return relu_pair();
-    case  7: return sinc_pair();
-    case  8: return sinusoid_pair();
-    case  9: return softmax_pair();
-    case 10: return softplus_pair();
-    case 11: return softsign_pair();
-    case 12: return tanh_pair();
-    case 13: return elu_pair(alpha);
-    case 14: return prelu_pair(alpha);
+    case  0: return arctan_function;
+    case  1: return bent_identity_function;
+    case  2: return gaussian_function;
+    case  3: return identity_function;
+    // case  4: return logistic_function;
+    // case  5: return relu_function;
+    // case  6: return sinc_function;
+    // case  7: return sinusoid_function;
+    // case  8: return softmax_function;
+    // case  9: return softplus_function;
+    // case 10: return softsign_function;
+    // case 11: return tanh_function;
+    // case 12: return elu_function(alpha);
+    // case 13: return prelu_function(alpha);
+    default: return NULL;
+  }
+}
+
+static ActivityFunction
+activity_determine_derivative(int function_id, float alpha) {
+  switch(function_id) {
+    case  0: return arctan_derivative;
+    case  1: return bent_identity_derivative;
+    case  2: return gaussian_derivative;
+    case  3: return identity_derivative;
+    // case  4: return logistic_derivative;
+    // case  5: return relu_derivative;
+    // case  6: return sinc_derivative;
+    // case  7: return sinusoid_derivative;
+    // case  8: return softmax_derivative;
+    // case  9: return softplus_derivative;
+    // case 10: return softsign_derivative;
+    // case 11: return tanh_derivative;
+    // case 12: return elu_derivative(alpha);
+    // case 13: return prelu_derivative(alpha);
+    default: return NULL;
   }
 }

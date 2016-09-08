@@ -1,4 +1,4 @@
-#include "activity.c"
+typedef void (*ActivityFunction)(float *);
 
 typedef struct NetworkStructure {
   int               layers;

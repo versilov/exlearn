@@ -30,20 +30,20 @@ defmodule ExLearn.Activation do
       %{function: function, derivative: derivative}
       when is_function(function, 2) and is_function(derivative, 2) ->
         %{function: function, derivative: derivative}
-      :arctan        -> arctan_pair               # 1
-      :bent_identity -> bent_identity_pair        # 2
-      :gaussian      -> gaussian_pair             # 3
-      :identity      -> identity_pair             # 4
-      :logistic      -> logistic_pair             # 5
-      :relu          -> relu_pair                 # 6
-      :sinc          -> sinc_pair                 # 7
-      :sinusoid      -> sinusoid_pair             # 8
-      :softmax       -> softmax_pair              # 9
-      :softplus      -> softplus_pair             # 10
-      :softsign      -> softsign_pair             # 11
-      :tanh          -> tanh_pair                 # 12
-      {:elu,   alpha: alpha} -> elu_pair(alpha)   # 13
-      {:prelu, alpha: alpha} -> prelu_pair(alpha) # 14
+      :arctan        -> arctan_pair               # 0
+      :bent_identity -> bent_identity_pair        # 1
+      :gaussian      -> gaussian_pair             # 2
+      :identity      -> identity_pair             # 3
+      :logistic      -> logistic_pair             # 4
+      :relu          -> relu_pair                 # 5
+      :sinc          -> sinc_pair                 # 6
+      :sinusoid      -> sinusoid_pair             # 7
+      :softmax       -> softmax_pair              # 8
+      :softplus      -> softplus_pair             # 9
+      :softsign      -> softsign_pair             # 10
+      :tanh          -> tanh_pair                 # 11
+      {:elu,   alpha: alpha} -> elu_pair(alpha)   # 12
+      {:prelu, alpha: alpha} -> prelu_pair(alpha) # 13
     end
   end
 

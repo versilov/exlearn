@@ -22,9 +22,9 @@ test:
 	./test/c/temp/batch_data
 	$(CC) -g -o test/c/temp/network_state -O0 -std=c11 -Wall --coverage test/c/network_state_test.c
 	./test/c/temp/network_state
-	$(CC) -g -o test/c/temp/network_structure -O0 -std=c11 -Wall --coverage test/c/network_structure_test.c
+	$(CC) -g -o test/c/temp/network_structure -O0 -std=c11 -Wall --coverage test/c/network_structure_test.c -lm
 	./test/c/temp/network_structure
-	$(CC) -g -o test/c/temp/activity -O0 -std=c11 -Wall --coverage test/c/activity_test.c
+	$(CC) -g -o test/c/temp/activity -O0 -std=c11 -Wall --coverage test/c/activity_test.c -lm
 	./test/c/temp/activity
 	for i in *.gcda; do gcov $$i > test/c/temp/$$i.coverage; done
 	grep -h -A1 "File 'native" test/c/temp/*.coverage
