@@ -3,8 +3,10 @@
 
 #include <cblas.h>
 
+#include "structs.c"
+
 static inline void
-matrix_add(const float *first, const float *second, float *result) {
+matrix_add(const Matrix first, const Matrix second, Matrix result) {
   int data_size = (int) (first[0] * first[1] + 2);
 
   result[0] = first[0];
@@ -16,7 +18,7 @@ matrix_add(const float *first, const float *second, float *result) {
 }
 
 static inline int
-matrix_argmax(const float *matrix) {
+matrix_argmax(const Matrix matrix) {
   int data_size = (int) (matrix[0] * matrix[1] + 2);
   int argmax    = 2;
 
@@ -30,7 +32,7 @@ matrix_argmax(const float *matrix) {
 }
 
 static inline void
-matrix_divide(const float *first, const float *second, float *result) {
+matrix_divide(const Matrix first, const Matrix second, Matrix result) {
   int data_size = (int) (first[0] * first[1] + 2);
 
   result[0] = first[0];
@@ -42,7 +44,7 @@ matrix_divide(const float *first, const float *second, float *result) {
 }
 
 static inline void
-matrix_dot(const float *first, const float *second, float *result) {
+matrix_dot(const Matrix first, const Matrix second, Matrix result) {
   result[0] = first[0];
   result[1] = second[1];
 
@@ -66,7 +68,7 @@ matrix_dot(const float *first, const float *second, float *result) {
 
 static inline void
 matrix_dot_and_add(
-  const float *first, const float *second, const float *third, float *result
+  const Matrix first, const Matrix second, const Matrix third, Matrix result
 ) {
   int data_size = (int) (first[0] * first[1] + 2);
 
@@ -96,7 +98,7 @@ matrix_dot_and_add(
 }
 
 static inline void
-matrix_dot_nt(const float *first, const float *second, float *result) {
+matrix_dot_nt(const Matrix first, const Matrix second, Matrix result) {
   result[0] = first[0];
   result[1] = second[0];
 
@@ -119,7 +121,7 @@ matrix_dot_nt(const float *first, const float *second, float *result) {
 }
 
 static inline void
-matrix_dot_tn(const float *first, const float *second, float *result) {
+matrix_dot_tn(const Matrix first, const Matrix second, Matrix result) {
   result[0] = first[1];
   result[1] = second[1];
 
@@ -142,7 +144,7 @@ matrix_dot_tn(const float *first, const float *second, float *result) {
 }
 
 static inline float
-matrix_max(const float *matrix) {
+matrix_max(const Matrix matrix) {
   int   data_size = (int) (matrix[0] * matrix[1] + 2);
   float max       = matrix[2];
 
@@ -156,7 +158,7 @@ matrix_max(const float *matrix) {
 }
 
 static inline void
-matrix_multiply(const float *first, const float *second, float *result) {
+matrix_multiply(const Matrix first, const Matrix second, Matrix result) {
   int data_size = (int) (first[0] * first[1] + 2);
 
   result[0] = first[0];
@@ -169,7 +171,7 @@ matrix_multiply(const float *first, const float *second, float *result) {
 
 static inline void
 matrix_multiply_with_scalar(
-  const float *matrix, const float scalar, float *result
+  const Matrix matrix, const float scalar, Matrix result
 ) {
   int data_size = (int) (matrix[0] * matrix[1] + 2);
 
@@ -182,7 +184,7 @@ matrix_multiply_with_scalar(
 }
 
 static inline void
-matrix_substract(const float *first, const float *second, float *result) {
+matrix_substract(const Matrix first, const Matrix second, Matrix result) {
   int data_size = (int) (first[0] * first[1] + 2);
 
   result[0] = first[0];
@@ -194,7 +196,7 @@ matrix_substract(const float *first, const float *second, float *result) {
 }
 
 static inline float
-matrix_sum(const float *matrix) {
+matrix_sum(const Matrix matrix) {
   int   data_size = matrix[0] * matrix[1] + 2;
   float sum       = 0;
 
@@ -206,7 +208,7 @@ matrix_sum(const float *matrix) {
 }
 
 static inline void
-matrix_transpose(const float *matrix, float *result) {
+matrix_transpose(const Matrix matrix, Matrix result) {
   result[0] = matrix[1];
   result[1] = matrix[0];
 

@@ -1,5 +1,6 @@
 #include <assert.h>
 
+#include "c/neural_network/forwarder_test.c"
 #include "c/worker/batch_data_test.c"
 #include "c/worker/worker_data_test.c"
 #include "c/activity_test.c"
@@ -9,6 +10,8 @@
 #include "c/random_test.c"
 
 int main() {
+  // Tests for: c/neural_network/forwarder_test.c
+
   // Tests for: c/worker/batch_data_test.c
   test_free_batch_data();
   test_new_batch_data();
