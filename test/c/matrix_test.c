@@ -1,5 +1,3 @@
-#include <assert.h>
-
 #include "../../native/lib/matrix.c"
 
 static void test_matrix_add() {
@@ -152,22 +150,4 @@ static void test_matrix_transpose() {
   for(int index = 0; index < 8; index += 1) {
     assert(expected[index] == result[index]);
   }
-}
-
-int main() {
-  test_matrix_add();
-  test_matrix_argmax();
-  test_matrix_divide();
-  test_matrix_dot();
-  test_matrix_dot_and_add();
-  test_matrix_dot_nt();
-  test_matrix_dot_tn();
-  test_matrix_max();
-  test_matrix_multiply();
-  test_matrix_multiply_with_scalar();
-  test_matrix_substract();
-  test_matrix_sum();
-  test_matrix_transpose();
-
-  return 0;
 }

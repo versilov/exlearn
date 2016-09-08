@@ -1,7 +1,4 @@
-#include <assert.h>
-
 #include "../../../native/lib/worker/batch_data.c"
-
 
 //-----------------------------------------------------------------------------
 // Tests
@@ -37,16 +34,4 @@ static void test_shuffle_batch_data_indices() {
   }
 
   free_batch_data(data);
-}
-
-//-----------------------------------------------------------------------------
-// Run Tests
-//-----------------------------------------------------------------------------
-
-int main() {
-  test_free_batch_data();
-  test_new_batch_data();
-  test_shuffle_batch_data_indices();
-
-  return 0;
 }

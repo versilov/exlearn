@@ -1,4 +1,3 @@
-#include <assert.h>
 #include <sys/time.h>
 
 #include "../../../native/lib/worker/worker_data.c"
@@ -83,16 +82,4 @@ static void test_read_worker_data() {
 
   free(file);
   free_worker_data(data);
-}
-
-//-----------------------------------------------------------------------------
-// Run Tests
-//-----------------------------------------------------------------------------
-
-int main() {
-  test_free_worker_data();
-  test_new_worker_data();
-  test_read_worker_data();
-
-  return 0;
 }

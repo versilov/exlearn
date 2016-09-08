@@ -1,6 +1,3 @@
-#include <assert.h>
-#include <stdio.h>
-
 #include "../../native/lib/activity.c"
 
 //-----------------------------------------------------------------------------
@@ -186,22 +183,4 @@ static void test_the_sinusoid_pair() {
     assert(function_input[index]   == expected_from_function[index]  );
     assert(derivative_input[index] == expected_from_derivative[index]);
   }
-}
-
-//-----------------------------------------------------------------------------
-// Run Tests
-//-----------------------------------------------------------------------------
-
-int main() {
-  test_an_unknown_pair();
-  test_the_arctan_pair();
-  test_the_bent_identity_pair();
-  test_the_gaussian_pair();
-  test_the_identity_pair();
-  test_the_logistic_pair();
-  test_the_relu_pair();
-  test_the_sinc_pair();
-  test_the_sinusoid_pair();
-
-  return 0;
 }
