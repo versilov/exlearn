@@ -6,6 +6,19 @@
 #include "../network_state.c"
 #include "../network_structure.c"
 
+static Activity *
+forward_for_activity(
+  NetworkStructure *structure,
+  NetworkState     *state,
+  Matrix            sample
+) {
+  int layers = structure->layers;
+
+  Activity *activity = new_activity(layers);
+
+  return activity;
+}
+
 static Matrix
 forward_for_output(
   NetworkStructure *structure,

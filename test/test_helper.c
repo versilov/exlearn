@@ -16,6 +16,7 @@ int main() {
   test_create_dropout_mask();
 
   // Tests for: c/neural_network/forwarder_test.c
+  test_forward_for_activity();
   test_forward_for_output();
 
   // Tests for: c/neural_network/presentation_test.c
