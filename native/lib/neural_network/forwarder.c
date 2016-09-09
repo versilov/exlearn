@@ -13,6 +13,7 @@ forward_for_output(
   Matrix            sample
 ) {
   int    layers = structure->layers;
+  int    result;
   Matrix input, output;
 
   output = new_matrix(structure->rows[1], structure->columns[1]);
@@ -33,7 +34,10 @@ forward_for_output(
     input = output;
   }
 
-  return call_presentation_closure(structure->presentation, output);
+  result = call_presentation_closure(structure->presentation, output);
+  free_matrix(output);
+
+  return result;
 }
 
 #endif
