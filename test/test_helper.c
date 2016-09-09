@@ -11,6 +11,7 @@
 
 int main() {
   // Tests for: c/neural_network/forwarder_test.c
+  test_forward_for_output();
 
   // Tests for: c/worker/batch_data_test.c
   test_free_batch_data();
@@ -40,6 +41,8 @@ int main() {
   test_the_prelu_pair();
 
   // Tests for: c/matrix_test.c
+  test_free_matrix();
+  test_new_matrix();
   test_matrix_add();
   test_matrix_argmax();
   test_matrix_divide();

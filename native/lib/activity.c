@@ -1,3 +1,6 @@
+#ifndef INCLUDE_ACTIVITY_C
+#define INCLUDE_ACTIVITY_C
+
 #include <math.h>
 #include <stdlib.h>
 
@@ -365,3 +368,5 @@ activity_determine_derivative(int function_id, float alpha) {
     default: return NULL;
   }
 }
+
+#endif

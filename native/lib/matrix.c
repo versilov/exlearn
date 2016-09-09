@@ -2,8 +2,25 @@
 #define INCLUDED_MATRIX_C
 
 #include <cblas.h>
+#include <stdlib.h>
 
 #include "structs.c"
+
+static void
+free_matrix(Matrix matrix) {
+  free(matrix);
+}
+
+static Matrix
+new_matrix(int rows, int columns) {
+  int length    = rows * columns + 2;
+  Matrix result = malloc(sizeof(float) * length);
+
+  result[0] = rows;
+  result[1] = columns;
+
+  return result;
+}
 
 static inline void
 matrix_add(const Matrix first, const Matrix second, Matrix result) {

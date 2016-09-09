@@ -1,3 +1,8 @@
+#ifndef INCLUDE_NETWORK_STRUCTURE_C
+#define INCLUDE_NETWORK_STRUCTURE_C
+
+#include <stdlib.h>
+
 #include "structs.c"
 
 static void
@@ -22,3 +27,5 @@ new_network_structure(int layers) {
 
   return structure;
 }
+
+#endif

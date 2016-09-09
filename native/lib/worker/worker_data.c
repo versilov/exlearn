@@ -1,3 +1,6 @@
+#ifndef INCLUDE_WORKER_DATA_C
+#define INCLUDE_WORKER_DATA_C
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -74,3 +77,5 @@ read_worker_data(const char *path, WorkerData *data) {
 
   fclose(file);
 }
+
+#endif
