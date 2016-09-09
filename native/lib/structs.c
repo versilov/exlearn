@@ -22,12 +22,13 @@ typedef struct NetworkState {
 } NetworkState;
 
 typedef struct NetworkStructure {
-  int               layers;
-  int              *rows;
-  int              *columns;
-  float            *dropout;
-  ActivityClosure **function;
-  ActivityClosure **derivative;
+  int                   layers;
+  int                  *rows;
+  int                  *columns;
+  float                *dropout;
+  ActivityClosure     **function;
+  ActivityClosure     **derivative;
+  PresentationClosure  *presentation;
 } NetworkStructure;
 
 #endif

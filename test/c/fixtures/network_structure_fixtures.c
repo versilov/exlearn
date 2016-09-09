@@ -1,3 +1,4 @@
+#include "../../../native/lib/neural_network/presentation.c"
 #include "../../../native/lib/activity.c"
 
 static NetworkStructure *
@@ -27,6 +28,8 @@ network_structure_basic() {
   structure->dropout[3]    = 0;
   structure->function[3]   = activity_determine_function(3, 0);
   structure->derivative[3] = activity_determine_derivative(3, 0);
+
+  structure->presentation = presentation_determine(0, 0);
 
   return structure;
 }
