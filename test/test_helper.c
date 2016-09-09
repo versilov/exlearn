@@ -35,6 +35,8 @@ int main() {
   test_read_worker_data();
 
   // Tests for: c/activity_test.c
+  test_free_activity();
+  test_new_activity();
   test_an_unknown_pair();
   test_the_arctan_pair();
   test_the_bent_identity_pair();

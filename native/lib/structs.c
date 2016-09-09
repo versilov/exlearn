@@ -3,6 +3,11 @@
 
 typedef float* Matrix;
 
+typedef struct Activity {
+  int     layers;
+  Matrix *input, *output, *mask;
+} Activity;
+
 typedef void (*ActivityFunction)(Matrix, float);
 typedef struct ActivityClosure {
   ActivityFunction function;

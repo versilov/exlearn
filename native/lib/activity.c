@@ -303,8 +303,29 @@ static void prelu_derivative(Matrix matrix, float alpha) {
 }
 
 //-----------------------------------------------------------------------------
-// Public API
+// API
 //-----------------------------------------------------------------------------
+
+static void
+free_activity(Activity *activity) {
+  free(activity->input );
+  free(activity->output);
+  free(activity->mask  );
+
+  free(activity);
+}
+
+static Activity *
+new_activity(int layers) {
+  Activity *activity = malloc(sizeof(Activity));
+
+  activity->layers = layers;
+  activity->input  = malloc(sizeof(Matrix) * layers);
+  activity->output = malloc(sizeof(Matrix) * layers);
+  activity->mask   = malloc(sizeof(Matrix) * layers);
+
+  return activity;
+}
 
 static void
 call_activity_closure(ActivityClosure *closure, Matrix matrix) {

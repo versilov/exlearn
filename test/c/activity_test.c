@@ -4,6 +4,20 @@
 // Tests
 //-----------------------------------------------------------------------------
 
+static void test_free_activity() {
+  Activity *activity = new_activity(3);
+
+  free_activity(activity);
+}
+
+static void test_new_activity() {
+  Activity *activity = new_activity(3);
+
+  assert(activity->layers == 3);
+
+  free_activity(activity);
+}
+
 static void test_an_unknown_pair() {
   int function_id = -1;
 
