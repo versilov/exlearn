@@ -9,9 +9,15 @@ static Matrix
 forward_for_output(
   NetworkStructure *structure,
   NetworkState     *state,
-  int               batch_number,
   Matrix            sample
 ) {
+  int    layers = structure->layers;
+  Matrix output;
+
+  for (int layer = 1; layer < layers; layer += 1) {
+
+  }
+
   return sample;
 }
 

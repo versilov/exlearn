@@ -7,10 +7,11 @@
 
 static void
 free_network_structure(NetworkStructure *structure) {
-  free(structure->rows    );
-  free(structure->columns );
-  free(structure->dropout );
-  free(structure->activity);
+  free(structure->rows      );
+  free(structure->columns   );
+  free(structure->dropout   );
+  free(structure->function  );
+  free(structure->derivative);
 
   free(structure);
 }
@@ -19,11 +20,12 @@ static NetworkStructure *
 new_network_structure(int layers) {
   NetworkStructure *structure = malloc(sizeof(NetworkStructure));
 
-  structure->layers   = layers;
-  structure->rows     = malloc(sizeof(int)   * layers);
-  structure->columns  = malloc(sizeof(int)   * layers);
-  structure->dropout  = malloc(sizeof(float) * layers);
-  structure->activity = malloc(sizeof(ActivityClosure *) * layers);
+  structure->layers     = layers;
+  structure->rows       = malloc(sizeof(int)   * layers);
+  structure->columns    = malloc(sizeof(int)   * layers);
+  structure->dropout    = malloc(sizeof(float) * layers);
+  structure->function   = malloc(sizeof(ActivityClosure *) * layers);
+  structure->derivative = malloc(sizeof(ActivityClosure *) * layers);
 
   return structure;
 }

@@ -11,9 +11,9 @@ typedef struct ActivityClosure {
 } ActivityClosure;
 
 typedef struct NetworkState {
-  int    layers;
-  float *biases;
-  float *weights;
+  int     layers;
+  Matrix *biases;
+  Matrix *weights;
 } NetworkState;
 
 typedef struct NetworkStructure {
@@ -21,7 +21,8 @@ typedef struct NetworkStructure {
   int              *rows;
   int              *columns;
   float            *dropout;
-  ActivityClosure **activity;
+  ActivityClosure **function;
+  ActivityClosure **derivative;
 } NetworkStructure;
 
 #endif
