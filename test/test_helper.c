@@ -1,6 +1,7 @@
 #include <assert.h>
 
 #include "c/neural_network/forwarder_test.c"
+#include "c/neural_network/presentation_test.c"
 #include "c/worker/batch_data_test.c"
 #include "c/worker/worker_data_test.c"
 #include "c/activity_test.c"
@@ -12,6 +13,16 @@
 int main() {
   // Tests for: c/neural_network/forwarder_test.c
   test_forward_for_output();
+
+  // Tests for: c/neural_network/presentation_test.c
+  test_free_presentation_closure();
+  test_new_presentation_closure();
+  test_call_presentation_closure();
+  test_an_unknown_function();
+  test_the_argmax_function();
+  test_the_floor_first_function();
+  test_the_round_first_function();
+  test_the_ceil_first_function();
 
   // Tests for: c/worker/batch_data_test.c
   test_free_batch_data();
@@ -50,6 +61,7 @@ int main() {
   test_matrix_dot_and_add();
   test_matrix_dot_nt();
   test_matrix_dot_tn();
+  test_matrix_first();
   test_matrix_max();
   test_matrix_multiply();
   test_matrix_multiply_with_scalar();

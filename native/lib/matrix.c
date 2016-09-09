@@ -161,6 +161,11 @@ matrix_dot_tn(const Matrix first, const Matrix second, Matrix result) {
 }
 
 static inline float
+matrix_first(const Matrix matrix) {
+  return matrix[2];
+}
+
+static inline float
 matrix_max(const Matrix matrix) {
   int   data_size = (int) (matrix[0] * matrix[1] + 2);
   float max       = matrix[2];

@@ -4,11 +4,16 @@
 typedef float* Matrix;
 
 typedef void (*ActivityFunction)(Matrix, float);
-
 typedef struct ActivityClosure {
   ActivityFunction function;
   float            alpha;
 } ActivityClosure;
+
+typedef int (*PresentationFunction)(Matrix, int);
+typedef struct PresentationClosure {
+  PresentationFunction function;
+  int                  alpha;
+} PresentationClosure;
 
 typedef struct NetworkState {
   int     layers;

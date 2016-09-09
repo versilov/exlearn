@@ -106,6 +106,12 @@ static void test_matrix_dot_tn() {
   }
 }
 
+static void test_matrix_first() {
+  float matrix[8] = {2, 3, 1, 4, 2, 5, 3, 6};
+
+  assert(matrix_first(matrix) == 1);
+}
+
 static void test_matrix_max() {
   float matrix[8] = {2, 3, 1, 4, 2, 5, 3, 6};
 
