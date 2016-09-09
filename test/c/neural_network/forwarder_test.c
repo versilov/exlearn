@@ -3,13 +3,19 @@
 #include "../fixtures/network_state_fixtures.c"
 #include "../fixtures/data_fixtures.c"
 
-#include <stdio.h>
 static void test_forward_for_output() {
   NetworkStructure *structure = network_structure_basic();
   NetworkState     *state     = network_state_basic();
   Matrix            sample    = data_sample_basic();
+  int               result;
 
-  int result = forward_for_output(structure, state, sample);
+  Matrix output = forward_for_output(structure, state, sample);
+  result        = call_presentation_closure(structure->presentation, output);
 
   assert(result == 1);
+
+  free_matrix(output);
+  free_matrix(sample);
+  free_network_state(state);
+  free_network_structure(structure);
 }
