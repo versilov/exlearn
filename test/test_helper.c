@@ -1,5 +1,6 @@
 #include <assert.h>
 
+#include "c/neural_network/dropout_test.c"
 #include "c/neural_network/forwarder_test.c"
 #include "c/neural_network/presentation_test.c"
 #include "c/worker/batch_data_test.c"
@@ -11,6 +12,9 @@
 #include "c/random_test.c"
 
 int main() {
+  // Tests for: c/neural_network/dropout_test.c
+  test_create_dropout_mask();
+
   // Tests for: c/neural_network/forwarder_test.c
   test_forward_for_output();
 
