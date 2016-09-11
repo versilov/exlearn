@@ -1,3 +1,6 @@
+#ifndef INCLUDE_NETWORK_STATE_FIXTURES_C
+#define INCLUDE_NETWORK_STATE_FIXTURES_C
+
 #include "../../../native/lib/matrix.c"
 
 static NetworkState *
@@ -54,3 +57,5 @@ network_state_basic() {
 
   return state;
 }
+
+#endif

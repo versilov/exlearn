@@ -5,7 +5,9 @@ typedef float* Matrix;
 
 typedef struct Activity {
   int     layers;
-  Matrix *input, *output, *mask;
+  Matrix *input;
+  Matrix *output;
+  Matrix *mask;
 } Activity;
 
 typedef void (*ActivityFunction)(Matrix, float);
@@ -13,6 +15,12 @@ typedef struct ActivityClosure {
   ActivityFunction function;
   float            alpha;
 } ActivityClosure;
+
+typedef struct Correction {
+  int     layers;
+  Matrix *biases;
+  Matrix *weights;
+} Correction;
 
 typedef float  (*ObjectiveFunction)(Matrix, Matrix);
 typedef Matrix (*ObjectiveError)(Matrix, Matrix, Matrix, ActivityClosure *);

@@ -1,3 +1,6 @@
+#ifndef INCLUDE_NETWORK_STRUCTURE_FIXTURES_C
+#define INCLUDE_NETWORK_STRUCTURE_FIXTURES_C
+
 #include "../../../native/lib/neural_network/presentation.c"
 #include "../../../native/lib/neural_network/activity.c"
 
@@ -66,3 +69,5 @@ network_structure_with_dropout() {
 
   return structure;
 }
+
+#endif

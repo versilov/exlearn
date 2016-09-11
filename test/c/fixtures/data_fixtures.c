@@ -1,3 +1,6 @@
+#ifndef INCLUDE_DATA_FIXTURES_C
+#define INCLUDE_DATA_FIXTURES_C
+
 static Matrix
 data_sample_basic() {
   Matrix sample = new_matrix(1, 3);
@@ -8,3 +11,5 @@ data_sample_basic() {
 
   return sample;
 }
+
+#endif

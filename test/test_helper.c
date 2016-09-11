@@ -5,10 +5,12 @@
 
 #include "c/test_util.c"
 #include "c/neural_network/activity_test.c"
+#include "c/neural_network/correction_test.c"
 #include "c/neural_network/dropout_test.c"
 #include "c/neural_network/forwarder_test.c"
 #include "c/neural_network/objective_test.c"
 #include "c/neural_network/presentation_test.c"
+#include "c/neural_network/propagator_test.c"
 #include "c/worker/batch_data_test.c"
 #include "c/worker/worker_data_test.c"
 #include "c/matrix_test.c"
@@ -35,6 +37,10 @@ int main() {
   test_the_tanh_pair();
   test_the_elu_pair();
   test_the_prelu_pair();
+
+  // Tests for: c/neural_network/correction_test.c
+  test_free_correction();
+  test_new_correction();
 
   // Tests for: c/neural_network/dropout_test.c
   test_create_dropout_mask();
@@ -69,6 +75,9 @@ int main() {
   test_the_floor_first_function();
   test_the_round_first_function();
   test_the_ceil_first_function();
+
+  // Tests for: c/neural_network/propagator_test.c
+  test_back_propagate();
 
   // Tests for: c/worker/batch_data_test.c
   test_free_batch_data();
