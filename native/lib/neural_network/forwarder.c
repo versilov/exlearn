@@ -26,13 +26,9 @@ forward_for_activity(
 
     activity->mask[0] = mask;
   }
-  else {
-    activity->mask[0] = NULL;
-  }
 
   output = input;
 
-  activity->input[0]  = NULL;
   activity->output[0] = output;
 
   for (int layer = 1; layer < layers; layer += 1) {
