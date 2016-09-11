@@ -8,6 +8,11 @@
 
 static void
 free_network_structure(NetworkStructure *structure) {
+  for (int layer = 0; layer < structure->layers; layer += 1) {
+    free_activity_closure(structure->function[layer]  );
+    free_activity_closure(structure->derivative[layer]);
+  }
+
   free(structure->rows      );
   free(structure->columns   );
   free(structure->dropout   );
@@ -30,6 +35,11 @@ new_network_structure(int layers) {
   structure->function     = malloc(sizeof(ActivityClosure *) * layers);
   structure->derivative   = malloc(sizeof(ActivityClosure *) * layers);
   structure->presentation = NULL;
+
+  for (int layer = 0; layer < layers; layer += 1) {
+    structure->function[layer]   = NULL;
+    structure->derivative[layer] = NULL;
+  }
 
   return structure;
 }

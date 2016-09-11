@@ -347,7 +347,9 @@ call_activity_closure(ActivityClosure *closure, Matrix matrix) {
 
 static void
 free_activity_closure(ActivityClosure *closure) {
-  free(closure);
+  if (closure != NULL) free(closure);
+
+  closure = NULL;
 }
 
 static ActivityClosure *

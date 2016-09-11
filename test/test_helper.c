@@ -17,6 +17,7 @@ int main() {
 
   // Tests for: c/neural_network/forwarder_test.c
   test_forward_for_activity();
+  test_forward_for_activity_with_dropout();
   test_forward_for_output();
 
   // Tests for: c/neural_network/presentation_test.c

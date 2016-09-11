@@ -30,10 +30,29 @@ static void test_forward_for_activity() {
   assert(matrix_equal(activity->output[2], layer_2_output));
   assert(matrix_equal(activity->output[3], layer_3_output));
 
-  assert(activity->mask[0]  == NULL);
-  assert(activity->mask[1]  == NULL);
-  assert(activity->mask[2]  == NULL);
-  assert(activity->mask[3]  == NULL);
+  assert(activity->mask[0] == NULL);
+  assert(activity->mask[1] == NULL);
+  assert(activity->mask[2] == NULL);
+  assert(activity->mask[3] == NULL);
+
+  free_activity(activity);
+  free_matrix(sample);
+  free_network_state(state);
+  free_network_structure(structure);
+}
+
+static void test_forward_for_activity_with_dropout() {
+  NetworkStructure *structure = network_structure_with_dropout();
+  NetworkState     *state     = network_state_basic();
+  Matrix            sample    = data_sample_basic();
+  Activity *activity = forward_for_activity(structure, state, sample);
+
+  assert(activity->layers == structure->layers);
+
+  assert(activity->mask[0] != NULL);
+  assert(activity->mask[1] != NULL);
+  assert(activity->mask[2] != NULL);
+  assert(activity->mask[3] != NULL);
 
   free_activity(activity);
   free_matrix(sample);
