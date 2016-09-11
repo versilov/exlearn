@@ -1,8 +1,4 @@
-#ifndef INCLUDED_MATRIX_C
-  #define INCLUDED_MATRIX_C
-
-  #include "../../native/lib/matrix.c"
-#endif
+#include "../../native/lib/matrix.c"
 
 static void test_clone_matrix() {
   Matrix source      = new_matrix(1, 3);
@@ -34,6 +30,17 @@ static void test_new_matrix() {
 
   assert(matrix[0] == 1);
   assert(matrix[1] == 2);
+}
+
+static void test_matrix_equal() {
+  float first[8]  = {2, 3, 1, 2, 3, 4, 5, 6 };
+  float second[8] = {2, 3, 1, 2, 3, 4, 5, 6 };
+  float third[8]  = {2, 3, 5, 2, 1, 3, 4, 6 };
+
+  assert(matrix_equal(first, second));
+
+  assert(matrix_equal(first, second) == 1);
+  assert(matrix_equal(first, third)  == 0);
 }
 
 static void test_matrix_add() {

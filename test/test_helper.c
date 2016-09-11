@@ -62,6 +62,7 @@ int main() {
   test_clone_matrix();
   test_free_matrix();
   test_new_matrix();
+  test_matrix_equal();
   test_matrix_add();
   test_matrix_argmax();
   test_matrix_divide();

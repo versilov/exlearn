@@ -6,7 +6,7 @@
 
 #include "structs.c"
 
-static void
+static inline void
 clone_matrix(Matrix destination, Matrix source) {
   int length = source[0] * source[1] + 2;
 
@@ -15,12 +15,14 @@ clone_matrix(Matrix destination, Matrix source) {
   }
 }
 
-static void
+static inline void
 free_matrix(Matrix matrix) {
-  free(matrix);
+  if (matrix != NULL) free(matrix);
+
+  matrix = NULL;
 }
 
-static Matrix
+static inline Matrix
 new_matrix(int rows, int columns) {
   int length    = rows * columns + 2;
   Matrix result = malloc(sizeof(float) * length);
@@ -29,6 +31,20 @@ new_matrix(int rows, int columns) {
   result[1] = columns;
 
   return result;
+}
+
+static inline int
+matrix_equal(Matrix first, Matrix second) {
+  if (first[0] != second[0]) return 0;
+  if (first[1] != second[1]) return 0;
+
+  int length = first[0] * first[1] + 2;
+
+  for (int index = 2; index < length; index += 1) {
+    if (first[index] != second[index]) return 0;
+  }
+
+  return 1;
 }
 
 static inline void

@@ -27,8 +27,8 @@ network_state_basic() {
   state->weights[1] = temp;
 
   temp = new_matrix(1, 2);
-  temp[2] = 4;
-  temp[3] = 5;
+  temp[2] = 1;
+  temp[3] = 2;
   state->biases[2] = temp;
 
   temp = new_matrix(3, 2);
@@ -41,8 +41,8 @@ network_state_basic() {
   state->weights[2] = temp;
 
   temp = new_matrix(1, 2);
-  temp[2] = 6;
-  temp[3] = 7;
+  temp[2] = 1;
+  temp[3] = 2;
   state->biases[3] = temp;
 
   temp = new_matrix(2, 2);
