@@ -3,6 +3,7 @@
 #include "c/neural_network/activity_test.c"
 #include "c/neural_network/dropout_test.c"
 #include "c/neural_network/forwarder_test.c"
+#include "c/neural_network/objective_test.c"
 #include "c/neural_network/presentation_test.c"
 #include "c/worker/batch_data_test.c"
 #include "c/worker/worker_data_test.c"
@@ -38,6 +39,12 @@ int main() {
   test_forward_for_activity();
   test_forward_for_activity_with_dropout();
   test_forward_for_output();
+
+  // Tests for: c/neural_network/objective_test.c
+  test_an_unknown_objective_function();
+  test_the_cross_entropy_objective_function();
+  test_the_negative_log_likelihood_objective_function();
+  test_the_quadratic_objective_function();
 
   // Tests for: c/neural_network/presentation_test.c
   test_free_presentation_closure();

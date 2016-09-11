@@ -14,6 +14,9 @@ typedef struct ActivityClosure {
   float            alpha;
 } ActivityClosure;
 
+typedef float (*ObjectiveFunction)(Matrix, Matrix);
+typedef void  (*ObjectiveError)(Matrix, Matrix, Matrix, ActivityClosure);
+
 typedef int (*PresentationFunction)(Matrix, int);
 typedef struct PresentationClosure {
   PresentationFunction function;
