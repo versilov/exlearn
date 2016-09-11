@@ -1,5 +1,9 @@
 #include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/time.h>
 
+#include "c/test_util.c"
 #include "c/neural_network/activity_test.c"
 #include "c/neural_network/dropout_test.c"
 #include "c/neural_network/forwarder_test.c"
@@ -45,6 +49,16 @@ int main() {
   test_the_cross_entropy_objective_function();
   test_the_negative_log_likelihood_objective_function();
   test_the_quadratic_objective_function();
+
+  test_an_unknown_objective_error_simple();
+  test_the_cross_entropy_objective_error_simple();
+  test_the_negative_log_likelihood_objective_error_simple();
+
+  test_an_unknown_objective_error_optimised();
+  test_the_cross_entropy_objective_error_optimised();
+  test_the_negative_log_likelihood_objective_error_optimised();
+
+  test_the_quadratic_objective_error();
 
   // Tests for: c/neural_network/presentation_test.c
   test_free_presentation_closure();

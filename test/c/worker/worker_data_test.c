@@ -1,25 +1,8 @@
-#include <sys/time.h>
-
 #include "../../../native/lib/worker/worker_data.c"
 
 //-----------------------------------------------------------------------------
 // Test Helpers
 //-----------------------------------------------------------------------------
-
-char * temp_file_path() {
-  char           *buffer;
-  long long int   timestamp_usec;
-  struct timeval  timer_usec;
-
-  gettimeofday(&timer_usec, NULL);
-
-  timestamp_usec = ((long long int) timer_usec.tv_sec) * 1000000ll + (long long int) timer_usec.tv_usec;
-  buffer         = malloc(sizeof(char) * 50);
-
-  sprintf(buffer, "test/c/temp/data-%lld.eld", timestamp_usec);
-
-  return buffer;
-}
 
 void create_temp_file(char *path) {
   FILE  *file       = fopen(path, "wb");

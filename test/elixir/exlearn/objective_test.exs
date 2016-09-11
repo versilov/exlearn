@@ -84,7 +84,7 @@ defmodule ObjectiveTest do
     first      = Matrix.new(1, 3, [[1,   0,   0  ]])
     second     = Matrix.new(1, 3, [[0.6, 0.3, 0.1]])
     input      = Matrix.new(1, 3, [[2,   3,   4  ]])
-    derivative = fn(x) -> x - 1 end
+    derivative = fn(x) -> x end
 
     expected_from_function = 0.5108255743980408
     expected_from_error    = Matrix.new(1, 3, [[-0.39999997, 0.3, 0.1]])
