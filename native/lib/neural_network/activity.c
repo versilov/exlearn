@@ -4,8 +4,8 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include "matrix.c"
-#include "structs.c"
+#include "../matrix.c"
+#include "../structs.c"
 
 //-----------------------------------------------------------------------------
 // Activity function pairs

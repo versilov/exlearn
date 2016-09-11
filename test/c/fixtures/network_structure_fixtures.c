@@ -1,5 +1,5 @@
 #include "../../../native/lib/neural_network/presentation.c"
-#include "../../../native/lib/activity.c"
+#include "../../../native/lib/neural_network/activity.c"
 
 static NetworkStructure *
 network_structure_basic() {

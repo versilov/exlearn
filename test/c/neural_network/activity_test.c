@@ -1,4 +1,4 @@
-#include "../../native/lib/activity.c"
+#include "../../../native/lib/neural_network/activity.c"
 
 //-----------------------------------------------------------------------------
 // Tests

@@ -1,17 +1,36 @@
 #include <assert.h>
 
+#include "c/neural_network/activity_test.c"
 #include "c/neural_network/dropout_test.c"
 #include "c/neural_network/forwarder_test.c"
 #include "c/neural_network/presentation_test.c"
 #include "c/worker/batch_data_test.c"
 #include "c/worker/worker_data_test.c"
-#include "c/activity_test.c"
 #include "c/matrix_test.c"
 #include "c/network_state_test.c"
 #include "c/network_structure_test.c"
 #include "c/random_test.c"
 
 int main() {
+  // Test for: c/neural_network/activity_test.c
+  test_free_activity();
+  test_new_activity();
+  test_an_unknown_pair();
+  test_the_arctan_pair();
+  test_the_bent_identity_pair();
+  test_the_gaussian_pair();
+  test_the_identity_pair();
+  test_the_logistic_pair();
+  test_the_relu_pair();
+  test_the_sinc_pair();
+  test_the_sinusoid_pair();
+  test_the_softmax_pair();
+  test_the_softplus_pair();
+  test_the_softsign_pair();
+  test_the_tanh_pair();
+  test_the_elu_pair();
+  test_the_prelu_pair();
+
   // Tests for: c/neural_network/dropout_test.c
   test_create_dropout_mask();
 
@@ -39,25 +58,6 @@ int main() {
   test_free_worker_data();
   test_new_worker_data();
   test_read_worker_data();
-
-  // Tests for: c/activity_test.c
-  test_free_activity();
-  test_new_activity();
-  test_an_unknown_pair();
-  test_the_arctan_pair();
-  test_the_bent_identity_pair();
-  test_the_gaussian_pair();
-  test_the_identity_pair();
-  test_the_logistic_pair();
-  test_the_relu_pair();
-  test_the_sinc_pair();
-  test_the_sinusoid_pair();
-  test_the_softmax_pair();
-  test_the_softplus_pair();
-  test_the_softsign_pair();
-  test_the_tanh_pair();
-  test_the_elu_pair();
-  test_the_prelu_pair();
 
   // Tests for: c/matrix_test.c
   test_clone_matrix();
