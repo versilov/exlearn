@@ -12,4 +12,14 @@ data_sample_basic() {
   return sample;
 }
 
+static Matrix
+data_expected_basic() {
+  Matrix sample = new_matrix(1, 2);
+
+  sample[2] = 1830;
+  sample[3] = 2688;
+
+  return sample;
+}
+
 #endif

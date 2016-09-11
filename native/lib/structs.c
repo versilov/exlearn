@@ -45,6 +45,8 @@ typedef struct NetworkStructure {
   ActivityClosure     **function;
   ActivityClosure     **derivative;
   PresentationClosure  *presentation;
+  ObjectiveFunction     objective;
+  ObjectiveError        error;
 } NetworkStructure;
 
 #endif

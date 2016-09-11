@@ -78,6 +78,7 @@ int main() {
 
   // Tests for: c/neural_network/propagator_test.c
   test_back_propagate();
+  test_back_propagate_with_dropout();
 
   // Tests for: c/worker/batch_data_test.c
   test_free_batch_data();

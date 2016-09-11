@@ -1,8 +1,9 @@
 #ifndef INCLUDE_NETWORK_STRUCTURE_FIXTURES_C
 #define INCLUDE_NETWORK_STRUCTURE_FIXTURES_C
 
-#include "../../../native/lib/neural_network/presentation.c"
 #include "../../../native/lib/neural_network/activity.c"
+#include "../../../native/lib/neural_network/objective.c"
+#include "../../../native/lib/neural_network/presentation.c"
 
 static NetworkStructure *
 network_structure_basic() {
@@ -33,6 +34,8 @@ network_structure_basic() {
   structure->derivative[3] = activity_determine_derivative(3, 0);
 
   structure->presentation = presentation_determine(0, 0);
+  structure->objective    = objective_determine_function(2);
+  structure->error        = objective_determine_error_simple(2);
 
   return structure;
 }
@@ -66,6 +69,8 @@ network_structure_with_dropout() {
   structure->derivative[3] = activity_determine_derivative(3, 0);
 
   structure->presentation = presentation_determine(0, 0);
+  structure->objective    = objective_determine_function(2);
+  structure->error        = objective_determine_error_simple(2);
 
   return structure;
 }

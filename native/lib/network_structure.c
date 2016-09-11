@@ -35,6 +35,8 @@ new_network_structure(int layers) {
   structure->function     = malloc(sizeof(ActivityClosure *) * layers);
   structure->derivative   = malloc(sizeof(ActivityClosure *) * layers);
   structure->presentation = NULL;
+  structure->objective    = NULL;
+  structure->error        = NULL;
 
   for (int layer = 0; layer < layers; layer += 1) {
     structure->function[layer]   = NULL;
