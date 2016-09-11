@@ -59,6 +59,7 @@ int main() {
   test_the_prelu_pair();
 
   // Tests for: c/matrix_test.c
+  test_clone_matrix();
   test_free_matrix();
   test_new_matrix();
   test_matrix_add();

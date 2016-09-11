@@ -4,6 +4,25 @@
   #include "../../native/lib/matrix.c"
 #endif
 
+static void test_clone_matrix() {
+  Matrix source      = new_matrix(1, 3);
+  Matrix destination = new_matrix(1, 3);
+
+  source[2] = 1;
+  source[3] = 2;
+  source[4] = 3;
+
+  destination[2] = 10;
+  destination[3] = 20;
+  destination[4] = 30;
+
+  clone_matrix(destination, source);
+
+  for(int index = 0; index < 5; index += 1) {
+    assert(destination[index] == source[index]);
+  }
+}
+
 static void test_free_matrix() {
   Matrix matrix = new_matrix(1, 2);
 

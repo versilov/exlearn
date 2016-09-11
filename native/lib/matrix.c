@@ -7,6 +7,15 @@
 #include "structs.c"
 
 static void
+clone_matrix(Matrix destination, Matrix source) {
+  int length = source[0] * source[1] + 2;
+
+  for (int index = 0; index < length; index += 1) {
+    destination[index] = source[index];
+  }
+}
+
+static void
 free_matrix(Matrix matrix) {
   free(matrix);
 }
