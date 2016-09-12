@@ -16,8 +16,8 @@ static Matrix
 data_expected_basic() {
   Matrix sample = new_matrix(1, 2);
 
-  sample[2] = 1830;
-  sample[3] = 2688;
+  sample[2] = 1800;
+  sample[3] = 2700;
 
   return sample;
 }

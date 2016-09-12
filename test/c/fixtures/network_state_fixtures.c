@@ -8,9 +8,11 @@ network_state_basic() {
   NetworkState *state = new_network_state(4);
   Matrix temp;
 
+  // Input layer
   state->biases[0]  = NULL;
   state->weights[0] = NULL;
 
+  // First Hidden Layer
   temp = new_matrix(1, 3);
   temp[2] = 1;
   temp[3] = 2;
@@ -29,6 +31,7 @@ network_state_basic() {
   temp[10] = 9;
   state->weights[1] = temp;
 
+  // Second Hidden Layer
   temp = new_matrix(1, 2);
   temp[2] = 1;
   temp[3] = 2;
@@ -43,6 +46,7 @@ network_state_basic() {
   temp[7] = 6;
   state->weights[2] = temp;
 
+  // Output Layer
   temp = new_matrix(1, 2);
   temp[2] = 1;
   temp[3] = 2;
