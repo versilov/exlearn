@@ -15,3 +15,6 @@ samples/**/*.el1
 *.gcda
 *.gcno
 *.gcov
+GPATH
+GRTAGS
+GTAGS
