@@ -76,6 +76,7 @@ Add the following aliases to `~/.bash_profile` and source it:
 
 ```bash
 alias docker-here='docker run --rm -it -u `id -u`:`id -g` -v "$PWD":/work -w /work'
+alias docker-dev-here='docker run --rm -it -u `id -u`:`id -g` -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v "$PWD":/work -v "$HOME"/.bash_profile:/home/notroot/.bash_profile -v "$HOME"/.spacemacs:/home/notroot/.spacemacs -v "$HOME"/.emacs.d:/home/notroot/.emacs.d -w /work'
 alias docker-root-here='docker run --rm -it -v "$PWD":/work -w /work'
 ```
 
@@ -100,7 +101,7 @@ alias docker-root-here='docker run --rm -it -v "$PWD":/work -w /work'
     docker-here -p 8888:8888 exlearn-jupyter
     ```
 
-## Development
+## Project Container
 
 2. Build the project container
     ```bash
@@ -151,9 +152,30 @@ alias docker-root-here='docker run --rm -it -v "$PWD":/work -w /work'
     docker-here exlearn mix dialyzer
     ```
 
-10. Debug C code
+## Development Container
+
+1. Build the project container
     ```bash
-    docker-here --security-opt seccomp=unconfined exlearn bash
+    docker build                        \
+      -t exlearn-dev                    \
+      --build-arg HOST_USER_UID=`id -u` \
+      --build-arg HOST_USER_GID=`id -g` \
+      -f docker/development/Dockerfile  \
+      "$PWD"
+
+    # OR the short version if you are user 1000:1000
+
+    docker build -t exlearn-dev -f docker/development/Dockerfile "$PWD"
+    ```
+
+2. Start the container with a login shell
+    ```bash
+    docker-dev-here exlearn-dev bash -l
+    ```
+
+3. To run gdb you need to give seccomp permissions
+    ```bash
+    docker-dev-here --security-opt seccomp=unconfined exlearn-dev bash -l
 
     gdb
     ```

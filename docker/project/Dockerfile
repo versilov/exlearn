@@ -10,6 +10,7 @@ RUN set -ex                                                 && \
     echo 'Creating notroot user and group from host'        && \
     groupadd -g $HOST_USER_GID notroot                      && \
     useradd -lm -u $HOST_USER_UID -g $HOST_USER_GID notroot && \
+    passwd -d notroot                                       && \
                                                                \
     echo 'Giving notroot permissions to /work'              && \
     chown -R notroot:notroot /work                          && \
@@ -17,7 +18,6 @@ RUN set -ex                                                 && \
     echo 'Installing debugger and libraries'                && \
     apt-get update                                          && \
     apt-get install -y --no-install-recommends                 \
-      gdb                                                      \
       libblas-dev                                              \
       libgsl0-dev                                           && \
                                                                \
