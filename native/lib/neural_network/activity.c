@@ -12,6 +12,8 @@
 //-----------------------------------------------------------------------------
 
 static void arctan_function(Matrix matrix, float _alpha) {
+  (void)(_alpha);
+
   int length = matrix[0] * matrix[1] + 2;
 
   for (int index = 2; index < length; index += 1) {
@@ -20,6 +22,8 @@ static void arctan_function(Matrix matrix, float _alpha) {
 }
 
 static void arctan_derivative(Matrix matrix, float _alpha) {
+  (void)(_alpha);
+
   int   length = matrix[0] * matrix[1] + 2;
   float element;
 
@@ -31,6 +35,8 @@ static void arctan_derivative(Matrix matrix, float _alpha) {
 }
 
 static void bent_identity_function(Matrix matrix, float _alpha) {
+  (void)(_alpha);
+
   int   length = matrix[0] * matrix[1] + 2;
   float element;
 
@@ -42,6 +48,8 @@ static void bent_identity_function(Matrix matrix, float _alpha) {
 }
 
 static void bent_identity_derivative(Matrix matrix, float _alpha) {
+  (void)(_alpha);
+
   int   length = matrix[0] * matrix[1] + 2;
   float element;
 
@@ -53,6 +61,8 @@ static void bent_identity_derivative(Matrix matrix, float _alpha) {
 }
 
 static void gaussian_function(Matrix matrix, float _alpha) {
+  (void)(_alpha);
+
   int   length = matrix[0] * matrix[1] + 2;
   float element;
 
@@ -64,6 +74,8 @@ static void gaussian_function(Matrix matrix, float _alpha) {
 }
 
 static void gaussian_derivative(Matrix matrix, float _alpha) {
+  (void)(_alpha);
+
   int   length = matrix[0] * matrix[1] + 2;
   float element;
 
@@ -74,11 +86,16 @@ static void gaussian_derivative(Matrix matrix, float _alpha) {
   }
 }
 
-static void identity_function(Matrix matrix, float _alpha) {
+static void identity_function(Matrix _matrix, float _alpha) {
+  (void)(_matrix);
+  (void)(_alpha );
+
   // Nothing to do here :)
 }
 
 static void identity_derivative(Matrix matrix, float _alpha) {
+  (void)(_alpha);
+
   int length = matrix[0] * matrix[1] + 2;
 
   for (int index = 2; index < length; index += 1) {
@@ -87,6 +104,8 @@ static void identity_derivative(Matrix matrix, float _alpha) {
 }
 
 static void logistic_function(Matrix matrix, float _alpha) {
+  (void)(_alpha);
+
   int length = matrix[0] * matrix[1] + 2;
 
   for (int index = 2; index < length; index += 1) {
@@ -97,6 +116,8 @@ static void logistic_function(Matrix matrix, float _alpha) {
 }
 
 static void logistic_derivative(Matrix matrix, float _alpha) {
+  (void)(_alpha);
+
   int   length = matrix[0] * matrix[1] + 2;
   float element;
 
@@ -110,6 +131,8 @@ static void logistic_derivative(Matrix matrix, float _alpha) {
 }
 
 static void relu_function(Matrix matrix, float _alpha) {
+  (void)(_alpha);
+
   int length = matrix[0] * matrix[1] + 2;
 
   for (int index = 2; index < length; index += 1) {
@@ -118,6 +141,8 @@ static void relu_function(Matrix matrix, float _alpha) {
 }
 
 static void relu_derivative(Matrix matrix, float _alpha) {
+  (void)(_alpha);
+
   int length = matrix[0] * matrix[1] + 2;
 
   for (int index = 2; index < length; index += 1) {
@@ -127,6 +152,8 @@ static void relu_derivative(Matrix matrix, float _alpha) {
 }
 
 static void sinc_function(Matrix matrix, float _alpha) {
+  (void)(_alpha);
+
   int   length = matrix[0] * matrix[1] + 2;
   float element;
 
@@ -139,6 +166,8 @@ static void sinc_function(Matrix matrix, float _alpha) {
 }
 
 static void sinc_derivative(Matrix matrix, float _alpha) {
+  (void)(_alpha);
+
   int   length = matrix[0] * matrix[1] + 2;
   float element;
 
@@ -151,6 +180,8 @@ static void sinc_derivative(Matrix matrix, float _alpha) {
 }
 
 static void sinusoid_function(Matrix matrix, float _alpha) {
+  (void)(_alpha);
+
   int length = matrix[0] * matrix[1] + 2;
 
   for (int index = 2; index < length; index += 1) {
@@ -159,6 +190,8 @@ static void sinusoid_function(Matrix matrix, float _alpha) {
 }
 
 static void sinusoid_derivative(Matrix matrix, float _alpha) {
+  (void)(_alpha);
+
   int length = matrix[0] * matrix[1] + 2;
 
   for (int index = 2; index < length; index += 1) {
@@ -167,6 +200,8 @@ static void sinusoid_derivative(Matrix matrix, float _alpha) {
 }
 
 static void softmax_function(Matrix matrix, float _alpha) {
+  (void)(_alpha);
+
   int   length     = matrix[0] * matrix[1] + 2;
   float maximum    = matrix_max(matrix);
   float normalizer = 0.0;
@@ -181,6 +216,8 @@ static void softmax_function(Matrix matrix, float _alpha) {
 }
 
 static void softmax_derivative(Matrix matrix, float _alpha) {
+  (void)(_alpha);
+
   int    length = matrix[0] * matrix[1] + 2;
   Matrix temp   = malloc(sizeof(float) * length);
   float  sum;
@@ -206,6 +243,8 @@ static void softmax_derivative(Matrix matrix, float _alpha) {
 }
 
 static void softplus_function(Matrix matrix, float _alpha) {
+  (void)(_alpha);
+
   int length = matrix[0] * matrix[1] + 2;
 
   for (int index = 2; index < length; index += 1) {
@@ -214,6 +253,8 @@ static void softplus_function(Matrix matrix, float _alpha) {
 }
 
 static void softplus_derivative(Matrix matrix, float _alpha) {
+  (void)(_alpha);
+
   int length = matrix[0] * matrix[1] + 2;
 
   for (int index = 2; index < length; index += 1) {
@@ -222,6 +263,8 @@ static void softplus_derivative(Matrix matrix, float _alpha) {
 }
 
 static void softsign_function(Matrix matrix, float _alpha) {
+  (void)(_alpha);
+
   int   length = matrix[0] * matrix[1] + 2;
   float element;
 
@@ -233,6 +276,8 @@ static void softsign_function(Matrix matrix, float _alpha) {
 }
 
 static void softsign_derivative(Matrix matrix, float _alpha) {
+  (void)(_alpha);
+
   int   length = matrix[0] * matrix[1] + 2;
   float element;
 
@@ -244,6 +289,8 @@ static void softsign_derivative(Matrix matrix, float _alpha) {
 }
 
 static void tanh_function(Matrix matrix, float _alpha) {
+  (void)(_alpha);
+
   int length = matrix[0] * matrix[1] + 2;
 
   for (int index = 2; index < length; index += 1) {
@@ -252,6 +299,8 @@ static void tanh_function(Matrix matrix, float _alpha) {
 }
 
 static void tanh_derivative(Matrix matrix, float _alpha) {
+  (void)(_alpha);
+
   int   length = matrix[0] * matrix[1] + 2;
   float element;
 

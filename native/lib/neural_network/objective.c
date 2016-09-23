@@ -73,6 +73,9 @@ negative_log_likelihood_error_simple(
   Matrix           _last_input,
   ActivityClosure *_last_derivative
 ) {
+  (void)(_last_input     );
+  (void)(_last_derivative);
+
   int    length = expected[0] * expected[1] + 2;
   Matrix result = new_matrix(expected[0], expected[1]);
 
@@ -93,6 +96,9 @@ negative_log_likelihood_error_optimised(
   Matrix           _last_input,
   ActivityClosure *_last_derivative
 ) {
+  (void)(_last_input     );
+  (void)(_last_derivative);
+
   int    length = expected[0] * expected[1] + 2;
   Matrix result = new_matrix(expected[0], expected[1]);
 
