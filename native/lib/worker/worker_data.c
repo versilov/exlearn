@@ -40,6 +40,27 @@ new_worker_data() {
   return data;
 }
 
+// File format:
+//   one           :: float-little-32
+//   version       :: float-little-32
+//   count         :: float-little-32
+//   first_length  :: float-little-32
+//   second_length :: float-little-32
+//   maximum_step  :: float-little-32
+//   step_type     :: float-little-32
+//   data          :: binary
+//
+// Description:
+//   one           :: The value one used for determining endianess.
+//   version       :: The format version of the file. Currently it is version 1.
+//   count         :: The number of sample pairs in the file.
+//   first_length  :: The length of the first sample.
+//   second_length :: The length of the second sample.
+//   maximum_step  :: The maximum allowed jump between sequences of samples.
+//   jump          :: [0|1]
+//                     0: Do not discard samples.
+//                     1: Discard first (maximum_step - step) samples.
+//   data          :: The binary data.
 static void
 read_worker_data(const char *path, WorkerData *data) {
   float  float_buffer;
