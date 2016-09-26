@@ -103,7 +103,7 @@ alias docker-root-here='docker run --rm -it -v "$PWD":/work -w /work'
 
 ## Project Container
 
-2. Build the project container
+1. Build the project container
     ```bash
     docker build                        \
       -t exlearn                        \
@@ -117,39 +117,34 @@ alias docker-root-here='docker run --rm -it -v "$PWD":/work -w /work'
     docker build -t exlearn -f docker/project/Dockerfile "$PWD"
     ```
 
-3. Update dependencies
+2. Update dependencies
     ```bash
     docker-here exlearn mix deps.get
     ```
 
-4. Compile the C shared library
+3. Compile the C shared library
     ```bash
     docker-here exlearn make
     ```
 
-5. Run an interactive shell
+4. Run an interactive shell
     ```bash
     docker-here exlearn iex -S mix
     ```
 
-6. Run a sample
+5. Run a sample
     ```bash
     docker-here exlearn mix run samples/or.exs
     ```
 
-7. Run tests
+6. Run tests
     ```bash
     docker-here exlearn mix test
     ```
 
-8. Run tests with coverage report
+7. Run tests with coverage report
     ```bash
     docker-here exlearn mix coveralls
-    ```
-
-9. Run dialyzer
-    ```bash
-    docker-here exlearn mix dialyzer
     ```
 
 ## Development Container
@@ -178,6 +173,11 @@ alias docker-root-here='docker run --rm -it -v "$PWD":/work -w /work'
     docker-dev-here --security-opt seccomp=unconfined exlearn-dev bash -l
 
     gdb
+    ```
+
+4. Run dialyzer
+    ```bash
+    docker-dev-here exlearn-dev mix dialyzer
     ```
 
 ## LICENSE

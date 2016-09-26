@@ -1,9 +1,19 @@
 FROM exlearn
 
+ADD mix.* /work/
+
 RUN set -ex                                                 && \
                                                                \
     echo 'Giving notroot sudo rights'                       && \
     usermod -aG sudo notroot                                && \
+    passwd -d notroot                                       && \
+                                                               \
+    echo 'Setting up hex and rebar for notroot'             && \
+    runuser notroot -c "                                       \
+      cd /work                                              && \
+      mix deps.get                                          && \
+      mix dialyzer.plt                                         \
+    "                                                       && \
                                                                \
     echo 'Installing libraries'                             && \
     apt-get update                                          && \
