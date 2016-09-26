@@ -9,7 +9,10 @@ defmodule ExLearn.NeuralNetwork.Accumulator.ProcessPredictTest do
   use ExUnit.Case, async: true
 
   alias ExLearn.Matrix
-  alias ExLearn.NeuralNetwork.{Accumulator, Manager, Notification, Store}
+  alias ExLearn.NeuralNetwork.Accumulator
+  alias ExLearn.NeuralNetwork.Manager
+  alias ExLearn.NeuralNetwork.Notification
+  alias ExLearn.NeuralNetwork.Store
 
   alias ExLearn.TestUtil
   alias ExLearn.DataFixtures

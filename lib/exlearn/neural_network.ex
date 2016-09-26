@@ -3,9 +3,12 @@ defmodule ExLearn.NeuralNetwork do
   A neural network.
   """
 
-  alias ExLearn.NeuralNetwork.{
-    Accumulator, Builder, Master, Notification, Persistence, Store
-  }
+  alias ExLearn.NeuralNetwork.Accumulator
+  alias ExLearn.NeuralNetwork.Builder
+  alias ExLearn.NeuralNetwork.Master
+  alias ExLearn.NeuralNetwork.Notification
+  alias ExLearn.NeuralNetwork.Persistence
+  alias ExLearn.NeuralNetwork.Store
 
   @doc """
   Creates the neural network from the structure parameters.

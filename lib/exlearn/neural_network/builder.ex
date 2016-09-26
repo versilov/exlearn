@@ -5,7 +5,10 @@ defmodule ExLearn.NeuralNetwork.Builder do
   This module is NOT part of the public API.
   """
 
-  alias ExLearn.{Activation, Distribution, Matrix, Objective}
+  alias ExLearn.Activation
+  alias ExLearn.Distribution
+  alias ExLearn.Matrix
+  alias ExLearn.Objective
   alias ExLearn.NeuralNetwork.Presentation
 
   @doc """

@@ -3,7 +3,8 @@ defmodule ExLearn.NeuralNetwork.Forwarder do
   Feed forward functionality
   """
 
-  alias ExLearn.{Activation, Matrix}
+  alias ExLearn.Activation
+  alias ExLearn.Matrix
 
   @doc """
   Propagates input forward trough a network and return the activity

@@ -3,7 +3,9 @@ defmodule ExLearn.NeuralNetwork.Propagator do
   Backpropagates the error trough a network
   """
 
-  alias ExLearn.{Activation, Matrix, Util}
+  alias ExLearn.Activation
+  alias ExLearn.Matrix
+  alias ExLearn.Util
 
   @doc """
   Performs backpropagation

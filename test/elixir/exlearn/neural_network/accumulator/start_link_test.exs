@@ -1,7 +1,10 @@
 defmodule ExLearn.NeuralNetwork.Accumulator.StartLinkTest do
   use ExUnit.Case, async: true
 
-  alias ExLearn.NeuralNetwork.{Accumulator, Manager, Notification, Store}
+  alias ExLearn.NeuralNetwork.Accumulator
+  alias ExLearn.NeuralNetwork.Manager
+  alias ExLearn.NeuralNetwork.Notification
+  alias ExLearn.NeuralNetwork.Store
 
   setup do
     notification_name    = {:global, make_ref()}

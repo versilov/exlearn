@@ -1,7 +1,8 @@
 defmodule ExLearn.NeuralNetwork.StoreTest do
   use ExUnit.Case, async: true
 
-  alias ExLearn.NeuralNetwork.{Notification, Store}
+  alias ExLearn.NeuralNetwork.Notification
+  alias ExLearn.NeuralNetwork.Store
 
   setup do
     notification_name    = {:global, make_ref()}

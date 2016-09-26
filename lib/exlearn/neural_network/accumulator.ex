@@ -1,9 +1,11 @@
 defmodule ExLearn.NeuralNetwork.Accumulator do
   use GenServer
 
-  alias ExLearn.NeuralNetwork.{
-    Notification, Propagator, Regularization, Store, Worker
-  }
+  alias ExLearn.NeuralNetwork.Notification
+  alias ExLearn.NeuralNetwork.Propagator
+  alias ExLearn.NeuralNetwork.Regularization
+  alias ExLearn.NeuralNetwork.Store
+  alias ExLearn.NeuralNetwork.Worker
 
   #----------------------------------------------------------------------------
   # Client API

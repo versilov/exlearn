@@ -1,7 +1,8 @@
 defmodule ObjectiveTest do
   use ExUnit.Case, async: true
 
-  alias ExLearn.{Matrix, Objective}
+  alias ExLearn.Matrix
+  alias ExLearn.Objective
 
   test "#determine returns the given function pair" do
     first  = 1

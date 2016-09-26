@@ -1,7 +1,10 @@
 defmodule ExLearn.NeuralNetwork.Master do
   use Supervisor
 
-  alias ExLearn.NeuralNetwork.{Accumulator, Manager, Notification, Store}
+  alias ExLearn.NeuralNetwork.Accumulator
+  alias ExLearn.NeuralNetwork.Manager
+  alias ExLearn.NeuralNetwork.Notification
+  alias ExLearn.NeuralNetwork.Store
 
   # Client API
 

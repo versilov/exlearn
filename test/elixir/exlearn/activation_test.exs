@@ -1,7 +1,8 @@
 defmodule ActivationTest do
   use ExUnit.Case, async: true
 
-  alias ExLearn.{Activation, Matrix}
+  alias ExLearn.Activation
+  alias ExLearn.Matrix
 
   test "#apply with function/1 applies the fiven function" do
     function = &Matrix.sum/1

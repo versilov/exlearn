@@ -2,7 +2,8 @@ defmodule ExLearn.NeuralNetwork.Worker do
   use GenServer
 
   alias ExLearn.Util
-  alias ExLearn.NeuralNetwork.{Forwarder, Propagator}
+  alias ExLearn.NeuralNetwork.Forwarder
+  alias ExLearn.NeuralNetwork.Propagator
 
   #----------------------------------------------------------------------------
   # Client API
