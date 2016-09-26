@@ -76,7 +76,7 @@ Add the following aliases to `~/.bash_profile` and source it:
 
 ```bash
 alias docker-here='docker run --rm -it -u `id -u`:`id -g` -v "$PWD":/work -w /work'
-alias docker-dev-here='docker run --rm -it -u `id -u`:`id -g` -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v "$PWD":/work -v "$HOME"/.bash_profile:/home/notroot/.bash_profile -v "$HOME"/.spacemacs:/home/notroot/.spacemacs -v "$HOME"/.emacs.d:/home/notroot/.emacs.d -w /work'
+alias docker-dev-here='docker run --rm -it -u `id -u`:`id -g` -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v "$PWD":/work -v "$HOME"/.bash_profile:/home/notroot/.bash_profile -v "$HOME"/.globalrc:/home/notroot/.globalrc -v "$HOME"/.spacemacs:/home/notroot/.spacemacs -v "$HOME"/Sources:/home/notroot/Sources:ro -v "$HOME"/.emacs.d:/home/notroot/.emacs.d -w /work'
 alias docker-root-here='docker run --rm -it -v "$PWD":/work -w /work'
 ```
 
