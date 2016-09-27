@@ -96,9 +96,10 @@ int main() {
   test_new_worker_data_bundle();
   test_read_worker_data_bundle();
 
-  // Tests for: c/worker/worker_data_bundle_test.c
+  // Tests for: c/worker/worker_data_test.c
   test_worker_data_free();
   test_worker_data_new();
+  test_worker_data_read();
 
   // Tests for: c/matrix_test.c
   test_clone_matrix();

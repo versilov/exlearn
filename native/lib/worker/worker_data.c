@@ -43,4 +43,10 @@ worker_data_new(int count) {
   return data;
 }
 
+static void
+worker_data_read(BundlePaths *paths, WorkerData *data) {
+  (void)(paths);
+  (void)(data);
+}
+
 #endif
