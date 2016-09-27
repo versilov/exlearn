@@ -1,20 +1,20 @@
-#ifndef INCLUDE_WORKER_DATA_C
-#define INCLUDE_WORKER_DATA_C
+#ifndef INCLUDE_WORKER_DATA_BUNDLE_C
+#define INCLUDE_WORKER_DATA_BUNDLE_C
 
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct WorkerData {
+typedef struct WorkerDataBundle {
   int     count;
   int     first_length, second_length;
   int     maximum_step;
   int     discard;
   float **first;
   float **second;
-} WorkerData;
+} WorkerDataBundle;
 
 static void
-free_worker_data(WorkerData *data) {
+free_worker_data_bundle(WorkerDataBundle *data) {
   int index;
 
   for(index = 0; index < data->count; index += 1) {
@@ -28,9 +28,9 @@ free_worker_data(WorkerData *data) {
   free(data);
 }
 
-static WorkerData *
-new_worker_data() {
-  WorkerData *data = malloc(sizeof(WorkerData));
+static WorkerDataBundle *
+new_worker_data_bundle() {
+  WorkerDataBundle *data = malloc(sizeof(WorkerDataBundle));
 
   data->count         = 0;
   data->first_length  = 0;
@@ -44,14 +44,14 @@ new_worker_data() {
 }
 
 // File format:
-//   one           :: float-little-32
-//   version       :: float-little-32
-//   count         :: float-little-32
-//   first_length  :: float-little-32
-//   second_length :: float-little-32
-//   maximum_step  :: float-little-32
-//   discard       :: float-little-32
-//   data          :: binary
+//   one           :: integer-little-32
+//   version       :: integer-little-32
+//   count         :: integer-little-32
+//   first_length  :: integer-little-32
+//   second_length :: integer-little-32
+//   maximum_step  :: integer-little-32
+//   discard       :: integer-little-32
+//   data          :: binary of float-little-32
 //
 // Description:
 //   one           :: The value one used for determining endianess.
@@ -100,7 +100,7 @@ new_worker_data() {
 //       The first binary represents an identifier for the input matrix.
 //       The second binary represents the input matrix.
 static void
-read_worker_data(const char *path, WorkerData *data) {
+read_worker_data_bundle(const char *path, WorkerDataBundle *data) {
   int    int_buffer;
   float *float_buffer;
   FILE  *file;

@@ -12,7 +12,7 @@
 #include "c/neural_network/presentation_test.c"
 #include "c/neural_network/propagator_test.c"
 #include "c/worker/batch_data_test.c"
-#include "c/worker/worker_data_test.c"
+#include "c/worker/worker_data_bundle_test.c"
 #include "c/matrix_test.c"
 #include "c/network_state_test.c"
 #include "c/network_structure_test.c"
@@ -85,10 +85,10 @@ int main() {
   test_new_batch_data();
   test_shuffle_batch_data_indices();
 
-  // Tests for: c/worker/worker_data_test.c
-  test_free_worker_data();
-  test_new_worker_data();
-  test_read_worker_data();
+  // Tests for: c/worker/worker_data_bundle_test.c
+  test_free_worker_data_bundle();
+  test_new_worker_data_bundle();
+  test_read_worker_data_bundle();
 
   // Tests for: c/matrix_test.c
   test_clone_matrix();

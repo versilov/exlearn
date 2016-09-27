@@ -1,4 +1,4 @@
-#include "../../../native/lib/worker/worker_data.c"
+#include "../../../native/lib/worker/worker_data_bundle.c"
 
 //-----------------------------------------------------------------------------
 // Test Helpers
@@ -38,7 +38,7 @@ void create_temp_file(char *path) {
   fclose(file);
 }
 
-char * write_worker_data_in_file() {
+char * write_worker_data_bundle_in_file() {
   char *path = temp_file_path();
 
   create_temp_file(path);
@@ -50,14 +50,14 @@ char * write_worker_data_in_file() {
 // Tests
 //-----------------------------------------------------------------------------
 
-static void test_free_worker_data() {
-  WorkerData *data = new_worker_data();
+static void test_free_worker_data_bundle() {
+  WorkerDataBundle *data = new_worker_data_bundle();
 
-  free_worker_data(data);
+  free_worker_data_bundle(data);
 }
 
-static void test_new_worker_data() {
-  WorkerData *data = new_worker_data();
+static void test_new_worker_data_bundle() {
+  WorkerDataBundle *data = new_worker_data_bundle();
 
   assert(data->count         == 0   );
   assert(data->first_length  == 0   );
@@ -67,14 +67,14 @@ static void test_new_worker_data() {
   assert(data->first         == NULL);
   assert(data->second        == NULL);
 
-  free_worker_data(data);
+  free_worker_data_bundle(data);
 }
 
-static void test_read_worker_data() {
-  WorkerData *data = new_worker_data();
+static void test_read_worker_data_bundle() {
+  WorkerDataBundle *data = new_worker_data_bundle();
 
-  char *file = write_worker_data_in_file();
-  read_worker_data(file, data);
+  char *file = write_worker_data_bundle_in_file();
+  read_worker_data_bundle(file, data);
 
   assert(data->count         == 1);
   assert(data->first_length  == 3);
@@ -91,5 +91,5 @@ static void test_read_worker_data() {
   assert(data->second[0][2] == 4);
 
   free(file);
-  free_worker_data(data);
+  free_worker_data_bundle(data);
 }
