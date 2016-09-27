@@ -7,8 +7,10 @@
 typedef struct WorkerData {
   int     count;
   int     first_length, second_length;
-  int     step;
-  float **first, **second;
+  int     maximum_step;
+  int     discard;
+  float **first;
+  float **second;
 } WorkerData;
 
 static void
@@ -33,7 +35,8 @@ new_worker_data() {
   data->count         = 0;
   data->first_length  = 0;
   data->second_length = 0;
-  data->step          = 0;
+  data->maximum_step  = 0;
+  data->discard       = 0;
   data->first         = NULL;
   data->second        = NULL;
 
@@ -47,7 +50,7 @@ new_worker_data() {
 //   first_length  :: float-little-32
 //   second_length :: float-little-32
 //   maximum_step  :: float-little-32
-//   step_type     :: float-little-32
+//   discard       :: float-little-32
 //   data          :: binary
 //
 // Description:
@@ -57,7 +60,7 @@ new_worker_data() {
 //   first_length  :: The length of the first sample.
 //   second_length :: The length of the second sample.
 //   maximum_step  :: The maximum allowed jump between sequences of samples.
-//   jump          :: [0|1]
+//   discard       :: [0|1]
 //                     0: Do not discard samples.
 //                     1: Discard first (maximum_step - step) samples.
 //     Example:
@@ -98,37 +101,52 @@ new_worker_data() {
 //       The second binary represents the input matrix.
 static void
 read_worker_data(const char *path, WorkerData *data) {
-  float  float_buffer;
-  float *first_buffer, *second_buffer;
+  int    int_buffer;
+  float *float_buffer;
   FILE  *file;
 
   file = fopen(path, "rb");
 
-  fread(&float_buffer, sizeof(float), 1, file);
+  // Reads one.
+  fread(&int_buffer, sizeof(int), 1, file);
 
-  fread(&float_buffer, sizeof(float), 1, file);
-  data->count = (int) float_buffer;
+  // Reads version.
+  fread(&int_buffer, sizeof(int), 1, file);
 
-  fread(&float_buffer, sizeof(float), 1, file);
-  data->first_length = (int) float_buffer;
+  // Reads count.
+  fread(&int_buffer, sizeof(int), 1, file);
+  data->count = int_buffer;
 
-  fread(&float_buffer, sizeof(float), 1, file);
-  data->second_length = (int) float_buffer;
+  // Reads first_length.
+  fread(&int_buffer, sizeof(int), 1, file);
+  data->first_length = int_buffer;
 
-  fread(&float_buffer, sizeof(float), 1, file);
-  data->step = (int) float_buffer;
+  // Reads second_length.
+  fread(&int_buffer, sizeof(int), 1, file);
+  data->second_length = int_buffer;
 
+  // Reads maximum_step.
+  fread(&int_buffer, sizeof(int), 1, file);
+  data->maximum_step = int_buffer;
+
+  // Reads discard.
+  fread(&int_buffer, sizeof(int), 1, file);
+  data->discard = int_buffer;
+
+  // Reads data.
   data->first  = malloc(sizeof(float *) * data->count);
   data->second = malloc(sizeof(float *) * data->count);
 
   for(int index = 0; index < data->count; index += 1) {
-    first_buffer = malloc(sizeof(float) * data->first_length);
-    fread(first_buffer, sizeof(float), data->first_length, file);
-    data->first[index] = first_buffer;
+    // Reads first binary.
+    float_buffer = malloc(sizeof(float) * data->first_length);
+    fread(float_buffer, sizeof(float), data->first_length, file);
+    data->first[index] = float_buffer;
 
-    second_buffer = malloc(sizeof(float) * data->second_length);
-    fread(second_buffer, sizeof(float), data->second_length, file);
-    data->second[index] = second_buffer;
+    // Reads second binary.
+    float_buffer = malloc(sizeof(float) * data->second_length);
+    fread(float_buffer, sizeof(float), data->second_length, file);
+    data->second[index] = float_buffer;
   }
 
   fclose(file);
