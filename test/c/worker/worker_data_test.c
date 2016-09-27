@@ -6,21 +6,19 @@
 static void test_worker_data_free() {
   WorkerData *data = worker_data_new(4);
 
-  assert(data->count   == 4   );
-  assert(data->paths   != NULL);
-  assert(data->bundles != NULL);
+  assert(data->count  == 4   );
+  assert(data->bundle != NULL);
 
   for (int index = 0; index < data->count; index += 1) {
-    assert(data->paths[index]   == NULL);
-    assert(data->bundles[index] == NULL);
+    assert(data->bundle[index] == NULL);
   }
 
   worker_data_free(&data);
 }
 
 static void test_worker_data_read() {
-  WorkerData  *data  = worker_data_new(2);
   BundlePaths *paths = bundle_paths_new(2);
+  WorkerData  *data  = worker_data_new(2);
 
   paths->path[0] = create_first_data_bundle_file();
   paths->path[1] = create_second_data_bundle_file();

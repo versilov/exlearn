@@ -1,10 +1,11 @@
 #ifndef INCLUDED_WORKER_DATA_C
 #define INCLUDED_WORKER_DATA_C
 
+#include "worker_data_bundle.c"
+
 typedef struct WorkerData {
   int                count;
-  char             **paths;
-  WorkerDataBundle **bundles;
+  WorkerDataBundle **bundle;
 } WorkerData;
 
 static void
@@ -13,13 +14,10 @@ worker_data_free(WorkerData **data_address) {
 
   if(data != NULL) {
     for (int index = 0; index < data->count; index += 1) {
-      if (data->paths[index]   != NULL) free(data->paths[index]  );
-      if (data->bundles[index] != NULL) free(data->bundles[index]);
+      if (data->bundle[index] != NULL) free(data->bundle[index]);
     }
 
-    free(data->paths  );
-    free(data->bundles);
-
+    free(data->bundle);
     free(data);
 
     *data_address = NULL;
@@ -30,14 +28,11 @@ static WorkerData *
 worker_data_new(int count) {
   WorkerData *data = malloc(sizeof(WorkerData));
 
-  data->count   = count;
-
-  data->paths   = malloc(sizeof(char *)     * count);
-  data->bundles = malloc(sizeof(WorkerData) * count);
+  data->count  = count;
+  data->bundle = malloc(sizeof(WorkerData) * count);
 
   for (int index = 0; index < data->count; index += 1) {
-    data->paths[index]   = NULL;
-    data->bundles[index] = NULL;
+    data->bundle[index] = NULL;
   }
 
   return data;
@@ -45,8 +40,13 @@ worker_data_new(int count) {
 
 static void
 worker_data_read(BundlePaths *paths, WorkerData *data) {
-  (void)(paths);
-  (void)(data);
+  for (int index = 0; index < paths->count; index += 1) {
+    WorkerDataBundle *bundle = new_worker_data_bundle();
+
+    read_worker_data_bundle(paths->path[index], bundle);
+
+    data->bundle[index] = bundle;
+  }
 }
 
 #endif
