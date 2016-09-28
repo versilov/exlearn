@@ -1,6 +1,7 @@
 #ifndef INCLUDED_WORKER_DATA_C
 #define INCLUDED_WORKER_DATA_C
 
+#include "bundle_paths.c"
 #include "worker_data_bundle.c"
 
 typedef struct WorkerData {

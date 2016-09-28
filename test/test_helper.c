@@ -13,6 +13,7 @@
 #include "c/neural_network/propagator_test.c"
 #include "c/worker/batch_data_test.c"
 #include "c/worker/bundle_paths_test.c"
+#include "c/worker/sample_index_test.c"
 #include "c/worker/worker_data_bundle_test.c"
 #include "c/worker/worker_data_test.c"
 #include "c/matrix_test.c"
@@ -87,9 +88,13 @@ int main() {
   test_new_batch_data();
   test_shuffle_batch_data_indices();
 
-  // Tests for: c/worker/batch_data_test.c
+  // Tests for: c/worker/bundle_paths_test.c
   test_bundle_paths_free();
   test_bundle_paths_new();
+
+  // Tests for: c/worker/sample_index_test.c
+  test_sample_index_free();
+  test_sample_index_new();
 
   // Tests for: c/worker/worker_data_bundle_test.c
   test_free_worker_data_bundle();
