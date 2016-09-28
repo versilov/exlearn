@@ -46,7 +46,7 @@ new_batch_data(WorkerData *data, int batch_length) {
   batch->sample_index = malloc(sizeof(SampleIndex *) * data_length);
 
   data_index = 0;
-  for (int bundle_index = 0; bundle_index < data_length; bundle_index += 1) {
+  for (int bundle_index = 0; bundle_index < data->count; bundle_index += 1) {
     bundle = data->bundle[bundle_index];
 
     for (int sample_index = 0; sample_index < bundle->count; sample_index += 1) {
