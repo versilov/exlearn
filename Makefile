@@ -14,9 +14,9 @@ compile:
 
 test:
 	find test/c/temp/ ! -name '.keep' -type f -exec rm -f {} +
-	$(CC) -g -o test/c/temp/tests_with_coverage -O0 -std=c11 -Wall -Wextra --coverage test/test_helper.c -lblas -lgsl -lgslcblas -lm
+	$(CC) -g -I$(ERL_INCLUDE_PATH) -o test/c/temp/tests_with_coverage -O0 -std=c11 -Wall -Wextra --coverage test/test_helper.c -lblas -lgsl -lgslcblas -lm
 	./test/c/temp/tests_with_coverage
-	$(CC) -o test/c/temp/tests_optimised -O3 -std=c11 -Wall -Wextra test/test_helper.c -lblas -lgsl -lgslcblas -lm
+	$(CC) -I$(ERL_INCLUDE_PATH) -o test/c/temp/tests_optimised -O3 -std=c11 -Wall -Wextra test/test_helper.c -lblas -lgsl -lgslcblas -lm
 	./test/c/temp/tests_optimised
 	for i in *.gcda; do gcov $$i > test/c/temp/$$i.coverage; done
 	grep -h -A1 "File 'native" test/c/temp/*.coverage

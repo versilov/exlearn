@@ -11,6 +11,7 @@
 #include "c/neural_network/objective_test.c"
 #include "c/neural_network/presentation_test.c"
 #include "c/neural_network/propagator_test.c"
+#include "c/nifs/worker_nifs_test.c"
 #include "c/worker/batch_data_test.c"
 #include "c/worker/bundle_paths_test.c"
 #include "c/worker/sample_index_test.c"
@@ -82,6 +83,9 @@ int main() {
   // Tests for: c/neural_network/propagator_test.c
   test_back_propagate();
   test_back_propagate_with_dropout();
+
+  // Tests for: c/nifs/worker_nifs_test.c
+  test_create_worker_data();
 
   // Tests for: c/worker/batch_data_test.c
   test_free_batch_data();
