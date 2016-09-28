@@ -7,9 +7,9 @@
 //-----------------------------------------------------------------------------
 
 static void test_free_batch_data() {
-  BatchData        *batch;
-  BundlePaths      *paths = bundle_paths_new(2);
-  WorkerData       *data  = worker_data_new(2);
+  BatchData   *batch;
+  BundlePaths *paths = bundle_paths_new(2);
+  WorkerData  *data  = worker_data_new(2);
 
   paths->path[0] = create_first_data_bundle_file();
   paths->path[1] = create_second_data_bundle_file();
@@ -22,9 +22,9 @@ static void test_free_batch_data() {
 }
 
 static void test_new_batch_data() {
-  BatchData        *batch;
-  BundlePaths      *paths = bundle_paths_new(2);
-  WorkerData       *data  = worker_data_new(2);
+  BatchData   *batch;
+  BundlePaths *paths = bundle_paths_new(2);
+  WorkerData  *data  = worker_data_new(2);
 
   paths->path[0] = create_first_data_bundle_file();
   paths->path[1] = create_second_data_bundle_file();
@@ -36,17 +36,20 @@ static void test_new_batch_data() {
   assert(batch->data_length  == 3);
   assert(batch->batch_length == 1);
 
-  for (int index = 0; index < 3; index += 1) {
-    // TODO: assert values within range;
-  }
+  assert(batch->sample_index[0]->bundle == 0);
+  assert(batch->sample_index[0]->index  == 0);
+  assert(batch->sample_index[1]->bundle == 1);
+  assert(batch->sample_index[1]->index  == 0);
+  assert(batch->sample_index[2]->bundle == 1);
+  assert(batch->sample_index[2]->index  == 1);
 
   free_batch_data(batch);
 }
 
 static void test_shuffle_batch_data_indices() {
-  BatchData        *batch;
-  BundlePaths      *paths = bundle_paths_new(2);
-  WorkerData       *data  = worker_data_new(2);
+  BatchData   *batch;
+  BundlePaths *paths = bundle_paths_new(2);
+  WorkerData  *data  = worker_data_new(2);
 
   paths->path[0] = create_first_data_bundle_file();
   paths->path[1] = create_second_data_bundle_file();
@@ -57,8 +60,15 @@ static void test_shuffle_batch_data_indices() {
 
   shuffle_batch_data_indices(batch);
 
-  for (int index = 0; index < 3; index += 1) {
-    // TODO: assert values within range;
+  for (int index = 0; index < batch->data_length; index += 1) {
+    assert(
+      batch->sample_index[index]->bundle == 0 ||
+      batch->sample_index[index]->bundle == 1
+    );
+    assert(
+      batch->sample_index[index]->index == 0 ||
+      batch->sample_index[index]->index == 1
+    );
   }
 
   free_batch_data(batch);
