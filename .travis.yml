@@ -16,7 +16,9 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - gcc-4.9
+      - lcov
       - libblas-dev
+      - libgsl0-dev
 
 env:
   - MIX_ENV=test
@@ -27,5 +29,6 @@ before_script:
   - CC=gcc-4.9 make
 
 script:
+  - make test
   - mix coveralls.travis
   - mix dialyzer
