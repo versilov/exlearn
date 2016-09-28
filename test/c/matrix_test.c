@@ -15,7 +15,7 @@ static void test_clone_matrix() {
   clone_matrix(destination, source);
 
   for(int index = 0; index < 5; index += 1) {
-    assert(destination[index] == source[index]);
+    assert(destination[index] == source[index]); /* LCOV_EXCL_BR_LINE */
   }
 }
 
@@ -28,8 +28,8 @@ static void test_free_matrix() {
 static void test_new_matrix() {
   Matrix matrix = new_matrix(1, 2);
 
-  assert(matrix[0] == 1);
-  assert(matrix[1] == 2);
+  assert(matrix[0] == 1); /* LCOV_EXCL_BR_LINE */
+  assert(matrix[1] == 2); /* LCOV_EXCL_BR_LINE */
 }
 
 static void test_matrix_equal() {
@@ -37,10 +37,10 @@ static void test_matrix_equal() {
   float second[8] = {2, 3, 1, 2, 3, 4, 5, 6 };
   float third[8]  = {2, 3, 5, 2, 1, 3, 4, 6 };
 
-  assert(matrix_equal(first, second));
+  assert(matrix_equal(first, second)); /* LCOV_EXCL_BR_LINE */
 
-  assert(matrix_equal(first, second) == 1);
-  assert(matrix_equal(first, third)  == 0);
+  assert(matrix_equal(first, second) == 1); /* LCOV_EXCL_BR_LINE */
+  assert(matrix_equal(first, third)  == 0); /* LCOV_EXCL_BR_LINE */
 }
 
 static void test_matrix_add() {
@@ -52,7 +52,7 @@ static void test_matrix_add() {
   matrix_add(first, second, result);
 
   for(int index = 0; index < 8; index += 1) {
-    assert(expected[index] == result[index]);
+    assert(expected[index] == result[index]); /* LCOV_EXCL_BR_LINE */
   }
 }
 
@@ -61,9 +61,9 @@ static void test_matrix_argmax() {
   float second[8] = {2, 3, 8, 3, 4, 5, 6, 7};
   float third[8]  = {2, 3, 8, 3, 4, 9, 6, 7};
 
-  assert(matrix_argmax(first)  == 5);
-  assert(matrix_argmax(second) == 0);
-  assert(matrix_argmax(third)  == 3);
+  assert(matrix_argmax(first)  == 5); /* LCOV_EXCL_BR_LINE */
+  assert(matrix_argmax(second) == 0); /* LCOV_EXCL_BR_LINE */
+  assert(matrix_argmax(third)  == 3); /* LCOV_EXCL_BR_LINE */
 }
 
 static void test_matrix_divide() {
@@ -75,7 +75,7 @@ static void test_matrix_divide() {
   matrix_divide(first, second, result);
 
   for(int index = 0; index < 8; index += 1) {
-    assert(expected[index] == result[index]);
+    assert(expected[index] == result[index]); /* LCOV_EXCL_BR_LINE */
   }
 }
 
@@ -88,7 +88,7 @@ static void test_matrix_dot() {
   matrix_dot(first, second, result);
 
   for(int index = 0; index < 6; index += 1) {
-    assert(expected[index] == result[index]);
+    assert(expected[index] == result[index]); /* LCOV_EXCL_BR_LINE */
   }
 }
 
@@ -102,7 +102,7 @@ static void test_matrix_dot_and_add() {
   matrix_dot_and_add(first, second, third, result);
 
   for(int index = 0; index < 6; index += 1) {
-    assert(expected[index] == result[index]);
+    assert(expected[index] == result[index]); /* LCOV_EXCL_BR_LINE */
   }
 }
 
@@ -115,7 +115,7 @@ static void test_matrix_dot_nt() {
   matrix_dot_nt(first, second, result);
 
   for(int index = 0; index < 6; index += 1) {
-    assert(expected[index] == result[index]);
+    assert(expected[index] == result[index]); /* LCOV_EXCL_BR_LINE */
   }
 }
 
@@ -128,20 +128,20 @@ static void test_matrix_dot_tn() {
   matrix_dot_tn(first, second, result);
 
   for(int index = 0; index < 6; index += 1) {
-    assert(expected[index] == result[index]);
+    assert(expected[index] == result[index]); /* LCOV_EXCL_BR_LINE */
   }
 }
 
 static void test_matrix_first() {
   float matrix[8] = {2, 3, 1, 4, 2, 5, 3, 6};
 
-  assert(matrix_first(matrix) == 1);
+  assert(matrix_first(matrix) == 1); /* LCOV_EXCL_BR_LINE */
 }
 
 static void test_matrix_max() {
   float matrix[8] = {2, 3, 1, 4, 2, 5, 3, 6};
 
-  assert(matrix_max(matrix) == 6);
+  assert(matrix_max(matrix) == 6); /* LCOV_EXCL_BR_LINE */
 }
 
 static void test_matrix_multiply() {
@@ -153,7 +153,7 @@ static void test_matrix_multiply() {
   matrix_multiply(first, second, result);
 
   for(int index = 0; index < 8; index += 1) {
-    assert(expected[index] == result[index]);
+    assert(expected[index] == result[index]); /* LCOV_EXCL_BR_LINE */
   }
 }
 
@@ -166,7 +166,7 @@ static void test_matrix_multiply_with_scalar() {
   matrix_multiply_with_scalar(matrix, scalar, result);
 
   for(int index = 0; index < 8; index += 1) {
-    assert(expected[index] == result[index]);
+    assert(expected[index] == result[index]); /* LCOV_EXCL_BR_LINE */
   }
 }
 
@@ -179,14 +179,14 @@ static void test_matrix_substract() {
   matrix_substract(first, second, result);
 
   for(int index = 0; index < 8; index += 1) {
-    assert(expected[index] == result[index]);
+    assert(expected[index] == result[index]); /* LCOV_EXCL_BR_LINE */
   }
 }
 
 static void test_matrix_sum() {
   float matrix[8] = {2, 3, 1, 4, 2, 5, 3, 6};
 
-  assert(matrix_sum(matrix) == 21);
+  assert(matrix_sum(matrix) == 21); /* LCOV_EXCL_BR_LINE */
 }
 
 static void test_matrix_transpose() {
@@ -197,6 +197,6 @@ static void test_matrix_transpose() {
   matrix_transpose(matrix, result);
 
   for(int index = 0; index < 8; index += 1) {
-    assert(expected[index] == result[index]);
+    assert(expected[index] == result[index]); /* LCOV_EXCL_BR_LINE */
   }
 }

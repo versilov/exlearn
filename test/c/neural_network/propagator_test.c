@@ -15,14 +15,14 @@ static void test_back_propagate() {
 
   Correction *result = back_propagate(structure, state, activity, expected_output);
 
-  assert(result->layers == expected_correction->layers);
+  assert(result->layers == expected_correction->layers); /* LCOV_EXCL_BR_LINE */
 
-  assert(result->biases[0]  == NULL);
-  assert(result->weights[0] == NULL);
+  assert(result->biases[0]  == NULL); /* LCOV_EXCL_BR_LINE */
+  assert(result->weights[0] == NULL); /* LCOV_EXCL_BR_LINE */
 
   for (int layer = 1; layer < result->layers; layer += 1) {
-    assert(matrix_equal(result->biases[layer],  expected_correction->biases[layer]));
-    assert(matrix_equal(result->weights[layer], expected_correction->weights[layer]));
+    assert(matrix_equal(result->biases[layer],  expected_correction->biases[layer])); /* LCOV_EXCL_BR_LINE */
+    assert(matrix_equal(result->weights[layer], expected_correction->weights[layer])); /* LCOV_EXCL_BR_LINE */
   }
 
   free_correction(result);
@@ -42,14 +42,14 @@ static void test_back_propagate_with_dropout() {
 
   Correction *result = back_propagate(structure, state, activity, expected_output);
 
-  assert(result->layers == expected_correction->layers);
+  assert(result->layers == expected_correction->layers); /* LCOV_EXCL_BR_LINE */
 
-  assert(result->biases[0]  == NULL);
-  assert(result->weights[0] == NULL);
+  assert(result->biases[0]  == NULL); /* LCOV_EXCL_BR_LINE */
+  assert(result->weights[0] == NULL); /* LCOV_EXCL_BR_LINE */
 
   for (int layer = 1; layer < result->layers; layer += 1) {
-    assert(matrix_equal(result->biases[layer],  expected_correction->biases[layer]));
-    assert(matrix_equal(result->weights[layer], expected_correction->weights[layer]));
+    assert(matrix_equal(result->biases[layer],  expected_correction->biases[layer])); /* LCOV_EXCL_BR_LINE */
+    assert(matrix_equal(result->weights[layer], expected_correction->weights[layer])); /* LCOV_EXCL_BR_LINE */
   }
 
   free_correction(result);

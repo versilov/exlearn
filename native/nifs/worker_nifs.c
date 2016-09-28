@@ -13,4 +13,4 @@ static ErlNifFunc nif_functions[] = {
   {"create_worker_data", 1, create_worker_data, 0}
 };
 
-ERL_NIF_INIT(Elixir.ExLearn.NeuralNetwork.Worker, nif_functions, NULL, NULL, NULL, NULL)
+ERL_NIF_INIT(Elixir.ExLearn.NeuralNetwork.Worker, nif_functions, NULL, NULL, NULL, NULL) /* LCOV_EXCL_LINE */

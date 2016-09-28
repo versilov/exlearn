@@ -21,14 +21,15 @@ static void test_call_presentation_closure() {
   matrix[2] = 1;
   result    = call_presentation_closure(closure, matrix);
 
-  assert(result == 0);
+  assert(result == 0); /* LCOV_EXCL_BR_LINE */
 
   free_presentation_closure(closure);
 }
 
 static void test_an_unknown_function() {
   PresentationClosure *closure = presentation_determine(-1, 0);
-  assert(closure == NULL);
+
+  assert(closure == NULL); /* LCOV_EXCL_BR_LINE */
 
   Matrix matrix  = new_matrix(1, 1);
   int    result;
@@ -36,7 +37,7 @@ static void test_an_unknown_function() {
   matrix[2] = 1;
   result    = call_presentation_closure(closure, matrix);
 
-  assert(result == 0);
+  assert(result == 0); /* LCOV_EXCL_BR_LINE */
 
   free_presentation_closure(closure);
 }
@@ -51,7 +52,7 @@ static void test_the_argmax_function() {
   matrix[4] = 3;
   result    = call_presentation_closure(closure, matrix);
 
-  assert(result == 3);
+  assert(result == 3); /* LCOV_EXCL_BR_LINE */
 
   free_presentation_closure(closure);
 }
@@ -66,7 +67,7 @@ static void test_the_floor_first_function() {
   matrix[4] = 3;
   result    = call_presentation_closure(closure, matrix);
 
-  assert(result == 2);
+  assert(result == 2); /* LCOV_EXCL_BR_LINE */
 
   free_presentation_closure(closure);
 }
@@ -81,13 +82,12 @@ static void test_the_round_first_function() {
   matrix[4] = 3;
 
   result = call_presentation_closure(closure, matrix);
-  assert(result == 2);
+  assert(result == 2); /* LCOV_EXCL_BR_LINE */
 
   matrix[2] = 1.6;
 
   result = call_presentation_closure(closure, matrix);
-  assert(result == 3);
-
+  assert(result == 3); /* LCOV_EXCL_BR_LINE */
 
   free_presentation_closure(closure);
 }
@@ -102,7 +102,7 @@ static void test_the_ceil_first_function() {
   matrix[4] = 3;
   result    = call_presentation_closure(closure, matrix);
 
-  assert(result == 3);
+  assert(result == 3); /* LCOV_EXCL_BR_LINE */
 
   free_presentation_closure(closure);
 }

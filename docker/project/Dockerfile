@@ -16,6 +16,7 @@ RUN set -ex                                                 && \
     echo 'Installing debugger and libraries'                && \
     apt-get update                                          && \
     apt-get install -y --no-install-recommends                 \
+      lcov                                                     \
       libblas-dev                                              \
       libgsl0-dev                                           && \
                                                                \

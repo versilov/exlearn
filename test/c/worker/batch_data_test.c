@@ -33,15 +33,15 @@ static void test_new_batch_data() {
 
   batch = new_batch_data(data, 1);
 
-  assert(batch->data_length  == 3);
-  assert(batch->batch_length == 1);
+  assert(batch->data_length  == 3); /* LCOV_EXCL_BR_LINE */
+  assert(batch->batch_length == 1); /* LCOV_EXCL_BR_LINE */
 
-  assert(batch->sample_index[0]->bundle == 0);
-  assert(batch->sample_index[0]->index  == 0);
-  assert(batch->sample_index[1]->bundle == 1);
-  assert(batch->sample_index[1]->index  == 0);
-  assert(batch->sample_index[2]->bundle == 1);
-  assert(batch->sample_index[2]->index  == 1);
+  assert(batch->sample_index[0]->bundle == 0); /* LCOV_EXCL_BR_LINE */
+  assert(batch->sample_index[0]->index  == 0); /* LCOV_EXCL_BR_LINE */
+  assert(batch->sample_index[1]->bundle == 1); /* LCOV_EXCL_BR_LINE */
+  assert(batch->sample_index[1]->index  == 0); /* LCOV_EXCL_BR_LINE */
+  assert(batch->sample_index[2]->bundle == 1); /* LCOV_EXCL_BR_LINE */
+  assert(batch->sample_index[2]->index  == 1); /* LCOV_EXCL_BR_LINE */
 
   free_batch_data(batch);
 }
@@ -61,14 +61,8 @@ static void test_shuffle_batch_data_indices() {
   shuffle_batch_data_indices(batch);
 
   for (int index = 0; index < batch->data_length; index += 1) {
-    assert(
-      batch->sample_index[index]->bundle == 0 ||
-      batch->sample_index[index]->bundle == 1
-    );
-    assert(
-      batch->sample_index[index]->index == 0 ||
-      batch->sample_index[index]->index == 1
-    );
+    assert(batch->sample_index[index]->bundle == 0 || batch->sample_index[index]->bundle == 1); /* LCOV_EXCL_BR_LINE */
+    assert(batch->sample_index[index]->index == 0 || batch->sample_index[index]->index == 1); /* LCOV_EXCL_BR_LINE */
   }
 
   free_batch_data(batch);

@@ -12,5 +12,5 @@ static void test_create_worker_data() {
 
   result = create_worker_data(env, argc, argv);
 
-  assert(result == 0);
+  assert(result == 0); /* LCOV_EXCL_BR_LINE */
 }

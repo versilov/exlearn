@@ -14,11 +14,12 @@ compile:
 
 test:
 	find test/c/temp/ ! -name '.keep' -type f -exec rm -f {} +
-	$(CC) -g -I$(ERL_INCLUDE_PATH) -o test/c/temp/tests_with_coverage -O0 -std=c11 -Wall -Wextra --coverage test/test_helper.c -lblas -lgsl -lgslcblas -lm
+	lcov --directory . -z --rc lcov_branch_coverage=1
+	$(CC) -g -I$(ERL_INCLUDE_PATH) -o test/c/temp/tests_with_coverage -O0 -std=c11 -Wall -Wextra --coverage test/test_helper.c -lblas -lgsl -lgslcblas -lm -lgcov
 	./test/c/temp/tests_with_coverage
 	$(CC) -I$(ERL_INCLUDE_PATH) -o test/c/temp/tests_optimised -O3 -std=c11 -Wall -Wextra test/test_helper.c -lblas -lgsl -lgslcblas -lm
 	./test/c/temp/tests_optimised
-	for i in *.gcda; do gcov $$i > test/c/temp/$$i.coverage; done
-	grep -h -A1 "File 'native" test/c/temp/*.coverage
-	grep -C3 '#####' *.c.gcov | cat
+	lcov --directory . -c -o cover/lcov.info-file --rc lcov_branch_coverage=1
+	lcov --list cover/lcov.info-file --rc lcov_branch_coverage=1
+	genhtml --branch-coverage -o cover cover/lcov.info-file > /dev/null
 	rm -f *.gcov *.gcda *.gcno

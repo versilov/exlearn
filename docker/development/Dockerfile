@@ -23,6 +23,7 @@ RUN set -ex                                                 && \
       flex                                                     \
       gdb                                                      \
       gperf                                                    \
+      less                                                     \
       libtool-bin                                              \
       sudo                                                     \
       texinfo                                                  \

@@ -4,7 +4,7 @@
 static void test_an_unknown_objective_function() {
   ObjectiveFunction function = objective_determine_function(-1);
 
-  assert(function == NULL);
+  assert(function == NULL); /* LCOV_EXCL_BR_LINE */
 }
 
 static void test_the_cross_entropy_objective_function() {
@@ -13,7 +13,7 @@ static void test_the_cross_entropy_objective_function() {
 
   ObjectiveFunction function = objective_determine_function(0);
 
-  assert(function(first, second) == 1.9580775499343872);
+  assert(function(first, second) == 1.9580775499343872); /* LCOV_EXCL_BR_LINE */
 }
 
 static void test_the_negative_log_likelihood_objective_function() {
@@ -22,7 +22,7 @@ static void test_the_negative_log_likelihood_objective_function() {
 
   ObjectiveFunction function = objective_determine_function(1);
 
-  assert(function(first, second) == 0.5108255743980408);
+  assert(function(first, second) == 0.5108255743980408); /* LCOV_EXCL_BR_LINE */
 }
 
 static void test_the_quadratic_objective_function() {
@@ -31,13 +31,13 @@ static void test_the_quadratic_objective_function() {
 
   ObjectiveFunction function = objective_determine_function(2);
 
-  assert(function(first, second) == 8);
+  assert(function(first, second) == 8); /* LCOV_EXCL_BR_LINE */
 }
 
 static void test_an_unknown_objective_error_simple() {
   ObjectiveError function = objective_determine_error_simple(-1);
 
-  assert(function == NULL);
+  assert(function == NULL); /* LCOV_EXCL_BR_LINE */
 }
 
 static void test_the_cross_entropy_objective_error_simple() {
@@ -50,11 +50,11 @@ static void test_the_cross_entropy_objective_error_simple() {
 
   result = error(expected, actual, last_input, derivative);
 
-  assert(result[0] ==  1);
-  assert(result[1] ==  3);
-  assert(result[2] ==  0.83333337306976318);
-  assert(result[3] ==  1.20000004768371582);
-  assert(result[4] == -1.42857146263122558);
+  assert(result[0] ==  1                  ); /* LCOV_EXCL_BR_LINE */
+  assert(result[1] ==  3                  ); /* LCOV_EXCL_BR_LINE */
+  assert(result[2] ==  0.83333337306976318); /* LCOV_EXCL_BR_LINE */
+  assert(result[3] ==  1.20000004768371582); /* LCOV_EXCL_BR_LINE */
+  assert(result[4] == -1.42857146263122558); /* LCOV_EXCL_BR_LINE */
 
   free_activity_closure(derivative);
 }
@@ -69,11 +69,11 @@ static void test_the_negative_log_likelihood_objective_error_simple() {
 
   result = error(expected, actual, last_input, derivative);
 
-  assert(result[0] ==  1);
-  assert(result[1] ==  3);
-  assert(result[2] == -0.3999999761581421 );
-  assert(result[3] ==  0.30000001192092896);
-  assert(result[4] ==  0.10000000149011612);
+  assert(result[0] ==  1                  ); /* LCOV_EXCL_BR_LINE */
+  assert(result[1] ==  3                  ); /* LCOV_EXCL_BR_LINE */
+  assert(result[2] == -0.3999999761581421 ); /* LCOV_EXCL_BR_LINE */
+  assert(result[3] ==  0.30000001192092896); /* LCOV_EXCL_BR_LINE */
+  assert(result[4] ==  0.10000000149011612); /* LCOV_EXCL_BR_LINE */
 
   free_activity_closure(derivative);
 }
@@ -81,7 +81,7 @@ static void test_the_negative_log_likelihood_objective_error_simple() {
 static void test_an_unknown_objective_error_optimised() {
   ObjectiveError function = objective_determine_error_optimised(-1);
 
-  assert(function == NULL);
+  assert(function == NULL); /* LCOV_EXCL_BR_LINE */
 }
 
 static void test_the_cross_entropy_objective_error_optimised() {
@@ -94,11 +94,11 @@ static void test_the_cross_entropy_objective_error_optimised() {
 
   result = error(expected, actual, last_input, derivative);
 
-  assert(result[0] ==  1);
-  assert(result[1] ==  3);
-  assert(result[2] == -0.3999999761581421 );
-  assert(result[3] ==  0.30000001192092896);
-  assert(result[4] ==  0.10000000149011612);
+  assert(result[0] ==  1                  ); /* LCOV_EXCL_BR_LINE */
+  assert(result[1] ==  3                  ); /* LCOV_EXCL_BR_LINE */
+  assert(result[2] == -0.3999999761581421 ); /* LCOV_EXCL_BR_LINE */
+  assert(result[3] ==  0.30000001192092896); /* LCOV_EXCL_BR_LINE */
+  assert(result[4] ==  0.10000000149011612); /* LCOV_EXCL_BR_LINE */
 
   free_activity_closure(derivative);
 }
@@ -113,11 +113,11 @@ static void test_the_negative_log_likelihood_objective_error_optimised() {
 
   result = error(expected, actual, last_input, derivative);
 
-  assert(result[0] ==  1);
-  assert(result[1] ==  3);
-  assert(result[2] == -0.3999999761581421 );
-  assert(result[3] ==  0.30000001192092896);
-  assert(result[4] ==  0.10000000149011612);
+  assert(result[0] ==  1                  ); /* LCOV_EXCL_BR_LINE */
+  assert(result[1] ==  3                  ); /* LCOV_EXCL_BR_LINE */
+  assert(result[2] == -0.3999999761581421 ); /* LCOV_EXCL_BR_LINE */
+  assert(result[3] ==  0.30000001192092896); /* LCOV_EXCL_BR_LINE */
+  assert(result[4] ==  0.10000000149011612); /* LCOV_EXCL_BR_LINE */
 
   free_activity_closure(derivative);
 }
@@ -133,20 +133,20 @@ static void test_the_quadratic_objective_error() {
   error  = objective_determine_error_simple(2);
   result = error(expected, actual, last_input, derivative);
 
-  assert(result[0] == 1);
-  assert(result[1] == 3);
-  assert(result[2] == 0);
-  assert(result[3] == 0);
-  assert(result[4] == 4);
+  assert(result[0] == 1); /* LCOV_EXCL_BR_LINE */
+  assert(result[1] == 3); /* LCOV_EXCL_BR_LINE */
+  assert(result[2] == 0); /* LCOV_EXCL_BR_LINE */
+  assert(result[3] == 0); /* LCOV_EXCL_BR_LINE */
+  assert(result[4] == 4); /* LCOV_EXCL_BR_LINE */
 
   error  = objective_determine_error_optimised(2);
   result = error(expected, actual, last_input, derivative);
 
-  assert(result[0] == 1);
-  assert(result[1] == 3);
-  assert(result[2] == 0);
-  assert(result[3] == 0);
-  assert(result[4] == 4);
+  assert(result[0] == 1); /* LCOV_EXCL_BR_LINE */
+  assert(result[1] == 3); /* LCOV_EXCL_BR_LINE */
+  assert(result[2] == 0); /* LCOV_EXCL_BR_LINE */
+  assert(result[3] == 0); /* LCOV_EXCL_BR_LINE */
+  assert(result[4] == 4); /* LCOV_EXCL_BR_LINE */
 
   free_activity_closure(derivative);
 }
