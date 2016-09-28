@@ -15,7 +15,7 @@ addons:
     sources:
       - debian-sid
     packages:
-      - gcc-4.9
+      - gcc
       - lcov
       - libblas-dev
       - libgsl0-dev
