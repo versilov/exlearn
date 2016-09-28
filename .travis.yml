@@ -14,9 +14,10 @@ addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
+      - debian-sid
     packages:
       - gcc-4.9
-      - lcov
+      - lcov-1.11
       - libblas-dev
       - libgsl0-dev
 
