@@ -1,7 +1,8 @@
 /_build
-/cover
 /deps
 /priv
+/cover/*
+!/cover/.keep
 /test/c/temp/*
 !/test/c/temp/.keep
 /test/elixir/temp/*
