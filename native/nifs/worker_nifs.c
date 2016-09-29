@@ -4,9 +4,8 @@ static ERL_NIF_TERM
 create_worker_data(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   (void)(env);
   (void)(argc);
-  (void)(argv);
 
-  return 0;
+  return argv[0];
 }
 
 static ErlNifFunc nif_functions[] = {

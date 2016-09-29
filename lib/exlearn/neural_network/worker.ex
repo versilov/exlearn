@@ -6,6 +6,25 @@ defmodule ExLearn.NeuralNetwork.Worker do
   alias ExLearn.NeuralNetwork.Propagator
 
   #----------------------------------------------------------------------------
+  # NIFS
+  #----------------------------------------------------------------------------
+
+  @on_load :load_nifs
+
+  @spec load_nifs :: :ok
+  def load_nifs do
+    :ok = :erlang.load_nif('./priv/worker_nifs', 0)
+  end
+
+  @spec create_worker_data(list(String.t)) :: binary
+  def create_worker_data(paths) do
+    :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
+
+    random_size = :rand.uniform(2)             # excoveralls ignore
+    <<1 :: size(random_size)>>                 # excoveralls ignore
+  end
+
+  #----------------------------------------------------------------------------
   # Client API
   #----------------------------------------------------------------------------
 

@@ -1,16 +1,21 @@
-.PHONY: all clean compile test
+.PHONY: all ci clean compile test
 .DEFAULT_GLOBAL := all
 
 ERL_INCLUDE_PATH = $(shell erl -eval 'io:format("~s", [lists:concat([code:root_dir(), "/erts-", erlang:system_info(version), "/include"])])' -s init stop -noshell)
 
 all: clean compile
 
+ci: clean compile test
+	mix test
+	mix dialyzer
+
 clean:
 	rm -f priv/matrix_nifs.so
 
 compile:
 	mkdir -p priv
-	$(CC) -fPIC -I$(ERL_INCLUDE_PATH) -o priv/matrix_nifs.so -O3 -shared -std=c11 -Wall native/matrix_nifs.c -lblas
+	$(CC) -fPIC -I$(ERL_INCLUDE_PATH) -o priv/matrix_nifs.so -O3 -shared -std=c11 -Wall -Wextra native/matrix_nifs.c -lblas
+	$(CC) -fPIC -I$(ERL_INCLUDE_PATH) -o priv/worker_nifs.so -O3 -shared -std=c11 -Wall -Wextra native/nifs/worker_nifs.c -lblas
 
 test:
 	find test/c/temp/ ! -name '.keep' -type f -exec rm -f {} +

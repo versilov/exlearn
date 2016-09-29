@@ -180,6 +180,11 @@ alias docker-root-here='docker run --rm -it -v "$PWD":/work -w /work'
     docker-dev-here exlearn-dev mix dialyzer
     ```
 
+5. Run all checks like on travis
+    ```bash
+    docker-dev-here exlearn-dev make ci
+    ```
+
 ## LICENSE
 
 This plugin is covered by the BSD license, see [LICENSE](LICENSE) for details.

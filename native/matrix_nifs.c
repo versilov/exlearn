@@ -14,6 +14,8 @@ add(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   int           data_size;
   size_t        result_size;
 
+  (void)(argc);
+
   if (!enif_inspect_binary(env, argv[0], &first )) return enif_make_badarg(env);
   if (!enif_inspect_binary(env, argv[1], &second)) return enif_make_badarg(env);
 
@@ -35,6 +37,8 @@ argmax(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   float        *matrix_data;
   int           argmax;
 
+  (void)(argc);
+
   if (!enif_inspect_binary(env, argv[0], &matrix)) return enif_make_badarg(env);
 
   matrix_data = (float *) matrix.data;
@@ -50,6 +54,8 @@ divide(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   float        *first_data, *second_data, *result_data;
   int           data_size;
   size_t        result_size;
+
+  (void)(argc);
 
   if (!enif_inspect_binary(env, argv[0], &first )) return enif_make_badarg(env);
   if (!enif_inspect_binary(env, argv[1], &second)) return enif_make_badarg(env);
@@ -74,6 +80,8 @@ dot(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   int           data_size;
   size_t        result_size;
 
+  (void)(argc);
+
   if (!enif_inspect_binary(env, argv[0], &first )) return enif_make_badarg(env);
   if (!enif_inspect_binary(env, argv[1], &second)) return enif_make_badarg(env);
 
@@ -96,6 +104,8 @@ dot_and_add(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   float        *first_data, *second_data, *third_data, *result_data;
   int           data_size;
   size_t        result_size;
+
+  (void)(argc);
 
   if (!enif_inspect_binary(env, argv[0], &first )) return enif_make_badarg(env);
   if (!enif_inspect_binary(env, argv[1], &second)) return enif_make_badarg(env);
@@ -122,6 +132,8 @@ dot_nt(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   int           data_size;
   size_t        result_size;
 
+  (void)(argc);
+
   if (!enif_inspect_binary(env, argv[0], &first )) return enif_make_badarg(env);
   if (!enif_inspect_binary(env, argv[1], &second)) return enif_make_badarg(env);
 
@@ -145,6 +157,8 @@ dot_tn(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   int           data_size;
   size_t        result_size;
 
+  (void)(argc);
+
   if (!enif_inspect_binary(env, argv[0], &first )) return enif_make_badarg(env);
   if (!enif_inspect_binary(env, argv[1], &second)) return enif_make_badarg(env);
 
@@ -166,6 +180,8 @@ max(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   float         max;
   float        *matrix_data;
 
+  (void)(argc);
+
   if (!enif_inspect_binary(env, argv[0], &matrix)) return enif_make_badarg(env);
 
   matrix_data = (float *) matrix.data;
@@ -182,6 +198,8 @@ multiply(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   float        *first_data, *second_data, *result_data;
   int           data_size;
   size_t        result_size;
+
+  (void)(argc);
 
   if (!enif_inspect_binary(env, argv[0], &first )) return enif_make_badarg(env);
   if (!enif_inspect_binary(env, argv[1], &second)) return enif_make_badarg(env);
@@ -207,6 +225,8 @@ multiply_with_scalar(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   float        *matrix_data, *result_data;
   int           data_size;
   size_t        result_size;
+
+  (void)(argc);
 
   if (!enif_inspect_binary(env, argv[0], &matrix)) return enif_make_badarg(env);
   if (enif_get_double(env, argv[1], &large_scalar) == 0) {
@@ -236,6 +256,8 @@ substract(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   int           data_size;
   size_t        result_size;
 
+  (void)(argc);
+
   if (!enif_inspect_binary(env, argv[0], &first )) return enif_make_badarg(env);
   if (!enif_inspect_binary(env, argv[1], &second)) return enif_make_badarg(env);
 
@@ -257,6 +279,8 @@ sum(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   float         sum;
   float        *matrix_data;
 
+  (void)(argc);
+
   if (!enif_inspect_binary(env, argv[0], &matrix)) return enif_make_badarg(env);
 
   matrix_data = (float *) matrix.data;
@@ -274,6 +298,8 @@ transpose(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   int           data_size;
   size_t        result_size;
 
+  (void)(argc);
+
   if (!enif_inspect_binary(env, argv[0], &matrix)) return enif_make_badarg(env);
 
   matrix_data = (float *) matrix.data;
@@ -288,19 +314,19 @@ transpose(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
 }
 
 static ErlNifFunc nif_functions[] = {
-  {"add",                  2, add                 },
-  {"argmax",               1, argmax              },
-  {"divide",               2, divide              },
-  {"dot",                  2, dot                 },
-  {"dot_and_add",          3, dot_and_add         },
-  {"dot_nt",               2, dot_nt              },
-  {"dot_tn",               2, dot_tn              },
-  {"max",                  1, max                 },
-  {"multiply",             2, multiply            },
-  {"multiply_with_scalar", 2, multiply_with_scalar},
-  {"substract",            2, substract           },
-  {"sum",                  1, sum                 },
-  {"transpose",            1, transpose           }
+  {"add",                  2, add,                  0},
+  {"argmax",               1, argmax,               0},
+  {"divide",               2, divide,               0},
+  {"dot",                  2, dot,                  0},
+  {"dot_and_add",          3, dot_and_add,          0},
+  {"dot_nt",               2, dot_nt,               0},
+  {"dot_tn",               2, dot_tn,               0},
+  {"max",                  1, max,                  0},
+  {"multiply",             2, multiply,             0},
+  {"multiply_with_scalar", 2, multiply_with_scalar, 0},
+  {"substract",            2, substract,            0},
+  {"sum",                  1, sum,                  0},
+  {"transpose",            1, transpose,            0}
 };
 
 ERL_NIF_INIT(Elixir.ExLearn.Matrix, nif_functions, NULL, NULL, NULL, NULL)
