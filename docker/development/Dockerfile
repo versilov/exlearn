@@ -8,7 +8,8 @@ RUN set -ex                                                 && \
     usermod -aG sudo notroot                                && \
     passwd -d notroot                                       && \
                                                                \
-    echo 'Setting up hex and rebar for notroot'             && \
+    echo 'Setting up dialyzer for notroot'                  && \
+    chown -R notroot:notroot /work                          && \
     runuser notroot -c "                                       \
       cd /work                                              && \
       mix deps.get                                          && \
