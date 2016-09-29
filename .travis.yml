@@ -10,4 +10,4 @@ before_script:
   - docker build -t exlearn --build-arg HOST_USER_UID=`id -u` --build-arg HOST_USER_GID=`id -g` -f docker/project/Dockerfile "$PWD"
 
 script:
-  - docker run --rm -it -e COVERALLS_REPO_TOKEN -e COVERALLS_SERVICE_NAME -u `id -u`:`id -g` -v "$PWD":/work -w /work exlearn bash -c "mix deps.get && mix dialyzer.plt && make && make test && mix coveralls.travis && mix dialyzer --halt-exit-status"
+  - docker run --rm -it -e COVERALLS_REPO_TOKEN -e COVERALLS_SERVICE_NAME -e TRAVIS -e TRAVIS_JOB_ID -e TRAVIS_BRANCH -u `id -u`:`id -g` -v "$PWD":/work -w /work exlearn bash -c "mix deps.get && mix dialyzer.plt && make && make test && mix coveralls.travis && mix dialyzer --halt-exit-status"
