@@ -22,7 +22,8 @@ defmodule ExLearn.NeuralNetwork.Worker.NifsTest do
     :ok  = File.write(first_path,  first_data )
     :ok  = File.write(second_path, second_data)
 
-    assert Worker.create_worker_data([first_path, second_path]) != []
+    result = Worker.create_worker_data([first_path, second_path])
+    assert result != []
 
     :ok = File.rm(first_path )
     :ok = File.rm(second_path)
