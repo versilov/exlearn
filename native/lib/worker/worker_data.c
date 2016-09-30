@@ -15,7 +15,7 @@ worker_data_free(WorkerData **data_address) {
 
   if(data != NULL) {
     for (int index = 0; index < data->count; index += 1) {
-      if (data->bundle[index] != NULL) free(data->bundle[index]);
+      if (data->bundle[index] != NULL) free_worker_data_bundle(data->bundle[index]);
     }
 
     free(data->bundle);

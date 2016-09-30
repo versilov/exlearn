@@ -4,6 +4,7 @@
 #include "erl_nif.h"
 
 #include "../lib/worker/bundle_paths.c"
+#include "../lib/worker/worker_data.c"
 
 static ERL_NIF_TERM
 create_worker_data(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
@@ -12,6 +13,7 @@ create_worker_data(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   ERL_NIF_TERM  list, head, tail;
   unsigned int  index, length;
   char         *new_path;
+  WorkerData   *worker_data;
 
   (void)(argc);
 
@@ -34,6 +36,10 @@ create_worker_data(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
     index += 1;
   }
 
+  worker_data = worker_data_new(length);
+  worker_data_read(bundle_paths, worker_data);
+
+  worker_data_free(&worker_data);
   bundle_paths_free(&bundle_paths);
 
   return argv[0];
