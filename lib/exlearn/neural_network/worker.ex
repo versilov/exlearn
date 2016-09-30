@@ -16,8 +16,16 @@ defmodule ExLearn.NeuralNetwork.Worker do
     :ok = :erlang.load_nif('./priv/worker_nifs', 0)
   end
 
+  @spec create_batch_data(binary, pos_integer) :: binary
+  def create_batch_data(_batch_data, _batch_length) do
+    :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
+
+    random_size = :rand.uniform(2)             # excoveralls ignore
+    <<1 :: size(random_size)>>                 # excoveralls ignore
+  end
+
   @spec create_worker_data(list(String.t)) :: binary
-  def create_worker_data(paths) do
+  def create_worker_data(_paths) do
     :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
 
     random_size = :rand.uniform(2)             # excoveralls ignore

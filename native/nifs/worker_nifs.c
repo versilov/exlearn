@@ -3,12 +3,21 @@
 
 #include "erl_nif.h"
 
+#include "../lib/worker/batch_data.c"
 #include "../lib/worker/bundle_paths.c"
 #include "../lib/worker/worker_data.c"
 
 //------------------------------------------------------------------------------
 // Resource definition
 //------------------------------------------------------------------------------
+
+ErlNifResourceType *BATCH_DATA;
+
+static void batch_data_destructor(ErlNifEnv *_env, void *batch_data) {
+  (void)(_env);
+
+  free_batch_data((BatchData *)(batch_data));
+}
 
 ErlNifResourceType *WORKER_DATA;
 
@@ -23,13 +32,40 @@ static void worker_data_destructor(ErlNifEnv *_env, void *worker_data) {
 //------------------------------------------------------------------------------
 
 static ERL_NIF_TERM
+create_batch_data(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
+  BatchData    *batch_data, *batch_data_resource;
+  WorkerData   *worker_data;
+  ERL_NIF_TERM  result;
+  long int      batch_length;
+
+  (void)(argc);
+
+  if (!enif_get_resource(env, argv[0], WORKER_DATA, (void **)(&worker_data)))
+    return enif_make_badarg(env);
+  if (!enif_get_int64(env, argv[1], &batch_length))
+    return enif_make_badarg(env);
+
+  batch_data = new_batch_data(worker_data, batch_length);
+  shuffle_batch_data_indices(batch_data);
+
+  batch_data_resource = enif_alloc_resource(BATCH_DATA, sizeof(BatchData));
+  memcpy(batch_data_resource, batch_data, sizeof(BatchData));
+  free(batch_data);
+
+  result = enif_make_resource(env, batch_data_resource);
+  enif_release_resource(&batch_data_resource);
+
+  return result;
+}
+
+static ERL_NIF_TERM
 create_worker_data(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
-  BundlePaths   *bundle_paths;
-  ErlNifBinary   path;
-  ERL_NIF_TERM   list, head, tail, result;
-  unsigned int   index, length;
-  char          *new_path;
-  WorkerData    *worker_data, *worker_data_resource;
+  BundlePaths  *bundle_paths;
+  ErlNifBinary  path;
+  ERL_NIF_TERM  list, head, tail, result;
+  unsigned int  index, length;
+  char         *new_path;
+  WorkerData   *worker_data, *worker_data_resource;
 
   (void)(argc);
 
@@ -72,6 +108,7 @@ create_worker_data(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
 //------------------------------------------------------------------------------
 
 static ErlNifFunc nif_functions[] = {
+  {"create_batch_data",  2, create_batch_data,  0},
   {"create_worker_data", 1, create_worker_data, 0}
 };
 
@@ -80,6 +117,10 @@ static int load(ErlNifEnv *env, void **_priv_data, ERL_NIF_TERM _load_info) {
   (void)(_load_info);
 
   int flags = ERL_NIF_RT_CREATE | ERL_NIF_RT_TAKEOVER;
+
+  BATCH_DATA = enif_open_resource_type(
+    env, NULL, "BatchData", batch_data_destructor, flags, NULL
+  );
 
   WORKER_DATA = enif_open_resource_type(
     env, NULL, "WorkerData", worker_data_destructor, flags, NULL

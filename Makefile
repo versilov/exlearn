@@ -14,8 +14,8 @@ clean:
 
 compile:
 	mkdir -p priv
-	$(CC) -fPIC -I$(ERL_INCLUDE_PATH) -o priv/matrix_nifs.so -O3 -shared -std=c11 -Wall -Wextra native/matrix_nifs.c -lblas
-	$(CC) -fPIC -I$(ERL_INCLUDE_PATH) -o priv/worker_nifs.so -O3 -shared -std=c11 -Wall -Wextra native/nifs/worker_nifs.c -lblas
+	$(CC) -fPIC -I$(ERL_INCLUDE_PATH) -o priv/matrix_nifs.so -O3 -shared -std=c11 -Wall -Wextra native/matrix_nifs.c -lblas -lgsl -lgslcblas -lm
+	$(CC) -fPIC -I$(ERL_INCLUDE_PATH) -o priv/worker_nifs.so -O3 -shared -std=c11 -Wall -Wextra native/nifs/worker_nifs.c -lblas -lgsl -lgslcblas -lm
 
 test:
 	find test/c/temp/ ! -name '.keep' -type f -exec rm -f {} +
