@@ -8,6 +8,7 @@
 #include "c/neural_network/correction_test.c"
 #include "c/neural_network/dropout_test.c"
 #include "c/neural_network/forwarder_test.c"
+#include "c/neural_network/gradient_descent_test.c"
 #include "c/neural_network/objective_test.c"
 #include "c/neural_network/presentation_test.c"
 #include "c/neural_network/propagator_test.c"
@@ -52,6 +53,9 @@ int main() {
   test_forward_for_activity();
   test_forward_for_activity_with_dropout();
   test_forward_for_output();
+
+  // Tests for: c/neural_network/gradient_descent.c
+  test_gradient_descent();
 
   // Tests for: c/neural_network/objective_test.c
   test_an_unknown_objective_function();
