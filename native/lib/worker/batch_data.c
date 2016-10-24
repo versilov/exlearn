@@ -70,4 +70,11 @@ shuffle_batch_data_indices(BatchData *data) {
   gsl_ran_shuffle(rng, data->sample_index, data->data_length, sizeof(SampleIndex));
 }
 
+static inline SampleIndex *
+batch_data_get_sample_index(BatchData *batch_data, int batch_number, int offset) {
+  int index = batch_data->batch_length * batch_number + offset;
+
+  return batch_data->sample_index[index];
+}
+
 #endif

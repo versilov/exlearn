@@ -67,3 +67,29 @@ static void test_shuffle_batch_data_indices() {
 
   free_batch_data(batch);
 }
+
+static void test_batch_data_get_sample_index() {
+  BatchData   *batch_data;
+  BundlePaths *bundle_paths = bundle_paths_new(2);
+  WorkerData  *worker_data  = worker_data_new(2);
+  SampleIndex *sample_index;
+
+  bundle_paths->path[0] = create_first_data_bundle_file();
+  bundle_paths->path[1] = create_second_data_bundle_file();
+
+  worker_data_read(bundle_paths, worker_data);
+
+  batch_data = new_batch_data(worker_data, 1);
+
+  sample_index = batch_data_get_sample_index(batch_data, 0, 0);
+  assert(sample_index->bundle == 0); /* LCOV_EXCL_BR_LINE */
+  assert(sample_index->index  == 0); /* LCOV_EXCL_BR_LINE */
+
+  sample_index = batch_data_get_sample_index(batch_data, 1, 0);
+  assert(sample_index->bundle == 1); /* LCOV_EXCL_BR_LINE */
+  assert(sample_index->index  == 0); /* LCOV_EXCL_BR_LINE */
+
+  sample_index = batch_data_get_sample_index(batch_data, 1, 1);
+  assert(sample_index->bundle == 1); /* LCOV_EXCL_BR_LINE */
+  assert(sample_index->index  == 1); /* LCOV_EXCL_BR_LINE */
+}

@@ -91,6 +91,7 @@ int main() {
   test_free_batch_data();
   test_new_batch_data();
   test_shuffle_batch_data_indices();
+  test_batch_data_get_sample_index();
 
   // Tests for: c/worker/bundle_paths_test.c
   test_bundle_paths_free();
