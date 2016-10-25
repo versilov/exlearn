@@ -24,13 +24,22 @@ free_matrix(Matrix matrix) {
 
 static inline Matrix
 new_matrix(int rows, int columns) {
-  int length    = rows * columns + 2;
+  int    length = rows * columns + 2;
   Matrix result = malloc(sizeof(float) * length);
 
   result[0] = rows;
   result[1] = columns;
 
   return result;
+}
+
+static inline void
+matrix_fill(Matrix matrix, int value) {
+  int length = matrix[0] * matrix[1] + 2;
+
+  for (int index = 2; index < length; index += 1) {
+    matrix[index] = value;
+  }
 }
 
 static inline int

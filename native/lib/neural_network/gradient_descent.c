@@ -1,10 +1,13 @@
 #ifndef INCLUDED_GRADIENT_DESCENT_C
 #define INCLUDED_GRADIENT_DESCENT_C
 
+#include "../../../native/lib/neural_network/forwarder.c"
+#include "../../../native/lib/neural_network/propagator.c"
+
 #include "../worker/batch_data.c"
 #include "../worker/worker_data.c"
 
-static void
+static Correction *
 gradient_descent(
   WorkerData       *worker_data,
   BatchData        *batch_data,
@@ -15,13 +18,30 @@ gradient_descent(
   (void)(worker_data      );
   (void)(network_state    );
   (void)(network_structure);
-  (void)(current_batch    );
 
-  for (int index = 0; index < batch_data->batch_length; index += 1) {
+  SampleIndex      *sample_index;
+  WorkerDataBundle *bundle;
+  Matrix            input, expected;
+  Activity         *activity;
+  Correction       *correction;
+
+  int length    = batch_data->batch_length;
+  int remaining = batch_data->data_length - length * current_batch;
+
+  if (remaining < length) length = remaining;
+
+  for (int index = 0; index < length; index += 1) {
     // Process each sample.
+    sample_index = batch_data_get_sample_index(batch_data, current_batch, index);
+    bundle       = worker_data->bundle[sample_index->bundle];
+    input        = bundle->first[index];
+    expected     = bundle->second[index];
+
+    activity   = forward_for_activity(network_structure, network_state, input);
+    correction = back_propagate(network_structure, network_state, activity, expected);
   }
 
-  return;
+  return correction;
 }
 
 #endif

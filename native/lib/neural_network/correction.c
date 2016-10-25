@@ -32,4 +32,26 @@ new_correction(int layers) {
   return correction;
 }
 
+static void
+correction_initialize(NetworkStructure *network_structure, Correction *correction) {
+  int    rows, columns;
+  Matrix matrix;
+
+  return;
+  for (int index = 0; index < correction->layers; index += 1) {
+    rows    = network_structure->rows[index];
+    columns = network_structure->columns[index];
+
+    matrix = new_matrix(1, columns);
+    matrix_fill(matrix, 0);
+    correction->biases[index] = matrix;
+
+    matrix = new_matrix(rows, columns);
+    matrix_fill(matrix, 0);
+    correction->weights[index] = matrix;
+  }
+
+  return;
+}
+
 #endif

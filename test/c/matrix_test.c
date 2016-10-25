@@ -32,6 +32,18 @@ static void test_new_matrix() {
   assert(matrix[1] == 2); /* LCOV_EXCL_BR_LINE */
 }
 
+static void test_matrix_fill() {
+  Matrix matrix = new_matrix(1, 2);
+
+  matrix_fill(matrix, 3);
+
+  assert(matrix[0] == 1); /* LCOV_EXCL_BR_LINE */
+  assert(matrix[1] == 2); /* LCOV_EXCL_BR_LINE */
+  assert(matrix[2] == 3); /* LCOV_EXCL_BR_LINE */
+  assert(matrix[3] == 3); /* LCOV_EXCL_BR_LINE */
+
+}
+
 static void test_matrix_equal() {
   float first[8]  = {2, 3, 1, 2, 3, 4, 5, 6 };
   float second[8] = {2, 3, 1, 2, 3, 4, 5, 6 };

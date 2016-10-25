@@ -45,6 +45,7 @@ int main() {
   // Tests for: c/neural_network/correction_test.c
   test_free_correction();
   test_new_correction();
+  test_correction_initialize();
 
   // Tests for: c/neural_network/dropout_test.c
   test_create_dropout_mask();
@@ -115,6 +116,7 @@ int main() {
   test_clone_matrix();
   test_free_matrix();
   test_new_matrix();
+  test_matrix_fill();
   test_matrix_equal();
   test_matrix_add();
   test_matrix_argmax();

@@ -21,3 +21,8 @@ static void test_new_correction() {
 
   free_correction(correction);
 }
+
+static void test_correction_initialize() {
+  correction_initialize(NULL, NULL);
+
+}
