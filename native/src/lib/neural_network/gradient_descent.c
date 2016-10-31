@@ -1,13 +1,6 @@
-#ifndef INCLUDED_GRADIENT_DESCENT_C
-#define INCLUDED_GRADIENT_DESCENT_C
+#include "../../../include/neural_network/gradient_descent.h"
 
-#include "../../../native/lib/neural_network/forwarder.c"
-#include "../../../native/lib/neural_network/propagator.c"
-
-#include "../worker/batch_data.c"
-#include "../worker/worker_data.c"
-
-static Correction *
+Correction *
 gradient_descent(
   WorkerData       *worker_data,
   BatchData        *batch_data,
@@ -43,5 +36,3 @@ gradient_descent(
 
   return correction;
 }
-
-#endif

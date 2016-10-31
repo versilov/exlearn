@@ -1,21 +1,6 @@
-#ifndef INCLUDE_BATCH_DATA_C
-#define INCLUDE_BATCH_DATA_C
+#include "../../../include/worker/batch_data.h"
 
-#include <gsl/gsl_rng.h>
-#include <gsl/gsl_randist.h>
-#include <stdlib.h>
-#include <time.h>
-
-#include "sample_index.c"
-#include "worker_data.c"
-
-typedef struct BatchData {
-  int           batch_length;
-  int           data_length;
-  SampleIndex **sample_index;
-} BatchData;
-
-static void
+void
 free_batch_data(BatchData *data) {
   if (data != NULL) {
     for (int index = 0; index < data->data_length; index += 1) {
@@ -27,7 +12,7 @@ free_batch_data(BatchData *data) {
   }
 }
 
-static BatchData *
+BatchData *
 new_batch_data(WorkerData *data, int batch_length) {
   int               data_length, data_index;
   BatchData        *batch;
@@ -59,7 +44,7 @@ new_batch_data(WorkerData *data, int batch_length) {
   return batch;
 }
 
-static void
+void
 shuffle_batch_data_indices(BatchData *data) {
   gsl_rng *rng;
 
@@ -70,11 +55,9 @@ shuffle_batch_data_indices(BatchData *data) {
   gsl_ran_shuffle(rng, data->sample_index, data->data_length, sizeof(SampleIndex));
 }
 
-static inline SampleIndex *
+SampleIndex *
 batch_data_get_sample_index(BatchData *batch_data, int batch_number, int offset) {
   int index = batch_data->batch_length * batch_number + offset;
 
   return batch_data->sample_index[index];
 }
-
-#endif

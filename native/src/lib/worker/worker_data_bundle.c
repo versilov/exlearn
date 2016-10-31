@@ -1,19 +1,6 @@
-#ifndef INCLUDE_WORKER_DATA_BUNDLE_C
-#define INCLUDE_WORKER_DATA_BUNDLE_C
+#include "../../../include/worker/worker_data_bundle.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-
-typedef struct WorkerDataBundle {
-  int     count;
-  int     first_length, second_length;
-  int     maximum_step;
-  int     discard;
-  float **first;
-  float **second;
-} WorkerDataBundle;
-
-static void
+void
 free_worker_data_bundle(WorkerDataBundle *data) {
   int index;
 
@@ -28,7 +15,7 @@ free_worker_data_bundle(WorkerDataBundle *data) {
   free(data);
 }
 
-static WorkerDataBundle *
+WorkerDataBundle *
 new_worker_data_bundle() {
   WorkerDataBundle *data = malloc(sizeof(WorkerDataBundle));
 
@@ -99,7 +86,7 @@ new_worker_data_bundle() {
 //     For Prediction:
 //       The first binary represents an identifier for the input matrix.
 //       The second binary represents the input matrix.
-static void
+void
 read_worker_data_bundle(const char *path, WorkerDataBundle *data) {
   int    int_buffer;
   float *float_buffer;
@@ -151,5 +138,3 @@ read_worker_data_bundle(const char *path, WorkerDataBundle *data) {
 
   fclose(file);
 }
-
-#endif

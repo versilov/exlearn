@@ -1,10 +1,4 @@
-#ifndef INCLUDE_OBJECTIVE_C
-#define INCLUDE_OBJECTIVE_C
-
-#include <math.h>
-
-#include "../matrix.c"
-#include "../structs.c"
+#include "../../../include/neural_network/objective.h"
 
 //-----------------------------------------------------------------------------
 // Objective functions
@@ -151,7 +145,7 @@ quadratic_error(
 // API
 //-----------------------------------------------------------------------------
 
-static ObjectiveFunction
+ObjectiveFunction
 objective_determine_function(int function_id) {
   switch (function_id) {
     case  0: return cross_entropy_function;
@@ -161,7 +155,7 @@ objective_determine_function(int function_id) {
   }
 }
 
-static ObjectiveError
+ObjectiveError
 objective_determine_error_simple(int function_id) {
   switch (function_id) {
     case  0: return cross_entropy_error_simple;
@@ -171,7 +165,7 @@ objective_determine_error_simple(int function_id) {
   }
 }
 
-static ObjectiveError
+ObjectiveError
 objective_determine_error_optimised(int function_id) {
   switch (function_id) {
     // case  0: return cross_entropy_error_optimised;
@@ -180,4 +174,3 @@ objective_determine_error_optimised(int function_id) {
     default: return NULL;
   }
 }
-#endif

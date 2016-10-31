@@ -1,9 +1,4 @@
-#ifndef INCLUDE_PRESENTATION_C
-#define INCLUDE_PRESENTATION_C
-
-#include <math.h>
-
-#include "../matrix.c"
+#include "../../../include/neural_network/presentation.h"
 
 static int argmax_function(Matrix matrix, int alpha) {
   int argmax = matrix_argmax(matrix);
@@ -29,7 +24,7 @@ static int ceil_first_function(Matrix matrix, int alpha) {
   return result + alpha;
 }
 
-static int
+int
 call_presentation_closure(PresentationClosure *closure, Matrix matrix) {
   if (closure != NULL)
     return closure->function(matrix, closure->alpha);
@@ -37,12 +32,12 @@ call_presentation_closure(PresentationClosure *closure, Matrix matrix) {
     return 0;
 }
 
-static void
+void
 free_presentation_closure(PresentationClosure *closure) {
   if (closure != NULL) free(closure);
 }
 
-static PresentationClosure *
+PresentationClosure *
 new_presentation_closure(PresentationFunction function, int alpha) {
   PresentationClosure *closure = malloc(sizeof(PresentationClosure));
 
@@ -52,7 +47,7 @@ new_presentation_closure(PresentationFunction function, int alpha) {
   return closure;
 }
 
-static PresentationClosure *
+PresentationClosure *
 presentation_determine(int function_id, int alpha) {
   switch (function_id) {
     case 0:  return new_presentation_closure(argmax_function,      alpha);
@@ -62,5 +57,3 @@ presentation_determine(int function_id, int alpha) {
     default: return NULL;
   }
 }
-
-#endif

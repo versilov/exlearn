@@ -1,10 +1,6 @@
-#ifndef INCLUDE_PROPAGATOR_C
-#define INCLUDE_PROPAGATOR_C
+#include "../../../include/neural_network/propagator.h"
 
-#include "../structs.c"
-#include "correction.c"
-
-static Correction *
+Correction *
 back_propagate(
   NetworkStructure *structure,
   NetworkState     *state,
@@ -59,5 +55,3 @@ back_propagate(
 
   return correction;
 }
-
-#endif

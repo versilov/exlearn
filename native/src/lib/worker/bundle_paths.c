@@ -1,10 +1,4 @@
-#ifndef INCLUDED_BUNDLE_PATHS_C
-#define INCLUDED_BUNDLE_PATHS_C
-
-typedef struct BundlePaths {
-  int    count;
-  char **path;
-} BundlePaths;
+#include "../../../include/worker/bundle_paths.h"
 
 static void
 bundle_paths_free(BundlePaths **paths_address) {
@@ -35,5 +29,3 @@ bundle_paths_new(int count) {
 
   return paths;
 }
-
-#endif

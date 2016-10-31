@@ -1,12 +1,6 @@
-#ifndef INCLUDE_FORWARDER_C
-#define INCLUDE_FORWARDER_C
+#include "../../../include/neural_network/forwarder.h"
 
-#include "../matrix.c"
-#include "../network_state.c"
-#include "../network_structure.c"
-#include "activity.c"
-
-static Activity *
+Activity *
 forward_for_activity(
   NetworkStructure *structure,
   NetworkState     *state,
@@ -62,7 +56,7 @@ forward_for_activity(
   return activity;
 }
 
-static Matrix
+Matrix
 forward_for_output(
   NetworkStructure *structure,
   NetworkState     *state,
@@ -91,5 +85,3 @@ forward_for_output(
 
   return output;
 }
-
-#endif

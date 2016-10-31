@@ -19,3 +19,6 @@ samples/**/*.el1
 GPATH
 GRTAGS
 GTAGS
+
+/native/obj/
+/native/bin/

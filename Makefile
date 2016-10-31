@@ -28,3 +28,29 @@ test:
 	lcov --list cover/lcov.info-file --rc lcov_branch_coverage=1
 	genhtml --branch-coverage -o cover cover/lcov.info-file > /dev/null
 	rm -f *.gcov *.gcda *.gcno
+
+# TARGET = asd
+#
+# LINKER = gcc -o
+#
+# CFLAGS = -Wall -Wextra -fPIC -I$(ERL_INCLUDE_PATH) -O3
+# LFLAGS = -Wall -Wextra -lblas -lgsl -lgslcblas -lm
+#
+# ERL_INCLUDE_PATH = $(shell erl -eval 'io:format("~s", [lists:concat([code:root_dir(), "/erts-", erlang:system_info(version), "/include"])])' -s init stop -noshell)
+#
+# SRC_DIRECTORY = ./native/src
+# OBJ_DIRECTORY = ./native/obj
+# BIN_DIRECTORY = ./native/bin
+#
+# SOURCES  := $(wildcard $(SRC_DIRECTORY)/**/*.c)
+# INCLUDES := $(wildcard $(SRC_DIRECTORY)/**/*.h)
+# OBJECTS  := $(SOURCES:$(SRC_DIRECTORY)/%.c=$(OBJ_DIRECTORY)/%.o)
+#
+# $(OBJECTS): $(OBJ_DIRECTORY)/%.o : $(SRC_DIRECTORY)/%.c
+# 	echo $<
+# 	@$(CC) $(CFLAGS) -c $< -o $@
+# 	@echo "Compiled "$<" successfully!"
+#
+# $(BIN_DIRECTORY)/$(TARGET): $(OBJECTS)
+# 	@$(LINKER) $@ $(LFLAGS) $(OBJECTS)
+# 	@echo "Linking complete!"

@@ -1,5 +1,5 @@
-#ifndef INCLUDE_ACTIVITY_C
-#define INCLUDE_ACTIVITY_C
+#ifndef INCLUDED_ACTIVITY_C
+#define INCLUDED_ACTIVITY_C
 
 #include <math.h>
 #include <stdlib.h>
@@ -355,7 +355,7 @@ static void prelu_derivative(Matrix matrix, float alpha) {
 // API
 //-----------------------------------------------------------------------------
 
-static void
+void
 free_activity(Activity *activity) {
   for (int layer = 0; layer < activity->layers; layer += 1) {
     if (activity->input[layer]  != NULL) free(activity->input[layer] );
@@ -370,7 +370,7 @@ free_activity(Activity *activity) {
   free(activity);
 }
 
-static Activity *
+Activity *
 new_activity(int layers) {
   Activity *activity = malloc(sizeof(Activity));
 
@@ -388,20 +388,20 @@ new_activity(int layers) {
   return activity;
 }
 
-static void
+void
 call_activity_closure(ActivityClosure *closure, Matrix matrix) {
   if (closure != NULL)
     closure->function(matrix, closure->alpha);
 }
 
-static void
+void
 free_activity_closure(ActivityClosure *closure) {
   if (closure != NULL) free(closure);
 
   closure = NULL;
 }
 
-static ActivityClosure *
+ActivityClosure *
 new_activity_closure(ActivityFunction function, float alpha) {
   ActivityClosure *closure = malloc(sizeof(ActivityClosure));
 
@@ -411,7 +411,7 @@ new_activity_closure(ActivityFunction function, float alpha) {
   return closure;
 }
 
-static ActivityClosure *
+ActivityClosure *
 activity_determine_function(int function_id, float alpha) {
   switch (function_id) {
     case  0: return new_activity_closure(arctan_function,        0    );
@@ -432,7 +432,7 @@ activity_determine_function(int function_id, float alpha) {
   }
 }
 
-static ActivityClosure *
+ActivityClosure *
 activity_determine_derivative(int function_id, float alpha) {
   switch (function_id) {
     case  0: return new_activity_closure(arctan_derivative,        0    );
