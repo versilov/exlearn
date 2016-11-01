@@ -1,5 +1,5 @@
-#include "../../../native/lib/neural_network/dropout.c"
-#include "../../../native/lib/matrix.c"
+#include "../../../native/include/neural_network/dropout.h"
+#include "../../../native/include/matrix.h"
 
 static void test_create_dropout_mask() {
   Matrix matrix = create_dropout_mask(1, 10, 0.5);

@@ -1,4 +1,4 @@
-#include "../../../native/lib/worker/worker_data_bundle.c"
+#include "../../../native/include/worker/worker_data_bundle.h"
 
 #include "../fixtures/file_fixtures.c"
 

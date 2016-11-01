@@ -1,4 +1,4 @@
-#include "../../native/lib/matrix.c"
+#include "../../native/include/matrix.h"
 
 static void test_clone_matrix() {
   Matrix source      = new_matrix(1, 3);

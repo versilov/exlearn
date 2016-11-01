@@ -1,4 +1,4 @@
-#include "../../../native/lib/worker/bundle_paths.c"
+#include "../../../native/include/worker/bundle_paths.h"
 
 static void test_bundle_paths_free() {
   BundlePaths *paths = bundle_paths_new(4);

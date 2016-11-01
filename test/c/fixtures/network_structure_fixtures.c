@@ -1,9 +1,9 @@
 #ifndef INCLUDE_NETWORK_STRUCTURE_FIXTURES_C
 #define INCLUDE_NETWORK_STRUCTURE_FIXTURES_C
 
-#include "../../../native/lib/neural_network/activity.c"
-#include "../../../native/lib/neural_network/objective.c"
-#include "../../../native/lib/neural_network/presentation.c"
+#include "../../../native/include/neural_network/activity.h"
+#include "../../../native/include/neural_network/objective.h"
+#include "../../../native/include/neural_network/presentation.h"
 
 static NetworkStructure *
 network_structure_basic() {

@@ -1,5 +1,5 @@
-#include "../../../native/lib/worker/bundle_paths.c"
-#include "../../../native/lib/worker/worker_data.c"
+#include "../../../native/include/worker/bundle_paths.h"
+#include "../../../native/include/worker/worker_data.h"
 
 #include "../fixtures/file_fixtures.c"
 

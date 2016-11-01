@@ -1,4 +1,5 @@
-#include "../../../native/lib/neural_network/forwarder.c"
+#include "../../../native/include/neural_network/forwarder.h"
+
 #include "../fixtures/network_structure_fixtures.c"
 #include "../fixtures/network_state_fixtures.c"
 #include "../fixtures/data_fixtures.c"

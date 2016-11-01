@@ -1,4 +1,4 @@
-#include "../../../native/lib/neural_network/propagator.c"
+#include "../../../native/include/neural_network/propagator.h"
 
 #include "../fixtures/activity_fixtures.c"
 #include "../fixtures/correction_fixtures.c"

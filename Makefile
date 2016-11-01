@@ -1,4 +1,4 @@
-.PHONY: clean build
+.PHONY: clean build test
 .DEFAULT_GLOBAL := build
 
 ERL_INCLUDE_PATH = $(shell erl -eval 'io:format("~s", [lists:concat([code:root_dir(), "/erts-", erlang:system_info(version), "/include"])])' -s init stop -noshell)
@@ -40,14 +40,16 @@ $(NIFS_OBJECTS): $(PRIV_DIRECTORY)/%.so : $(NIFS_DIRECTORY)/%.c
 $(PRIV_DIRECTORY):
 	@mkdir -p $(PRIV_DIRECTORY)
 
-# test:
-# 	find test/c/temp/ ! -name '.keep' -type f -exec rm -f {} +
-# 	lcov --directory . -z --rc lcov_branch_coverage=1
-# 	$(CC) -g -o test/c/temp/tests_with_coverage -O0 -std=c11 -Wall -Wextra --coverage test/test_helper.c -lblas -lgsl -lgslcblas -lm -lgcov
-# 	./test/c/temp/tests_with_coverage
-# 	$(CC) -o test/c/temp/tests_optimised -O3 -std=c11 -Wall -Wextra test/test_helper.c -lblas -lgsl -lgslcblas -lm
-# 	./test/c/temp/tests_optimised
-# 	lcov --directory . -c -o cover/lcov.info-file --rc lcov_branch_coverage=1
-# 	lcov --list cover/lcov.info-file --rc lcov_branch_coverage=1
-# 	genhtml --branch-coverage -o cover cover/lcov.info-file > /dev/null
-# 	rm -f *.gcov *.gcda *.gcno
+
+TEST_CFLAGS  = -g -O0 -std=c11 -Wall -Wextra --coverage
+TEST_LDFLAGS = -lgcov
+
+test: $(OBJECTS_DIRECTORIES) $(OBJECTS)
+	find test/c/temp/ ! -name '.keep' -type f -exec rm -f {} +
+	lcov --directory . -z --rc lcov_branch_coverage=1
+	$(CC) $(TEST_CFLAGS) $(OBJECTS) -o test/c/temp/test test/test_helper.c $(LDFLAGS) $(TEST_LDFLAGS)
+	./test/c/temp/test
+	lcov --directory . -c -o cover/lcov.info-file --rc lcov_branch_coverage=1
+	lcov --list cover/lcov.info-file --rc lcov_branch_coverage=1
+	genhtml --branch-coverage -o cover cover/lcov.info-file > /dev/null
+	rm -f *.gcov *.gcda *.gcno

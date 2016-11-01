@@ -1,7 +1,7 @@
 #ifndef INCLUDE_CORRECTION_FIXTURES_C
 #define INCLUDE_CORRECTION_FIXTURES_C
 
-#include "../../../native/lib/neural_network/correction.c"
+#include "../../../native/include/neural_network/correction.h"
 
 static Correction *
 correction_expected_basic() {

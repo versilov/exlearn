@@ -1,7 +1,7 @@
 #ifndef INCLUDE_ACTIVITY_FIXTURES_C
 #define INCLUDE_ACTIVITY_FIXTURES_C
 
-#include "../../../native/lib/neural_network/activity.c"
+#include "../../../native/include/neural_network/activity.h"
 
 static Activity *
 activity_expected_basic() {

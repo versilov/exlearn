@@ -1,5 +1,5 @@
-#include "../../../native/lib/neural_network/presentation.c"
-#include "../../../native/lib/matrix.c"
+#include "../../../native/include/neural_network/presentation.h"
+#include "../../../native/include/matrix.h"
 
 static void test_free_presentation_closure() {
   PresentationClosure *closure = new_presentation_closure(0, 0);

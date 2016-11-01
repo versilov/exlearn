@@ -1,4 +1,4 @@
-#include "../../../native/lib/worker/batch_data.c"
+#include "../../../native/include/worker/batch_data.h"
 
 #include "../fixtures/file_fixtures.c"
 

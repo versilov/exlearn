@@ -1,4 +1,4 @@
-#include "../../../native/lib/worker/sample_index.c"
+#include "../../../native/include/worker/sample_index.h"
 
 static void test_sample_index_free() {
   SampleIndex *sample_index = sample_index_new(1, 2);

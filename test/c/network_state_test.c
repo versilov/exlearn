@@ -1,4 +1,4 @@
-#include "../../native/lib/network_state.c"
+#include "../../native/include/network_state.h"
 
 //-----------------------------------------------------------------------------
 // Tests

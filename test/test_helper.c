@@ -20,7 +20,6 @@
 #include "c/matrix_test.c"
 #include "c/network_state_test.c"
 #include "c/network_structure_test.c"
-#include "c/random_test.c"
 
 int main() {
   // Test for: c/neural_network/activity_test.c
@@ -140,6 +139,4 @@ int main() {
   // Tests for: c/network_structure_test.c
   test_free_network_structure();
   test_new_network_structure();
-
-  // Tests for: c/random_test.c
 }

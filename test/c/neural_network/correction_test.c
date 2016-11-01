@@ -1,4 +1,4 @@
-#include "../../../native/lib/neural_network/correction.c"
+#include "../../../native/include/neural_network/correction.h"
 
 static void test_free_correction() {
   Correction *correction = new_correction(3);

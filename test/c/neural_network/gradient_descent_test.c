@@ -1,6 +1,5 @@
-#include "../../../native/lib/neural_network/gradient_descent.c"
-
-#include "../../../native/lib/worker/batch_data.c"
+#include "../../../native/include/neural_network/gradient_descent.h"
+#include "../../../native/include/worker/batch_data.h"
 
 #include "../fixtures/network_structure_fixtures.c"
 #include "../fixtures/network_state_fixtures.c"

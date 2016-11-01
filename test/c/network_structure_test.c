@@ -1,4 +1,4 @@
-#include "../../native/lib/network_structure.c"
+#include "../../native/include/network_structure.h"
 
 //-----------------------------------------------------------------------------
 // Tests

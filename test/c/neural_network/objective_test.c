@@ -1,5 +1,5 @@
-#include "../../../native/lib/neural_network/objective.c"
-#include "../../../native/lib/matrix.c"
+#include "../../../native/include/neural_network/objective.h"
+#include "../../../native/include/matrix.h"
 
 static void test_an_unknown_objective_function() {
   ObjectiveFunction function = objective_determine_function(-1);
