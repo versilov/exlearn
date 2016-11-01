@@ -3,9 +3,9 @@
 
 #include "erl_nif.h"
 
-#include "../lib/worker/batch_data.c"
-#include "../lib/worker/bundle_paths.c"
-#include "../lib/worker/worker_data.c"
+#include "../include/worker/batch_data.h"
+#include "../include/worker/bundle_paths.h"
+#include "../include/worker/worker_data.h"
 
 //------------------------------------------------------------------------------
 // Resource definition

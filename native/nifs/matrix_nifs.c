@@ -1,6 +1,6 @@
 #include "erl_nif.h"
 
-#include "lib/matrix.c"
+#include "../include/matrix.h"
 
 //-----------------------------------------------------------------------------
 // Exported nifs

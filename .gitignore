@@ -1,11 +1,10 @@
-/_build
-/deps
+/_build/
+/deps/
 
 /cover/*
 !/cover/.keep
 
-/priv/*
-!/priv/.keep
+/priv/
 
 /test/c/temp/*
 !/test/c/temp/.keep
