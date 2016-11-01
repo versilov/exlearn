@@ -1,4 +1,4 @@
-#include "../../../include/worker/sample_index.h"
+#include "../../include/worker/sample_index.h"
 
 SampleIndex *
 sample_index_new(int bundle, int index) {

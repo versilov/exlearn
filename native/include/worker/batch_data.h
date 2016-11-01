@@ -7,8 +7,8 @@
 #include <stdlib.h>
 #include <time.h>
 
-// #include "sample_index.c"
-// #include "worker_data.c"
+#include "./sample_index.h"
+#include "./worker_data.h"
 
 typedef struct BatchData {
   int           batch_length;

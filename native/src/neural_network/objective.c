@@ -1,4 +1,4 @@
-#include "../../../include/neural_network/objective.h"
+#include "../../include/neural_network/objective.h"
 
 //-----------------------------------------------------------------------------
 // Objective functions

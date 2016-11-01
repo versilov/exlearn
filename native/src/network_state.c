@@ -1,11 +1,6 @@
-#ifndef INCLUDE_NETWORK_STATE_C
-#define INCLUDE_NETWORK_STATE_C
+#include "../include/network_state.h"
 
-#include <stdlib.h>
-
-#include "matrix.c"
-
-static void
+void
 free_network_state(NetworkState *state) {
   for (int layer = 0; layer < state->layers; layer += 1) {
     free_matrix(state->biases[layer] );
@@ -20,7 +15,7 @@ free_network_state(NetworkState *state) {
   state = NULL;
 }
 
-static NetworkState *
+NetworkState *
 new_network_state(int layers) {
   NetworkState *state = malloc(sizeof(NetworkState));
 
@@ -35,5 +30,3 @@ new_network_state(int layers) {
 
   return state;
 }
-
-#endif

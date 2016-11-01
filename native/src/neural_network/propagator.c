@@ -1,4 +1,4 @@
-#include "../../../include/neural_network/propagator.h"
+#include "../../include/neural_network/propagator.h"
 
 Correction *
 back_propagate(

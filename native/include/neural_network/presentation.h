@@ -3,7 +3,14 @@
 
 #include <math.h>
 
-// #include "../matrix.c"
+#include "../matrix.h"
+
+typedef int (*PresentationFunction)(Matrix, int);
+
+typedef struct PresentationClosure {
+  PresentationFunction function;
+  int                  alpha;
+} PresentationClosure;
 
 int
 call_presentation_closure(PresentationClosure *closure, Matrix matrix);

@@ -1,9 +1,6 @@
-#ifndef INCLUDE_CORRECTION_C
-#define INCLUDE_CORRECTION_C
+#include "../../include/neural_network/correction.h"
 
-#include "../matrix.c"
-
-static void
+void
 free_correction(Correction *correction) {
   for (int layer = 0; layer < correction->layers; layer += 1) {
     free_matrix(correction->biases[layer]);
@@ -16,7 +13,7 @@ free_correction(Correction *correction) {
   free(correction);
 }
 
-static Correction *
+Correction *
 new_correction(int layers) {
   Correction *correction = malloc(sizeof(Correction));
 
@@ -32,7 +29,7 @@ new_correction(int layers) {
   return correction;
 }
 
-static void
+void
 correction_initialize(NetworkStructure *network_structure, Correction *correction) {
   int    rows, columns;
   Matrix matrix;
@@ -53,5 +50,3 @@ correction_initialize(NetworkStructure *network_structure, Correction *correctio
 
   return;
 }
-
-#endif

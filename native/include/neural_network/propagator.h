@@ -1,8 +1,10 @@
 #ifndef INCLUDED_PROPAGATOR_H
 #define INCLUDED_PROPAGATOR_H
 
-// #include "../structs.c"
-// #include "correction.c"
+#include "../../include/neural_network/activity.h"
+#include "../../include/neural_network/correction.h"
+#include "../../include/network_state.h"
+#include "../../include/network_structure.h"
 
 Correction *
 back_propagate(

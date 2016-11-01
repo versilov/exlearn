@@ -1,6 +1,6 @@
-#include "../../../include/worker/bundle_paths.h"
+#include "../../include/worker/bundle_paths.h"
 
-static void
+void
 bundle_paths_free(BundlePaths **paths_address) {
   BundlePaths *paths = *paths_address;
 
@@ -16,7 +16,7 @@ bundle_paths_free(BundlePaths **paths_address) {
   }
 }
 
-static BundlePaths *
+BundlePaths *
 bundle_paths_new(int count) {
   BundlePaths *paths = malloc(sizeof(BundlePaths));
 

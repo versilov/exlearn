@@ -1,4 +1,4 @@
-#include "../../../include/neural_network/presentation.h"
+#include "../../include/neural_network/presentation.h"
 
 static int argmax_function(Matrix matrix, int alpha) {
   int argmax = matrix_argmax(matrix);

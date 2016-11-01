@@ -1,4 +1,4 @@
-#include "../../../include/neural_network/gradient_descent.h"
+#include "../../include/neural_network/gradient_descent.h"
 
 Correction *
 gradient_descent(
@@ -22,6 +22,8 @@ gradient_descent(
   int remaining = batch_data->data_length - length * current_batch;
 
   if (remaining < length) length = remaining;
+
+  correction = NULL;
 
   for (int index = 0; index < length; index += 1) {
     // Process each sample.

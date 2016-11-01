@@ -1,11 +1,11 @@
-#ifndef INCLUDED_GRADIENT_DESCENT_C
-#define INCLUDED_GRADIENT_DESCENT_C
+#ifndef INCLUDED_GRADIENT_DESCENT_H
+#define INCLUDED_GRADIENT_DESCENT_H
 
-// #include "../../../native/lib/neural_network/forwarder.c"
-// #include "../../../native/lib/neural_network/propagator.c"
-//
-// #include "../worker/batch_data.c"
-// #include "../worker/worker_data.c"
+#include "../worker/batch_data.h"
+#include "../worker/worker_data.h"
+#include "./correction.h"
+#include "./forwarder.h"
+#include "./propagator.h"
 
 Correction *
 gradient_descent(

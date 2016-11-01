@@ -1,4 +1,4 @@
-#include "../../../include/worker/worker_data_bundle.h"
+#include "../../include/worker/worker_data_bundle.h"
 
 void
 free_worker_data_bundle(WorkerDataBundle *data) {

@@ -3,8 +3,12 @@
 
 #include <math.h>
 
-// #include "../matrix.c"
-// #include "../structs.c"
+#include "../matrix.h"
+#include "./activity.h"
+
+typedef float  (*ObjectiveFunction)(Matrix, Matrix);
+
+typedef Matrix (*ObjectiveError)(Matrix, Matrix, Matrix, ActivityClosure *);
 
 ObjectiveFunction
 objective_determine_function(int function_id);

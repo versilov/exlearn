@@ -8,4 +8,10 @@ typedef struct BundlePaths {
   char **path;
 } BundlePaths;
 
+void
+bundle_paths_free(BundlePaths **paths_address);
+
+BundlePaths *
+bundle_paths_new(int count);
+
 #endif

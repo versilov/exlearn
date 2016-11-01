@@ -3,9 +3,8 @@
 
 #include <stdlib.h>
 
-// TODO: replace thses with appropriate header files.
-// #include "bundle_paths.c"
-// #include "worker_data_bundle.c"
+#include "./bundle_paths.h"
+#include "./worker_data_bundle.h"
 
 typedef struct WorkerData {
   int                count;

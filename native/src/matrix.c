@@ -1,12 +1,6 @@
-#ifndef INCLUDED_MATRIX_C
-#define INCLUDED_MATRIX_C
+#include "../include/matrix.h"
 
-#include <cblas.h>
-#include <stdlib.h>
-
-#include "structs.c"
-
-static inline void
+void
 clone_matrix(Matrix destination, Matrix source) {
   int length = source[0] * source[1] + 2;
 
@@ -15,14 +9,14 @@ clone_matrix(Matrix destination, Matrix source) {
   }
 }
 
-static inline void
+void
 free_matrix(Matrix matrix) {
   if (matrix != NULL) free(matrix);
 
   matrix = NULL;
 }
 
-static inline Matrix
+Matrix
 new_matrix(int rows, int columns) {
   int    length = rows * columns + 2;
   Matrix result = malloc(sizeof(float) * length);
@@ -33,7 +27,7 @@ new_matrix(int rows, int columns) {
   return result;
 }
 
-static inline void
+void
 matrix_fill(Matrix matrix, int value) {
   int length = matrix[0] * matrix[1] + 2;
 
@@ -42,7 +36,7 @@ matrix_fill(Matrix matrix, int value) {
   }
 }
 
-static inline int
+int
 matrix_equal(Matrix first, Matrix second) {
   if (first[0] != second[0]) return 0;
   if (first[1] != second[1]) return 0;
@@ -56,7 +50,7 @@ matrix_equal(Matrix first, Matrix second) {
   return 1;
 }
 
-static inline void
+void
 matrix_add(const Matrix first, const Matrix second, Matrix result) {
   int data_size = (int) (first[0] * first[1] + 2);
 
@@ -68,7 +62,7 @@ matrix_add(const Matrix first, const Matrix second, Matrix result) {
   }
 }
 
-static inline int
+int
 matrix_argmax(const Matrix matrix) {
   int data_size = (int) (matrix[0] * matrix[1] + 2);
   int argmax    = 2;
@@ -82,7 +76,7 @@ matrix_argmax(const Matrix matrix) {
   return argmax - 2;
 }
 
-static inline void
+void
 matrix_divide(const Matrix first, const Matrix second, Matrix result) {
   int data_size = (int) (first[0] * first[1] + 2);
 
@@ -94,7 +88,7 @@ matrix_divide(const Matrix first, const Matrix second, Matrix result) {
   }
 }
 
-static inline void
+void
 matrix_dot(const Matrix first, const Matrix second, Matrix result) {
   result[0] = first[0];
   result[1] = second[1];
@@ -117,7 +111,7 @@ matrix_dot(const Matrix first, const Matrix second, Matrix result) {
   );
 }
 
-static inline void
+void
 matrix_dot_and_add(
   const Matrix first, const Matrix second, const Matrix third, Matrix result
 ) {
@@ -148,7 +142,7 @@ matrix_dot_and_add(
   }
 }
 
-static inline void
+void
 matrix_dot_nt(const Matrix first, const Matrix second, Matrix result) {
   result[0] = first[0];
   result[1] = second[0];
@@ -171,7 +165,7 @@ matrix_dot_nt(const Matrix first, const Matrix second, Matrix result) {
   );
 }
 
-static inline void
+void
 matrix_dot_tn(const Matrix first, const Matrix second, Matrix result) {
   result[0] = first[1];
   result[1] = second[1];
@@ -194,12 +188,12 @@ matrix_dot_tn(const Matrix first, const Matrix second, Matrix result) {
   );
 }
 
-static inline float
+float
 matrix_first(const Matrix matrix) {
   return matrix[2];
 }
 
-static inline float
+float
 matrix_max(const Matrix matrix) {
   int   data_size = (int) (matrix[0] * matrix[1] + 2);
   float max       = matrix[2];
@@ -213,7 +207,7 @@ matrix_max(const Matrix matrix) {
   return max;
 }
 
-static inline void
+void
 matrix_multiply(const Matrix first, const Matrix second, Matrix result) {
   int data_size = (int) (first[0] * first[1] + 2);
 
@@ -225,7 +219,7 @@ matrix_multiply(const Matrix first, const Matrix second, Matrix result) {
   }
 }
 
-static inline void
+void
 matrix_multiply_with_scalar(
   const Matrix matrix, const float scalar, Matrix result
 ) {
@@ -239,7 +233,7 @@ matrix_multiply_with_scalar(
   }
 }
 
-static inline void
+void
 matrix_substract(const Matrix first, const Matrix second, Matrix result) {
   int data_size = (int) (first[0] * first[1] + 2);
 
@@ -251,7 +245,7 @@ matrix_substract(const Matrix first, const Matrix second, Matrix result) {
   }
 }
 
-static inline float
+float
 matrix_sum(const Matrix matrix) {
   int   data_size = matrix[0] * matrix[1] + 2;
   float sum       = 0;
@@ -263,7 +257,7 @@ matrix_sum(const Matrix matrix) {
   return sum;
 }
 
-static inline void
+void
 matrix_transpose(const Matrix matrix, Matrix result) {
   result[0] = matrix[1];
   result[1] = matrix[0];
@@ -277,5 +271,3 @@ matrix_transpose(const Matrix matrix, Matrix result) {
     }
   }
 }
-
-#endif

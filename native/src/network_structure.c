@@ -1,12 +1,6 @@
-#ifndef INCLUDE_NETWORK_STRUCTURE_C
-#define INCLUDE_NETWORK_STRUCTURE_C
+#include "../include/network_structure.h"
 
-#include <stdlib.h>
-
-#include "neural_network/presentation.c"
-#include "structs.c"
-
-static void
+void
 free_network_structure(NetworkStructure *structure) {
   for (int layer = 0; layer < structure->layers; layer += 1) {
     free_activity_closure(structure->function[layer]  );
@@ -24,7 +18,7 @@ free_network_structure(NetworkStructure *structure) {
   free(structure);
 }
 
-static NetworkStructure *
+NetworkStructure *
 new_network_structure(int layers) {
   NetworkStructure *structure = malloc(sizeof(NetworkStructure));
 
@@ -45,5 +39,3 @@ new_network_structure(int layers) {
 
   return structure;
 }
-
-#endif

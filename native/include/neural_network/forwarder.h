@@ -1,10 +1,12 @@
-#ifndef INCLUDE_FORWARDER_C
-#define INCLUDE_FORWARDER_C
+#ifndef INCLUDED_FORWARDER_H
+#define INCLUDED_FORWARDER_H
 
-#include "../matrix.c"
-#include "../network_state.c"
-#include "../network_structure.c"
-#include "activity.c"
+#include "../matrix.h"
+#include "../network_state.h"
+#include "../network_structure.h"
+
+#include "./activity.h"
+#include "./dropout.h"
 
 Activity *
 forward_for_activity(

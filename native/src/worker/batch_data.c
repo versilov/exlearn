@@ -1,4 +1,4 @@
-#include "../../../include/worker/batch_data.h"
+#include "../../include/worker/batch_data.h"
 
 void
 free_batch_data(BatchData *data) {

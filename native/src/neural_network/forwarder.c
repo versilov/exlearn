@@ -1,4 +1,4 @@
-#include "../../../include/neural_network/forwarder.h"
+#include "../../include/neural_network/forwarder.h"
 
 Activity *
 forward_for_activity(

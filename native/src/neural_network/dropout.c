@@ -1,14 +1,6 @@
-#ifndef INCLUDE_DROPOUT_C
-#define INCLUDE_DROPOUT_C
+#include "../../include/neural_network/dropout.h"
 
-#include <gsl/gsl_rng.h>
-#include <gsl/gsl_randist.h>
-#include <math.h>
-#include <time.h>
-
-#include "../matrix.c"
-
-static Matrix
+Matrix
 create_dropout_mask(int rows, int columns, float probability) {
   Matrix   mask   = new_matrix(rows, columns);
   int      length = rows * columns + 2;
@@ -28,5 +20,3 @@ create_dropout_mask(int rows, int columns, float probability) {
 
   return mask;
 }
-
-#endif

@@ -1,11 +1,4 @@
-#ifndef INCLUDED_ACTIVITY_C
-#define INCLUDED_ACTIVITY_C
-
-#include <math.h>
-#include <stdlib.h>
-
-#include "../matrix.c"
-#include "../structs.c"
+#include "../../include/neural_network/activity.h"
 
 //-----------------------------------------------------------------------------
 // Activity function pairs
@@ -452,5 +445,3 @@ activity_determine_derivative(int function_id, float alpha) {
     default: return NULL;
   }
 }
-
-#endif
