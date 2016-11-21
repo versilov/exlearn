@@ -40,14 +40,26 @@ $(NIFS_OBJECTS): $(PRIV_DIRECTORY)/%.so : $(NIFS_DIRECTORY)/%.c
 $(PRIV_DIRECTORY):
 	@mkdir -p $(PRIV_DIRECTORY)
 
-
 TEST_CFLAGS  = -g -O0 -std=c11 -Wall -Wextra --coverage
 TEST_LDFLAGS = -lgcov
 
-test: $(OBJECTS_DIRECTORIES) $(OBJECTS)
+TEST_OBJ_DIRECTORY = ./test/c/obj
+
+TEST_OBJECTS := $(SOURCES:$(SRC_DIRECTORY)/%.c=$(TEST_OBJ_DIRECTORY)/%.o)
+
+TEST_OBJECTS_DIRECTORIES := $(subst $(SRC_DIRECTORY),$(TEST_OBJ_DIRECTORY),$(SOURCES_DIRECTORIES))
+
+$(TEST_OBJECTS_DIRECTORIES):
+	@mkdir -p $(TEST_OBJECTS_DIRECTORIES)
+
+$(TEST_OBJECTS): $(TEST_OBJ_DIRECTORY)/%.o : $(SRC_DIRECTORY)/%.c
+	@echo 'Compiling: '$<
+	@$(CC) $(TEST_CFLAGS) -c $< -o $@
+
+test: $(TEST_OBJECTS_DIRECTORIES) $(TEST_OBJECTS)
 	find test/c/temp/ ! -name '.keep' -type f -exec rm -f {} +
 	lcov --directory . -z --rc lcov_branch_coverage=1
-	$(CC) $(TEST_CFLAGS) $(OBJECTS) -o test/c/temp/test test/test_helper.c $(LDFLAGS) $(TEST_LDFLAGS)
+	$(CC) $(TEST_CFLAGS) $(TEST_OBJECTS) -o test/c/temp/test test/test_helper.c $(LDFLAGS) $(TEST_LDFLAGS)
 	./test/c/temp/test
 	lcov --directory . -c -o cover/lcov.info-file --rc lcov_branch_coverage=1
 	lcov --list cover/lcov.info-file --rc lcov_branch_coverage=1

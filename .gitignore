@@ -1,10 +1,13 @@
-/_build/
-/deps/
+/_build
+/deps
 
 /cover/*
 !/cover/.keep
 
-/priv/
+/priv
+
+/test/c/obj/*
+!/test/c/obj/.keep
 
 /test/c/temp/*
 !/test/c/temp/.keep
@@ -16,18 +19,18 @@
 core
 erl_crash.dump
 
-notebooks/**/.ipynb_checkpoints
+/notebooks/**/.ipynb_checkpoints
 
-samples/**/*.eld
-samples/**/*.el1
+/samples/**/*.eld
+/samples/**/*.el1
 
 *.gcda
 *.gcno
 *.gcov
 
-GPATH
-GRTAGS
-GTAGS
+/GPATH
+/GRTAGS
+/GTAGS
 
-/native/obj/
-/native/bin/
+/native/obj
+/native/bin
