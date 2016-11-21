@@ -38,7 +38,6 @@ correction_initialize(NetworkStructure *network_structure, Correction *correctio
   int    rows, columns;
   Matrix matrix;
 
-  return;
   for (int index = 0; index < correction->layers; index += 1) {
     rows    = network_structure->rows[index];
     columns = network_structure->columns[index];
@@ -51,6 +50,4 @@ correction_initialize(NetworkStructure *network_structure, Correction *correctio
     matrix_fill(matrix, 0);
     correction->weights[index] = matrix;
   }
-
-  return;
 }

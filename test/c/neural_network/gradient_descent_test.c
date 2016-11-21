@@ -8,6 +8,7 @@
 
 static void test_gradient_descent() {
   BatchData   *batch_data;
+  Correction  *correction   = NULL;
   BundlePaths *paths        = bundle_paths_new(2);
   WorkerData  *worker_data  = worker_data_new(2);
 
@@ -21,11 +22,13 @@ static void test_gradient_descent() {
   NetworkStructure *structure = network_structure_basic();
   NetworkState     *state     = network_state_basic();
 
-  gradient_descent(
+  correction = gradient_descent(
     worker_data,
     batch_data,
     state,
     structure,
     1
   );
+
+  assert(correction != NULL); /* LCOV_EXCL_BR_LINE */
 }

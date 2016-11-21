@@ -1,4 +1,7 @@
 #include "../../../native/include/neural_network/correction.h"
+#include "../../../native/include/network_structure.h"
+
+#include "../fixtures/network_structure_fixtures.c"
 
 static void test_correction_free() {
   Correction *correction = correction_new(3);
@@ -25,6 +28,28 @@ static void test_correction_new() {
 }
 
 static void test_correction_initialize() {
-  correction_initialize(NULL, NULL);
+  NetworkStructure *network_structure = network_structure_basic();
+  Correction       *correction        = correction_new(4);
 
+  correction_initialize(network_structure, correction);
+
+  assert(correction->layers == 4);
+
+  for (int index = 0; index < 4; index += 1) {
+    int length;
+
+    assert(correction->biases[index] != NULL);
+    length = correction->biases[index][0] * correction->biases[index][1];
+
+    for (int bias_index = 2; bias_index < length + 2; bias_index += 1) {
+      assert(correction->biases[index][bias_index] == 0); /* LCOV_EXCL_BR_LINE */
+    }
+
+    assert(correction->weights[index] != NULL);
+    length = correction->weights[index][0] * correction->weights[index][1];
+
+    for (int weight_index = 2; weight_index < length + 2; weight_index += 1) {
+      assert(correction->weights[index][weight_index] == 0); /* LCOV_EXCL_BR_LINE */
+    }
+  }
 }
