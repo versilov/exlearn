@@ -11,10 +11,10 @@ typedef struct Correction {
 } Correction;
 
 void
-free_correction(Correction *correction);
+correction_free(Correction **correction);
 
 Correction *
-new_correction(int layers);
+correction_new(int layers);
 
 void
 correction_initialize(NetworkStructure *network_structure, Correction *correction);

@@ -1,7 +1,7 @@
 #include "../include/matrix.h"
 
 void
-clone_matrix(Matrix destination, Matrix source) {
+matrix_clone(Matrix destination, Matrix source) {
   int length = source[0] * source[1] + 2;
 
   for (int index = 0; index < length; index += 1) {
@@ -10,14 +10,16 @@ clone_matrix(Matrix destination, Matrix source) {
 }
 
 void
-free_matrix(Matrix matrix) {
+matrix_free(Matrix *matrix_address) {
+  Matrix matrix = *matrix_address;
+
   if (matrix != NULL) free(matrix);
 
-  matrix = NULL;
+  *matrix_address = NULL;
 }
 
 Matrix
-new_matrix(int rows, int columns) {
+matrix_new(int rows, int columns) {
   int    length = rows * columns + 2;
   Matrix result = malloc(sizeof(float) * length);
 

@@ -7,13 +7,13 @@
 typedef float* Matrix;
 
 void
-clone_matrix(Matrix destination, Matrix source);
+matrix_clone(Matrix destination, Matrix source);
 
 void
-free_matrix(Matrix matrix);
+matrix_free(Matrix *matrix);
 
 Matrix
-new_matrix(int rows, int columns);
+matrix_new(int rows, int columns);
 
 void
 matrix_fill(Matrix matrix, int value);

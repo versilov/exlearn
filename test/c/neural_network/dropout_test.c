@@ -11,5 +11,5 @@ static void test_create_dropout_mask() {
     assert(matrix[index] == 0.0 || matrix[index] == 2.0); /* LCOV_EXCL_BR_LINE */
   }
 
-  free_matrix(matrix);
+  matrix_free(&matrix);
 }

@@ -32,10 +32,10 @@ cross_entropy_error_simple(
   ActivityClosure *last_derivative
 ) {
   int    length = expected[0] * expected[1] + 2;
-  Matrix result = new_matrix(expected[0], expected[1]);
+  Matrix result = matrix_new(expected[0], expected[1]);
   float  top, bottom;
 
-  clone_matrix(result, last_input);
+  matrix_clone(result, last_input);
   call_activity_closure(last_derivative, result);
 
   for (int index = 2; index < length; index += 1) {
@@ -71,7 +71,7 @@ negative_log_likelihood_error_simple(
   (void)(_last_derivative);
 
   int    length = expected[0] * expected[1] + 2;
-  Matrix result = new_matrix(expected[0], expected[1]);
+  Matrix result = matrix_new(expected[0], expected[1]);
 
   result[0] = expected[0];
   result[1] = expected[1];
@@ -94,7 +94,7 @@ negative_log_likelihood_error_optimised(
   (void)(_last_derivative);
 
   int    length = expected[0] * expected[1] + 2;
-  Matrix result = new_matrix(expected[0], expected[1]);
+  Matrix result = matrix_new(expected[0], expected[1]);
 
   result[0] = expected[0];
   result[1] = expected[1];
@@ -129,9 +129,9 @@ quadratic_error(
   ActivityClosure *last_derivative
 ) {
   int    length = expected[0] * expected[1] + 2;
-  Matrix result = new_matrix(expected[0], expected[1]);
+  Matrix result = matrix_new(expected[0], expected[1]);
 
-  clone_matrix(result, last_input);
+  matrix_clone(result, last_input);
   call_activity_closure(last_derivative, result);
 
   for (int index = 2; index < length; index += 1) {

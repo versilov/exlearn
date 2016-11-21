@@ -3,7 +3,7 @@
 
 static Matrix
 data_sample_basic() {
-  Matrix sample = new_matrix(1, 3);
+  Matrix sample = matrix_new(1, 3);
 
   sample[2] = 1;
   sample[3] = 2;
@@ -14,7 +14,7 @@ data_sample_basic() {
 
 static Matrix
 data_expected_basic() {
-  Matrix sample = new_matrix(1, 2);
+  Matrix sample = matrix_new(1, 2);
 
   sample[2] = 1800;
   sample[3] = 2700;

@@ -1,10 +1,12 @@
 #include "../include/network_state.h"
 
 void
-free_network_state(NetworkState *state) {
+network_state_free(NetworkState **state_address) {
+  NetworkState *state = *state_address;
+
   for (int layer = 0; layer < state->layers; layer += 1) {
-    free_matrix(state->biases[layer] );
-    free_matrix(state->weights[layer]);
+    matrix_free(&state->biases[layer] );
+    matrix_free(&state->weights[layer]);
   }
 
   free(state->biases );
@@ -12,11 +14,11 @@ free_network_state(NetworkState *state) {
 
   free(state);
 
-  state = NULL;
+  *state_address = NULL;
 }
 
 NetworkState *
-new_network_state(int layers) {
+network_state_new(int layers) {
   NetworkState *state = malloc(sizeof(NetworkState));
 
   state->layers  = layers;

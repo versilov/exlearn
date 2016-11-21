@@ -23,8 +23,8 @@
 
 int main() {
   // Test for: c/neural_network/activity_test.c
-  test_free_activity();
-  test_new_activity();
+  test_activity_free();
+  test_activity_new();
   test_an_unknown_pair();
   test_the_arctan_pair();
   test_the_bent_identity_pair();
@@ -42,8 +42,8 @@ int main() {
   test_the_prelu_pair();
 
   // Tests for: c/neural_network/correction_test.c
-  test_free_correction();
-  test_new_correction();
+  test_correction_free();
+  test_correction_new();
   test_correction_initialize();
 
   // Tests for: c/neural_network/dropout_test.c
@@ -74,9 +74,9 @@ int main() {
   test_the_quadratic_objective_error();
 
   // Tests for: c/neural_network/presentation_test.c
-  test_free_presentation_closure();
-  test_new_presentation_closure();
-  test_call_presentation_closure();
+  test_presentation_closure_free();
+  test_presentation_closure_new();
+  test_presentation_closure_call();
   test_an_unknown_function();
   test_the_argmax_function();
   test_the_floor_first_function();
@@ -88,8 +88,8 @@ int main() {
   test_back_propagate_with_dropout();
 
   // Tests for: c/worker/batch_data_test.c
-  test_free_batch_data();
-  test_new_batch_data();
+  test_batch_data_free();
+  test_batch_data_new();
   test_shuffle_batch_data_indices();
   test_batch_data_get_sample_index();
 
@@ -102,8 +102,8 @@ int main() {
   test_sample_index_new();
 
   // Tests for: c/worker/worker_data_bundle_test.c
-  test_free_worker_data_bundle();
-  test_new_worker_data_bundle();
+  test_worker_data_bundle_free();
+  test_worker_data_bundle_new();
   test_read_worker_data_bundle();
 
   // Tests for: c/worker/worker_data_test.c
@@ -112,9 +112,9 @@ int main() {
   test_worker_data_read();
 
   // Tests for: c/matrix_test.c
-  test_clone_matrix();
-  test_free_matrix();
-  test_new_matrix();
+  test_matrix_clone();
+  test_matrix_free();
+  test_matrix_new();
   test_matrix_fill();
   test_matrix_equal();
   test_matrix_add();
@@ -133,10 +133,10 @@ int main() {
   test_matrix_transpose();
 
   // Tests for: c/network_state_test.c
-  test_free_network_state();
-  test_new_network_state();
+  test_network_state_free();
+  test_network_state_new();
 
   // Tests for: c/network_structure_test.c
-  test_free_network_structure();
-  test_new_network_structure();
+  test_network_structure_free();
+  test_network_structure_new();
 }

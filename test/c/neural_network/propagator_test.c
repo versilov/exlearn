@@ -25,12 +25,12 @@ static void test_back_propagate() {
     assert(matrix_equal(result->weights[layer], expected_correction->weights[layer])); /* LCOV_EXCL_BR_LINE */
   }
 
-  free_correction(result);
-  free_correction(expected_correction);
-  free_activity(activity);
-  free_matrix(expected_output);
-  free_network_state(state);
-  free_network_structure(structure);
+  correction_free(&result);
+  correction_free(&expected_correction);
+  activity_free(&activity);
+  matrix_free(&expected_output);
+  network_state_free(&state);
+  network_structure_free(&structure);
 }
 
 static void test_back_propagate_with_dropout() {
@@ -52,10 +52,10 @@ static void test_back_propagate_with_dropout() {
     assert(matrix_equal(result->weights[layer], expected_correction->weights[layer])); /* LCOV_EXCL_BR_LINE */
   }
 
-  free_correction(result);
-  free_correction(expected_correction);
-  free_activity(activity);
-  free_matrix(expected_output);
-  free_network_state(state);
-  free_network_structure(structure);
+  correction_free(&result);
+  correction_free(&expected_correction);
+  activity_free(&activity);
+  matrix_free(&expected_output);
+  network_state_free(&state);
+  network_structure_free(&structure);
 }

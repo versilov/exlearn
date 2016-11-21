@@ -12,9 +12,9 @@ typedef struct NetworkState {
 } NetworkState;
 
 void
-free_network_state(NetworkState *state);
+network_state_free(NetworkState **state);
 
 NetworkState *
-new_network_state(int layers);
+network_state_new(int layers);
 
 #endif

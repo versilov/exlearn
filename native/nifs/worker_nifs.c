@@ -16,7 +16,7 @@ ErlNifResourceType *BATCH_DATA;
 static void batch_data_destructor(ErlNifEnv *_env, void *batch_data) {
   (void)(_env);
 
-  free_batch_data((BatchData *)(batch_data));
+  batch_data_free(&(BatchData *)(batch_data));
 }
 
 ErlNifResourceType *WORKER_DATA;
@@ -45,7 +45,7 @@ create_batch_data(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   if (!enif_get_int64(env, argv[1], &batch_length))
     return enif_make_badarg(env);
 
-  batch_data = new_batch_data(worker_data, batch_length);
+  batch_data = batch_data_new(worker_data, batch_length);
   shuffle_batch_data_indices(batch_data);
 
   batch_data_resource = enif_alloc_resource(BATCH_DATA, sizeof(BatchData));

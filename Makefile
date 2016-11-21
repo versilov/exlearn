@@ -54,11 +54,11 @@ $(TEST_OBJECTS): $(TEST_OBJ_DIRECTORY)/%.o : $(SRC_DIRECTORY)/%.c
 	@$(CC) $(TEST_CFLAGS) -c $< -o $@
 
 test: $(TEST_OBJECTS_DIRECTORIES) $(TEST_OBJECTS)
-	find test/c/temp/ ! -name '.keep' -type f -exec rm -f {} +
-	lcov --directory . -z --rc lcov_branch_coverage=1
+	@find test/c/temp/ ! -name '.keep' -type f -exec rm -f {} +
+	@lcov --directory . -z --rc lcov_branch_coverage=1
 	$(CC) $(TEST_CFLAGS) $(TEST_OBJECTS) -o test/c/temp/test test/test_helper.c $(LDFLAGS) $(TEST_LDFLAGS)
 	./test/c/temp/test
-	lcov --directory . -c -o cover/lcov.info-file --rc lcov_branch_coverage=1
+	@lcov --directory . -c -o cover/lcov.info-file --rc lcov_branch_coverage=1
 	lcov --list cover/lcov.info-file --rc lcov_branch_coverage=1
 	genhtml --branch-coverage -o cover cover/lcov.info-file > /dev/null
 

@@ -9,7 +9,7 @@ back_propagate(
 ) {
   int         layers     = structure->layers;
   int         last_layer = layers - 1;
-  Correction *correction = new_correction(layers);
+  Correction *correction = correction_new(layers);
   Matrix      error, weight_correction, input_gradient, output_gradient;
 
   error = structure->error(
@@ -21,7 +21,7 @@ back_propagate(
 
   correction->biases[last_layer] = error;
 
-  weight_correction = new_matrix(
+  weight_correction = matrix_new(
     state->weights[last_layer][0], state->weights[last_layer][1]
   );
   matrix_dot_tn(activity->output[last_layer - 1], error, weight_correction);
@@ -29,14 +29,14 @@ back_propagate(
   correction->weights[last_layer] = weight_correction;
 
   for (int layer = layers - 2; layer > 0; layer -= 1) {
-    output_gradient = new_matrix(error[0], state->weights[layer + 1][0]);
+    output_gradient = matrix_new(error[0], state->weights[layer + 1][0]);
     matrix_dot_nt(error, state->weights[layer + 1], output_gradient);
 
-    input_gradient = new_matrix(activity->input[layer][0], activity->input[layer][1]);
-    clone_matrix(input_gradient, activity->input[layer]);
+    input_gradient = matrix_new(activity->input[layer][0], activity->input[layer][1]);
+    matrix_clone(input_gradient, activity->input[layer]);
     call_activity_closure(structure->derivative[layer], input_gradient);
 
-    error = new_matrix(state->biases[layer][0], state->biases[layer][1]);
+    error = matrix_new(state->biases[layer][0], state->biases[layer][1]);
     matrix_multiply(output_gradient, input_gradient, error);
 
     if (activity->mask[layer] != NULL) {
@@ -45,7 +45,7 @@ back_propagate(
 
     correction->biases[layer] = error;
 
-    weight_correction = new_matrix(
+    weight_correction = matrix_new(
       state->weights[layer][0], state->weights[layer][1]
     );
     matrix_dot_tn(activity->output[layer - 1], error, weight_correction);

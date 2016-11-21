@@ -1,29 +1,31 @@
 #include "../../../native/include/neural_network/presentation.h"
 #include "../../../native/include/matrix.h"
 
-static void test_free_presentation_closure() {
-  PresentationClosure *closure = new_presentation_closure(0, 0);
+static void test_presentation_closure_free() {
+  PresentationClosure *closure = presentation_closure_new(0, 0);
 
-  free_presentation_closure(closure);
+  presentation_closure_free(&closure);
+
+  assert(closure == NULL); /* LCOV_EXCL_BR_LINE */
 }
 
-static void test_new_presentation_closure() {
-  PresentationClosure *closure = new_presentation_closure(0, 0);
+static void test_presentation_closure_new() {
+  PresentationClosure *closure = presentation_closure_new(0, 0);
 
-  free_presentation_closure(closure);
+  presentation_closure_free(&closure);
 }
 
-static void test_call_presentation_closure() {
+static void test_presentation_closure_call() {
   PresentationClosure *closure = presentation_determine(0, 0);
-  Matrix               matrix  = new_matrix(1, 1);
+  Matrix               matrix  = matrix_new(1, 1);
   int                  result;
 
   matrix[2] = 1;
-  result    = call_presentation_closure(closure, matrix);
+  result    = presentation_closure_call(closure, matrix);
 
   assert(result == 0); /* LCOV_EXCL_BR_LINE */
 
-  free_presentation_closure(closure);
+  presentation_closure_free(&closure);
 }
 
 static void test_an_unknown_function() {
@@ -31,78 +33,78 @@ static void test_an_unknown_function() {
 
   assert(closure == NULL); /* LCOV_EXCL_BR_LINE */
 
-  Matrix matrix  = new_matrix(1, 1);
+  Matrix matrix  = matrix_new(1, 1);
   int    result;
 
   matrix[2] = 1;
-  result    = call_presentation_closure(closure, matrix);
+  result    = presentation_closure_call(closure, matrix);
 
   assert(result == 0); /* LCOV_EXCL_BR_LINE */
 
-  free_presentation_closure(closure);
+  presentation_closure_free(&closure);
 }
 
 static void test_the_argmax_function() {
   PresentationClosure *closure = presentation_determine(0, 1);
-  Matrix               matrix  = new_matrix(1, 3);
+  Matrix               matrix  = matrix_new(1, 3);
   int                  result;
 
   matrix[2] = 1;
   matrix[3] = 2;
   matrix[4] = 3;
-  result    = call_presentation_closure(closure, matrix);
+  result    = presentation_closure_call(closure, matrix);
 
   assert(result == 3); /* LCOV_EXCL_BR_LINE */
 
-  free_presentation_closure(closure);
+  presentation_closure_free(&closure);
 }
 
 static void test_the_floor_first_function() {
   PresentationClosure *closure = presentation_determine(1, 1);
-  Matrix               matrix  = new_matrix(1, 3);
+  Matrix               matrix  = matrix_new(1, 3);
   int                  result;
 
   matrix[2] = 1.1;
   matrix[3] = 2;
   matrix[4] = 3;
-  result    = call_presentation_closure(closure, matrix);
+  result    = presentation_closure_call(closure, matrix);
 
   assert(result == 2); /* LCOV_EXCL_BR_LINE */
 
-  free_presentation_closure(closure);
+  presentation_closure_free(&closure);
 }
 
 static void test_the_round_first_function() {
   PresentationClosure *closure = presentation_determine(2, 1);
-  Matrix               matrix  = new_matrix(1, 3);
+  Matrix               matrix  = matrix_new(1, 3);
   int                  result;
 
   matrix[2] = 1.4;
   matrix[3] = 2;
   matrix[4] = 3;
 
-  result = call_presentation_closure(closure, matrix);
+  result = presentation_closure_call(closure, matrix);
   assert(result == 2); /* LCOV_EXCL_BR_LINE */
 
   matrix[2] = 1.6;
 
-  result = call_presentation_closure(closure, matrix);
+  result = presentation_closure_call(closure, matrix);
   assert(result == 3); /* LCOV_EXCL_BR_LINE */
 
-  free_presentation_closure(closure);
+  presentation_closure_free(&closure);
 }
 
 static void test_the_ceil_first_function() {
   PresentationClosure *closure = presentation_determine(3, 1);
-  Matrix               matrix  = new_matrix(1, 3);
+  Matrix               matrix  = matrix_new(1, 3);
   int                  result;
 
   matrix[2] = 1.1;
   matrix[3] = 2;
   matrix[4] = 3;
-  result    = call_presentation_closure(closure, matrix);
+  result    = presentation_closure_call(closure, matrix);
 
   assert(result == 3); /* LCOV_EXCL_BR_LINE */
 
-  free_presentation_closure(closure);
+  presentation_closure_free(&closure);
 }

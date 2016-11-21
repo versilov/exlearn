@@ -1,8 +1,9 @@
 #include "../../include/worker/worker_data_bundle.h"
 
 void
-free_worker_data_bundle(WorkerDataBundle *data) {
-  int index;
+worker_data_bundle_free(WorkerDataBundle **data_address) {
+  WorkerDataBundle *data = *data_address;
+  int               index;
 
   for(index = 0; index < data->count; index += 1) {
     free(data->first[index] );
@@ -13,10 +14,12 @@ free_worker_data_bundle(WorkerDataBundle *data) {
   free(data->second);
 
   free(data);
+
+  *data_address = NULL;
 }
 
 WorkerDataBundle *
-new_worker_data_bundle() {
+worker_data_bundle_new() {
   WorkerDataBundle *data = malloc(sizeof(WorkerDataBundle));
 
   data->count         = 0;

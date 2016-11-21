@@ -1,7 +1,9 @@
 #include "../include/network_structure.h"
 
 void
-free_network_structure(NetworkStructure *structure) {
+network_structure_free(NetworkStructure **structure_address) {
+  NetworkStructure *structure = *structure_address;
+
   for (int layer = 0; layer < structure->layers; layer += 1) {
     free_activity_closure(structure->function[layer]  );
     free_activity_closure(structure->derivative[layer]);
@@ -13,13 +15,15 @@ free_network_structure(NetworkStructure *structure) {
   free(structure->function  );
   free(structure->derivative);
 
-  free_presentation_closure(structure->presentation);
+  presentation_closure_free(&structure->presentation);
 
   free(structure);
+
+  *structure_address = NULL;
 }
 
 NetworkStructure *
-new_network_structure(int layers) {
+network_structure_new(int layers) {
   NetworkStructure *structure = malloc(sizeof(NetworkStructure));
 
   structure->layers       = layers;

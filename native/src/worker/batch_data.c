@@ -1,7 +1,9 @@
 #include "../../include/worker/batch_data.h"
 
 void
-free_batch_data(BatchData *data) {
+batch_data_free(BatchData **data_address) {
+  BatchData *data = *data_address;
+
   if (data != NULL) {
     for (int index = 0; index < data->data_length; index += 1) {
       sample_index_free(&(data->sample_index[index]));
@@ -10,10 +12,12 @@ free_batch_data(BatchData *data) {
     free(data->sample_index);
     free(data);
   }
+
+  *data_address = NULL;
 }
 
 BatchData *
-new_batch_data(WorkerData *data, int batch_length) {
+batch_data_new(WorkerData *data, int batch_length) {
   int               data_length, data_index;
   BatchData        *batch;
   WorkerDataBundle *bundle;

@@ -2,7 +2,7 @@
 
 Matrix
 create_dropout_mask(int rows, int columns, float probability) {
-  Matrix   mask   = new_matrix(rows, columns);
+  Matrix   mask   = matrix_new(rows, columns);
   int      length = rows * columns + 2;
   double   random_number;
   gsl_rng *rng;

@@ -25,7 +25,7 @@ static int ceil_first_function(Matrix matrix, int alpha) {
 }
 
 int
-call_presentation_closure(PresentationClosure *closure, Matrix matrix) {
+presentation_closure_call(PresentationClosure *closure, Matrix matrix) {
   if (closure != NULL)
     return closure->function(matrix, closure->alpha);
   else
@@ -33,12 +33,16 @@ call_presentation_closure(PresentationClosure *closure, Matrix matrix) {
 }
 
 void
-free_presentation_closure(PresentationClosure *closure) {
+presentation_closure_free(PresentationClosure **closure_address) {
+  PresentationClosure *closure = *closure_address;
+
   if (closure != NULL) free(closure);
+
+  *closure_address = NULL;
 }
 
 PresentationClosure *
-new_presentation_closure(PresentationFunction function, int alpha) {
+presentation_closure_new(PresentationFunction function, int alpha) {
   PresentationClosure *closure = malloc(sizeof(PresentationClosure));
 
   closure->function = function;
@@ -50,10 +54,10 @@ new_presentation_closure(PresentationFunction function, int alpha) {
 PresentationClosure *
 presentation_determine(int function_id, int alpha) {
   switch (function_id) {
-    case 0:  return new_presentation_closure(argmax_function,      alpha);
-    case 1:  return new_presentation_closure(floor_first_function, alpha);
-    case 2:  return new_presentation_closure(round_first_function, alpha);
-    case 3:  return new_presentation_closure(ceil_first_function,  alpha);
+    case 0:  return presentation_closure_new(argmax_function,      alpha);
+    case 1:  return presentation_closure_new(floor_first_function, alpha);
+    case 2:  return presentation_closure_new(round_first_function, alpha);
+    case 3:  return presentation_closure_new(ceil_first_function,  alpha);
     default: return NULL;
   }
 }

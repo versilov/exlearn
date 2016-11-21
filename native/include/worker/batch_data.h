@@ -17,10 +17,10 @@ typedef struct BatchData {
 } BatchData;
 
 void
-free_batch_data(BatchData *data);
+batch_data_free(BatchData **data);
 
 BatchData *
-new_batch_data(WorkerData *data, int batch_length);
+batch_data_new(WorkerData *data, int batch_length);
 
 void
 shuffle_batch_data_indices(BatchData *data);

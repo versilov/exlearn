@@ -2,14 +2,14 @@
 
 #include "../fixtures/file_fixtures.c"
 
-static void test_free_worker_data_bundle() {
-  WorkerDataBundle *data = new_worker_data_bundle();
+static void test_worker_data_bundle_free() {
+  WorkerDataBundle *data = worker_data_bundle_new();
 
-  free_worker_data_bundle(data);
+  worker_data_bundle_free(&data); /* LCOV_EXCL_BR_LINE */
 }
 
-static void test_new_worker_data_bundle() {
-  WorkerDataBundle *data = new_worker_data_bundle();
+static void test_worker_data_bundle_new() {
+  WorkerDataBundle *data = worker_data_bundle_new();
 
   assert(data->count         == 0   ); /* LCOV_EXCL_BR_LINE */
   assert(data->first_length  == 0   ); /* LCOV_EXCL_BR_LINE */
@@ -19,11 +19,11 @@ static void test_new_worker_data_bundle() {
   assert(data->first         == NULL); /* LCOV_EXCL_BR_LINE */
   assert(data->second        == NULL); /* LCOV_EXCL_BR_LINE */
 
-  free_worker_data_bundle(data);
+  worker_data_bundle_free(&data);
 }
 
 static void test_read_worker_data_bundle() {
-  WorkerDataBundle *data = new_worker_data_bundle();
+  WorkerDataBundle *data = worker_data_bundle_new();
 
   char *file = create_first_data_bundle_file();
   read_worker_data_bundle(file, data);
@@ -43,5 +43,5 @@ static void test_read_worker_data_bundle() {
   assert(data->second[0][2] == 6); /* LCOV_EXCL_BR_LINE */
 
   free(file);
-  free_worker_data_bundle(data);
+  worker_data_bundle_free(&data);
 }

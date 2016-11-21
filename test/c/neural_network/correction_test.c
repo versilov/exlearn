@@ -1,13 +1,15 @@
 #include "../../../native/include/neural_network/correction.h"
 
-static void test_free_correction() {
-  Correction *correction = new_correction(3);
+static void test_correction_free() {
+  Correction *correction = correction_new(3);
 
-  free_correction(correction);
+  correction_free(&correction);
+
+  assert(correction == NULL); /* LCOV_EXCL_BR_LINE */
 }
 
-static void test_new_correction() {
-  Correction *correction = new_correction(3);
+static void test_correction_new() {
+  Correction *correction = correction_new(3);
 
   assert(correction->layers == 3); /* LCOV_EXCL_BR_LINE */
 
@@ -19,7 +21,7 @@ static void test_new_correction() {
     assert(correction->weights[layer] == NULL); /* LCOV_EXCL_BR_LINE */
   }
 
-  free_correction(correction);
+  correction_free(&correction);
 }
 
 static void test_correction_initialize() {

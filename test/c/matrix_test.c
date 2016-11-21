@@ -1,8 +1,8 @@
 #include "../../native/include/matrix.h"
 
-static void test_clone_matrix() {
-  Matrix source      = new_matrix(1, 3);
-  Matrix destination = new_matrix(1, 3);
+static void test_matrix_clone() {
+  Matrix source      = matrix_new(1, 3);
+  Matrix destination = matrix_new(1, 3);
 
   source[2] = 1;
   source[3] = 2;
@@ -12,28 +12,30 @@ static void test_clone_matrix() {
   destination[3] = 20;
   destination[4] = 30;
 
-  clone_matrix(destination, source);
+  matrix_clone(destination, source);
 
   for(int index = 0; index < 5; index += 1) {
     assert(destination[index] == source[index]); /* LCOV_EXCL_BR_LINE */
   }
 }
 
-static void test_free_matrix() {
-  Matrix matrix = new_matrix(1, 2);
+static void test_matrix_free() {
+  Matrix matrix = matrix_new(1, 2);
 
-  free_matrix(matrix);
+  matrix_free(&matrix);
+
+  assert(matrix == NULL); /* LCOV_EXCL_BR_LINE */
 }
 
-static void test_new_matrix() {
-  Matrix matrix = new_matrix(1, 2);
+static void test_matrix_new() {
+  Matrix matrix = matrix_new(1, 2);
 
   assert(matrix[0] == 1); /* LCOV_EXCL_BR_LINE */
   assert(matrix[1] == 2); /* LCOV_EXCL_BR_LINE */
 }
 
 static void test_matrix_fill() {
-  Matrix matrix = new_matrix(1, 2);
+  Matrix matrix = matrix_new(1, 2);
 
   matrix_fill(matrix, 3);
 

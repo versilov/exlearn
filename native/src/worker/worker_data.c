@@ -6,7 +6,8 @@ worker_data_free(WorkerData **data_address) {
 
   if(data != NULL) {
     for (int index = 0; index < data->count; index += 1) {
-      if (data->bundle[index] != NULL) free_worker_data_bundle(data->bundle[index]);
+      if (data->bundle[index] != NULL)
+        worker_data_bundle_free(&data->bundle[index]);
     }
 
     free(data->bundle);
@@ -33,7 +34,7 @@ worker_data_new(int count) {
 void
 worker_data_read(BundlePaths *paths, WorkerData *data) {
   for (int index = 0; index < paths->count; index += 1) {
-    WorkerDataBundle *bundle = new_worker_data_bundle();
+    WorkerDataBundle *bundle = worker_data_bundle_new();
 
     read_worker_data_bundle(paths->path[index], bundle);
 

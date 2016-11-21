@@ -36,10 +36,10 @@ static void test_forward_for_activity() {
   assert(activity->mask[2] == NULL); /* LCOV_EXCL_BR_LINE */
   assert(activity->mask[3] == NULL); /* LCOV_EXCL_BR_LINE */
 
-  free_activity(activity);
-  free_matrix(sample);
-  free_network_state(state);
-  free_network_structure(structure);
+  activity_free(&activity);
+  matrix_free(&sample);
+  network_state_free(&state);
+  network_structure_free(&structure);
 }
 
 static void test_forward_for_activity_with_dropout() {
@@ -55,10 +55,10 @@ static void test_forward_for_activity_with_dropout() {
   assert(activity->mask[2] != NULL); /* LCOV_EXCL_BR_LINE */
   assert(activity->mask[3] != NULL); /* LCOV_EXCL_BR_LINE */
 
-  free_activity(activity);
-  free_matrix(sample);
-  free_network_state(state);
-  free_network_structure(structure);
+  activity_free(&activity);
+  matrix_free(&sample);
+  network_state_free(&state);
+  network_structure_free(&structure);
 }
 
 static void test_forward_for_output() {
@@ -68,12 +68,12 @@ static void test_forward_for_output() {
   int               result;
 
   Matrix output = forward_for_output(structure, state, sample);
-  result        = call_presentation_closure(structure->presentation, output);
+  result        = presentation_closure_call(structure->presentation, output);
 
   assert(result == 1); /* LCOV_EXCL_BR_LINE */
 
-  free_matrix(output);
-  free_matrix(sample);
-  free_network_state(state);
-  free_network_structure(structure);
+  matrix_free(&output);
+  matrix_free(&sample);
+  network_state_free(&state);
+  network_structure_free(&structure);
 }

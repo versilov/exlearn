@@ -20,8 +20,8 @@ typedef struct ActivityClosure {
   float            alpha;
 } ActivityClosure;
 
-void              free_activity(Activity *);
-Activity *        new_activity(int);
+void              activity_free(Activity **);
+Activity *        activity_new(int);
 void              call_activity_closure(ActivityClosure *, Matrix);
 void              free_activity_closure(ActivityClosure *);
 ActivityClosure * new_activity_closure(ActivityFunction, float);

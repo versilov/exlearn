@@ -349,7 +349,9 @@ static void prelu_derivative(Matrix matrix, float alpha) {
 //-----------------------------------------------------------------------------
 
 void
-free_activity(Activity *activity) {
+activity_free(Activity **activity_address) {
+  Activity * activity = *activity_address;
+
   for (int layer = 0; layer < activity->layers; layer += 1) {
     if (activity->input[layer]  != NULL) free(activity->input[layer] );
     if (activity->mask[layer]   != NULL) free(activity->mask[layer]  );
@@ -361,10 +363,12 @@ free_activity(Activity *activity) {
   free(activity->mask  );
 
   free(activity);
+
+  *activity_address = NULL;
 }
 
 Activity *
-new_activity(int layers) {
+activity_new(int layers) {
   Activity *activity = malloc(sizeof(Activity));
 
   activity->layers = layers;

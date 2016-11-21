@@ -7,7 +7,7 @@
 
 static NetworkStructure *
 network_structure_basic() {
-  NetworkStructure *structure = new_network_structure(4);
+  NetworkStructure *structure = network_structure_new(4);
 
   structure->rows[0]       = 1;
   structure->columns[0]    = 3;
@@ -42,7 +42,7 @@ network_structure_basic() {
 
 static NetworkStructure *
 network_structure_with_dropout() {
-  NetworkStructure *structure = new_network_structure(4);
+  NetworkStructure *structure = network_structure_new(4);
 
   structure->rows[0]       = 1;
   structure->columns[0]    = 3;

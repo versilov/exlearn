@@ -14,10 +14,10 @@ typedef struct WorkerDataBundle {
 } WorkerDataBundle;
 
 void
-free_worker_data_bundle(WorkerDataBundle *data);
+worker_data_bundle_free(WorkerDataBundle **data);
 
 WorkerDataBundle *
-new_worker_data_bundle();
+worker_data_bundle_new();
 
 void
 read_worker_data_bundle(const char *path, WorkerDataBundle *data);

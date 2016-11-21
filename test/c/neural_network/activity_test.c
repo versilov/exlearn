@@ -4,18 +4,20 @@
 // Tests
 //-----------------------------------------------------------------------------
 
-static void test_free_activity() {
-  Activity *activity = new_activity(3);
+static void test_activity_free() {
+  Activity *activity = activity_new(3);
 
-  free_activity(activity);
+  activity_free(&activity);
+
+  assert(activity == NULL); /* LCOV_EXCL_BR_LINE */
 }
 
-static void test_new_activity() {
-  Activity *activity = new_activity(3);
+static void test_activity_new() {
+  Activity *activity = activity_new(3);
 
   assert(activity->layers == 3); /* LCOV_EXCL_BR_LINE */
 
-  free_activity(activity);
+  activity_free(&activity);
 }
 
 static void test_an_unknown_pair() {

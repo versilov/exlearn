@@ -20,9 +20,9 @@ typedef struct NetworkStructure {
 } NetworkStructure;
 
 void
-free_network_structure(NetworkStructure *structure);
+network_structure_free(NetworkStructure **structure);
 
 NetworkStructure *
-new_network_structure(int layers);
+network_structure_new(int layers);
 
 #endif

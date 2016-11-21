@@ -16,7 +16,7 @@ static void test_gradient_descent() {
 
   worker_data_read(paths, worker_data);
 
-  batch_data = new_batch_data(worker_data, 1);
+  batch_data = batch_data_new(worker_data, 1);
 
   NetworkStructure *structure = network_structure_basic();
   NetworkState     *state     = network_state_basic();

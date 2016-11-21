@@ -4,14 +4,16 @@
 // Tests
 //-----------------------------------------------------------------------------
 
-static void test_free_network_structure() {
-  NetworkStructure *structure = new_network_structure(3);
+static void test_network_structure_free() {
+  NetworkStructure *structure = network_structure_new(3);
 
-  free_network_structure(structure);
+  network_structure_free(&structure);
+
+  assert(structure == NULL); /* LCOV_EXCL_BR_LINE */
 }
 
-static void test_new_network_structure() {
-  NetworkStructure *structure = new_network_structure(3);
+static void test_network_structure_new() {
+  NetworkStructure *structure = network_structure_new(3);
 
-  free_network_structure(structure);
+  network_structure_free(&structure);
 }

@@ -5,7 +5,7 @@
 
 static NetworkState *
 network_state_basic() {
-  NetworkState *state = new_network_state(4);
+  NetworkState *state = network_state_new(4);
   Matrix temp;
 
   // Input layer
@@ -13,13 +13,13 @@ network_state_basic() {
   state->weights[0] = NULL;
 
   // First Hidden Layer
-  temp = new_matrix(1, 3);
+  temp = matrix_new(1, 3);
   temp[2] = 1;
   temp[3] = 2;
   temp[4] = 3;
   state->biases[1] = temp;
 
-  temp = new_matrix(3, 3);
+  temp = matrix_new(3, 3);
   temp[ 2] = 1;
   temp[ 3] = 2;
   temp[ 4] = 3;
@@ -32,12 +32,12 @@ network_state_basic() {
   state->weights[1] = temp;
 
   // Second Hidden Layer
-  temp = new_matrix(1, 2);
+  temp = matrix_new(1, 2);
   temp[2] = 1;
   temp[3] = 2;
   state->biases[2] = temp;
 
-  temp = new_matrix(3, 2);
+  temp = matrix_new(3, 2);
   temp[2] = 1;
   temp[3] = 2;
   temp[4] = 3;
@@ -47,12 +47,12 @@ network_state_basic() {
   state->weights[2] = temp;
 
   // Output Layer
-  temp = new_matrix(1, 2);
+  temp = matrix_new(1, 2);
   temp[2] = 1;
   temp[3] = 2;
   state->biases[3] = temp;
 
-  temp = new_matrix(2, 2);
+  temp = matrix_new(2, 2);
   temp[2] = 1;
   temp[3] = 2;
   temp[4] = 3;

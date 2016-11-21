@@ -6,7 +6,7 @@
 // Tests
 //-----------------------------------------------------------------------------
 
-static void test_free_batch_data() {
+static void test_batch_data_free() {
   BatchData   *batch;
   BundlePaths *paths = bundle_paths_new(2);
   WorkerData  *data  = worker_data_new(2);
@@ -16,12 +16,14 @@ static void test_free_batch_data() {
 
   worker_data_read(paths, data);
 
-  batch = new_batch_data(data, 1);
+  batch = batch_data_new(data, 1);
 
-  free_batch_data(batch);
+  batch_data_free(&batch);
+
+  assert(batch == NULL); /* LCOV_EXCL_BR_LINE */
 }
 
-static void test_new_batch_data() {
+static void test_batch_data_new() {
   BatchData   *batch;
   BundlePaths *paths = bundle_paths_new(2);
   WorkerData  *data  = worker_data_new(2);
@@ -31,7 +33,7 @@ static void test_new_batch_data() {
 
   worker_data_read(paths, data);
 
-  batch = new_batch_data(data, 1);
+  batch = batch_data_new(data, 1);
 
   assert(batch->data_length  == 3); /* LCOV_EXCL_BR_LINE */
   assert(batch->batch_length == 1); /* LCOV_EXCL_BR_LINE */
@@ -43,7 +45,7 @@ static void test_new_batch_data() {
   assert(batch->sample_index[2]->bundle == 1); /* LCOV_EXCL_BR_LINE */
   assert(batch->sample_index[2]->index  == 1); /* LCOV_EXCL_BR_LINE */
 
-  free_batch_data(batch);
+  batch_data_free(&batch);
 }
 
 static void test_shuffle_batch_data_indices() {
@@ -56,7 +58,8 @@ static void test_shuffle_batch_data_indices() {
 
   worker_data_read(paths, data);
 
-  batch = new_batch_data(data, 1);
+  batch = batch_data_new(data, 1);
+
 
   shuffle_batch_data_indices(batch);
 
@@ -65,7 +68,7 @@ static void test_shuffle_batch_data_indices() {
     assert(batch->sample_index[index]->index == 0 || batch->sample_index[index]->index == 1); /* LCOV_EXCL_BR_LINE */
   }
 
-  free_batch_data(batch);
+  batch_data_free(&batch);
 }
 
 static void test_batch_data_get_sample_index() {
@@ -79,7 +82,7 @@ static void test_batch_data_get_sample_index() {
 
   worker_data_read(bundle_paths, worker_data);
 
-  batch_data = new_batch_data(worker_data, 1);
+  batch_data = batch_data_new(worker_data, 1);
 
   sample_index = batch_data_get_sample_index(batch_data, 0, 0);
   assert(sample_index->bundle == 0); /* LCOV_EXCL_BR_LINE */
