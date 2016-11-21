@@ -17,6 +17,9 @@ Correction *
 correction_new(int layers);
 
 void
+correction_accumulate(Correction *total, Correction *correction);
+
+void
 correction_initialize(NetworkStructure *network_structure, Correction *correction);
 
 #endif

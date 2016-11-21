@@ -27,6 +27,47 @@ static void test_correction_new() {
   correction_free(&correction);
 }
 
+static void test_correction_accumulate() {
+  Correction *first, *second;
+
+  first  = correction_new(4);
+  second = correction_new(4);
+
+  for (int index = 0; index < 4; index += 1) {
+    first->biases[index]  = matrix_new(1,         index + 1);
+    first->weights[index] = matrix_new(index + 1, index + 2);
+
+    matrix_fill(first->biases[index],  1);
+    matrix_fill(first->weights[index], 1);
+
+    second->biases[index]  = matrix_new(1,         index + 1);
+    second->weights[index] = matrix_new(index + 1, index + 2);
+
+    matrix_fill(second->biases[index],  2);
+    matrix_fill(second->weights[index], 2);
+  }
+
+  correction_accumulate(first, second);
+
+  for (int index = 0; index < 4; index += 1) {
+    int length;
+
+    assert(first->biases[index] != NULL);
+    length = first->biases[index][0] * first->biases[index][1];
+
+    for (int bias_index = 2; bias_index < length + 2; bias_index += 1) {
+      assert(first->biases[index][bias_index] == 3); /* LCOV_EXCL_BR_LINE */
+    }
+
+    assert(first->weights[index] != NULL);
+    length = first->weights[index][0] * first->weights[index][1];
+
+    for (int weight_index = 2; weight_index < length + 2; weight_index += 1) {
+      assert(first->weights[index][weight_index] == 3); /* LCOV_EXCL_BR_LINE */
+    }
+  }
+}
+
 static void test_correction_initialize() {
   NetworkStructure *network_structure = network_structure_basic();
   Correction       *correction        = correction_new(4);

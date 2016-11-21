@@ -34,6 +34,25 @@ correction_new(int layers) {
 }
 
 void
+correction_accumulate(Correction *total, Correction *correction){
+  for (int index = 0; index < total->layers; index += 1) {
+    int length;
+
+    length = correction->biases[index][0] * correction->biases[index][1];
+
+    for (int bias_index = 2; bias_index < length + 2; bias_index += 1) {
+      total->biases[index][bias_index] += correction->biases[index][bias_index];
+    }
+
+    length = correction->weights[index][0] * correction->weights[index][1];
+
+    for (int weight_index = 2; weight_index < length + 2; weight_index += 1) {
+      total->weights[index][weight_index] += correction->weights[index][weight_index];
+    }
+  }
+}
+
+void
 correction_initialize(NetworkStructure *network_structure, Correction *correction) {
   int    rows, columns;
   Matrix matrix;

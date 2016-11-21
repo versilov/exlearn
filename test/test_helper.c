@@ -44,6 +44,7 @@ int main() {
   // Tests for: c/neural_network/correction_test.c
   test_correction_free();
   test_correction_new();
+  test_correction_accumulate();
   test_correction_initialize();
 
   // Tests for: c/neural_network/dropout_test.c
