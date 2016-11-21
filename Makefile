@@ -1,4 +1,4 @@
-.PHONY: clean build test
+.PHONY: ci clean build test
 .DEFAULT_GLOBAL := build
 
 ERL_INCLUDE_PATH = $(shell erl -eval 'io:format("~s", [lists:concat([code:root_dir(), "/erts-", erlang:system_info(version), "/include"])])' -s init stop -noshell)
@@ -64,3 +64,11 @@ test: $(TEST_OBJECTS_DIRECTORIES) $(TEST_OBJECTS)
 
 clean:
 	@$(RM) -rf $(OBJ_DIRECTORY) $(PRIV_DIRECTORY) $(TEST_OBJ_DIRECTORY)
+
+ci:
+	@mix deps.get
+	@mix dialyzer.plt
+	@make
+	@make test
+	@mix coveralls.travis
+	@mix dialyzer --halt-exit-status
