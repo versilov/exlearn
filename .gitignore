@@ -6,8 +6,7 @@
 
 /priv
 
-/test/c/obj/*
-!/test/c/obj/.keep
+/test/c/obj
 
 /test/c/temp/*
 !/test/c/temp/.keep

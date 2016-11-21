@@ -23,9 +23,6 @@ OBJECTS_DIRECTORIES := $(subst $(SRC_DIRECTORY),$(OBJ_DIRECTORY),$(SOURCES_DIREC
 
 build: $(OBJECTS_DIRECTORIES) $(OBJECTS) $(PRIV_DIRECTORY) $(NIFS_OBJECTS)
 
-clean:
-	@$(RM) -rf $(OBJ_DIRECTORY) $(PRIV_DIRECTORY)
-
 $(OBJECTS): $(OBJ_DIRECTORY)/%.o : $(SRC_DIRECTORY)/%.c
 	@echo 'Compiling: '$<
 	@$(CC) $(CFLAGS) -c $< -o $@
@@ -64,3 +61,6 @@ test: $(TEST_OBJECTS_DIRECTORIES) $(TEST_OBJECTS)
 	lcov --directory . -c -o cover/lcov.info-file --rc lcov_branch_coverage=1
 	lcov --list cover/lcov.info-file --rc lcov_branch_coverage=1
 	genhtml --branch-coverage -o cover cover/lcov.info-file > /dev/null
+
+clean:
+	@$(RM) -rf $(OBJ_DIRECTORY) $(PRIV_DIRECTORY) $(TEST_OBJ_DIRECTORY)
