@@ -64,4 +64,3 @@ test: $(TEST_OBJECTS_DIRECTORIES) $(TEST_OBJECTS)
 	lcov --directory . -c -o cover/lcov.info-file --rc lcov_branch_coverage=1
 	lcov --list cover/lcov.info-file --rc lcov_branch_coverage=1
 	genhtml --branch-coverage -o cover cover/lcov.info-file > /dev/null
-	rm -f *.gcov *.gcda *.gcno
