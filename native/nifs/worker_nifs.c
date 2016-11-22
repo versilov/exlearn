@@ -16,7 +16,7 @@ ErlNifResourceType *BATCH_DATA;
 static void batch_data_destructor(ErlNifEnv *_env, void *batch_data) {
   (void)(_env);
 
-  batch_data_free(&(BatchData *)(batch_data));
+  batch_data_free((BatchData **)(batch_data));
 }
 
 ErlNifResourceType *WORKER_DATA;
