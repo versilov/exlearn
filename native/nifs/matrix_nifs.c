@@ -1,3 +1,5 @@
+#include <stdint.h>
+
 #include "erl_nif.h"
 
 #include "../include/matrix.h"
@@ -7,11 +9,11 @@
 //-----------------------------------------------------------------------------
 
 static ERL_NIF_TERM
-add(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
+add(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
   ErlNifBinary  first, second;
   ERL_NIF_TERM  result;
   float        *first_data, *second_data, *result_data;
-  int           data_size;
+  int32_t       data_size;
   size_t        result_size;
 
   (void)(argc);
@@ -21,7 +23,7 @@ add(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
 
   first_data  = (float *) first.data;
   second_data = (float *) second.data;
-  data_size   = (int) (first_data[0] * first_data[1] + 2);
+  data_size   = (int32_t) (first_data[0] * first_data[1] + 2);
 
   result_size = sizeof(float) * data_size;
   result_data = (float *) enif_make_new_binary(env, result_size, &result);
@@ -32,10 +34,10 @@ add(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
 }
 
 static ERL_NIF_TERM
-argmax(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
+argmax(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
   ErlNifBinary  matrix;
   float        *matrix_data;
-  int           argmax;
+  int32_t       argmax;
 
   (void)(argc);
 
@@ -48,11 +50,11 @@ argmax(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
 }
 
 static ERL_NIF_TERM
-divide(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
+divide(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
   ErlNifBinary  first, second;
   ERL_NIF_TERM  result;
   float        *first_data, *second_data, *result_data;
-  int           data_size;
+  int32_t       data_size;
   size_t        result_size;
 
   (void)(argc);
@@ -62,7 +64,7 @@ divide(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
 
   first_data  = (float *) first.data;
   second_data = (float *) second.data;
-  data_size   = (int) (first_data[0] * first_data[1] + 2);
+  data_size   = (int32_t) (first_data[0] * first_data[1] + 2);
 
   result_size = sizeof(float) * data_size;
   result_data = (float *) enif_make_new_binary(env, result_size, &result);
@@ -73,11 +75,11 @@ divide(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
 }
 
 static ERL_NIF_TERM
-dot(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
+dot(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
   ErlNifBinary  first, second;
   ERL_NIF_TERM  result;
   float        *first_data, *second_data, *result_data;
-  int           data_size;
+  int32_t       data_size;
   size_t        result_size;
 
   (void)(argc);
@@ -87,7 +89,7 @@ dot(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
 
   first_data  = (float *) first.data;
   second_data = (float *) second.data;
-  data_size   = (int) (first_data[0] * second_data[1] + 2);
+  data_size   = (int32_t) (first_data[0] * second_data[1] + 2);
 
   result_size = sizeof(float) * data_size;
   result_data = (float *) enif_make_new_binary(env, result_size, &result);
@@ -98,11 +100,11 @@ dot(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
 }
 
 static ERL_NIF_TERM
-dot_and_add(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
+dot_and_add(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
   ErlNifBinary  first, second, third;
   ERL_NIF_TERM  result;
   float        *first_data, *second_data, *third_data, *result_data;
-  int           data_size;
+  int32_t       data_size;
   size_t        result_size;
 
   (void)(argc);
@@ -114,7 +116,7 @@ dot_and_add(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   first_data  = (float *) first.data;
   second_data = (float *) second.data;
   third_data  = (float *) third.data;
-  data_size   = (int) (first_data[0] * second_data[1] + 2);
+  data_size   = (int32_t) (first_data[0] * second_data[1] + 2);
 
   result_size = sizeof(float) * data_size;
   result_data = (float *) enif_make_new_binary(env, result_size, &result);
@@ -125,11 +127,11 @@ dot_and_add(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
 }
 
 static ERL_NIF_TERM
-dot_nt(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
+dot_nt(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
   ErlNifBinary  first, second;
   ERL_NIF_TERM  result;
   float        *first_data, *second_data, *result_data;
-  int           data_size;
+  int32_t       data_size;
   size_t        result_size;
 
   (void)(argc);
@@ -139,7 +141,7 @@ dot_nt(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
 
   first_data  = (float *) first.data;
   second_data = (float *) second.data;
-  data_size   = (int) (first_data[0] * second_data[0] + 2);
+  data_size   = (int32_t) (first_data[0] * second_data[0] + 2);
 
   result_size = sizeof(float) * data_size;
   result_data = (float *) enif_make_new_binary(env, result_size, &result);
@@ -150,11 +152,11 @@ dot_nt(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
 }
 
 static ERL_NIF_TERM
-dot_tn(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
+dot_tn(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
   ErlNifBinary  first, second;
   ERL_NIF_TERM  result;
   float        *first_data, *second_data, *result_data;
-  int           data_size;
+  int32_t       data_size;
   size_t        result_size;
 
   (void)(argc);
@@ -164,7 +166,7 @@ dot_tn(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
 
   first_data  = (float *) first.data;
   second_data = (float *) second.data;
-  data_size   = (int) (first_data[1] * second_data[1] + 2);
+  data_size   = (int32_t) (first_data[1] * second_data[1] + 2);
 
   result_size = sizeof(float) * data_size;
   result_data = (float *) enif_make_new_binary(env, result_size, &result);
@@ -175,7 +177,7 @@ dot_tn(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
 }
 
 static ERL_NIF_TERM
-max(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
+max(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
   ErlNifBinary  matrix;
   float         max;
   float        *matrix_data;
@@ -192,11 +194,11 @@ max(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
 }
 
 static ERL_NIF_TERM
-multiply(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
+multiply(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
   ErlNifBinary  first, second;
   ERL_NIF_TERM  result;
   float        *first_data, *second_data, *result_data;
-  int           data_size;
+  int32_t       data_size;
   size_t        result_size;
 
   (void)(argc);
@@ -206,7 +208,7 @@ multiply(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
 
   first_data  = (float *) first.data;
   second_data = (float *) second.data;
-  data_size   = (int) (first_data[0] * first_data[1] + 2);
+  data_size   = (int32_t) (first_data[0] * first_data[1] + 2);
 
   result_size = sizeof(float) * data_size;
   result_data = (float *) enif_make_new_binary(env, result_size, &result);
@@ -223,7 +225,7 @@ multiply_with_scalar(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   double        large_scalar;
   float         scalar;
   float        *matrix_data, *result_data;
-  int           data_size;
+  int32_t       data_size;
   size_t        result_size;
 
   (void)(argc);
@@ -238,7 +240,7 @@ multiply_with_scalar(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   scalar = (float) large_scalar;
 
   matrix_data = (float *) matrix.data;
-  data_size   = (int) (matrix_data[0] * matrix_data[1] + 2);
+  data_size   = (int32_t) (matrix_data[0] * matrix_data[1] + 2);
 
   result_size = sizeof(float) * data_size;
   result_data = (float *) enif_make_new_binary(env, result_size, &result);
@@ -249,11 +251,11 @@ multiply_with_scalar(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
 }
 
 static ERL_NIF_TERM
-substract(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
+substract(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
   ErlNifBinary  first, second;
   ERL_NIF_TERM  result;
   float        *first_data, *second_data, *result_data;
-  int           data_size;
+  int32_t       data_size;
   size_t        result_size;
 
   (void)(argc);
@@ -263,7 +265,7 @@ substract(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
 
   first_data  = (float *) first.data;
   second_data = (float *) second.data;
-  data_size   = (int) (first_data[0] * first_data[1] + 2);
+  data_size   = (int32_t) (first_data[0] * first_data[1] + 2);
 
   result_size = sizeof(float) * data_size;
   result_data = (float *) enif_make_new_binary(env, result_size, &result);
@@ -274,7 +276,7 @@ substract(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
 }
 
 static ERL_NIF_TERM
-sum(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
+sum(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
   ErlNifBinary  matrix;
   float         sum;
   float        *matrix_data;
@@ -291,11 +293,11 @@ sum(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
 }
 
 static ERL_NIF_TERM
-transpose(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
+transpose(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
   ErlNifBinary  matrix;
   ERL_NIF_TERM  result;
   float        *matrix_data, *result_data;
-  int           data_size;
+  int32_t       data_size;
   size_t        result_size;
 
   (void)(argc);
@@ -303,7 +305,7 @@ transpose(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
   if (!enif_inspect_binary(env, argv[0], &matrix)) return enif_make_badarg(env);
 
   matrix_data = (float *) matrix.data;
-  data_size   = (int) (matrix_data[0] * matrix_data[1] + 2);
+  data_size   = (int32_t) (matrix_data[0] * matrix_data[1] + 2);
 
   result_size = sizeof(float) * data_size;
   result_data = (float *) enif_make_new_binary(env, result_size, &result);

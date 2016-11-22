@@ -1,3 +1,5 @@
+#include <stdint.h>
+
 #include "erl_nif.h"
 
 #include "../include/neural_network/correction.h"
@@ -8,7 +10,7 @@
 //-----------------------------------------------------------------------------
 
 static ERL_NIF_TERM
-from_c(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
+from_c(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
   (void)(env );
   (void)(argc);
 

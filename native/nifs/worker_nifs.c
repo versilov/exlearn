@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -32,11 +33,11 @@ static void worker_data_destructor(ErlNifEnv *_env, void *worker_data) {
 //------------------------------------------------------------------------------
 
 static ERL_NIF_TERM
-create_batch_data(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
+create_batch_data(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
   BatchData    *batch_data, *batch_data_resource;
   WorkerData   *worker_data;
   ERL_NIF_TERM  result;
-  long int      batch_length;
+  int64_t       batch_length;
 
   (void)(argc);
 
@@ -59,7 +60,7 @@ create_batch_data(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
 }
 
 static ERL_NIF_TERM
-create_worker_data(ErlNifEnv *env, int argc, const ERL_NIF_TERM *argv) {
+create_worker_data(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
   BundlePaths  *bundle_paths;
   ErlNifBinary  path;
   ERL_NIF_TERM  list, head, tail, result;
@@ -112,11 +113,11 @@ static ErlNifFunc nif_functions[] = {
   {"create_worker_data", 1, create_worker_data, 0}
 };
 
-static int load(ErlNifEnv *env, void **_priv_data, ERL_NIF_TERM _load_info) {
+static int32_t load(ErlNifEnv *env, void **_priv_data, ERL_NIF_TERM _load_info) {
   (void)(_priv_data);
   (void)(_load_info);
 
-  int flags = ERL_NIF_RT_CREATE | ERL_NIF_RT_TAKEOVER;
+  int32_t flags = ERL_NIF_RT_CREATE | ERL_NIF_RT_TAKEOVER;
 
   BATCH_DATA = enif_open_resource_type(
     env, NULL, "BatchData", batch_data_destructor, flags, NULL
@@ -129,7 +130,7 @@ static int load(ErlNifEnv *env, void **_priv_data, ERL_NIF_TERM _load_info) {
   return 0;
 }
 
-static int upgrade(
+static int32_t upgrade(
   ErlNifEnv     *_env,
   void         **_priv_data,
   void         **_old_priv_data,
