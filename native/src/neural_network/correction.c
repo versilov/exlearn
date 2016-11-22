@@ -52,6 +52,16 @@ correction_accumulate(Correction *total, Correction *correction){
   }
 }
 
+Correction *
+correction_from_char_array(char *char_array) {
+  return NULL;
+}
+
+char *
+correction_to_char_array(Correction *correction) {
+  return NULL;
+}
+
 void
 correction_initialize(NetworkStructure *network_structure, Correction *correction) {
   int32_t rows, columns;

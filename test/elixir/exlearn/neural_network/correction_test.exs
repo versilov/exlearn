@@ -5,13 +5,17 @@ defmodule ExLearn.NeuralNetwork.ForwarderTest do
 
   test '#from_c returns a correction binary' do
     expected = <<
-      1 :: integer-little-32, # layers
-      1 :: integer-little-32, # width of biases matrix
-      1 :: integer-little-32, # height of biases matrix
-      1 :: integer-little-32, # content of biases matrix
-      1 :: integer-little-32, # width of weights matrix
-      1 :: integer-little-32, # height of weights matrix
-      1 :: integer-little-32, # content of weights matrix
+      # layers
+      1 :: integer-little-32,
+      # biases
+      1 :: integer-little-32,
+      2 :: integer-little-32,
+      0.0 :: float-little-32, 1.0 :: float-little-32,
+      # weights
+      2 :: integer-little-32,
+      2 :: integer-little-32,
+      0.0 :: float-little-32, 1.0 :: float-little-32,
+      2.0 :: float-little-32, 3.0 :: float-little-32,
     >>
 
     assert Correction.from_c == expected

@@ -1,6 +1,9 @@
+#include <stdint.h>
+
 #include "../../../native/include/neural_network/correction.h"
 #include "../../../native/include/network_structure.h"
 
+#include "../fixtures/correction_fixtures.c"
 #include "../fixtures/network_structure_fixtures.c"
 
 static void test_correction_free() {
@@ -66,6 +69,26 @@ static void test_correction_accumulate() {
       assert(first->weights[index][weight_index] == 3); /* LCOV_EXCL_BR_LINE */
     }
   }
+}
+
+static void test_correction_from_char_array() {
+  Correction *correction;
+  char       *char_array = correction_char_array_simple();
+
+  correction = correction_from_char_array(char_array);
+
+  // correction_free(&correction);
+  // free(char_array);
+}
+
+static void test_correction_to_char_array() {
+  Correction *correction = correction_simple();
+  char       *char_array;
+
+  char_array = correction_to_char_array(correction);
+
+  // correction_free(&correction);
+  // free(char_array);
 }
 
 static void test_correction_initialize() {

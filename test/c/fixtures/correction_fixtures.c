@@ -1,7 +1,10 @@
 #ifndef INCLUDE_CORRECTION_FIXTURES_C
 #define INCLUDE_CORRECTION_FIXTURES_C
 
+#include <stdint.h>
+
 #include "../../../native/include/neural_network/correction.h"
+#include "../../../native/include/matrix.h"
 
 static Correction *
 correction_expected_basic() {
@@ -77,6 +80,75 @@ correction_expected_with_dropout() {
 
   matrix_clone(correction->biases[3],  layer_3_biases_correction );
   matrix_clone(correction->weights[3], layer_3_weights_correction);
+
+  return correction;
+}
+
+static char *
+correction_char_array_simple() {
+  char    *char_array = malloc(sizeof(char) * 44);
+  int32_t *int_location;
+  float   *float_location;
+
+  // Layers
+  int_location  = (int32_t *)(&char_array[0]);
+  *int_location = 1;
+
+  // Biases
+  int_location  = (int32_t *)(&char_array[4]);
+  *int_location = 1;
+
+  int_location  = (int32_t *)(&char_array[8]);
+  *int_location = 2;
+
+  float_location  = (float *)(&char_array[12]);
+  *float_location = 0.0;
+
+  float_location  = (float *)(&char_array[16]);
+  *float_location = 1.0;
+
+  // Weights
+  int_location  = (int32_t *)(&char_array[20]);
+  *int_location = 2;
+
+  int_location  = (int32_t *)(&char_array[24]);
+  *int_location = 2;
+
+  float_location  = (float *)(&char_array[28]);
+  *float_location = 0.0;
+
+  float_location  = (float *)(&char_array[32]);
+  *float_location = 1.0;
+
+  float_location  = (float *)(&char_array[36]);
+  *float_location = 2.0;
+
+  float_location  = (float *)(&char_array[40]);
+  *float_location = 3.0;
+
+  return char_array;
+}
+
+static Correction *
+correction_simple() {
+  Correction *correction = correction_new(1);
+
+  correction->biases[0]  = matrix_new(1, 2);
+  correction->weights[0] = matrix_new(2, 2);
+
+  int32_t length;
+
+  length = correction->biases[0][0] * correction->biases[0][1];
+
+  for (int32_t bias_index = 2; bias_index < length + 2; bias_index += 1) {
+    correction->biases[0][bias_index] = bias_index;
+  }
+
+  length = correction->weights[0][0] * correction->weights[0][1];
+
+  for (int32_t weight_index = 2; weight_index < length + 2; weight_index += 1) {
+    correction->weights[0][weight_index] = weight_index;
+  }
 
   return correction;
 }
