@@ -62,6 +62,29 @@ correction_to_char_array(Correction *correction) {
   return NULL;
 }
 
+int32_t
+correction_char_size(Correction *correction) {
+  int32_t size = 4;
+
+  for (int32_t index = 0; index < correction->layers; index += 1) {
+    int32_t length;
+
+    size += 16;
+
+    length = correction->biases[index][0] * correction->biases[index][1];
+    for (int32_t bias_index = 2; bias_index < length + 2; bias_index += 1) {
+      size += 4;
+    }
+
+    length = correction->weights[index][0] * correction->weights[index][1];
+    for (int32_t weight_index = 2; weight_index < length + 2; weight_index += 1) {
+      size += 4;
+    }
+  }
+
+  return size;
+}
+
 void
 correction_initialize(NetworkStructure *network_structure, Correction *correction) {
   int32_t rows, columns;

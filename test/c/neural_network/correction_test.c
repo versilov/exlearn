@@ -71,6 +71,15 @@ static void test_correction_accumulate() {
   }
 }
 
+static void test_correction_char_size() {
+  Correction *correction = correction_simple();
+  int32_t     size;
+
+  size = correction_char_size(correction);
+
+  assert(size == 44);
+}
+
 static void test_correction_from_char_array() {
   Correction *correction;
   char       *char_array = correction_char_array_simple();
