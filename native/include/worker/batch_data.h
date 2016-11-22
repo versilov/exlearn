@@ -4,6 +4,7 @@
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
 
+#include <stdint.h>
 #include <stdlib.h>
 #include <time.h>
 
@@ -11,8 +12,8 @@
 #include "./worker_data.h"
 
 typedef struct BatchData {
-  int           batch_length;
-  int           data_length;
+  int32_t       batch_length;
+  int32_t       data_length;
   SampleIndex **sample_index;
 } BatchData;
 
@@ -20,12 +21,16 @@ void
 batch_data_free(BatchData **data);
 
 BatchData *
-batch_data_new(WorkerData *data, int batch_length);
+batch_data_new(WorkerData *data, int32_t batch_length);
 
 void
 shuffle_batch_data_indices(BatchData *data);
 
 SampleIndex *
-batch_data_get_sample_index(BatchData *batch_data, int batch_number, int offset);
+batch_data_get_sample_index(
+  BatchData *batch_data,
+  int32_t    batch_number,
+  int32_t    offset
+);
 
 #endif

@@ -5,11 +5,12 @@
 #include <gsl/gsl_randist.h>
 
 #include <math.h>
+#include <stdint.h>
 #include <time.h>
 
 #include "../matrix.h"
 
 Matrix
-create_dropout_mask(int rows, int columns, float probability);
+create_dropout_mask(int32_t rows, int32_t columns, float probability);
 
 #endif

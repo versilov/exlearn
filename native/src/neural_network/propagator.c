@@ -7,8 +7,8 @@ back_propagate(
   Activity         *activity,
   Matrix            expected
 ) {
-  int         layers     = structure->layers;
-  int         last_layer = layers - 1;
+  int32_t     layers     = structure->layers;
+  int32_t     last_layer = layers - 1;
   Correction *correction = correction_new(layers);
   Matrix      error, weight_correction, input_gradient, output_gradient;
 
@@ -28,7 +28,7 @@ back_propagate(
 
   correction->weights[last_layer] = weight_correction;
 
-  for (int layer = layers - 2; layer > 0; layer -= 1) {
+  for (int32_t layer = layers - 2; layer > 0; layer -= 1) {
     output_gradient = matrix_new(error[0], state->weights[layer + 1][0]);
     matrix_dot_nt(error, state->weights[layer + 1], output_gradient);
 

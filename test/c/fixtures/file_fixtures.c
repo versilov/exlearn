@@ -1,12 +1,13 @@
 #ifndef INCLUDED_FILE_FIXTURES_C
 #define INCLUDED_FILE_FIXTURES_C
 
+#include <stdint.h>
 #include <stdio.h>
 
 char * create_first_data_bundle_file() {
-  char *path          = temp_file_path();
-  FILE *file          = fopen(path, "wb");
-  int   int_buffer[7] = {
+  char    *path          = temp_file_path();
+  FILE    *file          = fopen(path, "wb");
+  int32_t  int_buffer[7] = {
     1, // one
     1, // version
     1, // count
@@ -43,9 +44,9 @@ char * create_first_data_bundle_file() {
 }
 
 char * create_second_data_bundle_file() {
-  char *path          = temp_file_path();
-  FILE *file          = fopen(path, "wb");
-  int   int_buffer[7] = {
+  char    *path          = temp_file_path();
+  FILE    *file          = fopen(path, "wb");
+  int32_t  int_buffer[7] = {
     1, // one
     1, // version
     2, // count

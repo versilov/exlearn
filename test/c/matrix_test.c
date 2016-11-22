@@ -14,7 +14,7 @@ static void test_matrix_clone() {
 
   matrix_clone(destination, source);
 
-  for(int index = 0; index < 5; index += 1) {
+  for(int32_t index = 0; index < 5; index += 1) {
     assert(destination[index] == source[index]); /* LCOV_EXCL_BR_LINE */
   }
 }
@@ -65,7 +65,7 @@ static void test_matrix_add() {
 
   matrix_add(first, second, result);
 
-  for(int index = 0; index < 8; index += 1) {
+  for(int32_t index = 0; index < 8; index += 1) {
     assert(expected[index] == result[index]); /* LCOV_EXCL_BR_LINE */
   }
 }
@@ -88,7 +88,7 @@ static void test_matrix_divide() {
 
   matrix_divide(first, second, result);
 
-  for(int index = 0; index < 8; index += 1) {
+  for(int32_t index = 0; index < 8; index += 1) {
     assert(expected[index] == result[index]); /* LCOV_EXCL_BR_LINE */
   }
 }
@@ -101,7 +101,7 @@ static void test_matrix_dot() {
 
   matrix_dot(first, second, result);
 
-  for(int index = 0; index < 6; index += 1) {
+  for(int32_t index = 0; index < 6; index += 1) {
     assert(expected[index] == result[index]); /* LCOV_EXCL_BR_LINE */
   }
 }
@@ -115,7 +115,7 @@ static void test_matrix_dot_and_add() {
 
   matrix_dot_and_add(first, second, third, result);
 
-  for(int index = 0; index < 6; index += 1) {
+  for(int32_t index = 0; index < 6; index += 1) {
     assert(expected[index] == result[index]); /* LCOV_EXCL_BR_LINE */
   }
 }
@@ -128,7 +128,7 @@ static void test_matrix_dot_nt() {
 
   matrix_dot_nt(first, second, result);
 
-  for(int index = 0; index < 6; index += 1) {
+  for(int32_t index = 0; index < 6; index += 1) {
     assert(expected[index] == result[index]); /* LCOV_EXCL_BR_LINE */
   }
 }
@@ -141,7 +141,7 @@ static void test_matrix_dot_tn() {
 
   matrix_dot_tn(first, second, result);
 
-  for(int index = 0; index < 6; index += 1) {
+  for(int32_t index = 0; index < 6; index += 1) {
     assert(expected[index] == result[index]); /* LCOV_EXCL_BR_LINE */
   }
 }
@@ -166,7 +166,7 @@ static void test_matrix_multiply() {
 
   matrix_multiply(first, second, result);
 
-  for(int index = 0; index < 8; index += 1) {
+  for(int32_t index = 0; index < 8; index += 1) {
     assert(expected[index] == result[index]); /* LCOV_EXCL_BR_LINE */
   }
 }
@@ -179,7 +179,7 @@ static void test_matrix_multiply_with_scalar() {
 
   matrix_multiply_with_scalar(matrix, scalar, result);
 
-  for(int index = 0; index < 8; index += 1) {
+  for(int32_t index = 0; index < 8; index += 1) {
     assert(expected[index] == result[index]); /* LCOV_EXCL_BR_LINE */
   }
 }
@@ -192,7 +192,7 @@ static void test_matrix_substract() {
 
   matrix_substract(first, second, result);
 
-  for(int index = 0; index < 8; index += 1) {
+  for(int32_t index = 0; index < 8; index += 1) {
     assert(expected[index] == result[index]); /* LCOV_EXCL_BR_LINE */
   }
 }
@@ -210,7 +210,7 @@ static void test_matrix_transpose() {
 
   matrix_transpose(matrix, result);
 
-  for(int index = 0; index < 8; index += 1) {
+  for(int32_t index = 0; index < 8; index += 1) {
     assert(expected[index] == result[index]); /* LCOV_EXCL_BR_LINE */
   }
 }

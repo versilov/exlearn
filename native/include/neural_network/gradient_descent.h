@@ -1,6 +1,8 @@
 #ifndef INCLUDED_GRADIENT_DESCENT_H
 #define INCLUDED_GRADIENT_DESCENT_H
 
+#include <stdint.h>
+
 #include "../worker/batch_data.h"
 #include "../worker/worker_data.h"
 #include "./correction.h"
@@ -13,7 +15,7 @@ gradient_descent(
   BatchData        *batch_data,
   NetworkState     *network_state,
   NetworkStructure *network_structure,
-  int               current_batch
+  int32_t           current_batch
 );
 
 #endif

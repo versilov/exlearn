@@ -2,6 +2,7 @@
 #define INCLUDED_MATRIX_H
 
 #include <cblas.h>
+#include <stdint.h>
 #include <stdlib.h>
 
 typedef float* Matrix;
@@ -13,18 +14,18 @@ void
 matrix_free(Matrix *matrix);
 
 Matrix
-matrix_new(int rows, int columns);
+matrix_new(int32_t rows, int32_t columns);
 
 void
-matrix_fill(Matrix matrix, int value);
+matrix_fill(Matrix matrix, int32_t value);
 
-int
+int32_t
 matrix_equal(Matrix first, Matrix second);
 
 void
 matrix_add(const Matrix first, const Matrix second, Matrix result);
 
-int
+int32_t
 matrix_argmax(const Matrix matrix);
 
 void

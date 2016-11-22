@@ -6,11 +6,11 @@
 
 static float
 cross_entropy_function(Matrix expected, Matrix actual) {
-  int   length = expected[0] * expected[1] + 2;
-  float sum    = 0;
-  float first, second, normalised;
+  int32_t length = expected[0] * expected[1] + 2;
+  float   sum    = 0;
+  float   first, second, normalised;
 
-  for (int index = 2; index < length; index += 1) {
+  for (int32_t index = 2; index < length; index += 1) {
     first  = expected[index];
     second = actual[index];
 
@@ -31,14 +31,14 @@ cross_entropy_error_simple(
   Matrix           last_input,
   ActivityClosure *last_derivative
 ) {
-  int    length = expected[0] * expected[1] + 2;
-  Matrix result = matrix_new(expected[0], expected[1]);
-  float  top, bottom;
+  int32_t length = expected[0] * expected[1] + 2;
+  Matrix  result = matrix_new(expected[0], expected[1]);
+  float   top, bottom;
 
   matrix_clone(result, last_input);
   call_activity_closure(last_derivative, result);
 
-  for (int index = 2; index < length; index += 1) {
+  for (int32_t index = 2; index < length; index += 1) {
     top    = actual[index] - expected[index];
     bottom = actual[index] * (1.0 - actual[index]);
 
@@ -53,7 +53,7 @@ negative_log_likelihood_function(Matrix expected, Matrix actual) {
   float length = expected[0] * expected[1] + 2;
   float sum = 0;
 
-  for (int index = 2; index < length; index += 1) {
+  for (int32_t index = 2; index < length; index += 1) {
     sum += expected[index] * log(actual[index]);
   }
 
@@ -70,13 +70,13 @@ negative_log_likelihood_error_simple(
   (void)(_last_input     );
   (void)(_last_derivative);
 
-  int    length = expected[0] * expected[1] + 2;
-  Matrix result = matrix_new(expected[0], expected[1]);
+  int32_t length = expected[0] * expected[1] + 2;
+  Matrix  result = matrix_new(expected[0], expected[1]);
 
   result[0] = expected[0];
   result[1] = expected[1];
 
-  for (int index = 2; index < length; index += 1) {
+  for (int32_t index = 2; index < length; index += 1) {
     result[index] = actual[index] - expected[index];
   }
 
@@ -93,13 +93,13 @@ negative_log_likelihood_error_optimised(
   (void)(_last_input     );
   (void)(_last_derivative);
 
-  int    length = expected[0] * expected[1] + 2;
-  Matrix result = matrix_new(expected[0], expected[1]);
+  int32_t length = expected[0] * expected[1] + 2;
+  Matrix  result = matrix_new(expected[0], expected[1]);
 
   result[0] = expected[0];
   result[1] = expected[1];
 
-  for (int index = 2; index < length; index += 1) {
+  for (int32_t index = 2; index < length; index += 1) {
     result[index] = actual[index] - expected[index];
   }
 
@@ -112,7 +112,7 @@ quadratic_function(Matrix expected, Matrix actual) {
   float sum    = 0;
   float difference;
 
-  for (int index = 2; index < length; index += 1) {
+  for (int32_t index = 2; index < length; index += 1) {
     difference = expected[index] - actual[index];
 
     sum += difference * difference;
@@ -128,13 +128,13 @@ quadratic_error(
   Matrix           last_input,
   ActivityClosure *last_derivative
 ) {
-  int    length = expected[0] * expected[1] + 2;
-  Matrix result = matrix_new(expected[0], expected[1]);
+  int32_t length = expected[0] * expected[1] + 2;
+  Matrix  result = matrix_new(expected[0], expected[1]);
 
   matrix_clone(result, last_input);
   call_activity_closure(last_derivative, result);
 
-  for (int index = 2; index < length; index += 1) {
+  for (int32_t index = 2; index < length; index += 1) {
     result[index] *= actual[index] - expected[index];
   }
 
@@ -146,7 +146,7 @@ quadratic_error(
 //-----------------------------------------------------------------------------
 
 ObjectiveFunction
-objective_determine_function(int function_id) {
+objective_determine_function(int32_t function_id) {
   switch (function_id) {
     case  0: return cross_entropy_function;
     case  1: return negative_log_likelihood_function;
@@ -156,7 +156,7 @@ objective_determine_function(int function_id) {
 }
 
 ObjectiveError
-objective_determine_error_simple(int function_id) {
+objective_determine_error_simple(int32_t function_id) {
   switch (function_id) {
     case  0: return cross_entropy_error_simple;
     case  1: return negative_log_likelihood_error_simple;
@@ -166,7 +166,7 @@ objective_determine_error_simple(int function_id) {
 }
 
 ObjectiveError
-objective_determine_error_optimised(int function_id) {
+objective_determine_error_optimised(int32_t function_id) {
   switch (function_id) {
     // case  0: return cross_entropy_error_optimised;
     case  1: return negative_log_likelihood_error_optimised;

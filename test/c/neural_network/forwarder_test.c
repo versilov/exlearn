@@ -8,7 +8,7 @@ static void test_forward_for_activity() {
   NetworkStructure *structure = network_structure_basic();
   NetworkState     *state     = network_state_basic();
   Matrix            sample    = data_sample_basic();
-  Activity *activity = forward_for_activity(structure, state, sample);
+  Activity         *activity = forward_for_activity(structure, state, sample);
 
   assert(activity->layers == structure->layers); /* LCOV_EXCL_BR_LINE */
 
@@ -46,7 +46,7 @@ static void test_forward_for_activity_with_dropout() {
   NetworkStructure *structure = network_structure_with_dropout();
   NetworkState     *state     = network_state_basic();
   Matrix            sample    = data_sample_basic();
-  Activity *activity = forward_for_activity(structure, state, sample);
+  Activity         *activity = forward_for_activity(structure, state, sample);
 
   assert(activity->layers == structure->layers); /* LCOV_EXCL_BR_LINE */
 
@@ -65,10 +65,11 @@ static void test_forward_for_output() {
   NetworkStructure *structure = network_structure_basic();
   NetworkState     *state     = network_state_basic();
   Matrix            sample    = data_sample_basic();
-  int               result;
+  Matrix            output;
+  int32_t           result;
 
-  Matrix output = forward_for_output(structure, state, sample);
-  result        = presentation_closure_call(structure->presentation, output);
+  output = forward_for_output(structure, state, sample);
+  result = presentation_closure_call(structure->presentation, output);
 
   assert(result == 1); /* LCOV_EXCL_BR_LINE */
 

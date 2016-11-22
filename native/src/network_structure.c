@@ -4,7 +4,7 @@ void
 network_structure_free(NetworkStructure **structure_address) {
   NetworkStructure *structure = *structure_address;
 
-  for (int layer = 0; layer < structure->layers; layer += 1) {
+  for (int32_t layer = 0; layer < structure->layers; layer += 1) {
     free_activity_closure(structure->function[layer]  );
     free_activity_closure(structure->derivative[layer]);
   }
@@ -23,7 +23,7 @@ network_structure_free(NetworkStructure **structure_address) {
 }
 
 NetworkStructure *
-network_structure_new(int layers) {
+network_structure_new(int32_t layers) {
   NetworkStructure *structure = malloc(sizeof(NetworkStructure));
 
   structure->layers       = layers;
@@ -36,7 +36,7 @@ network_structure_new(int layers) {
   structure->objective    = NULL;
   structure->error        = NULL;
 
-  for (int layer = 0; layer < layers; layer += 1) {
+  for (int32_t layer = 0; layer < layers; layer += 1) {
     structure->function[layer]   = NULL;
     structure->derivative[layer] = NULL;
   }

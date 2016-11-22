@@ -63,7 +63,7 @@ static void test_shuffle_batch_data_indices() {
 
   shuffle_batch_data_indices(batch);
 
-  for (int index = 0; index < batch->data_length; index += 1) {
+  for (int32_t index = 0; index < batch->data_length; index += 1) {
     assert(batch->sample_index[index]->bundle == 0 || batch->sample_index[index]->bundle == 1); /* LCOV_EXCL_BR_LINE */
     assert(batch->sample_index[index]->index == 0 || batch->sample_index[index]->index == 1); /* LCOV_EXCL_BR_LINE */
   }

@@ -18,7 +18,7 @@ static void test_presentation_closure_new() {
 static void test_presentation_closure_call() {
   PresentationClosure *closure = presentation_determine(0, 0);
   Matrix               matrix  = matrix_new(1, 1);
-  int                  result;
+  int32_t              result;
 
   matrix[2] = 1;
   result    = presentation_closure_call(closure, matrix);
@@ -33,8 +33,8 @@ static void test_an_unknown_function() {
 
   assert(closure == NULL); /* LCOV_EXCL_BR_LINE */
 
-  Matrix matrix  = matrix_new(1, 1);
-  int    result;
+  Matrix  matrix  = matrix_new(1, 1);
+  int32_t result;
 
   matrix[2] = 1;
   result    = presentation_closure_call(closure, matrix);
@@ -47,7 +47,7 @@ static void test_an_unknown_function() {
 static void test_the_argmax_function() {
   PresentationClosure *closure = presentation_determine(0, 1);
   Matrix               matrix  = matrix_new(1, 3);
-  int                  result;
+  int32_t              result;
 
   matrix[2] = 1;
   matrix[3] = 2;
@@ -62,7 +62,7 @@ static void test_the_argmax_function() {
 static void test_the_floor_first_function() {
   PresentationClosure *closure = presentation_determine(1, 1);
   Matrix               matrix  = matrix_new(1, 3);
-  int                  result;
+  int32_t              result;
 
   matrix[2] = 1.1;
   matrix[3] = 2;
@@ -77,7 +77,7 @@ static void test_the_floor_first_function() {
 static void test_the_round_first_function() {
   PresentationClosure *closure = presentation_determine(2, 1);
   Matrix               matrix  = matrix_new(1, 3);
-  int                  result;
+  int32_t              result;
 
   matrix[2] = 1.4;
   matrix[3] = 2;
@@ -97,7 +97,7 @@ static void test_the_round_first_function() {
 static void test_the_ceil_first_function() {
   PresentationClosure *closure = presentation_determine(3, 1);
   Matrix               matrix  = matrix_new(1, 3);
-  int                  result;
+  int32_t              result;
 
   matrix[2] = 1.1;
   matrix[3] = 2;

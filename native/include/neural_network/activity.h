@@ -2,15 +2,16 @@
 #define INCLUDED_ACTIVITY_H
 
 #include <math.h>
+#include <stdint.h>
 #include <stdlib.h>
 
 #include "../matrix.h"
 
 typedef struct Activity {
-  int     layers;
-  Matrix *input;
-  Matrix *output;
-  Matrix *mask;
+  int32_t  layers;
+  Matrix  *input;
+  Matrix  *output;
+  Matrix  *mask;
 } Activity;
 
 typedef void (*ActivityFunction)(Matrix, float);

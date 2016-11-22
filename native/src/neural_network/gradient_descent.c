@@ -6,7 +6,7 @@ gradient_descent(
   BatchData        *batch_data,
   NetworkState     *network_state,
   NetworkStructure *network_structure,
-  int               current_batch
+  int32_t           current_batch
 ) {
   (void)(worker_data      );
   (void)(network_state    );
@@ -18,14 +18,14 @@ gradient_descent(
   Activity         *activity;
   Correction       *correction;
 
-  int length    = batch_data->batch_length;
-  int remaining = batch_data->data_length - length * current_batch;
+  int32_t length    = batch_data->batch_length;
+  int32_t remaining = batch_data->data_length - length * current_batch;
 
   if (remaining < length) length = remaining;
 
   correction = NULL;
 
-  for (int index = 0; index < length; index += 1) {
+  for (int32_t index = 0; index < length; index += 1) {
     // Process each sample.
     sample_index = batch_data_get_sample_index(batch_data, current_batch, index);
     bundle       = worker_data->bundle[sample_index->bundle];

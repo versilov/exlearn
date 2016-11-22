@@ -1,30 +1,30 @@
 #include "../../include/neural_network/presentation.h"
 
-static int argmax_function(Matrix matrix, int alpha) {
-  int argmax = matrix_argmax(matrix);
+static int32_t argmax_function(Matrix matrix, int32_t alpha) {
+  int32_t argmax = matrix_argmax(matrix);
 
   return argmax + alpha;
 }
 
-static int floor_first_function(Matrix matrix, int alpha) {
-  int result = floorf(matrix_first(matrix));
+static int32_t floor_first_function(Matrix matrix, int32_t alpha) {
+  int32_t result = floorf(matrix_first(matrix));
 
   return result + alpha;
 }
 
-static int round_first_function(Matrix matrix, int alpha) {
-  int result = roundf(matrix_first(matrix));
+static int32_t round_first_function(Matrix matrix, int32_t alpha) {
+  int32_t result = roundf(matrix_first(matrix));
 
   return result + alpha;
 }
 
-static int ceil_first_function(Matrix matrix, int alpha) {
-  int result = ceilf(matrix_first(matrix));
+static int32_t ceil_first_function(Matrix matrix, int32_t alpha) {
+  int32_t result = ceilf(matrix_first(matrix));
 
   return result + alpha;
 }
 
-int
+int32_t
 presentation_closure_call(PresentationClosure *closure, Matrix matrix) {
   if (closure != NULL)
     return closure->function(matrix, closure->alpha);
@@ -42,7 +42,7 @@ presentation_closure_free(PresentationClosure **closure_address) {
 }
 
 PresentationClosure *
-presentation_closure_new(PresentationFunction function, int alpha) {
+presentation_closure_new(PresentationFunction function, int32_t alpha) {
   PresentationClosure *closure = malloc(sizeof(PresentationClosure));
 
   closure->function = function;
@@ -52,7 +52,7 @@ presentation_closure_new(PresentationFunction function, int alpha) {
 }
 
 PresentationClosure *
-presentation_determine(int function_id, int alpha) {
+presentation_determine(int32_t function_id, int32_t alpha) {
   switch (function_id) {
     case 0:  return presentation_closure_new(argmax_function,      alpha);
     case 1:  return presentation_closure_new(floor_first_function, alpha);

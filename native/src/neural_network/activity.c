@@ -7,9 +7,9 @@
 static void arctan_function(Matrix matrix, float _alpha) {
   (void)(_alpha);
 
-  int length = matrix[0] * matrix[1] + 2;
+  int32_t length = matrix[0] * matrix[1] + 2;
 
-  for (int index = 2; index < length; index += 1) {
+  for (int32_t index = 2; index < length; index += 1) {
     matrix[index] = atan(matrix[index]);
   }
 }
@@ -17,10 +17,10 @@ static void arctan_function(Matrix matrix, float _alpha) {
 static void arctan_derivative(Matrix matrix, float _alpha) {
   (void)(_alpha);
 
-  int   length = matrix[0] * matrix[1] + 2;
-  float element;
+  int32_t length = matrix[0] * matrix[1] + 2;
+  float   element;
 
-  for (int index = 2; index < length; index += 1) {
+  for (int32_t index = 2; index < length; index += 1) {
     element = matrix[index];
 
     matrix[index] = 1.0 / (element * element + 1.0);
@@ -30,10 +30,10 @@ static void arctan_derivative(Matrix matrix, float _alpha) {
 static void bent_identity_function(Matrix matrix, float _alpha) {
   (void)(_alpha);
 
-  int   length = matrix[0] * matrix[1] + 2;
-  float element;
+  int32_t length = matrix[0] * matrix[1] + 2;
+  float   element;
 
-  for (int index = 2; index < length; index += 1) {
+  for (int32_t index = 2; index < length; index += 1) {
     element = matrix[index];
 
     matrix[index] = (sqrt(element * element + 1.0) - 1.0) / 2.0 + element;
@@ -43,10 +43,10 @@ static void bent_identity_function(Matrix matrix, float _alpha) {
 static void bent_identity_derivative(Matrix matrix, float _alpha) {
   (void)(_alpha);
 
-  int   length = matrix[0] * matrix[1] + 2;
-  float element;
+  int32_t length = matrix[0] * matrix[1] + 2;
+  float   element;
 
-  for (int index = 2; index < length; index += 1) {
+  for (int32_t index = 2; index < length; index += 1) {
     element = matrix[index];
 
     matrix[index] = element / (2.0 * sqrt(element * element + 1.0)) + 1.0;
@@ -56,10 +56,10 @@ static void bent_identity_derivative(Matrix matrix, float _alpha) {
 static void gaussian_function(Matrix matrix, float _alpha) {
   (void)(_alpha);
 
-  int   length = matrix[0] * matrix[1] + 2;
-  float element;
+  int32_t length = matrix[0] * matrix[1] + 2;
+  float   element;
 
-  for (int index = 2; index < length; index += 1) {
+  for (int32_t index = 2; index < length; index += 1) {
     element = matrix[index];
 
     matrix[index] = exp(-element * element);
@@ -69,10 +69,10 @@ static void gaussian_function(Matrix matrix, float _alpha) {
 static void gaussian_derivative(Matrix matrix, float _alpha) {
   (void)(_alpha);
 
-  int   length = matrix[0] * matrix[1] + 2;
-  float element;
+  int32_t length = matrix[0] * matrix[1] + 2;
+  float   element;
 
-  for (int index = 2; index < length; index += 1) {
+  for (int32_t index = 2; index < length; index += 1) {
     element = matrix[index];
 
     matrix[index] = -2.0 * element * exp(-element * element);
@@ -89,9 +89,9 @@ static void identity_function(Matrix _matrix, float _alpha) {
 static void identity_derivative(Matrix matrix, float _alpha) {
   (void)(_alpha);
 
-  int length = matrix[0] * matrix[1] + 2;
+  int32_t length = matrix[0] * matrix[1] + 2;
 
-  for (int index = 2; index < length; index += 1) {
+  for (int32_t index = 2; index < length; index += 1) {
     matrix[index] = 1.0;
   }
 }
@@ -99,9 +99,9 @@ static void identity_derivative(Matrix matrix, float _alpha) {
 static void logistic_function(Matrix matrix, float _alpha) {
   (void)(_alpha);
 
-  int length = matrix[0] * matrix[1] + 2;
+  int32_t length = matrix[0] * matrix[1] + 2;
 
-  for (int index = 2; index < length; index += 1) {
+  for (int32_t index = 2; index < length; index += 1) {
     if      (matrix[index] >  709) matrix[index] = 1.0;
     else if (matrix[index] < -709) matrix[index] = 0.0;
     else                           matrix[index] = 1.0 / (1.0 + exp(-matrix[index]));
@@ -111,10 +111,10 @@ static void logistic_function(Matrix matrix, float _alpha) {
 static void logistic_derivative(Matrix matrix, float _alpha) {
   (void)(_alpha);
 
-  int   length = matrix[0] * matrix[1] + 2;
-  float element;
+  int32_t length = matrix[0] * matrix[1] + 2;
+  float   element;
 
-  for (int index = 2; index < length; index += 1) {
+  for (int32_t index = 2; index < length; index += 1) {
     if      (matrix[index] >  709) element = 1.0;
     else if (matrix[index] < -709) element = 0.0;
     else                           element = 1.0 / (1.0 + exp(matrix[index]));
@@ -126,9 +126,9 @@ static void logistic_derivative(Matrix matrix, float _alpha) {
 static void relu_function(Matrix matrix, float _alpha) {
   (void)(_alpha);
 
-  int length = matrix[0] * matrix[1] + 2;
+  int32_t length = matrix[0] * matrix[1] + 2;
 
-  for (int index = 2; index < length; index += 1) {
+  for (int32_t index = 2; index < length; index += 1) {
     if (matrix[index] <  0) matrix[index] = 0.0;
   }
 }
@@ -136,9 +136,9 @@ static void relu_function(Matrix matrix, float _alpha) {
 static void relu_derivative(Matrix matrix, float _alpha) {
   (void)(_alpha);
 
-  int length = matrix[0] * matrix[1] + 2;
+  int32_t length = matrix[0] * matrix[1] + 2;
 
-  for (int index = 2; index < length; index += 1) {
+  for (int32_t index = 2; index < length; index += 1) {
     if (matrix[index] <  0) matrix[index] = 0.0;
     else                    matrix[index] = 1.0;
   }
@@ -147,10 +147,10 @@ static void relu_derivative(Matrix matrix, float _alpha) {
 static void sinc_function(Matrix matrix, float _alpha) {
   (void)(_alpha);
 
-  int   length = matrix[0] * matrix[1] + 2;
-  float element;
+  int32_t length = matrix[0] * matrix[1] + 2;
+  float   element;
 
-  for (int index = 2; index < length; index += 1) {
+  for (int32_t index = 2; index < length; index += 1) {
     element = matrix[index];
 
     if (element == 0.0) matrix[index] = 1.0;
@@ -161,10 +161,10 @@ static void sinc_function(Matrix matrix, float _alpha) {
 static void sinc_derivative(Matrix matrix, float _alpha) {
   (void)(_alpha);
 
-  int   length = matrix[0] * matrix[1] + 2;
-  float element;
+  int32_t length = matrix[0] * matrix[1] + 2;
+  float   element;
 
-  for (int index = 2; index < length; index += 1) {
+  for (int32_t index = 2; index < length; index += 1) {
     element = matrix[index];
 
     if (element != 0.0)
@@ -175,9 +175,9 @@ static void sinc_derivative(Matrix matrix, float _alpha) {
 static void sinusoid_function(Matrix matrix, float _alpha) {
   (void)(_alpha);
 
-  int length = matrix[0] * matrix[1] + 2;
+  int32_t length = matrix[0] * matrix[1] + 2;
 
-  for (int index = 2; index < length; index += 1) {
+  for (int32_t index = 2; index < length; index += 1) {
     matrix[index] = sin(matrix[index]);
   }
 }
@@ -185,9 +185,9 @@ static void sinusoid_function(Matrix matrix, float _alpha) {
 static void sinusoid_derivative(Matrix matrix, float _alpha) {
   (void)(_alpha);
 
-  int length = matrix[0] * matrix[1] + 2;
+  int32_t length = matrix[0] * matrix[1] + 2;
 
-  for (int index = 2; index < length; index += 1) {
+  for (int32_t index = 2; index < length; index += 1) {
     matrix[index] = cos(matrix[index]);
   }
 }
@@ -195,15 +195,15 @@ static void sinusoid_derivative(Matrix matrix, float _alpha) {
 static void softmax_function(Matrix matrix, float _alpha) {
   (void)(_alpha);
 
-  int   length     = matrix[0] * matrix[1] + 2;
-  float maximum    = matrix_max(matrix);
-  float normalizer = 0.0;
+  int32_t length     = matrix[0] * matrix[1] + 2;
+  float   maximum    = matrix_max(matrix);
+  float   normalizer = 0.0;
 
-  for (int index = 2; index < length; index += 1) {
+  for (int32_t index = 2; index < length; index += 1) {
     normalizer += exp(matrix[index] - maximum);
   }
 
-  for (int index = 2; index < length; index += 1) {
+  for (int32_t index = 2; index < length; index += 1) {
     matrix[index] = exp(matrix[index] - maximum) / normalizer;
   }
 }
@@ -211,14 +211,14 @@ static void softmax_function(Matrix matrix, float _alpha) {
 static void softmax_derivative(Matrix matrix, float _alpha) {
   (void)(_alpha);
 
-  int    length = matrix[0] * matrix[1] + 2;
-  Matrix temp   = malloc(sizeof(float) * length);
-  float  sum;
+  int32_t length = matrix[0] * matrix[1] + 2;
+  Matrix  temp   = malloc(sizeof(float) * length);
+  float   sum;
 
-  for (int first_index = 2; first_index < length; first_index += 1) {
+  for (int32_t first_index = 2; first_index < length; first_index += 1) {
     sum = 0.0;
 
-    for (int second_index = 2; second_index < length; second_index += 1) {
+    for (int32_t second_index = 2; second_index < length; second_index += 1) {
       if (first_index == second_index)
         sum += matrix[first_index] * (1.0 - matrix[second_index]);
       else
@@ -228,7 +228,7 @@ static void softmax_derivative(Matrix matrix, float _alpha) {
     temp[first_index] = sum;
   }
 
-  for (int index = 2; index < length; index += 1) {
+  for (int32_t index = 2; index < length; index += 1) {
     matrix[index] = temp[index];
   }
 
@@ -238,9 +238,9 @@ static void softmax_derivative(Matrix matrix, float _alpha) {
 static void softplus_function(Matrix matrix, float _alpha) {
   (void)(_alpha);
 
-  int length = matrix[0] * matrix[1] + 2;
+  int32_t length = matrix[0] * matrix[1] + 2;
 
-  for (int index = 2; index < length; index += 1) {
+  for (int32_t index = 2; index < length; index += 1) {
     matrix[index] = log(1.0 + exp(matrix[index]));
   }
 }
@@ -248,9 +248,9 @@ static void softplus_function(Matrix matrix, float _alpha) {
 static void softplus_derivative(Matrix matrix, float _alpha) {
   (void)(_alpha);
 
-  int length = matrix[0] * matrix[1] + 2;
+  int32_t length = matrix[0] * matrix[1] + 2;
 
-  for (int index = 2; index < length; index += 1) {
+  for (int32_t index = 2; index < length; index += 1) {
     matrix[index] = 1.0 / (1.0 + exp(-matrix[index]));
   }
 }
@@ -258,10 +258,10 @@ static void softplus_derivative(Matrix matrix, float _alpha) {
 static void softsign_function(Matrix matrix, float _alpha) {
   (void)(_alpha);
 
-  int   length = matrix[0] * matrix[1] + 2;
-  float element;
+  int32_t length = matrix[0] * matrix[1] + 2;
+  float   element;
 
-  for (int index = 2; index < length; index += 1) {
+  for (int32_t index = 2; index < length; index += 1) {
     element = matrix[index];
 
     matrix[index] = element / (1.0 + abs(element));
@@ -271,10 +271,10 @@ static void softsign_function(Matrix matrix, float _alpha) {
 static void softsign_derivative(Matrix matrix, float _alpha) {
   (void)(_alpha);
 
-  int   length = matrix[0] * matrix[1] + 2;
-  float element;
+  int32_t length = matrix[0] * matrix[1] + 2;
+  float   element;
 
-  for (int index = 2; index < length; index += 1) {
+  for (int32_t index = 2; index < length; index += 1) {
     element = 1.0 + abs(matrix[index]);
 
     matrix[index] = 1.0 / (element * element);
@@ -284,9 +284,9 @@ static void softsign_derivative(Matrix matrix, float _alpha) {
 static void tanh_function(Matrix matrix, float _alpha) {
   (void)(_alpha);
 
-  int length = matrix[0] * matrix[1] + 2;
+  int32_t length = matrix[0] * matrix[1] + 2;
 
-  for (int index = 2; index < length; index += 1) {
+  for (int32_t index = 2; index < length; index += 1) {
     matrix[index] = tanh(matrix[index]);
   }
 }
@@ -294,10 +294,10 @@ static void tanh_function(Matrix matrix, float _alpha) {
 static void tanh_derivative(Matrix matrix, float _alpha) {
   (void)(_alpha);
 
-  int   length = matrix[0] * matrix[1] + 2;
-  float element;
+  int32_t length = matrix[0] * matrix[1] + 2;
+  float   element;
 
-  for (int index = 2; index < length; index += 1) {
+  for (int32_t index = 2; index < length; index += 1) {
     element = tanh(matrix[index]);
 
     matrix[index] = 1.0 - (element * element);
@@ -305,18 +305,18 @@ static void tanh_derivative(Matrix matrix, float _alpha) {
 }
 
 static void elu_function(Matrix matrix, float alpha) {
-  int length = matrix[0] * matrix[1] + 2;
+  int32_t length = matrix[0] * matrix[1] + 2;
 
-  for (int index = 2; index < length; index += 1) {
+  for (int32_t index = 2; index < length; index += 1) {
     if (matrix[index] < 0.0)
       matrix[index] = alpha * (exp(matrix[index]) - 1.0);
   }
 }
 
 static void elu_derivative(Matrix matrix, float alpha) {
-  int length = matrix[0] * matrix[1] + 2;
+  int32_t length = matrix[0] * matrix[1] + 2;
 
-  for (int index = 2; index < length; index += 1) {
+  for (int32_t index = 2; index < length; index += 1) {
     if (matrix[index] < 0.0)
       matrix[index] = alpha * exp(matrix[index]);
     else
@@ -325,18 +325,18 @@ static void elu_derivative(Matrix matrix, float alpha) {
 }
 
 static void prelu_function(Matrix matrix, float alpha) {
-  int length = matrix[0] * matrix[1] + 2;
+  int32_t length = matrix[0] * matrix[1] + 2;
 
-  for (int index = 2; index < length; index += 1) {
+  for (int32_t index = 2; index < length; index += 1) {
     if (matrix[index] < 0.0)
       matrix[index] = alpha * matrix[index];
   }
 }
 
 static void prelu_derivative(Matrix matrix, float alpha) {
-  int length = matrix[0] * matrix[1] + 2;
+  int32_t length = matrix[0] * matrix[1] + 2;
 
-  for (int index = 2; index < length; index += 1) {
+  for (int32_t index = 2; index < length; index += 1) {
     if (matrix[index] < 0.0)
       matrix[index] = alpha;
     else
@@ -352,7 +352,7 @@ void
 activity_free(Activity **activity_address) {
   Activity * activity = *activity_address;
 
-  for (int layer = 0; layer < activity->layers; layer += 1) {
+  for (int32_t layer = 0; layer < activity->layers; layer += 1) {
     if (activity->input[layer]  != NULL) free(activity->input[layer] );
     if (activity->mask[layer]   != NULL) free(activity->mask[layer]  );
     if (activity->output[layer] != NULL) free(activity->output[layer]);
@@ -368,7 +368,7 @@ activity_free(Activity **activity_address) {
 }
 
 Activity *
-activity_new(int layers) {
+activity_new(int32_t layers) {
   Activity *activity = malloc(sizeof(Activity));
 
   activity->layers = layers;
@@ -376,7 +376,7 @@ activity_new(int layers) {
   activity->output = malloc(sizeof(Matrix) * layers);
   activity->mask   = malloc(sizeof(Matrix) * layers);
 
-  for (int layer = 0; layer < layers; layer += 1) {
+  for (int32_t layer = 0; layer < layers; layer += 1) {
     activity->input[layer]  = NULL;
     activity->mask[layer]   = NULL;
     activity->output[layer] = NULL;
@@ -409,7 +409,7 @@ new_activity_closure(ActivityFunction function, float alpha) {
 }
 
 ActivityClosure *
-activity_determine_function(int function_id, float alpha) {
+activity_determine_function(int32_t function_id, float alpha) {
   switch (function_id) {
     case  0: return new_activity_closure(arctan_function,        0    );
     case  1: return new_activity_closure(bent_identity_function, 0    );
@@ -430,7 +430,7 @@ activity_determine_function(int function_id, float alpha) {
 }
 
 ActivityClosure *
-activity_determine_derivative(int function_id, float alpha) {
+activity_determine_derivative(int32_t function_id, float alpha) {
   switch (function_id) {
     case  0: return new_activity_closure(arctan_derivative,        0    );
     case  1: return new_activity_closure(bent_identity_derivative, 0    );

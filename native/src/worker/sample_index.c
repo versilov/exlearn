@@ -1,7 +1,7 @@
 #include "../../include/worker/sample_index.h"
 
 SampleIndex *
-sample_index_new(int bundle, int index) {
+sample_index_new(int32_t bundle, int32_t index) {
   SampleIndex *sample_index = malloc(sizeof(SampleIndex));
 
   sample_index->bundle = bundle;

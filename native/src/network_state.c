@@ -4,7 +4,7 @@ void
 network_state_free(NetworkState **state_address) {
   NetworkState *state = *state_address;
 
-  for (int layer = 0; layer < state->layers; layer += 1) {
+  for (int32_t layer = 0; layer < state->layers; layer += 1) {
     matrix_free(&state->biases[layer] );
     matrix_free(&state->weights[layer]);
   }
@@ -18,14 +18,14 @@ network_state_free(NetworkState **state_address) {
 }
 
 NetworkState *
-network_state_new(int layers) {
+network_state_new(int32_t layers) {
   NetworkState *state = malloc(sizeof(NetworkState));
 
   state->layers  = layers;
   state->biases  = malloc(sizeof(Matrix) * layers);
   state->weights = malloc(sizeof(Matrix) * layers);
 
-  for (int layer = 0; layer < layers; layer += 1) {
+  for (int32_t layer = 0; layer < layers; layer += 1) {
     state->biases[layer]  = NULL;
     state->weights[layer] = NULL;
   }

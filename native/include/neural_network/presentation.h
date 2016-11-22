@@ -2,26 +2,27 @@
 #define INCLUDED_PRESENTATION_H
 
 #include <math.h>
+#include <stdint.h>
 
 #include "../matrix.h"
 
-typedef int (*PresentationFunction)(Matrix, int);
+typedef int32_t (*PresentationFunction)(Matrix, int32_t);
 
 typedef struct PresentationClosure {
   PresentationFunction function;
-  int                  alpha;
+  int32_t              alpha;
 } PresentationClosure;
 
-int
+int32_t
 presentation_closure_call(PresentationClosure *closure, Matrix matrix);
 
 void
 presentation_closure_free(PresentationClosure **closure);
 
 PresentationClosure *
-presentation_closure_new(PresentationFunction function, int alpha);
+presentation_closure_new(PresentationFunction function, int32_t alpha);
 
 PresentationClosure *
-presentation_determine(int function_id, int alpha);
+presentation_determine(int32_t function_id, int32_t alpha);
 
 #endif

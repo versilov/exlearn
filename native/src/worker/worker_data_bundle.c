@@ -3,7 +3,7 @@
 void
 worker_data_bundle_free(WorkerDataBundle **data_address) {
   WorkerDataBundle *data = *data_address;
-  int               index;
+  int32_t           index;
 
   for(index = 0; index < data->count; index += 1) {
     free(data->first[index] );
@@ -91,9 +91,9 @@ worker_data_bundle_new() {
 //       The second binary represents the input matrix.
 void
 read_worker_data_bundle(const char *path, WorkerDataBundle *data) {
-  int    int_buffer;
-  float *float_buffer;
-  FILE  *file;
+  int32_t  int_buffer;
+  float   *float_buffer;
+  FILE    *file;
 
   file = fopen(path, "rb");
 
@@ -127,7 +127,7 @@ read_worker_data_bundle(const char *path, WorkerDataBundle *data) {
   data->first  = malloc(sizeof(float *) * data->count);
   data->second = malloc(sizeof(float *) * data->count);
 
-  for(int index = 0; index < data->count; index += 1) {
+  for(int32_t index = 0; index < data->count; index += 1) {
     // Reads first binary.
     float_buffer = malloc(sizeof(float) * data->first_length);
     fread(float_buffer, sizeof(float), data->first_length, file);

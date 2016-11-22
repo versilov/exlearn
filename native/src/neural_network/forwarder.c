@@ -6,7 +6,7 @@ forward_for_activity(
   NetworkState     *state,
   Matrix            sample
 ) {
-  int       layers   = structure->layers;
+  int32_t   layers   = structure->layers;
   Activity *activity = activity_new(layers);
   Matrix    input, output, mask, biases, weights;
 
@@ -25,7 +25,7 @@ forward_for_activity(
 
   activity->output[0] = output;
 
-  for (int layer = 1; layer < layers; layer += 1) {
+  for (int32_t layer = 1; layer < layers; layer += 1) {
     biases  = state->biases[layer];
     weights = state->weights[layer];
 
@@ -62,8 +62,8 @@ forward_for_output(
   NetworkState     *state,
   Matrix            sample
 ) {
-  int    layers = structure->layers;
-  Matrix input, output;
+  int32_t layers = structure->layers;
+  Matrix  input, output;
 
   output = matrix_new(structure->rows[1], structure->columns[1]);
   matrix_dot_and_add(
@@ -72,7 +72,7 @@ forward_for_output(
   call_activity_closure(structure->function[1], output);
   input = output;
 
-  for (int layer = 1; layer < layers; layer += 1) {
+  for (int32_t layer = 1; layer < layers; layer += 1) {
     output = matrix_new(structure->rows[layer], structure->columns[layer]);
     matrix_dot_and_add(
       input, state->weights[layer], state->biases[layer], output

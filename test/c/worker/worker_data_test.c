@@ -9,7 +9,7 @@ static void test_worker_data_free() {
   assert(data->count  == 4   ); /* LCOV_EXCL_BR_LINE */
   assert(data->bundle != NULL); /* LCOV_EXCL_BR_LINE */
 
-  for (int index = 0; index < data->count; index += 1) {
+  for (int32_t index = 0; index < data->count; index += 1) {
     assert(data->bundle[index] == NULL); /* LCOV_EXCL_BR_LINE */
   }
 

@@ -20,7 +20,7 @@ static void test_back_propagate() {
   assert(result->biases[0]  == NULL); /* LCOV_EXCL_BR_LINE */
   assert(result->weights[0] == NULL); /* LCOV_EXCL_BR_LINE */
 
-  for (int layer = 1; layer < result->layers; layer += 1) {
+  for (int32_t layer = 1; layer < result->layers; layer += 1) {
     assert(matrix_equal(result->biases[layer],  expected_correction->biases[layer])); /* LCOV_EXCL_BR_LINE */
     assert(matrix_equal(result->weights[layer], expected_correction->weights[layer])); /* LCOV_EXCL_BR_LINE */
   }
@@ -47,7 +47,7 @@ static void test_back_propagate_with_dropout() {
   assert(result->biases[0]  == NULL); /* LCOV_EXCL_BR_LINE */
   assert(result->weights[0] == NULL); /* LCOV_EXCL_BR_LINE */
 
-  for (int layer = 1; layer < result->layers; layer += 1) {
+  for (int32_t layer = 1; layer < result->layers; layer += 1) {
     assert(matrix_equal(result->biases[layer],  expected_correction->biases[layer])); /* LCOV_EXCL_BR_LINE */
     assert(matrix_equal(result->weights[layer], expected_correction->weights[layer])); /* LCOV_EXCL_BR_LINE */
   }
