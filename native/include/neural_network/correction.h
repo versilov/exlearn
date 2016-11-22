@@ -21,6 +21,9 @@ correction_new(int32_t layers);
 void
 correction_accumulate(Correction *total, Correction *correction);
 
+int32_t
+correction_char_size(Correction *correction);
+
 Correction *
 correction_from_char_array(char *char_array);
 

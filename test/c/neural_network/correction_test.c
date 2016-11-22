@@ -81,10 +81,29 @@ static void test_correction_char_size() {
 }
 
 static void test_correction_from_char_array() {
-  Correction *correction, result;
-  char       *char_array = correction_char_array_simple();
+  Correction *correction, *result;
+  char       *char_array;
+  int32_t     length, width, height;
 
-  correction = correction_from_char_array(char_array);
+  correction = correction_simple();
+  char_array = correction_char_array_simple();
+  result     = correction_from_char_array(char_array);
+
+  assert(correction->layers == result->layers); /* LCOV_EXCL_BR_LINE */
+
+  for (int32_t index = 0; index < correction->layers; index += 1) {
+    width  = correction->biases[index][0];
+    height = correction->biases[index][1];
+    length = width * height + 2;
+
+    for (int32_t bias_index = 2; bias_index < length; bias_index += 1) {
+      assert(correction->biases[index][bias_index] == result->biases[index][bias_index]); /* LCOV_EXCL_BR_LINE */
+    }
+
+    for (int32_t weight_index = 2; weight_index < length; weight_index += 1) {
+      assert(correction->weights[index][weight_index] == result->weights[index][weight_index]); /* LCOV_EXCL_BR_LINE */
+    }
+  }
 
   // correction_free(&correction);
   // free(char_array);

@@ -77,7 +77,58 @@ correction_char_size(Correction *correction) {
 
 Correction *
 correction_from_char_array(char *char_array) {
-  return NULL;
+  Correction *correction;
+  int32_t     layers, length, width, height;
+  int32_t     current_location;
+  int32_t    *int_location;
+  float      *float_location;
+
+  current_location = 0;
+
+  int_location = (int32_t *)(&char_array[current_location]);
+  layers       = *int_location;
+
+  correction = correction_new(layers);
+
+  for (int index = 0; index < layers; index += 1) {
+    current_location += 4;
+    int_location      = (int32_t *)(&char_array[current_location]);
+    width             = *int_location;
+
+    current_location += 4;
+    int_location      = (int32_t *)(&char_array[current_location]);
+    height            = *int_location;
+
+    correction->biases[index] = matrix_new(width, height);
+
+    length = width * height + 2;
+
+    for (int32_t bias_index = 2; bias_index < length; bias_index += 1) {
+      current_location += 4;
+      float_location    = (float *)(&char_array[current_location]);
+      correction->biases[index][bias_index] = *float_location;
+    }
+
+    current_location += 4;
+    int_location      = (int32_t *)(&char_array[current_location]);
+    width             = *int_location;
+
+    current_location += 4;
+    int_location      = (int32_t *)(&char_array[current_location]);
+    height            = *int_location;
+
+    correction->weights[index] = matrix_new(width, height);
+
+    length = width * height + 2;
+
+    for (int32_t weight_index = 2; weight_index < length; weight_index += 1) {
+      current_location += 4;
+      float_location    = (float *)(&char_array[current_location]);
+      correction->weights[index][weight_index] = *float_location;
+    }
+  }
+
+  return correction;
 }
 
 char *
