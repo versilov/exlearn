@@ -81,7 +81,7 @@ static void test_correction_char_size() {
 }
 
 static void test_correction_from_char_array() {
-  Correction *correction;
+  Correction *correction, result;
   char       *char_array = correction_char_array_simple();
 
   correction = correction_from_char_array(char_array);
@@ -91,13 +91,19 @@ static void test_correction_from_char_array() {
 }
 
 static void test_correction_to_char_array() {
-  Correction *correction = correction_simple();
-  char       *char_array;
+  Correction *correction;
+  char       *char_array, *result;
 
-  char_array = correction_to_char_array(correction);
+  correction = correction_simple();
+  char_array = correction_char_array_simple();
+  result     = correction_to_char_array(correction);
 
-  // correction_free(&correction);
-  // free(char_array);
+  for (int index = 0; index < 44; index += 1) {
+    assert(char_array[index] == result[index]); /* LCOV_EXCL_BR_LINE */
+  }
+
+  correction_free(&correction);
+  free(char_array);
 }
 
 static void test_correction_initialize() {

@@ -52,16 +52,6 @@ correction_accumulate(Correction *total, Correction *correction){
   }
 }
 
-Correction *
-correction_from_char_array(char *char_array) {
-  return NULL;
-}
-
-char *
-correction_to_char_array(Correction *correction) {
-  return NULL;
-}
-
 int32_t
 correction_char_size(Correction *correction) {
   int32_t size = 4;
@@ -83,6 +73,68 @@ correction_char_size(Correction *correction) {
   }
 
   return size;
+}
+
+Correction *
+correction_from_char_array(char *char_array) {
+  return NULL;
+}
+
+char *
+correction_to_char_array(Correction *correction) {
+  int32_t  correction_size, length, width, height;
+  int32_t  current_location;
+  char    *char_array;
+  int32_t *int_location;
+  float   *float_location;
+
+  correction_size  = correction_char_size(correction);
+  current_location = 0;
+
+  char_array = malloc(sizeof(char) * correction_size);
+
+  int_location  = (int32_t *)(&char_array[current_location]);
+  *int_location = correction->layers;
+
+  for (int32_t index = 0; index < correction->layers; index += 1) {
+    width  = correction->biases[index][0];
+    height = correction->biases[index][1];
+    length = width * height + 2;
+
+    current_location += 4;
+    int_location      = (int32_t *)(&char_array[current_location]);
+    *int_location     = width;
+
+    current_location += 4;
+    int_location      = (int32_t *)(&char_array[current_location]);
+    *int_location     = height;
+
+    for (int32_t bias_index = 2; bias_index < length; bias_index += 1) {
+      current_location += 4;
+      float_location    = (float *)(&char_array[current_location]);
+      *float_location   = correction->biases[index][bias_index];
+    }
+
+    width  = correction->weights[index][0];
+    height = correction->weights[index][1];
+    length = width * height + 2;
+
+    current_location += 4;
+    int_location      = (int32_t *)(&char_array[current_location]);
+    *int_location     = width;
+
+    current_location += 4;
+    int_location      = (int32_t *)(&char_array[current_location]);
+    *int_location     = height;
+
+    for (int32_t weight_index = 2; weight_index < length; weight_index += 1) {
+      current_location += 4;
+      float_location    = (float *)(&char_array[current_location]);
+      *float_location   = correction->weights[index][weight_index];
+    }
+  }
+
+  return char_array;
 }
 
 void

@@ -132,22 +132,21 @@ correction_char_array_simple() {
 static Correction *
 correction_simple() {
   Correction *correction = correction_new(1);
+  int32_t     length;
 
   correction->biases[0]  = matrix_new(1, 2);
   correction->weights[0] = matrix_new(2, 2);
 
-  int32_t length;
+  length = correction->biases[0][0] * correction->biases[0][1] + 2;
 
-  length = correction->biases[0][0] * correction->biases[0][1];
-
-  for (int32_t bias_index = 2; bias_index < length + 2; bias_index += 1) {
-    correction->biases[0][bias_index] = bias_index;
+  for (int32_t bias_index = 2; bias_index < length; bias_index += 1) {
+    correction->biases[0][bias_index] = bias_index - 2;
   }
 
-  length = correction->weights[0][0] * correction->weights[0][1];
+  length = correction->weights[0][0] * correction->weights[0][1] + 2;
 
-  for (int32_t weight_index = 2; weight_index < length + 2; weight_index += 1) {
-    correction->weights[0][weight_index] = weight_index;
+  for (int32_t weight_index = 2; weight_index < length; weight_index += 1) {
+    correction->weights[0][weight_index] = weight_index - 2;
   }
 
   return correction;
