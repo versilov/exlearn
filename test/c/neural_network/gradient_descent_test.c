@@ -7,7 +7,7 @@
 
 static void test_gradient_descent() {
   BatchData   *batch_data;
-  Correction  *correction   = NULL;
+  Correction  *correction;
   BundlePaths *paths        = bundle_paths_new(2);
   WorkerData  *worker_data  = worker_data_new(2);
 
@@ -28,4 +28,23 @@ static void test_gradient_descent() {
   );
 
   assert(correction != NULL); /* LCOV_EXCL_BR_LINE */
+
+  assert(correction->layers == 3); /* LCOV_EXCL_BR_LINE */
+  for (int32_t layer = 0; layer < correction->layers; layer += 1) {
+    int32_t length;
+
+    printf("Layer: %d\n", layer);
+
+    printf("Biases:");
+    length = correction->biases[layer][0] + correction->biases[layer][1] + 2;
+    for (int index = 0; index < length; index += 1)
+      printf(" %f", correction->biases[layer][index]);
+    printf("\n");
+
+    printf("Weights:");
+    length = correction->weights[layer][0] + correction->weights[layer][1] + 2;
+    for (int index = 0; index < length; index += 1)
+      printf(" %f", correction->weights[layer][index]);
+    printf("\n");
+  }
 }

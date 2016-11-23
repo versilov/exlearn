@@ -8,7 +8,7 @@ back_propagate(
 ) {
   int32_t     layers     = network_state->layers;
   int32_t     last_layer = layers - 1;
-  Correction *correction = correction_new(layers);
+  Correction *correction = correction_new(layers - 1);
   Matrix      error, weight_correction, input_gradient, output_gradient;
 
   error = network_state->error(
@@ -18,14 +18,14 @@ back_propagate(
     network_state->derivative[last_layer]
   );
 
-  correction->biases[last_layer] = error;
+  correction->biases[last_layer - 1] = error;
 
   weight_correction = matrix_new(
     network_state->weights[last_layer][0], network_state->weights[last_layer][1]
   );
   matrix_dot_tn(activity->output[last_layer - 1], error, weight_correction);
 
-  correction->weights[last_layer] = weight_correction;
+  correction->weights[last_layer - 1] = weight_correction;
 
   for (int32_t layer = layers - 2; layer > 0; layer -= 1) {
     output_gradient = matrix_new(error[0], network_state->weights[layer + 1][0]);
@@ -42,14 +42,14 @@ back_propagate(
       matrix_multiply(error, activity->mask[layer], error);
     }
 
-    correction->biases[layer] = error;
+    correction->biases[layer - 1] = error;
 
     weight_correction = matrix_new(
       network_state->weights[layer][0], network_state->weights[layer][1]
     );
     matrix_dot_tn(activity->output[layer - 1], error, weight_correction);
 
-    correction->weights[layer] = weight_correction;
+    correction->weights[layer - 1] = weight_correction;
   }
 
   return correction;

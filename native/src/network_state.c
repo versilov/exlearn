@@ -12,13 +12,13 @@ network_state_free(NetworkState **network_state_address) {
     free_activity_closure(network_state->derivative[layer]);
   }
 
-  free(network_state->rows       );
-  free(network_state->columns    );
-  free(network_state->biases     );
-  free(network_state->weights    );
-  free(network_state->dropout    );
-  free(network_state->function   );
-  free(network_state->derivative );
+  free(network_state->rows      );
+  free(network_state->columns   );
+  free(network_state->biases    );
+  free(network_state->weights   );
+  free(network_state->dropout   );
+  free(network_state->function  );
+  free(network_state->derivative);
 
   presentation_closure_free(&network_state->presentation);
 
