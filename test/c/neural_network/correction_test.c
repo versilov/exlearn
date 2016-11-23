@@ -4,6 +4,7 @@
 #include "../../../native/include/network_structure.h"
 
 #include "../fixtures/correction_fixtures.c"
+#include "../fixtures/network_state_fixtures.c"
 #include "../fixtures/network_structure_fixtures.c"
 
 static void test_correction_free() {
@@ -71,6 +72,27 @@ static void test_correction_accumulate() {
   }
 }
 
+static void test_correction_apply() {
+  Correction   *correction    = correction_simple();
+  NetworkState *network_state = network_state_simple();
+
+  correction_apply(network_state, correction);
+
+  assert(network_state->biases[0]  == NULL); /* LCOV_EXCL_BR_LINE */
+  assert(network_state->weights[0] == NULL); /* LCOV_EXCL_BR_LINE */
+
+  assert(network_state->biases[1][0]  == 1); /* LCOV_EXCL_BR_LINE */
+  assert(network_state->biases[1][1]  == 2); /* LCOV_EXCL_BR_LINE */
+  assert(network_state->biases[1][2]  == 1); /* LCOV_EXCL_BR_LINE */
+  assert(network_state->biases[1][3]  == 3); /* LCOV_EXCL_BR_LINE */
+  assert(network_state->weights[1][0] == 2); /* LCOV_EXCL_BR_LINE */
+  assert(network_state->weights[1][1] == 2); /* LCOV_EXCL_BR_LINE */
+  assert(network_state->weights[1][2] == 1); /* LCOV_EXCL_BR_LINE */
+  assert(network_state->weights[1][3] == 3); /* LCOV_EXCL_BR_LINE */
+  assert(network_state->weights[1][4] == 5); /* LCOV_EXCL_BR_LINE */
+  assert(network_state->weights[1][5] == 7); /* LCOV_EXCL_BR_LINE */
+}
+
 static void test_correction_char_size() {
   Correction *correction = correction_simple();
   int32_t     size;
@@ -105,8 +127,9 @@ static void test_correction_from_char_array() {
     }
   }
 
-  // correction_free(&correction);
-  // free(char_array);
+  correction_free(&correction);
+  free(char_array);
+  free(result);
 }
 
 static void test_correction_to_char_array() {

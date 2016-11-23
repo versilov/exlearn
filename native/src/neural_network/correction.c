@@ -52,6 +52,23 @@ correction_accumulate(Correction *total, Correction *correction){
   }
 }
 
+void
+correction_apply(NetworkState *network_state, Correction *correction) {
+  Matrix state_matrix, correction_matrix;
+
+  for (int32_t layer = 0; layer < correction->layers; layer += 1) {
+    state_matrix      = network_state->biases[layer + 1];
+    correction_matrix = correction->biases[layer];
+
+    matrix_add(state_matrix, correction_matrix, state_matrix);
+
+    state_matrix      = network_state->weights[layer + 1];
+    correction_matrix = correction->weights[layer];
+
+    matrix_add(state_matrix, correction_matrix, state_matrix);
+  }
+}
+
 int32_t
 correction_char_size(Correction *correction) {
   int32_t size = 4;

@@ -45,6 +45,7 @@ int main() {
   test_correction_free();
   test_correction_new();
   test_correction_accumulate();
+  test_correction_apply();
   test_correction_char_size();
   test_correction_from_char_array();
   test_correction_to_char_array();

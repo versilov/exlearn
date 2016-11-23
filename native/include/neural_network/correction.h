@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 #include "../../include/matrix.h"
+#include "../../include/network_state.h"
 #include "../../include/network_structure.h"
 
 typedef struct Correction {
@@ -20,6 +21,9 @@ correction_new(int32_t layers);
 
 void
 correction_accumulate(Correction *total, Correction *correction);
+
+void
+correction_apply(NetworkState *network_state, Correction *correction);
 
 int32_t
 correction_char_size(Correction *correction);
