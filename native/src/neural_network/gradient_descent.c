@@ -14,7 +14,7 @@ gradient_descent(
   WorkerDataBundle *bundle;
   Matrix            input, expected;
   Activity         *activity;
-  Correction       *correction;
+  Correction       *correction, *result;
 
   int32_t length    = batch_data->batch_length;
   int32_t remaining = batch_data->data_length - length * current_batch;
@@ -22,9 +22,9 @@ gradient_descent(
   if (remaining < length) length = remaining;
 
   correction = NULL;
+  result     = NULL;
 
   for (int32_t index = 0; index < length; index += 1) {
-    // Process each sample.
     sample_index = batch_data_get_sample_index(batch_data, current_batch, index);
     bundle       = worker_data->bundle[sample_index->bundle];
     input        = bundle->first[index];
@@ -32,7 +32,13 @@ gradient_descent(
 
     activity   = forward_for_activity(network_state, input);
     correction = back_propagate(network_state, activity, expected);
+
+    if (result == NULL) result = correction;
+    else {
+      correction_accumulate(result, correction);
+      correction_free(&correction);
+    }
   }
 
-  return correction;
+  return result;
 }

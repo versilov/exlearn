@@ -84,6 +84,57 @@ correction_expected_with_dropout() {
   return correction;
 }
 
+static Correction *
+correction_expected_basic_bundle_file() {
+  Correction *correction = correction_new(3);
+
+  // First Hidden Layer Correction
+  float layer_1_biases_correction[5]   = {1, 3, 94888, 207004, 319120};
+  float layer_1_weights_correction[11] = {
+    3, 3,
+    150164, 327592,  505020,
+    245052, 534596,  824140,
+    339940, 741600, 1143260
+  };
+
+  correction->biases[0]  = matrix_new(1, 3);
+  correction->weights[0] = matrix_new(3, 3);
+
+  matrix_clone(correction->biases[0],  layer_1_biases_correction );
+  matrix_clone(correction->weights[0], layer_1_weights_correction);
+
+  // Second Hidden Layer Correction
+  float layer_2_biases_correction[4]  = {1, 2, 17228, 38830};
+  float layer_2_weights_correction[8] = {
+    3, 2,
+    654500, 1475170,
+    805204, 1814840,
+    955908, 2154510
+  };
+
+  correction->biases[1]  = matrix_new(1, 2);
+  correction->weights[1] = matrix_new(3, 2);
+
+  matrix_clone(correction->biases[1],  layer_2_biases_correction );
+  matrix_clone(correction->weights[1], layer_2_weights_correction);
+
+  // Output Layer Correction
+  float layer_3_biases_correction[4]  = {1, 2, 4374, 6427};
+  float layer_3_weights_correction[6] = {
+    2, 2,
+    1997310, 2934785,
+    2614980, 3842370
+  };
+
+  correction->biases[2]  = matrix_new(1, 2);
+  correction->weights[2] = matrix_new(2, 2);
+
+  matrix_clone(correction->biases[2],  layer_3_biases_correction );
+  matrix_clone(correction->weights[2], layer_3_weights_correction);
+
+  return correction;
+}
+
 static unsigned char *
 correction_char_array_simple() {
   unsigned char *char_array = malloc(sizeof(char) * 44);

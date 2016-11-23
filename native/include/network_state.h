@@ -11,7 +11,7 @@
 
 
 typedef struct NetworkState {
-  int32_t  layers;
+  int32_t               layers;
   int32_t              *rows;
   int32_t              *columns;
   Matrix               *biases;

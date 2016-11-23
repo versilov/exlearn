@@ -4,6 +4,38 @@
 #include <stdint.h>
 #include <stdio.h>
 
+char * create_basic_data_bundle_file() {
+  char    *path          = temp_file_path();
+  FILE    *file          = fopen(path, "wb");
+  int32_t  int_buffer[7] = {
+    1, // one
+    1, // version
+    2, // count
+    5, // first_length
+    4, // second_length
+    1, // maximum_step
+    0  // discard
+  };
+  float float_buffer[18] = {
+    1, 3, 1, 2, 3, // sample one: first
+    1, 2, 4, 5,    // sample one: second
+    1, 3, 2, 3, 4, // sample two: first
+    1, 2, 5, 6,    // sample two: second
+  };
+
+  // Metadata
+  for (int32_t index = 0; index < 7; index += 1)
+    fwrite(int_buffer + index, sizeof(int), 1, file);
+
+  // First sample
+  for (int32_t index = 0; index < 18; index += 1)
+    fwrite(float_buffer + index, sizeof(float), 1, file);
+
+  fclose(file);
+
+  return path;
+}
+
 char * create_first_data_bundle_file() {
   char    *path          = temp_file_path();
   FILE    *file          = fopen(path, "wb");
