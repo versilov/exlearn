@@ -1,4 +1,4 @@
-defmodule ExLearn.NeuralNetwork.ForwarderTest do
+defmodule ExLearn.NeuralNetwork.CorrectionTest do
   use ExUnit.Case, async: true
 
   alias ExLearn.NeuralNetwork.Correction
