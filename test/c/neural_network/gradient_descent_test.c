@@ -27,12 +27,10 @@ static void test_gradient_descent() {
     0
   );
 
-  assert(correction != NULL); /* LCOV_EXCL_BR_LINE */
-
   assert(correction->layers == 3); /* LCOV_EXCL_BR_LINE */
 
   for (int32_t layer = 0; layer < correction->layers; layer += 1) {
-    assert(matrix_equal(correction->biases[layer],  expected->biases[layer])); /* LCOV_EXCL_BR_LINE */
+    assert(matrix_equal(correction->biases[layer],  expected->biases[layer]) ); /* LCOV_EXCL_BR_LINE */
     assert(matrix_equal(correction->weights[layer], expected->weights[layer])); /* LCOV_EXCL_BR_LINE */
   }
 
