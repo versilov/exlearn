@@ -27,8 +27,8 @@ correction_char_size(Correction *correction);
 Correction *
 correction_from_char_array(char *char_array);
 
-char *
-correction_to_char_array(Correction *correction);
+void
+correction_to_char_array(Correction *correction, unsigned char *char_array);
 
 void
 correction_initialize(NetworkStructure *network_structure, Correction *correction);

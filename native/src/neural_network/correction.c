@@ -131,18 +131,14 @@ correction_from_char_array(char *char_array) {
   return correction;
 }
 
-char *
-correction_to_char_array(Correction *correction) {
-  int32_t  correction_size, length, width, height;
+void
+correction_to_char_array(Correction *correction, unsigned char * char_array) {
+  int32_t  length, width, height;
   int32_t  current_location;
-  char    *char_array;
   int32_t *int_location;
   float   *float_location;
 
-  correction_size  = correction_char_size(correction);
   current_location = 0;
-
-  char_array = malloc(sizeof(char) * correction_size);
 
   int_location  = (int32_t *)(&char_array[current_location]);
   *int_location = correction->layers;
@@ -184,8 +180,6 @@ correction_to_char_array(Correction *correction) {
       *float_location   = correction->weights[index][weight_index];
     }
   }
-
-  return char_array;
 }
 
 void

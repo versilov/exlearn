@@ -115,7 +115,9 @@ static void test_correction_to_char_array() {
 
   correction = correction_simple();
   char_array = correction_char_array_simple();
-  result     = correction_to_char_array(correction);
+  result     = malloc(sizeof(char) * 44);
+
+  correction_to_char_array(correction, result);
 
   for (int index = 0; index < 44; index += 1) {
     assert(char_array[index] == result[index]); /* LCOV_EXCL_BR_LINE */
@@ -123,6 +125,7 @@ static void test_correction_to_char_array() {
 
   correction_free(&correction);
   free(char_array);
+  free(result);
 }
 
 static void test_correction_initialize() {
