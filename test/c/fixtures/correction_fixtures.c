@@ -84,11 +84,11 @@ correction_expected_with_dropout() {
   return correction;
 }
 
-static char *
+static unsigned char *
 correction_char_array_simple() {
-  char    *char_array = malloc(sizeof(char) * 44);
-  int32_t *int_location;
-  float   *float_location;
+  unsigned char *char_array = malloc(sizeof(char) * 44);
+  int32_t       *int_location;
+  float         *float_location;
 
   // Layers
   int_location  = (int32_t *)(&char_array[0]);

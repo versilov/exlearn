@@ -76,7 +76,7 @@ correction_char_size(Correction *correction) {
 }
 
 Correction *
-correction_from_char_array(char *char_array) {
+correction_from_char_array(unsigned char *char_array) {
   Correction *correction;
   int32_t     layers, length, width, height;
   int32_t     current_location;

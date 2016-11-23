@@ -81,9 +81,9 @@ static void test_correction_char_size() {
 }
 
 static void test_correction_from_char_array() {
-  Correction *correction, *result;
-  char       *char_array;
-  int32_t     length, width, height;
+  Correction    *correction, *result;
+  unsigned char *char_array;
+  int32_t        length, width, height;
 
   correction = correction_simple();
   char_array = correction_char_array_simple();
@@ -110,8 +110,8 @@ static void test_correction_from_char_array() {
 }
 
 static void test_correction_to_char_array() {
-  Correction *correction;
-  char       *char_array, *result;
+  Correction    *correction;
+  unsigned char *char_array, *result;
 
   correction = correction_simple();
   char_array = correction_char_array_simple();

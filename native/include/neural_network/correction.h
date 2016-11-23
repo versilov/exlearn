@@ -25,7 +25,7 @@ int32_t
 correction_char_size(Correction *correction);
 
 Correction *
-correction_from_char_array(char *char_array);
+correction_from_char_array(unsigned char *char_array);
 
 void
 correction_to_char_array(Correction *correction, unsigned char *char_array);
