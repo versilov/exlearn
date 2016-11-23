@@ -1,16 +1,14 @@
 #include "../../../native/include/neural_network/forwarder.h"
 
-#include "../fixtures/network_structure_fixtures.c"
 #include "../fixtures/network_state_fixtures.c"
 #include "../fixtures/data_fixtures.c"
 
 static void test_forward_for_activity() {
-  NetworkStructure *structure = network_structure_basic();
-  NetworkState     *state     = network_state_basic();
-  Matrix            sample    = data_sample_basic();
-  Activity         *activity = forward_for_activity(structure, state, sample);
+  NetworkState *network_state = network_state_basic();
+  Matrix        sample        = data_sample_basic();
+  Activity     *activity      = forward_for_activity(network_state, sample);
 
-  assert(activity->layers == structure->layers); /* LCOV_EXCL_BR_LINE */
+  assert(activity->layers == network_state->layers); /* LCOV_EXCL_BR_LINE */
 
   float layer_1_input[5] = {1, 3, 31, 38, 45};
   float layer_2_input[4] = {1, 2, 371, 486};
@@ -38,17 +36,15 @@ static void test_forward_for_activity() {
 
   activity_free(&activity);
   matrix_free(&sample);
-  network_state_free(&state);
-  network_structure_free(&structure);
+  network_state_free(&network_state);
 }
 
 static void test_forward_for_activity_with_dropout() {
-  NetworkStructure *structure = network_structure_with_dropout();
-  NetworkState     *state     = network_state_basic();
-  Matrix            sample    = data_sample_basic();
-  Activity         *activity = forward_for_activity(structure, state, sample);
+  NetworkState *network_state = network_state_with_dropout();
+  Matrix        sample        = data_sample_basic();
+  Activity     *activity      = forward_for_activity(network_state, sample);
 
-  assert(activity->layers == structure->layers); /* LCOV_EXCL_BR_LINE */
+  assert(activity->layers == network_state->layers); /* LCOV_EXCL_BR_LINE */
 
   assert(activity->mask[0] != NULL); /* LCOV_EXCL_BR_LINE */
   assert(activity->mask[1] != NULL); /* LCOV_EXCL_BR_LINE */
@@ -57,24 +53,21 @@ static void test_forward_for_activity_with_dropout() {
 
   activity_free(&activity);
   matrix_free(&sample);
-  network_state_free(&state);
-  network_structure_free(&structure);
+  network_state_free(&network_state);
 }
 
 static void test_forward_for_output() {
-  NetworkStructure *structure = network_structure_basic();
-  NetworkState     *state     = network_state_basic();
-  Matrix            sample    = data_sample_basic();
-  Matrix            output;
-  int32_t           result;
+  NetworkState *network_state = network_state_basic();
+  Matrix        sample        = data_sample_basic();
+  Matrix        output;
+  int32_t       result;
 
-  output = forward_for_output(structure, state, sample);
-  result = presentation_closure_call(structure->presentation, output);
+  output = forward_for_output(network_state, sample);
+  result = presentation_closure_call(network_state->presentation, output);
 
   assert(result == 1); /* LCOV_EXCL_BR_LINE */
 
   matrix_free(&output);
   matrix_free(&sample);
-  network_state_free(&state);
-  network_structure_free(&structure);
+  network_state_free(&network_state);
 }

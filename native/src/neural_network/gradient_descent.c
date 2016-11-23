@@ -2,15 +2,13 @@
 
 Correction *
 gradient_descent(
-  WorkerData       *worker_data,
-  BatchData        *batch_data,
-  NetworkState     *network_state,
-  NetworkStructure *network_structure,
-  int32_t           current_batch
+  WorkerData   *worker_data,
+  BatchData    *batch_data,
+  NetworkState *network_state,
+  int32_t       current_batch
 ) {
-  (void)(worker_data      );
-  (void)(network_state    );
-  (void)(network_structure);
+  (void)(worker_data  );
+  (void)(network_state);
 
   SampleIndex      *sample_index;
   WorkerDataBundle *bundle;
@@ -32,8 +30,8 @@ gradient_descent(
     input        = bundle->first[index];
     expected     = bundle->second[index];
 
-    activity   = forward_for_activity(network_structure, network_state, input);
-    correction = back_propagate(network_structure, network_state, activity, expected);
+    activity   = forward_for_activity(network_state, input);
+    correction = back_propagate(network_state, activity, expected);
   }
 
   return correction;

@@ -19,7 +19,6 @@
 #include "c/worker/worker_data_test.c"
 #include "c/matrix_test.c"
 #include "c/network_state_test.c"
-#include "c/network_structure_test.c"
 
 int main() {
   // Test for: c/neural_network/activity_test.c
@@ -140,8 +139,4 @@ int main() {
   // Tests for: c/network_state_test.c
   test_network_state_free();
   test_network_state_new();
-
-  // Tests for: c/network_structure_test.c
-  test_network_structure_free();
-  test_network_structure_new();
 }

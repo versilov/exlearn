@@ -1,7 +1,6 @@
 #include "../../../native/include/neural_network/gradient_descent.h"
 #include "../../../native/include/worker/batch_data.h"
 
-#include "../fixtures/network_structure_fixtures.c"
 #include "../fixtures/network_state_fixtures.c"
 #include "../fixtures/data_fixtures.c"
 #include "../fixtures/file_fixtures.c"
@@ -19,14 +18,12 @@ static void test_gradient_descent() {
 
   batch_data = batch_data_new(worker_data, 1);
 
-  NetworkStructure *structure = network_structure_basic();
-  NetworkState     *state     = network_state_basic();
+  NetworkState *network_state = network_state_basic();
 
   correction = gradient_descent(
     worker_data,
     batch_data,
-    state,
-    structure,
+    network_state,
     1
   );
 

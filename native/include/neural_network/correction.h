@@ -5,7 +5,6 @@
 
 #include "../../include/matrix.h"
 #include "../../include/network_state.h"
-#include "../../include/network_structure.h"
 
 typedef struct Correction {
   int32_t  layers;
@@ -35,6 +34,6 @@ void
 correction_to_char_array(Correction *correction, unsigned char *char_array);
 
 void
-correction_initialize(NetworkStructure *network_structure, Correction *correction);
+correction_initialize(NetworkState *network_state, Correction *correction);
 
 #endif

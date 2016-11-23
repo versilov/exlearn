@@ -1,11 +1,9 @@
 #include <stdint.h>
 
 #include "../../../native/include/neural_network/correction.h"
-#include "../../../native/include/network_structure.h"
 
 #include "../fixtures/correction_fixtures.c"
 #include "../fixtures/network_state_fixtures.c"
-#include "../fixtures/network_structure_fixtures.c"
 
 static void test_correction_free() {
   Correction *correction = correction_new(3);
@@ -152,10 +150,10 @@ static void test_correction_to_char_array() {
 }
 
 static void test_correction_initialize() {
-  NetworkStructure *network_structure = network_structure_basic();
-  Correction       *correction        = correction_new(4);
+  NetworkState *network_state = network_state_basic();
+  Correction   *correction    = correction_new(4);
 
-  correction_initialize(network_structure, correction);
+  correction_initialize(network_state, correction);
 
   assert(correction->layers == 4);
 

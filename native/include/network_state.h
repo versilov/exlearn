@@ -4,12 +4,24 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#include "../include/matrix.h"
+#include "./matrix.h"
+#include "./neural_network/activity.h"
+#include "./neural_network/objective.h"
+#include "./neural_network/presentation.h"
+
 
 typedef struct NetworkState {
   int32_t  layers;
-  Matrix  *biases;
-  Matrix  *weights;
+  int32_t              *rows;
+  int32_t              *columns;
+  Matrix               *biases;
+  Matrix               *weights;
+  float                *dropout;
+  ActivityClosure     **function;
+  ActivityClosure     **derivative;
+  PresentationClosure  *presentation;
+  ObjectiveFunction     objective;
+  ObjectiveError        error;
 } NetworkState;
 
 void

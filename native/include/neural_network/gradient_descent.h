@@ -11,11 +11,10 @@
 
 Correction *
 gradient_descent(
-  WorkerData       *worker_data,
-  BatchData        *batch_data,
-  NetworkState     *network_state,
-  NetworkStructure *network_structure,
-  int32_t           current_batch
+  WorkerData   *worker_data,
+  BatchData    *batch_data,
+  NetworkState *network_state,
+  int32_t       current_batch
 );
 
 #endif

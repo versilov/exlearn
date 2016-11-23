@@ -3,17 +3,15 @@
 #include "../fixtures/activity_fixtures.c"
 #include "../fixtures/correction_fixtures.c"
 #include "../fixtures/data_fixtures.c"
-#include "../fixtures/network_structure_fixtures.c"
 #include "../fixtures/network_state_fixtures.c"
 
 static void test_back_propagate() {
-  NetworkStructure *structure           = network_structure_basic();
-  NetworkState     *state               = network_state_basic();
-  Matrix            expected_output     = data_expected_basic();
-  Activity         *activity            = activity_expected_basic();
-  Correction       *expected_correction = correction_expected_basic();
+  NetworkState *network_state       = network_state_basic();
+  Matrix        expected_output     = data_expected_basic();
+  Activity     *activity            = activity_expected_basic();
+  Correction   *expected_correction = correction_expected_basic();
 
-  Correction *result = back_propagate(structure, state, activity, expected_output);
+  Correction *result = back_propagate(network_state, activity, expected_output);
 
   assert(result->layers == expected_correction->layers); /* LCOV_EXCL_BR_LINE */
 
@@ -29,18 +27,16 @@ static void test_back_propagate() {
   correction_free(&expected_correction);
   activity_free(&activity);
   matrix_free(&expected_output);
-  network_state_free(&state);
-  network_structure_free(&structure);
+  network_state_free(&network_state);
 }
 
 static void test_back_propagate_with_dropout() {
-  NetworkStructure *structure           = network_structure_with_dropout();
-  NetworkState     *state               = network_state_basic();
-  Matrix            expected_output     = data_expected_basic();
-  Activity         *activity            = activity_expected_with_dropout();
-  Correction       *expected_correction = correction_expected_with_dropout();
+  NetworkState *network_state       = network_state_with_dropout();
+  Matrix        expected_output     = data_expected_basic();
+  Activity     *activity            = activity_expected_with_dropout();
+  Correction   *expected_correction = correction_expected_with_dropout();
 
-  Correction *result = back_propagate(structure, state, activity, expected_output);
+  Correction *result = back_propagate(network_state, activity, expected_output);
 
   assert(result->layers == expected_correction->layers); /* LCOV_EXCL_BR_LINE */
 
@@ -56,6 +52,5 @@ static void test_back_propagate_with_dropout() {
   correction_free(&expected_correction);
   activity_free(&activity);
   matrix_free(&expected_output);
-  network_state_free(&state);
-  network_structure_free(&structure);
+  network_state_free(&network_state);
 }

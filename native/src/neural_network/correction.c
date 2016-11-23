@@ -200,13 +200,13 @@ correction_to_char_array(Correction *correction, unsigned char * char_array) {
 }
 
 void
-correction_initialize(NetworkStructure *network_structure, Correction *correction) {
+correction_initialize(NetworkState *network_state, Correction *correction) {
   int32_t rows, columns;
   Matrix  matrix;
 
   for (int32_t index = 0; index < correction->layers; index += 1) {
-    rows    = network_structure->rows[index];
-    columns = network_structure->columns[index];
+    rows    = network_state->rows[index];
+    columns = network_state->columns[index];
 
     matrix = matrix_new(1, columns);
     matrix_fill(matrix, 0);
