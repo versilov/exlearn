@@ -24,7 +24,7 @@ create(structure)
 
 #### Parameters
 
-##### Structure:
+##### `structure`
 
 | Name         | Type | Schema                                  |
 |--------------|------|-----------------------------------------|
@@ -32,28 +32,22 @@ create(structure)
 | objective    | atom | [objective](#nn-create-objective)       |
 | presentation | atom | [presentation](#nn-create-presentation) |
 
-##### <a name="nn-create-layers"></a> Layers:
+#### Return
 
-| Key        | Type | Schema                      |
-|------------|------|-----------------------------|
-| **input**  | map  | [input](#nn-create-input)   |
-| **hidden** | list | [hidden](#nn-create-hidden) |
-| **output** | map  | [output](#nn-create-output) |
+The function return a handle that must be passed to the other functions in order
+for them to know on which network to operate.
 
-##### <a name="nn-create-input"></a> Input:
+#### Schemas
 
-| Key        | Type     | Schema                              |
-|------------|----------|-------------------------------------|
-| **size**   | map      | [input](#nn-create-input)           |
-| activation | atom     | [activation](#nn-create-activation) |
-| dropout    | map      | [output](#nn-create-output)         |
-| name       | String.t | Any non empty elixir string.        |
+##### <a name="nn-create-layers"></a> `layers`:
 
-##### <a name="nn-create-hidden"></a> Hidden:
+| Key        | Type | Description                                |
+|------------|------|--------------------------------------------|
+| **input**  | map  | See the [input schema](#nn-create-input)   |
+| **hidden** | list | See the [hidden schema](#nn-create-hidden) |
+| **output** | map  | See the [output schema](#nn-create-output) |
 
-##### <a name="nn-create-output"></a> Output:
-
-##### <a name="nn-create-objective"></a> Objective:
+##### <a name="nn-create-objective"></a> `objective`:
 
 | Value                      | Type | Description |
 |----------------------------|------|-------------|
@@ -63,7 +57,7 @@ create(structure)
 
 Default Value: `:quadratic`
 
-##### <a name="nn-create-presentation"></a> Presentation:
+##### <a name="nn-create-presentation"></a> `presentation`:
 
 | Value     | Type | Description |
 |-----------|------|-------------|
@@ -73,5 +67,48 @@ Default Value: `:quadratic`
 
 Default Value: `:raw`
 
-#### Return
+##### <a name="nn-create-input"></a> `input`:
 
+| Key        | Type        | Description                                        |
+|------------|-------------|----------------------------------------------------|
+| **size**   | pos_integer | The number of neurons for the current layer.       |
+| dropout    | float       | The dropout probability, between [0, 1].           |
+| name       | String.t    | Any non empty elixir string.                       |
+
+##### <a name="nn-create-hidden"></a> `hidden`:
+
+| Key        | Type        | Description                                        |
+|------------|-------------|----------------------------------------------------|
+| **size**   | pos_integer | The number of neurons for the current layer.       |
+| activation | atom        | See the [activation schema](#nn-create-activation) |
+| dropout    | float       | The dropout probability, between [0, 1].           |
+| name       | String.t    | Any non empty elixir string.                       |
+
+##### <a name="nn-create-output"></a> `output`:
+
+| Key        | Type        | Description                                        |
+|------------|-------------|----------------------------------------------------|
+| **size**   | pos_integer | The number of neurons for the current layer.       |
+| activation | atom        | See the [activation schema](#nn-create-activation) |
+| name       | String.t    | Any non empty elixir string.                       |
+
+##### <a name="nn-create-activation"></a> `activation`:
+
+| Value                    | Type  | Description |
+|--------------------------|-------|-------------|
+| `:arctan`                | atom  |             |
+| `:bent_identity`         | atom  |             |
+| `:gaussian`              | atom  |             |
+| `:identity`              | atom  |             |
+| `:logistic`              | atom  |             |
+| `:relu`                  | atom  |             |
+| `:sinc`                  | atom  |             |
+| `:sinusoid`              | atom  |             |
+| `:softmax`               | atom  |             |
+| `:softplus`              | atom  |             |
+| `:softsign`              | atom  |             |
+| `:tanh`                  | atom  |             |
+| `{:elu,   alpha: alpha}` | tuple |             |
+| `{:prelu, alpha: alpha}` | tuple |             |
+
+Default Value: `:logistic`
