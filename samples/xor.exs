@@ -11,16 +11,12 @@ structure_parameters = %{
   presentation: :argmax
 }
 
-network = NN.create(structure_parameters)
-
 initialization_parameters = %{
   distribution: :normal,
   deviation:    1,
   mean:         0,
   modifier:     fn(value, inputs, _outputs) -> value / :math.sqrt(inputs) end
 }
-
-NN.initialize(initialization_parameters, network)
 
 training_data = [
   {Matrix.new(1, 2, [[0, 0]]), Matrix.new(1, 2, [[1, 0]])},
@@ -48,8 +44,11 @@ parameters = %{
   workers:       2
 }
 
-NN.process(data, parameters, network) |> NN.result
-
+structure_parameters
+|> NN.create
+|> NN.initialize(initialization_parameters)
+|> NN.process(data, parameters)
+|> NN.result
 |> Enum.map(fn({id, output}) ->
   IO.puts "------------------------------"
   IO.puts "Input ID: #{id}"

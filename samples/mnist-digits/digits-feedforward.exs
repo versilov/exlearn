@@ -40,7 +40,7 @@ initialization_parameters = %{
   minimum:      -1
 }
 
-NN.initialize(initialization_parameters, network)
+NN.initialize(network, initialization_parameters)
 
 # If you already have a saved state you can load it with the following:
 # NN.load("samples/mnist-digits/saved_network.el1", network)
@@ -77,14 +77,14 @@ parameters = %{
 
 # Starts the notifications stream which will output events to stdout without
 # blocking execution or the prompt.
-NN.notifications(:start, network)
+NN.notifications(network, :start)
 
 # Trains the network. Blocks untill the training finishes and returns the
 # prediction.
-result = NN.process(data, parameters, network) |> NN.result
+result = NN.process(network, data, parameters) |> NN.result
 
 # Stops the notification stream.
-NN.notifications(:stop, network)
+NN.notifications(network, :stop)
 
 # Displays the prediction to stdout.
 Enum.map(result, fn({id, output}) ->
@@ -96,4 +96,4 @@ Enum.map(result, fn({id, output}) ->
 end)
 
 # Saves the network state so it can be loaded back later.
-NN.save("samples/mnist-digits/saved_network.el1", network)
+NN.save(network, "samples/mnist-digits/saved_network.el1")

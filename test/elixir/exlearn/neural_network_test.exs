@@ -28,7 +28,7 @@ defmodule ExLearn.NeuralNetworkTest do
       minimum:      -1,
     }
 
-    NeuralNetwork.initialize(initialization_parameters, network)
+    NeuralNetwork.initialize(network, initialization_parameters)
 
     training_data = [
       {Matrix.new(1, 1, [[0]]), Matrix.new(1, 1, [[0]])},
@@ -110,10 +110,10 @@ defmodule ExLearn.NeuralNetworkTest do
   test "#load responds with :ok", %{setup: setup} do
     %{network: network} = setup
 
-    path = TestUtil.temp_file_path("exlearn-neural_network_test")
-    :ok = NeuralNetwork.save(path, network)
+    path     = TestUtil.temp_file_path("exlearn-neural_network_test")
+    ^network = NeuralNetwork.save(network, path)
 
-    assert NeuralNetwork.load(path, network) == :ok
+    assert NeuralNetwork.load(network, path) == network
 
     :ok = File.rm(path)
   end
@@ -124,9 +124,9 @@ defmodule ExLearn.NeuralNetworkTest do
     :ok = Notification.push("Message 1", network)
 
     assert capture_io(fn ->
-      NeuralNetwork.notifications(:start, network)
+      NeuralNetwork.notifications(network, :start)
       :ok = Notification.push("Message 2", network)
-      NeuralNetwork.notifications(:stop,  network)
+      NeuralNetwork.notifications(network, :stop)
     end) == "Message 1\nMessage 2\n"
   end
 
@@ -136,20 +136,18 @@ defmodule ExLearn.NeuralNetworkTest do
     :ok = Notification.push("Message 1", network)
 
     assert capture_io(fn ->
-      network_with_pid = NeuralNetwork.notifications(:start, network)
-      %{notification_pid: notification_pid} = network_with_pid
+      ^network = NeuralNetwork.notifications(network, :start)
 
       :ok = Notification.push("Message 2", network)
-      NeuralNetwork.notifications(:stop,  network_with_pid)
+      NeuralNetwork.notifications(network, :stop)
 
-      refute Process.alive?(notification_pid)
     end) == "Message 1\nMessage 2\n"
   end
 
   test "#predict responds with a list of numbers", %{setup: setup} do
     %{data: data, network: network} = setup
 
-    result = NeuralNetwork.predict(data, network)
+    result = NeuralNetwork.predict(network, data)
     |> NeuralNetwork.result
 
     assert result |> is_list
@@ -162,7 +160,7 @@ defmodule ExLearn.NeuralNetworkTest do
   test "#predict with parameters responds with a list of numbers", %{setup: setup} do
     %{data: data, parameters: parameters, network: network} = setup
 
-    result = NeuralNetwork.predict(data, parameters, network)
+    result = NeuralNetwork.predict(network, data, parameters)
     |> NeuralNetwork.result
 
     assert result |> is_list
@@ -175,7 +173,7 @@ defmodule ExLearn.NeuralNetworkTest do
   test "#process responds with a list of numbers", %{setup: setup} do
     %{data: data, parameters: parameters, network: network} = setup
 
-    result = NeuralNetwork.process(data, parameters, network)
+    result = NeuralNetwork.process(network, data, parameters)
     |> NeuralNetwork.result
 
     assert result |> is_list
@@ -190,7 +188,7 @@ defmodule ExLearn.NeuralNetworkTest do
 
     path = TestUtil.temp_file_path("exlearn-neural_network_test")
 
-    assert NeuralNetwork.save(path, network) == :ok
+    assert NeuralNetwork.save(network, path) == network
 
     :ok = File.rm(path)
   end
@@ -198,7 +196,7 @@ defmodule ExLearn.NeuralNetworkTest do
   test "#test responds with :ok", %{setup: setup} do
     %{data: data, parameters: parameters, network: network} = setup
 
-    result = NeuralNetwork.test(data, parameters, network)
+    result = NeuralNetwork.test(network, data, parameters)
     |> NeuralNetwork.result
 
     assert result == :no_data
@@ -207,7 +205,7 @@ defmodule ExLearn.NeuralNetworkTest do
   test "#train responds with :ok", %{setup: setup} do
     %{data: data, parameters: parameters, network: network} = setup
 
-    result = NeuralNetwork.train(data, parameters, network)
+    result = NeuralNetwork.train(network, data, parameters)
     |> NeuralNetwork.result
 
     assert result == :no_data

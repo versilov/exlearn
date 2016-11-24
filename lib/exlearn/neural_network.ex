@@ -64,39 +64,43 @@ defmodule ExLearn.NeuralNetwork do
   Initalizez the neural network.
   """
   @spec initialize(map, map) :: pid
-  def initialize(parameters, network) do
+  def initialize(network, parameters) do
     Store.get(network)
     |> Builder.initialize(parameters)
     |> Store.set(network)
+
+    network
   end
 
   @doc """
   Loads the network biases and weights from a file.
   """
-  @spec load(String.t, any) :: :ok
-  def load(name, network) do
-    Store.get(network)
-    |> Persistence.load(name)
-    |> Store.set(network)
+  @spec load(map, String.t) :: :ok
+  def load(network, name) do
+    :ok = Store.get(network) |> Persistence.load(name) |> Store.set(network)
+
+    network
   end
 
   @doc """
   Starts the notification stream.
   """
-  @spec notifications(atom, any) :: Task.t
-  def notifications(:start, network) do
+  @spec notifications(any, atom) :: Task.t
+  def notifications(network, :start) do
     %{notification: notification} = network
 
     pid = Notification.stream(notification)
 
     Map.put(network, :notification_pid, pid)
+
+    network
   end
 
   @doc """
   Stops the notification stream.
   """
   @spec notifications(atom, any) :: Task.t
-  def notifications(:stop, network) do
+  def notifications(network, :stop) do
     %{notification: notification} = network
 
     Notification.done(notification)
@@ -108,13 +112,15 @@ defmodule ExLearn.NeuralNetwork do
 
         Map.delete(network, :notification_pid)
     end
+
+    network
   end
 
   @doc """
   Makes a prediction.
   """
-  @spec predict(any, any) :: any
-  def predict(data, network) do
+  @spec predict(map, any) :: any
+  def predict(network, data) do
     %{accumulator: accumulator} = network
 
     %{predict: predict} = data
@@ -125,7 +131,7 @@ defmodule ExLearn.NeuralNetwork do
   end
 
   @spec predict(any, any, any) :: any
-  def predict(data, parameters, network) do
+  def predict(network, data, parameters) do
     %{accumulator: accumulator} = network
 
     %{predict: predict} = data
@@ -136,7 +142,7 @@ defmodule ExLearn.NeuralNetwork do
   end
 
   @spec process(any, any, any) :: any
-  def process(data, parameters, network) do
+  def process(network, data, parameters) do
     %{accumulator: accumulator} = network
 
     Accumulator.process(data, parameters, accumulator)
@@ -157,17 +163,18 @@ defmodule ExLearn.NeuralNetwork do
   @doc """
   Saves the network biases and weights to a file.
   """
-  @spec save(String.t, any) :: :ok
-  def save(name, network) do
-    Store.get(network)
-    |> Persistence.save(name)
+  @spec save(any, String.t) :: :ok
+  def save(network, name) do
+    :ok = Store.get(network) |> Persistence.save(name)
+
+    network
   end
 
   @doc """
   Tests the neural network.
   """
-  @spec test(map, map, any) :: any
-  def test(data, parameters, network) do
+  @spec test(map, map, map) :: any
+  def test(network, data, parameters) do
     %{accumulator: accumulator} = network
 
     %{test: test} = data
@@ -180,8 +187,8 @@ defmodule ExLearn.NeuralNetwork do
   @doc """
   Trains the neural network.
   """
-  @spec train(map, map, any) :: any
-  def train(data, parameters, network) do
+  @spec train(map, map, map) :: any
+  def train(network, data, parameters) do
     %{accumulator: accumulator} = network
 
     %{train: train} = data
