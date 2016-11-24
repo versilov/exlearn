@@ -5,16 +5,16 @@
 
 Elixir Machine Learning library. (Extreemly early pre pre alpha!!!)
 
+## Usage
+
+DO NOT USE!
+
 ## Examples
 
 Take a look inside the [samples](./samples) directory.
 
 For a more complex example check out the mnist digits
 [sample](samples/mnist-digits/digits-feedforward.exs).
-
-## Usage
-
-DO NOT USE!
 
 ## Public API
 
@@ -24,8 +24,8 @@ dramatically.
 Only the items described in the following documents are can be considered as
 part of the public API.
 
-* [Elixir modules API reference](.docs/elixir_modules.md)
-* [Data file reference](.docs/data_file.md)
+* [Elixir modules API reference](./docs/elixir_modules.md)
+* [Data file reference](./docs/data_file.md)
 
 ## Development
 
