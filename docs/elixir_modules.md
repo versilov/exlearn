@@ -26,6 +26,8 @@ network = create(structure)
 
 ##### `structure`
 
+A `map` that defines the neural network structure.
+
 | Key Name     | Value Type | About                                          |
 |--------------|------------|------------------------------------------------|
 | **layers**   | map        | [layers schema](#nn-create-layers)             |
@@ -34,7 +36,7 @@ network = create(structure)
 
 #### Return
 
-The function return a handle that must be passed to the other functions in order
+The function returns a handle that must be passed to the other functions in order
 for them to know on which network to operate.
 
 #### Schemas
