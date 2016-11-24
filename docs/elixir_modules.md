@@ -6,7 +6,7 @@ Table items in bold are mandatory.
 
 ### `#create\1`
 
-Initializes the neural network processes and returns a handle. 
+Creates the neural network processes and returns a handle.
 
 ```elixir
 structure = %{
@@ -114,3 +114,21 @@ Default Value: `:raw`
 | `{:prelu, alpha: alpha}` | tuple(atom, list(atom, float)) |       |
 
 Default Value: `:logistic`
+
+### `#initialize\2`
+
+### `#load\2`
+
+### `#notification\2`
+
+### `#predict\2` and `#predict\3`
+
+### `#process\3`
+
+### `#result\1`
+
+### `#save\2`
+
+### `#test\3`
+
+### `#train\3`

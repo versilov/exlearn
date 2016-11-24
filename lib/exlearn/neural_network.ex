@@ -1,6 +1,8 @@
 defmodule ExLearn.NeuralNetwork do
   @moduledoc """
-  A neural network.
+  Handles the lifecycle of a neural network.
+
+  All functions inside this module are part of the public API.
   """
 
   alias ExLearn.NeuralNetwork.Accumulator
@@ -11,7 +13,24 @@ defmodule ExLearn.NeuralNetwork do
   alias ExLearn.NeuralNetwork.Store
 
   @doc """
-  Creates the neural network from the structure parameters.
+  Creates the neural network processes and returns a handle.
+
+  Example usage:
+
+      structure = %{
+        layers: %{
+          input:   %{size: 784, dropout: 0.2                       },
+          hidden: [%{size: 100, dropout: 0.5, activation: :logistic}],
+          output:  %{size: 10,                activation: :logistic}
+        },
+        objective:    :cross_entropy,
+        presentation: :argmax
+      }
+
+      network = create(structure)
+
+  For a more detailed description of the structure parameter see the
+  `elixir_modules.md` file inside the `docs` directory.
   """
   @spec create(map) :: map
   def create(structure) do
