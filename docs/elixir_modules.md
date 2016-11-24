@@ -91,7 +91,7 @@ Default Value: `:raw`
 | Key Name   | Value Type        | About                                        |
 |------------|-------------------|----------------------------------------------|
 | **size**   | pos_integer       | The number of neurons for the current layer. |
-| activation | atom &#124; tuple | [activation schema](#nn-create-activation).  |
+| activation | atom &#124; tuple | [activation schema](#nn-create-activation)   |
 | name       | String.t          | Any non empty elixir string.                 |
 
 ##### <a name="nn-create-activation"></a> `activation`
