@@ -136,11 +136,13 @@ defmodule ExLearn.NeuralNetworkTest do
     :ok = Notification.push("Message 1", network)
 
     assert capture_io(fn ->
-      ^network = NeuralNetwork.notifications(network, :start)
+      network_with_pid = NeuralNetwork.notifications(network, :start)
+      %{notification_pid: notification_pid} = network_with_pid
 
       :ok = Notification.push("Message 2", network)
       NeuralNetwork.notifications(network, :stop)
 
+      refute Process.alive?(notification_pid)
     end) == "Message 1\nMessage 2\n"
   end
 
