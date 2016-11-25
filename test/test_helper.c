@@ -17,6 +17,7 @@
 #include "c/worker/sample_index_test.c"
 #include "c/worker/worker_data_bundle_test.c"
 #include "c/worker/worker_data_test.c"
+#include "c/worker/worker_resource_test.c"
 #include "c/matrix_test.c"
 #include "c/network_state_test.c"
 
@@ -116,6 +117,10 @@ int main() {
   test_worker_data_new();
   test_worker_data_initialize();
   test_worker_data_read();
+
+  // Tests for: c/worker/worker_data_test.c
+  test_worker_resource_free();
+  test_worker_resource_new();
 
   // Tests for: c/matrix_test.c
   test_matrix_clone();

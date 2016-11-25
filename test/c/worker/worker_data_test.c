@@ -1,4 +1,3 @@
-#include "../../../native/include/worker/bundle_paths.h"
 #include "../../../native/include/worker/worker_data.h"
 
 #include "../fixtures/file_fixtures.c"

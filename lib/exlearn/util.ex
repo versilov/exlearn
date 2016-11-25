@@ -6,7 +6,7 @@ defmodule ExLearn.Util do
     times(0, count, data, accumulator, function)
   end
 
-  defp times(current, count, data, accumulator, function)
+  defp times(current, count, _data, accumulator, _function)
   when current == count
   do
     accumulator
