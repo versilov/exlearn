@@ -117,7 +117,7 @@ void
 matrix_dot_and_add(
   const Matrix first, const Matrix second, const Matrix third, Matrix result
 ) {
-  int32_t data_size = (int32_t) (first[0] * first[1] + 2);
+  int32_t data_size = (int32_t) (first[0] * second[1] + 2);
 
   result[0] = first[0];
   result[1] = second[1];
