@@ -24,6 +24,9 @@ BatchData *
 batch_data_new(WorkerData *data, int32_t batch_length);
 
 void
+batch_data_initialize(BatchData *batch_data, WorkerData *data, int32_t batch_length);
+
+void
 shuffle_batch_data_indices(BatchData *data);
 
 SampleIndex *

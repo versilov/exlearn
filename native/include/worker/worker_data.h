@@ -19,6 +19,9 @@ WorkerData *
 worker_data_new(int32_t count);
 
 void
+worker_data_initialize(WorkerData *worker_data, int32_t count);
+
+void
 worker_data_read(BundlePaths *paths, WorkerData *data);
 
 #endif

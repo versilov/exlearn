@@ -18,34 +18,39 @@ batch_data_free(BatchData **data_address) {
 
 BatchData *
 batch_data_new(WorkerData *data, int32_t batch_length) {
+  BatchData *batch_data = malloc(sizeof(BatchData));
+
+  batch_data_initialize(batch_data, data, batch_length);
+
+  return batch_data;
+}
+
+void
+batch_data_initialize(BatchData *batch_data, WorkerData *data, int32_t batch_length) {
   int32_t           data_length, data_index;
-  BatchData        *batch;
   WorkerDataBundle *bundle;
 
-  batch       = malloc(sizeof(BatchData));
   data_length = 0;
 
   for (int32_t index = 0; index < data->count; index += 1) {
     data_length += data->bundle[index]->count;
   }
 
-  batch->batch_length = batch_length;
-  batch->data_length  = data_length;
+  batch_data->batch_length = batch_length;
+  batch_data->data_length  = data_length;
 
-  batch->sample_index = malloc(sizeof(SampleIndex *) * data_length);
+  batch_data->sample_index = malloc(sizeof(SampleIndex *) * data_length);
 
   data_index = 0;
   for (int32_t bundle_index = 0; bundle_index < data->count; bundle_index += 1) {
     bundle = data->bundle[bundle_index];
 
     for (int32_t sample_index = 0; sample_index < bundle->count; sample_index += 1) {
-      batch->sample_index[data_index] = sample_index_new(bundle_index, sample_index);
+      batch_data->sample_index[data_index] = sample_index_new(bundle_index, sample_index);
 
       data_index += 1;
     }
   }
-
-  return batch;
 }
 
 void

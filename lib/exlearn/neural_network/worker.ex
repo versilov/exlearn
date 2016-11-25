@@ -13,8 +13,7 @@ defmodule ExLearn.NeuralNetwork.Worker do
 
   @spec load_nifs :: :ok
   def load_nifs do
-    # TODO: worker_nifs segfaults, most likely when calling the nif destructor.
-    :ok #= :erlang.load_nif('./priv/worker_nifs', 0)
+    :ok = :erlang.load_nif('./priv/worker_nifs', 0)
   end
 
   @spec create_batch_data(binary, pos_integer) :: binary

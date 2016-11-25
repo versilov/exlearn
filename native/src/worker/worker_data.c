@@ -21,14 +21,19 @@ WorkerData *
 worker_data_new(int32_t count) {
   WorkerData *data = malloc(sizeof(WorkerData));
 
-  data->count  = count;
-  data->bundle = malloc(sizeof(WorkerData) * count);
-
-  for (int32_t index = 0; index < data->count; index += 1) {
-    data->bundle[index] = NULL;
-  }
+  worker_data_initialize(data, count);
 
   return data;
+}
+
+void
+worker_data_initialize(WorkerData *worker_data, int32_t count) {
+  worker_data->count  = count;
+  worker_data->bundle = malloc(sizeof(WorkerDataBundle) * count);
+
+  for (int32_t index = 0; index < worker_data->count; index += 1) {
+    worker_data->bundle[index] = NULL;
+  }
 }
 
 void

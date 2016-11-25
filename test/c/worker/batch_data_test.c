@@ -48,6 +48,32 @@ static void test_batch_data_new() {
   batch_data_free(&batch);
 }
 
+static void test_batch_data_initialize() {
+  BatchData   *batch;
+  BundlePaths *paths = bundle_paths_new(2);
+  WorkerData  *data  = worker_data_new(2);
+
+  paths->path[0] = create_first_data_bundle_file();
+  paths->path[1] = create_second_data_bundle_file();
+
+  worker_data_read(paths, data);
+
+  batch = malloc(sizeof(BatchData));
+  batch_data_initialize(batch, data, 1);
+
+  assert(batch->data_length  == 3); /* LCOV_EXCL_BR_LINE */
+  assert(batch->batch_length == 1); /* LCOV_EXCL_BR_LINE */
+
+  assert(batch->sample_index[0]->bundle == 0); /* LCOV_EXCL_BR_LINE */
+  assert(batch->sample_index[0]->index  == 0); /* LCOV_EXCL_BR_LINE */
+  assert(batch->sample_index[1]->bundle == 1); /* LCOV_EXCL_BR_LINE */
+  assert(batch->sample_index[1]->index  == 0); /* LCOV_EXCL_BR_LINE */
+  assert(batch->sample_index[2]->bundle == 1); /* LCOV_EXCL_BR_LINE */
+  assert(batch->sample_index[2]->index  == 1); /* LCOV_EXCL_BR_LINE */
+
+  batch_data_free(&batch);
+}
+
 static void test_shuffle_batch_data_indices() {
   BatchData   *batch;
   BundlePaths *paths = bundle_paths_new(2);

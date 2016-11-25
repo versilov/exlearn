@@ -13,19 +13,22 @@
 //------------------------------------------------------------------------------
 
 ErlNifResourceType *BATCH_DATA;
-
-static void batch_data_destructor(ErlNifEnv *_env, void *batch_data) {
-  (void)(_env);
-
-  batch_data_free((BatchData **)(batch_data));
-}
-
 ErlNifResourceType *WORKER_DATA;
 
-static void worker_data_destructor(ErlNifEnv *_env, void *worker_data) {
+static void batch_data_destructor(ErlNifEnv *_env, void *resource_content) {
   (void)(_env);
 
-  worker_data_free((WorkerData **)(&worker_data));
+  BatchData *batch_data = (BatchData *)(resource_content);
+
+  batch_data_free(&batch_data);
+}
+
+static void worker_data_destructor(ErlNifEnv *_env, void *resource_content) {
+  (void)(_env);
+
+  WorkerData *worker_data = (WorkerData *)(resource_content);
+
+  worker_data_free(&worker_data);
 }
 
 //------------------------------------------------------------------------------
@@ -34,7 +37,7 @@ static void worker_data_destructor(ErlNifEnv *_env, void *worker_data) {
 
 static ERL_NIF_TERM
 create_batch_data(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
-  BatchData    *batch_data, *batch_data_resource;
+  BatchData    *batch_data;
   WorkerData   *worker_data;
   ERL_NIF_TERM  result;
   int64_t       batch_length;
@@ -46,15 +49,12 @@ create_batch_data(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
   if (!enif_get_int64(env, argv[1], &batch_length))
     return enif_make_badarg(env);
 
-  batch_data = batch_data_new(worker_data, batch_length);
+  batch_data = enif_alloc_resource(BATCH_DATA, sizeof(BatchData));
+  batch_data_initialize(batch_data, worker_data, batch_length);
   shuffle_batch_data_indices(batch_data);
 
-  batch_data_resource = enif_alloc_resource(BATCH_DATA, sizeof(BatchData));
-  memcpy(batch_data_resource, batch_data, sizeof(BatchData));
-  free(batch_data);
-
-  result = enif_make_resource(env, batch_data_resource);
-  enif_release_resource(&batch_data_resource);
+  result = enif_make_resource(env, batch_data);
+  enif_release_resource(&batch_data);
 
   return result;
 }
@@ -62,11 +62,10 @@ create_batch_data(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
 static ERL_NIF_TERM
 create_worker_data(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
   BundlePaths  *bundle_paths;
-  ErlNifBinary  path;
   ERL_NIF_TERM  list, head, tail, result;
-  unsigned int  index, length;
+  unsigned int  index, length, string_length;
   char         *new_path;
-  WorkerData   *worker_data, *worker_data_resource;
+  WorkerData   *worker_data;
 
   (void)(argc);
 
@@ -79,25 +78,25 @@ create_worker_data(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
   index = 0;
   tail  = list;
   while (enif_get_list_cell(env, tail, &head, &tail)) {
-    if (!enif_inspect_binary(env, head, &path)) return enif_make_badarg(env);
+    if (!enif_is_list(env, head)) return enif_make_badarg(env);
 
-    new_path = malloc(sizeof(char) * path.size);
-    memcpy(new_path, path.data, path.size);
+    enif_get_list_length(env, head, &string_length);
+    new_path = malloc(sizeof(char) * string_length + 1);
+
+    if (!enif_get_string(env, head, new_path, string_length + 1, ERL_NIF_LATIN1))
+      return enif_make_badarg(env);
 
     bundle_paths->path[index] = new_path;
 
     index += 1;
   }
 
-  worker_data = worker_data_new(length);
+  worker_data = enif_alloc_resource(WORKER_DATA, sizeof(WorkerData));
+  worker_data_initialize(worker_data, length);
   worker_data_read(bundle_paths, worker_data);
 
-  worker_data_resource = enif_alloc_resource(WORKER_DATA, sizeof(WorkerData));
-  memcpy(worker_data_resource, worker_data, sizeof(WorkerData));
-  free(worker_data);
-
-  result = enif_make_resource(env, worker_data_resource);
-  enif_release_resource(&worker_data_resource);
+  result = enif_make_resource(env, worker_data);
+  enif_release_resource(&worker_data);
 
   bundle_paths_free(&bundle_paths);
 

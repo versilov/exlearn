@@ -94,6 +94,7 @@ int main() {
   // Tests for: c/worker/batch_data_test.c
   test_batch_data_free();
   test_batch_data_new();
+  test_batch_data_initialize();
   test_shuffle_batch_data_indices();
   test_batch_data_get_sample_index();
 
@@ -113,6 +114,7 @@ int main() {
   // Tests for: c/worker/worker_data_test.c
   test_worker_data_free();
   test_worker_data_new();
+  test_worker_data_initialize();
   test_worker_data_read();
 
   // Tests for: c/matrix_test.c

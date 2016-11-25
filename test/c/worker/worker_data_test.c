@@ -6,6 +6,14 @@
 static void test_worker_data_free() {
   WorkerData *data = worker_data_new(4);
 
+  worker_data_free(&data);
+
+  assert(data == NULL); /* LCOV_EXCL_BR_LINE */
+}
+
+static void test_worker_data_new() {
+  WorkerData *data = worker_data_new(4);
+
   assert(data->count  == 4   ); /* LCOV_EXCL_BR_LINE */
   assert(data->bundle != NULL); /* LCOV_EXCL_BR_LINE */
 
@@ -16,12 +24,18 @@ static void test_worker_data_free() {
   worker_data_free(&data);
 }
 
-static void test_worker_data_new() {
-  WorkerData *data = worker_data_new(4);
+static void test_worker_data_initialize() {
+  WorkerData *data = malloc(sizeof(WorkerData));
+  worker_data_initialize(data, 4);
+
+  assert(data->count  == 4   ); /* LCOV_EXCL_BR_LINE */
+  assert(data->bundle != NULL); /* LCOV_EXCL_BR_LINE */
+
+  for (int32_t index = 0; index < data->count; index += 1) {
+    assert(data->bundle[index] == NULL); /* LCOV_EXCL_BR_LINE */
+  }
 
   worker_data_free(&data);
-
-  assert(data == NULL); /* LCOV_EXCL_BR_LINE */
 }
 
 static void test_worker_data_read() {

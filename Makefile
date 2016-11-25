@@ -30,7 +30,7 @@ $(OBJECTS): $(OBJ_DIRECTORY)/%.o : $(SRC_DIRECTORY)/%.c
 $(OBJECTS_DIRECTORIES):
 	@mkdir -p $(OBJECTS_DIRECTORIES)
 
-$(NIFS_OBJECTS): $(PRIV_DIRECTORY)/%.so : $(NIFS_DIRECTORY)/%.c
+$(NIFS_OBJECTS): $(PRIV_DIRECTORY)/%.so : $(NIFS_DIRECTORY)/%.c $(OBJECTS)
 	@echo 'Creating nif: '$@
 	@$(CC) $(CFLAGS) $(OBJECTS) -o $@ $< $(LDFLAGS)
 
