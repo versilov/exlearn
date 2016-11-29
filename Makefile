@@ -3,7 +3,7 @@
 
 ERL_INCLUDE_PATH = $(shell erl -eval 'io:format("~s", [lists:concat([code:root_dir(), "/erts-", erlang:system_info(version), "/include"])])' -s init stop -noshell)
 
-CFLAGS  = -fPIC -I$(ERL_INCLUDE_PATH) -O3 -shared -std=c11 -Wall -Wextra
+CFLAGS  = -fPIC -I$(ERL_INCLUDE_PATH) -O3 -shared -std=gnu11 -Wall -Wextra
 LDFLAGS = -lblas -lgsl -lgslcblas -lm
 
 SRC_DIRECTORY = ./native/src
@@ -37,7 +37,7 @@ $(NIFS_OBJECTS): $(PRIV_DIRECTORY)/%.so : $(NIFS_DIRECTORY)/%.c $(OBJECTS)
 $(PRIV_DIRECTORY):
 	@mkdir -p $(PRIV_DIRECTORY)
 
-TEST_CFLAGS  = -g -O0 -std=c11 -Wall -Wextra --coverage
+TEST_CFLAGS  = -g -O0 -std=gnu11 -Wall -Wextra --coverage
 TEST_LDFLAGS = -lgcov
 
 TEST_OBJ_DIRECTORY = ./test/c/obj

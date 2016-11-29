@@ -136,6 +136,7 @@ int main() {
   test_matrix_dot_nt();
   test_matrix_dot_tn();
   test_matrix_first();
+  test_matrix_inspect();
   test_matrix_max();
   test_matrix_multiply();
   test_matrix_multiply_with_scalar();

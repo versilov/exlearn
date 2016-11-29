@@ -152,6 +152,27 @@ static void test_matrix_first() {
   assert(matrix_first(matrix) == 1); /* LCOV_EXCL_BR_LINE */
 }
 
+static void
+test_matrix_inspect_body() {
+  printf("%d\n", 100);
+  printf("%d\n", 100);
+  printf("%d\n", 100);
+  printf("%d\n", 100);
+  printf("%d\n", 100);
+  printf("%d\n", 100);
+  printf("%d\n", 100);
+  printf("%d\n", 100);
+  printf("%d\n", 100);
+  printf("%d\n", 100);
+  printf("%d\n", 100);
+}
+
+static void test_matrix_inspect() {
+  printf("%d\n", 0);
+  char *path = capture_stdout(test_matrix_inspect_body);
+  printf("%d\n", 200);
+}
+
 static void test_matrix_max() {
   float matrix[8] = {2, 3, 1, 4, 2, 5, 3, 6};
 
