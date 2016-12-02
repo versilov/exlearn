@@ -1,5 +1,6 @@
 #include "../../../native/include/worker/batch_data.h"
 
+#include "../fixtures/batch_data_fixtures.c"
 #include "../fixtures/file_fixtures.c"
 
 //-----------------------------------------------------------------------------
@@ -72,6 +73,50 @@ static void test_batch_data_initialize() {
   assert(batch->sample_index[2]->index  == 1); /* LCOV_EXCL_BR_LINE */
 
   batch_data_free(&batch);
+}
+
+static void test_batch_data_inspect_callback() {
+  BatchData *batch_data = batch_data_simple();
+
+  batch_data_inspect(batch_data);
+
+  batch_data_free(&batch_data);
+}
+
+static void test_batch_data_inspect() {
+  char *result   = capture_stdout(test_batch_data_inspect_callback);
+  char *expected =
+    "<#BatchData\n"
+    "  batch_length: 1\n"
+    "  data_length:  1\n"
+    "  sample_index:\n"
+    "    0: <#SampleIndex bundle: 1 index: 1>>\n";
+
+  for(int32_t index = 0; index < 106; index += 1) {
+    assert(result[index] == expected[index]); /* LCOV_EXCL_BR_LINE */
+  }
+}
+
+static void test_batch_data_inspect_internal_callback() {
+  BatchData *batch_data = batch_data_simple();
+
+  batch_data_inspect_internal(batch_data, 3);
+
+  batch_data_free(&batch_data);
+}
+
+static void test_batch_data_inspect_internal() {
+  char *result   = capture_stdout(test_batch_data_inspect_internal_callback);
+  char *expected =
+    "<#BatchData\n"
+    "     batch_length: 1\n"
+    "     data_length:  1\n"
+    "     sample_index:\n"
+    "       0: <#SampleIndex bundle: 1 index: 1>>";
+
+  for(int32_t index = 0; index < 117; index += 1) {
+    assert(result[index] == expected[index]); /* LCOV_EXCL_BR_LINE */
+  }
 }
 
 static void test_shuffle_batch_data_indices() {

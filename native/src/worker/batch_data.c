@@ -54,6 +54,48 @@ batch_data_initialize(BatchData *batch_data, WorkerData *data, int32_t batch_len
 }
 
 void
+batch_data_inspect(BatchData *batch_data) {
+  printf("<#BatchData\n");
+
+  printf("  batch_length: %d\n", batch_data->batch_length);
+  printf("  data_length:  %d\n", batch_data->data_length );
+  printf("  sample_index:\n");
+
+  for(int index = 0; index < batch_data->data_length; index =+ 1) {
+    printf("    %d: ", index);
+
+    sample_index_inspect_internal(batch_data->sample_index[index], 0);
+
+    if (index < batch_data->data_length - 1) printf("\n");
+  }
+  printf(">\n");
+}
+
+void
+batch_data_inspect_internal(BatchData *batch_data, int32_t indentation) {
+  printf("<#BatchData\n");
+
+  print_spaces(indentation);
+  printf("  batch_length: %d\n", batch_data->batch_length);
+
+  print_spaces(indentation);
+  printf("  data_length:  %d\n", batch_data->data_length );
+
+  print_spaces(indentation);
+  printf("  sample_index:\n");
+
+  for(int index = 0; index < batch_data->data_length; index =+ 1) {
+    print_spaces(indentation);
+    printf("    %d: ", index);
+
+    sample_index_inspect_internal(batch_data->sample_index[index], 0);
+
+    if (index < batch_data->data_length - 1) printf("\n");
+  }
+  printf(">\n");
+}
+
+void
 shuffle_batch_data_indices(BatchData *data) {
   gsl_rng *rng;
 

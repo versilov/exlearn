@@ -98,6 +98,8 @@ int main() {
   test_batch_data_free();
   test_batch_data_new();
   test_batch_data_initialize();
+  test_batch_data_inspect();
+  test_batch_data_inspect_internal();
   test_shuffle_batch_data_indices();
   test_batch_data_get_sample_index();
 

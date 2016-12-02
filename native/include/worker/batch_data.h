@@ -27,6 +27,12 @@ void
 batch_data_initialize(BatchData *batch_data, WorkerData *data, int32_t batch_length);
 
 void
+batch_data_inspect(BatchData *batch_data);
+
+void
+batch_data_inspect_internal(BatchData *batch_data, int32_t indentation);
+
+void
 shuffle_batch_data_indices(BatchData *data);
 
 SampleIndex *
