@@ -197,7 +197,7 @@ matrix_first(const Matrix matrix) {
 
 void
 matrix_inspect(const Matrix matrix) {
-  int32_t length = matrix[0] + matrix[1] + 2;
+  int32_t length = matrix[0] * matrix[1] + 2;
 
   printf("<#Matrix\n");
 
@@ -208,14 +208,14 @@ matrix_inspect(const Matrix matrix) {
   for(int32_t index = 2; index < length; index += 1) {
     printf(" %f", matrix[index]);
   }
+
   printf(">\n");
 }
 
 void
-matrix_inspect_indented(const Matrix matrix, int32_t indentation) {
-  int32_t length = matrix[0] + matrix[1] + 2;
+matrix_inspect_internal(const Matrix matrix, int32_t indentation) {
+  int32_t length = matrix[0] * matrix[1] + 2;
 
-  print_spaces(indentation);
   printf("<#Matrix\n");
 
   print_spaces(indentation);
@@ -229,7 +229,7 @@ matrix_inspect_indented(const Matrix matrix, int32_t indentation) {
   for(int32_t index = 2; index < length; index += 1) {
     printf(" %f", matrix[index]);
   }
-  printf(">\n");
+  printf(">");
 }
 
 float

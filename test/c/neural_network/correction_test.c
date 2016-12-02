@@ -131,6 +131,7 @@ static void test_correction_from_char_array() {
 }
 
 static void test_correction_inspect_body() {
+  Correction *correction = correction_2_layers_simple();
 
   correction_inspect(correction);
 }
@@ -142,29 +143,32 @@ static void test_correction_inspect() {
     "  layers: 2\n"
     "  biases:\n"
     "    0: <#Matrix\n"
-    "         rows:    1\n"
-    "         columns: 2\n"
+    "         rows:    1.000000\n"
+    "         columns: 2.000000\n"
     "         values:  0.000000 1.000000>\n"
     "    1: <#Matrix\n"
-    "         rows:    1\n"
-    "         columns: 3\n"
+    "         rows:    1.000000\n"
+    "         columns: 3.000000\n"
     "         values:  0.000000 1.000000 2.000000>\n"
-    "  weights\n"
+    "  weights:\n"
     "    0: <#Matrix\n"
-    "         rows:    1\n"
-    "         columns: 2\n"
-    "         values:  0.000000 1.000000>"
+    "         rows:    2.000000\n"
+    "         columns: 2.000000\n"
+    "         values:  0.000000 1.000000 2.000000 3.000000>\n"
     "    1: <#Matrix\n"
-    "         rows:    1\n"
-    "         columns: 3\n"
-    "         values:  0.000000 1.000000 2.000000 3.000000>>";
+    "         rows:    2.000000\n"
+    "         columns: 3.000000\n"
+    "         values:  0.000000 1.000000 2.000000 3.000000 4.000000 5.000000>>\n";
 
-  for (int32_t index = 0; index < 106; index += 1) {
+  for (int32_t index = 0; index < 538; index += 1) {
     assert(result[index] == expected[index]);
   }
 }
 
 static void test_correction_inspect_indented_body() {
+  Correction *correction = correction_2_layers_simple();
+
+  correction_inspect_indented(correction, 3);
 }
 
 static void test_correction_inspect_indented() {
@@ -174,24 +178,24 @@ static void test_correction_inspect_indented() {
     "     layers: 2\n"
     "     biases:\n"
     "       0: <#Matrix\n"
-    "            rows:    1\n"
-    "            columns: 2\n"
+    "            rows:    1.000000\n"
+    "            columns: 2.000000\n"
     "            values:  0.000000 1.000000>\n"
     "       1: <#Matrix\n"
-    "            rows:    1\n"
-    "            columns: 3\n"
+    "            rows:    1.000000\n"
+    "            columns: 3.000000\n"
     "            values:  0.000000 1.000000 2.000000>\n"
-    "     weights\n"
+    "     weights:\n"
     "       0: <#Matrix\n"
-    "            rows:    1\n"
-    "            columns: 2\n"
-    "            values:  0.000000 1.000000>"
+    "            rows:    2.000000\n"
+    "            columns: 2.000000\n"
+    "            values:  0.000000 1.000000 2.000000 3.000000>\n"
     "       1: <#Matrix\n"
-    "            rows:    1\n"
-    "            columns: 3\n"
-    "            values:  0.000000 1.000000 2.000000 3.000000>>";
+    "            rows:    2.000000\n"
+    "            columns: 3.000000\n"
+    "            values:  0.000000 1.000000 2.000000 3.000000 4.000000 5.000000>>";
 
-  for (int32_t index = 0; index < 106; index += 1) {
+  for (int32_t index = 0; index < 594; index += 1) {
     assert(result[index] == expected[index]);
   }
 }

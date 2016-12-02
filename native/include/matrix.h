@@ -55,7 +55,7 @@ void
 matrix_inspect(const Matrix matrix);
 
 void
-matrix_inspect_indented(const Matrix matrix, int32_t indentation);
+matrix_inspect_internal(const Matrix matrix, int32_t indentation);
 
 float
 matrix_max(const Matrix matrix);

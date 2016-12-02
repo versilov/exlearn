@@ -3,8 +3,9 @@
 
 #include <stdint.h>
 
-#include "../../include/matrix.h"
-#include "../../include/network_state.h"
+#include "../matrix.h"
+#include "../network_state.h"
+#include "../utils.h"
 
 typedef struct Correction {
   int32_t  layers;

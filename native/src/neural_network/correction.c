@@ -156,32 +156,49 @@ correction_inspect(const Correction *correction) {
   printf("  biases:\n");
   for(int32_t index = 0; index < correction->layers; index += 1) {
     printf("    %d: ", index);
-    matrix_inspect_indented(correction->biases[index], 8);
+    matrix_inspect_internal(correction->biases[index], 7);
+    printf("\n");
   }
 
   printf("  weights:\n");
   for(int32_t index = 0; index < correction->layers; index += 1) {
     printf("    %d: ", index);
-    matrix_inspect_indented(correction->weights[index], 8);
+    matrix_inspect_internal(correction->weights[index], 7);
+
+    if (index < correction->layers - 1) printf("\n");
   }
+  printf(">\n");
 }
 
 void
 correction_inspect_indented(const Correction *correction, int32_t indentation) {
   printf("<#Correction\n");
+
+  print_spaces(indentation);
   printf("  layers: %d\n", correction->layers);
 
+  print_spaces(indentation);
   printf("  biases:\n");
   for(int32_t index = 0; index < correction->layers; index += 1) {
+    print_spaces(indentation);
     printf("    %d: ", index);
-    matrix_inspect_indented(correction->biases[index], 8);
+
+    matrix_inspect_internal(correction->biases[index], indentation + 7);
+    printf("\n");
   }
 
+  print_spaces(indentation);
   printf("  weights:\n");
   for(int32_t index = 0; index < correction->layers; index += 1) {
+    print_spaces(indentation);
     printf("    %d: ", index);
-    matrix_inspect_indented(correction->weights[index], 8);
+
+    matrix_inspect_internal(correction->weights[index], indentation + 7);
+
+    if (index < correction->layers -1) printf("\n");
   }
+
+  printf(">");
 }
 
 void

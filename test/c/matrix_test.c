@@ -156,8 +156,8 @@ static void
 test_matrix_inspect_body() {
   Matrix matrix = matrix_new(2, 3);
 
-  for (int32_t index = 2; index < 7; index += 1) {
-    matrix[index] = index;
+  for (int32_t index = 2; index < 8; index += 1) {
+    matrix[index] = index - 2;
   }
 
   matrix_inspect(matrix);
@@ -169,33 +169,33 @@ static void test_matrix_inspect() {
     "<#Matrix\n"
     "  rows:    2.000000\n"
     "  columns: 3.000000\n"
-    "  values:  2.000000 3.000000 4.000000 5.000000 6.000000>\n";
+    "  values:  0.000000 1.000000 2.000000 3.000000 4.000000 5.000000>\n";
 
-  for (int32_t index = 0; index < 106; index += 1) {
+  for (int32_t index = 0; index < 104; index += 1) {
     assert(result[index] == expected[index]);
   }
 }
 
 static void
-test_matrix_inspect_indented_body() {
+test_matrix_inspect_internal_body() {
   Matrix matrix = matrix_new(2, 3);
 
-  for (int32_t index = 2; index < 7; index += 1) {
-    matrix[index] = index;
+  for (int32_t index = 2; index < 8; index += 1) {
+    matrix[index] = index - 2;
   }
 
-  matrix_inspect_indented(matrix, 3);
+  matrix_inspect_internal(matrix, 3);
 }
 
-static void test_matrix_inspect_indented() {
-  char *result   = capture_stdout(test_matrix_inspect_indented_body);
+static void test_matrix_inspect_internal() {
+  char *result   = capture_stdout(test_matrix_inspect_internal_body);
   char *expected =
-    "   <#Matrix\n"
+    "<#Matrix\n"
     "     rows:    2.000000\n"
     "     columns: 3.000000\n"
-    "     values:  2.000000 3.000000 4.000000 5.000000 6.000000>\n";
+    "     values:  0.000000 1.000000 2.000000 3.000000 4.000000 5.000000>";
 
-  for (int32_t index = 0; index < 106; index += 1) {
+  for (int32_t index = 0; index < 123; index += 1) {
     assert(result[index] == expected[index]);
   }
 }
