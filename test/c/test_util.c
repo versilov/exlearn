@@ -36,3 +36,20 @@ char * capture_stdout(CapturedIOFunction test_case) {
 
   return path;
 }
+
+char * read_file(char *path) {
+  char *result = NULL;
+  FILE *file   = fopen(path, "r");
+
+  fseek(file, 0L, SEEK_END);
+  long bufsize = ftell(file);
+
+  result = malloc(sizeof(char) * (bufsize + 1));
+
+  fseek(file, 0L, SEEK_SET);
+  fread(result, sizeof(char), bufsize, file);
+
+  fclose(file);
+
+  return result;
+}

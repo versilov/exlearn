@@ -154,23 +154,27 @@ static void test_matrix_first() {
 
 static void
 test_matrix_inspect_body() {
-  printf("%d\n", 100);
-  printf("%d\n", 100);
-  printf("%d\n", 100);
-  printf("%d\n", 100);
-  printf("%d\n", 100);
-  printf("%d\n", 100);
-  printf("%d\n", 100);
-  printf("%d\n", 100);
-  printf("%d\n", 100);
-  printf("%d\n", 100);
-  printf("%d\n", 100);
+  Matrix matrix = matrix_new(2, 3);
+
+  for (int32_t index = 2; index < 7; index += 1) {
+    matrix[index] = index;
+  }
+
+  matrix_inspect(matrix);
 }
 
 static void test_matrix_inspect() {
-  printf("%d\n", 0);
-  char *path = capture_stdout(test_matrix_inspect_body);
-  printf("%d\n", 200);
+  char *path     = capture_stdout(test_matrix_inspect_body);
+  char *result   = read_file(path);
+  char *expected =
+    "<#Matrix\n"
+    "  rows:    2.000000\n"
+    "  columns: 3.000000\n"
+    "  values:  2.000000 3.000000 4.000000 5.000000 6.000000>\n";
+
+  for (int32_t index = 0; index < 106; index += 1) {
+    assert(result[index] == expected[index]);
+  }
 }
 
 static void test_matrix_max() {

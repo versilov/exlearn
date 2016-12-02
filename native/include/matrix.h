@@ -3,6 +3,7 @@
 
 #include <cblas.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 typedef float* Matrix;
@@ -47,6 +48,9 @@ matrix_dot_tn(const Matrix first, const Matrix second, Matrix result);
 
 float
 matrix_first(const Matrix matrix);
+
+void
+matrix_inspect(const Matrix matrix);
 
 float
 matrix_max(const Matrix matrix);

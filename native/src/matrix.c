@@ -195,6 +195,22 @@ matrix_first(const Matrix matrix) {
   return matrix[2];
 }
 
+void
+matrix_inspect(const Matrix matrix) {
+  int32_t length = matrix[0] + matrix[1] + 2;
+
+  printf("<#Matrix\n");
+
+  printf("  rows:    %f\n", matrix[0]);
+  printf("  columns: %f\n", matrix[1]);
+
+  printf("  values: ");
+  for(int32_t index = 2; index < length; index += 1) {
+    printf(" %f", matrix[index]);
+  }
+  printf(">\n");
+}
+
 float
 matrix_max(const Matrix matrix) {
   int32_t data_size = (int32_t) (matrix[0] * matrix[1] + 2);
