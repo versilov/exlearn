@@ -149,6 +149,42 @@ correction_from_char_array(unsigned char *char_array) {
 }
 
 void
+correction_inspect(const Correction *correction) {
+  printf("<#Correction\n");
+  printf("  layers: %d\n", correction->layers);
+
+  printf("  biases:\n");
+  for(int32_t index = 0; index < correction->layers; index += 1) {
+    printf("    %d: ", index);
+    matrix_inspect_indented(correction->biases[index], 8);
+  }
+
+  printf("  weights:\n");
+  for(int32_t index = 0; index < correction->layers; index += 1) {
+    printf("    %d: ", index);
+    matrix_inspect_indented(correction->weights[index], 8);
+  }
+}
+
+void
+correction_inspect_indented(const Correction *correction, int32_t indentation) {
+  printf("<#Correction\n");
+  printf("  layers: %d\n", correction->layers);
+
+  printf("  biases:\n");
+  for(int32_t index = 0; index < correction->layers; index += 1) {
+    printf("    %d: ", index);
+    matrix_inspect_indented(correction->biases[index], 8);
+  }
+
+  printf("  weights:\n");
+  for(int32_t index = 0; index < correction->layers; index += 1) {
+    printf("    %d: ", index);
+    matrix_inspect_indented(correction->weights[index], 8);
+  }
+}
+
+void
 correction_to_char_array(Correction *correction, unsigned char * char_array) {
   int32_t  length, width, height;
   int32_t  current_location;

@@ -31,6 +31,12 @@ Correction *
 correction_from_char_array(unsigned char *char_array);
 
 void
+correction_inspect(const Correction *correction);
+
+void
+correction_inspect_indented(const Correction *correction, int32_t indentation);
+
+void
 correction_to_char_array(Correction *correction, unsigned char *char_array);
 
 void

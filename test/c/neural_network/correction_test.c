@@ -130,6 +130,72 @@ static void test_correction_from_char_array() {
   free(result);
 }
 
+static void test_correction_inspect_body() {
+
+  correction_inspect(correction);
+}
+
+static void test_correction_inspect() {
+  char *result   = capture_stdout(test_correction_inspect_body);
+  char *expected =
+    "<#Correction\n"
+    "  layers: 2\n"
+    "  biases:\n"
+    "    0: <#Matrix\n"
+    "         rows:    1\n"
+    "         columns: 2\n"
+    "         values:  0.000000 1.000000>\n"
+    "    1: <#Matrix\n"
+    "         rows:    1\n"
+    "         columns: 3\n"
+    "         values:  0.000000 1.000000 2.000000>\n"
+    "  weights\n"
+    "    0: <#Matrix\n"
+    "         rows:    1\n"
+    "         columns: 2\n"
+    "         values:  0.000000 1.000000>"
+    "    1: <#Matrix\n"
+    "         rows:    1\n"
+    "         columns: 3\n"
+    "         values:  0.000000 1.000000 2.000000 3.000000>>";
+
+  for (int32_t index = 0; index < 106; index += 1) {
+    assert(result[index] == expected[index]);
+  }
+}
+
+static void test_correction_inspect_indented_body() {
+}
+
+static void test_correction_inspect_indented() {
+  char *result   = capture_stdout(test_correction_inspect_indented_body);
+  char *expected =
+    "<#Correction\n"
+    "     layers: 2\n"
+    "     biases:\n"
+    "       0: <#Matrix\n"
+    "            rows:    1\n"
+    "            columns: 2\n"
+    "            values:  0.000000 1.000000>\n"
+    "       1: <#Matrix\n"
+    "            rows:    1\n"
+    "            columns: 3\n"
+    "            values:  0.000000 1.000000 2.000000>\n"
+    "     weights\n"
+    "       0: <#Matrix\n"
+    "            rows:    1\n"
+    "            columns: 2\n"
+    "            values:  0.000000 1.000000>"
+    "       1: <#Matrix\n"
+    "            rows:    1\n"
+    "            columns: 3\n"
+    "            values:  0.000000 1.000000 2.000000 3.000000>>";
+
+  for (int32_t index = 0; index < 106; index += 1) {
+    assert(result[index] == expected[index]);
+  }
+}
+
 static void test_correction_to_char_array() {
   Correction    *correction;
   unsigned char *char_array, *result;

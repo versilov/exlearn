@@ -203,4 +203,34 @@ correction_simple() {
   return correction;
 }
 
+static Correction *
+correction_2_layers_simple() {
+  Correction *correction = correction_new(2);
+
+  correction->biases[0] = matrix_new(1, 2);
+  correction->biases[0][2] = 0;
+  correction->biases[0][3] = 1;
+
+  correction->biases[1] = matrix_new(1, 3);
+  correction->biases[1][2] = 0;
+  correction->biases[1][3] = 1;
+  correction->biases[1][4] = 2;
+
+  correction->weights[0] = matrix_new(2, 2);
+  correction->weights[0][2] = 0;
+  correction->weights[0][3] = 1;
+  correction->weights[0][4] = 2;
+  correction->weights[0][5] = 3;
+
+  correction->weights[1] = matrix_new(2, 3);
+  correction->weights[1][2] = 0;
+  correction->weights[1][3] = 1;
+  correction->weights[1][4] = 2;
+  correction->weights[1][5] = 3;
+  correction->weights[1][6] = 4;
+  correction->weights[1][7] = 5;
+
+  return correction;
+}
+
 #endif

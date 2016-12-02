@@ -48,6 +48,8 @@ int main() {
   test_correction_apply();
   test_correction_char_size();
   test_correction_from_char_array();
+  test_correction_inspect();
+  test_correction_inspect_indented();
   test_correction_to_char_array();
   test_correction_initialize();
 
