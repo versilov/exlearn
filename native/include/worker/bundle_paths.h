@@ -6,11 +6,11 @@
 
 typedef struct BundlePaths {
   int32_t   count;
-  char    **path;
+  char    **paths;
 } BundlePaths;
 
 void
-bundle_paths_free(BundlePaths **paths_address);
+bundle_paths_free(BundlePaths **bundle_paths_address);
 
 BundlePaths *
 bundle_paths_new(int32_t count);

@@ -11,8 +11,8 @@ static void test_batch_data_free() {
   BundlePaths *paths = bundle_paths_new(2);
   WorkerData  *data  = worker_data_new(2);
 
-  paths->path[0] = create_first_data_bundle_file();
-  paths->path[1] = create_second_data_bundle_file();
+  paths->paths[0] = create_first_data_bundle_file();
+  paths->paths[1] = create_second_data_bundle_file();
 
   worker_data_read(paths, data);
 
@@ -28,8 +28,8 @@ static void test_batch_data_new() {
   BundlePaths *paths = bundle_paths_new(2);
   WorkerData  *data  = worker_data_new(2);
 
-  paths->path[0] = create_first_data_bundle_file();
-  paths->path[1] = create_second_data_bundle_file();
+  paths->paths[0] = create_first_data_bundle_file();
+  paths->paths[1] = create_second_data_bundle_file();
 
   worker_data_read(paths, data);
 
@@ -53,8 +53,8 @@ static void test_batch_data_initialize() {
   BundlePaths *paths = bundle_paths_new(2);
   WorkerData  *data  = worker_data_new(2);
 
-  paths->path[0] = create_first_data_bundle_file();
-  paths->path[1] = create_second_data_bundle_file();
+  paths->paths[0] = create_first_data_bundle_file();
+  paths->paths[1] = create_second_data_bundle_file();
 
   worker_data_read(paths, data);
 
@@ -79,8 +79,8 @@ static void test_shuffle_batch_data_indices() {
   BundlePaths *paths = bundle_paths_new(2);
   WorkerData  *data  = worker_data_new(2);
 
-  paths->path[0] = create_first_data_bundle_file();
-  paths->path[1] = create_second_data_bundle_file();
+  paths->paths[0] = create_first_data_bundle_file();
+  paths->paths[1] = create_second_data_bundle_file();
 
   worker_data_read(paths, data);
 
@@ -103,8 +103,8 @@ static void test_batch_data_get_sample_index() {
   WorkerData  *worker_data  = worker_data_new(2);
   SampleIndex *sample_index;
 
-  bundle_paths->path[0] = create_first_data_bundle_file();
-  bundle_paths->path[1] = create_second_data_bundle_file();
+  bundle_paths->paths[0] = create_first_data_bundle_file();
+  bundle_paths->paths[1] = create_second_data_bundle_file();
 
   worker_data_read(bundle_paths, worker_data);
 

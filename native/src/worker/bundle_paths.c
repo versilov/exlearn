@@ -1,31 +1,29 @@
 #include "../../include/worker/bundle_paths.h"
 
 void
-bundle_paths_free(BundlePaths **paths_address) {
-  BundlePaths *paths = *paths_address;
+bundle_paths_free(BundlePaths **bundle_paths_address) {
+  BundlePaths *bundle_paths = *bundle_paths_address;
 
-  if (paths != NULL) {
-    for (int32_t index = 0; index < paths->count; index += 1) {
-      if (paths->path[index] != NULL) free(paths->path[index]);
-    }
-
-    free(paths->path);
-    free(paths      );
-
-    *paths_address = NULL;
+  for (int32_t index = 0; index < bundle_paths->count; index += 1) {
+    if (bundle_paths->paths[index] != NULL) free(bundle_paths->paths[index]);
   }
+
+  free(bundle_paths->paths);
+  free(bundle_paths      );
+
+  *bundle_paths_address = NULL;
 }
 
 BundlePaths *
 bundle_paths_new(int32_t count) {
-  BundlePaths *paths = malloc(sizeof(BundlePaths));
+  BundlePaths *bundle_paths = malloc(sizeof(BundlePaths));
 
-  paths->count = count;
-  paths->path  = malloc(sizeof(char *) * count);
+  bundle_paths->count = count;
+  bundle_paths->paths = malloc(sizeof(char *) * count);
 
   for (int32_t index = 0; index < count; index += 1) {
-    paths->path[index] = NULL;
+    bundle_paths->paths[index] = NULL;
   }
 
-  return paths;
+  return bundle_paths;
 }

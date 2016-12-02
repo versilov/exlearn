@@ -42,8 +42,8 @@ static void test_worker_data_read() {
   WorkerData       *data  = worker_data_new(2);
   WorkerDataBundle *bundle;
 
-  paths->path[0] = create_first_data_bundle_file();
-  paths->path[1] = create_second_data_bundle_file();
+  paths->paths[0] = create_first_data_bundle_file();
+  paths->paths[1] = create_second_data_bundle_file();
 
   worker_data_read(paths, data);
 

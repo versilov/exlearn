@@ -12,7 +12,7 @@ static void test_gradient_descent() {
   BundlePaths  *paths       = bundle_paths_new(1);
   WorkerData   *worker_data = worker_data_new(1);
 
-  paths->path[0] = create_basic_data_bundle_file();
+  paths->paths[0] = create_basic_data_bundle_file();
 
   worker_data_read(paths, worker_data);
 
