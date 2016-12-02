@@ -176,6 +176,30 @@ static void test_matrix_inspect() {
   }
 }
 
+static void
+test_matrix_inspect_indented_body() {
+  Matrix matrix = matrix_new(2, 3);
+
+  for (int32_t index = 2; index < 7; index += 1) {
+    matrix[index] = index;
+  }
+
+  matrix_inspect_indented(matrix, 3);
+}
+
+static void test_matrix_inspect_indented() {
+  char *result   = capture_stdout(test_matrix_inspect_indented_body);
+  char *expected =
+    "   <#Matrix\n"
+    "     rows:    2.000000\n"
+    "     columns: 3.000000\n"
+    "     values:  2.000000 3.000000 4.000000 5.000000 6.000000>\n";
+
+  for (int32_t index = 0; index < 106; index += 1) {
+    assert(result[index] == expected[index]);
+  }
+}
+
 static void test_matrix_max() {
   float matrix[8] = {2, 3, 1, 4, 2, 5, 3, 6};
 

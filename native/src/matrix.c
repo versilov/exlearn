@@ -211,6 +211,27 @@ matrix_inspect(const Matrix matrix) {
   printf(">\n");
 }
 
+void
+matrix_inspect_indented(const Matrix matrix, int32_t indentation) {
+  int32_t length = matrix[0] + matrix[1] + 2;
+
+  print_spaces(indentation);
+  printf("<#Matrix\n");
+
+  print_spaces(indentation);
+  printf("  rows:    %f\n", matrix[0]);
+
+  print_spaces(indentation);
+  printf("  columns: %f\n", matrix[1]);
+
+  print_spaces(indentation);
+  printf("  values: ");
+  for(int32_t index = 2; index < length; index += 1) {
+    printf(" %f", matrix[index]);
+  }
+  printf(">\n");
+}
+
 float
 matrix_max(const Matrix matrix) {
   int32_t data_size = (int32_t) (matrix[0] * matrix[1] + 2);

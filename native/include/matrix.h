@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "./utils.h"
+
 typedef float* Matrix;
 
 void
@@ -51,6 +53,9 @@ matrix_first(const Matrix matrix);
 
 void
 matrix_inspect(const Matrix matrix);
+
+void
+matrix_inspect_indented(const Matrix matrix, int32_t indentation);
 
 float
 matrix_max(const Matrix matrix);
