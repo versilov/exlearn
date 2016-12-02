@@ -18,25 +18,6 @@ char * temp_file_path() {
   return buffer;
 }
 
-char * capture_stdout(CapturedIOFunction test_case) {
-  fflush(stdout);
-
-  int   saved_stdout = dup(STDOUT_FILENO);
-  char *path         = temp_file_path();
-  FILE *file         = fopen(path, "w+");
-
-  dup2(fileno(file), STDOUT_FILENO);
-
-  test_case();
-
-  fflush(stdout);
-  dup2(saved_stdout, STDOUT_FILENO);
-  close(saved_stdout);
-  fclose(file);
-
-  return path;
-}
-
 char * read_file(char *path) {
   char *result = NULL;
   FILE *file   = fopen(path, "r");
@@ -50,6 +31,31 @@ char * read_file(char *path) {
   fread(result, sizeof(char), bufsize, file);
 
   fclose(file);
+
+  return result;
+}
+
+char * capture_stdout(CapturedIOFunction test_case) {
+  fflush(stdout);
+
+  int   saved_stdout;
+  char *path, *result;
+  FILE *file;
+
+  saved_stdout = dup(STDOUT_FILENO);
+  path         = temp_file_path();
+  file         = fopen(path, "w");
+
+  dup2(fileno(file), STDOUT_FILENO);
+
+  test_case();
+
+  fflush(stdout);
+  dup2(saved_stdout, STDOUT_FILENO);
+  close(saved_stdout);
+  fclose(file);
+
+  result = read_file(path);
 
   return result;
 }

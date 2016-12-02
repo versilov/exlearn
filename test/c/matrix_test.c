@@ -164,8 +164,7 @@ test_matrix_inspect_body() {
 }
 
 static void test_matrix_inspect() {
-  char *path     = capture_stdout(test_matrix_inspect_body);
-  char *result   = read_file(path);
+  char *result   = capture_stdout(test_matrix_inspect_body);
   char *expected =
     "<#Matrix\n"
     "  rows:    2.000000\n"
