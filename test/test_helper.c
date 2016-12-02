@@ -107,6 +107,8 @@ int main() {
 
   // Tests for: c/worker/sample_index_test.c
   test_sample_index_free();
+  test_sample_index_inspect();
+  test_sample_index_inspect_internal();
   test_sample_index_new();
 
   // Tests for: c/worker/worker_data_bundle_test.c
