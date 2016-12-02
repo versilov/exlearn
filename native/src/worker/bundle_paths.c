@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include "../../include/worker/bundle_paths.h"
 
 void
@@ -12,6 +14,40 @@ bundle_paths_free(BundlePaths **bundle_paths_address) {
   free(bundle_paths      );
 
   *bundle_paths_address = NULL;
+}
+
+void
+bundle_paths_inspect(BundlePaths *bundle_paths) {
+  printf("<#BundlePaths\n");
+
+  printf("  count: %d\n", bundle_paths->count);
+
+  printf("  paths:\n");
+  for(int32_t index = 0; index < bundle_paths->count; index += 1) {
+    printf("    %d: %s", index, bundle_paths->paths[index]);
+
+    if (index < bundle_paths->count - 1) printf("\n");
+  }
+
+  printf(">\n");
+}
+
+void
+bundle_paths_inspect_internal(BundlePaths *bundle_paths, int32_t indentation) {
+  printf("<#BundlePaths\n");
+
+  print_spaces(indentation);
+  printf("  count: %d\n", bundle_paths->count);
+
+  print_spaces(indentation);
+  printf("  paths:\n");
+  for(int32_t index = 0; index < bundle_paths->count; index += 1) {
+    print_spaces(indentation);
+    printf("    %d: %s", index, bundle_paths->paths[index]);
+
+    if (index < bundle_paths->count - 1) printf("\n");
+  }
+  printf(">");
 }
 
 BundlePaths *

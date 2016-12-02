@@ -103,6 +103,8 @@ int main() {
 
   // Tests for: c/worker/bundle_paths_test.c
   test_bundle_paths_free();
+  test_bundle_paths_inspect();
+  test_bundle_paths_inspect_internal();
   test_bundle_paths_new();
 
   // Tests for: c/worker/sample_index_test.c
