@@ -27,8 +27,13 @@ static void test_bundle_paths_inspect() {
     "    0: /stairway/to/heaven\n"
     "    1: /highway/to/hell>\n";
 
-  for (int32_t index = 0; index < 86; index += 1) {
-    assert(result[index] == expected[index]);
+  int32_t result_length   = strlen(result  );
+  int32_t expected_length = strlen(expected);
+
+  assert(result_length == expected_length); /* LCOV_EXCL_BR_LINE */
+
+  for(int32_t index = 0; index <= result_length; index += 1) {
+    assert(result[index] == expected[index]); /* LCOV_EXCL_BR_LINE */
   }
 }
 
@@ -49,8 +54,13 @@ static void test_bundle_paths_inspect_internal() {
     "       0: /stairway/to/heaven\n"
     "       1: /highway/to/hell>";
 
-  for (int32_t index = 0; index < 98; index += 1) {
-    assert(result[index] == expected[index]);
+  int32_t result_length   = strlen(result  );
+  int32_t expected_length = strlen(expected);
+
+  assert(result_length == expected_length); /* LCOV_EXCL_BR_LINE */
+
+  for(int32_t index = 0; index <= result_length; index += 1) {
+    assert(result[index] == expected[index]); /* LCOV_EXCL_BR_LINE */
   }
 }
 

@@ -160,8 +160,13 @@ static void test_correction_inspect() {
     "         columns: 3.000000\n"
     "         values:  0.000000 1.000000 2.000000 3.000000 4.000000 5.000000>>\n";
 
-  for (int32_t index = 0; index < 538; index += 1) {
-    assert(result[index] == expected[index]);
+  int32_t result_length   = strlen(result  );
+  int32_t expected_length = strlen(expected);
+
+  assert(result_length == expected_length); /* LCOV_EXCL_BR_LINE */
+
+  for(int32_t index = 0; index <= result_length; index += 1) {
+    assert(result[index] == expected[index]); /* LCOV_EXCL_BR_LINE */
   }
 }
 
@@ -195,8 +200,13 @@ static void test_correction_inspect_indented() {
     "            columns: 3.000000\n"
     "            values:  0.000000 1.000000 2.000000 3.000000 4.000000 5.000000>>";
 
-  for (int32_t index = 0; index < 594; index += 1) {
-    assert(result[index] == expected[index]);
+  int32_t result_length   = strlen(result  );
+  int32_t expected_length = strlen(expected);
+
+  assert(result_length == expected_length); /* LCOV_EXCL_BR_LINE */
+
+  for(int32_t index = 0; index <= result_length; index += 1) {
+    assert(result[index] == expected[index]); /* LCOV_EXCL_BR_LINE */
   }
 }
 

@@ -29,6 +29,7 @@ char * read_file(char *path) {
 
   fseek(file, 0L, SEEK_SET);
   fread(result, sizeof(char), bufsize, file);
+  result[bufsize] = '\0';
 
   fclose(file);
 

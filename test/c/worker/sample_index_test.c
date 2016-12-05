@@ -20,7 +20,12 @@ static void test_sample_index_inspect() {
   char *result   = capture_stdout(test_sample_index_inspect_callback);
   char *expected = "<#SampleIndex bundle: 1 index: 2>\n";
 
-  for(int32_t index = 0; index < 34; index += 1) {
+  int32_t result_length   = strlen(result  );
+  int32_t expected_length = strlen(expected);
+
+  assert(result_length == expected_length); /* LCOV_EXCL_BR_LINE */
+
+  for(int32_t index = 0; index <= result_length; index += 1) {
     assert(result[index] == expected[index]); /* LCOV_EXCL_BR_LINE */
   }
 }
@@ -37,7 +42,12 @@ static void test_sample_index_inspect_internal() {
   char *result   = capture_stdout(test_sample_index_inspect_internal_callback);
   char *expected = "<#SampleIndex bundle: 1 index: 2>";
 
-  for(int32_t index = 0; index < 33; index += 1) {
+  int32_t result_length   = strlen(result  );
+  int32_t expected_length = strlen(expected);
+
+  assert(result_length == expected_length); /* LCOV_EXCL_BR_LINE */
+
+  for(int32_t index = 0; index <= result_length; index += 1) {
     assert(result[index] == expected[index]); /* LCOV_EXCL_BR_LINE */
   }
 }

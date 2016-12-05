@@ -92,7 +92,12 @@ static void test_batch_data_inspect() {
     "  sample_index:\n"
     "    0: <#SampleIndex bundle: 1 index: 1>>\n";
 
-  for(int32_t index = 0; index < 106; index += 1) {
+  int32_t result_length   = strlen(result  );
+  int32_t expected_length = strlen(expected);
+
+  assert(result_length == expected_length); /* LCOV_EXCL_BR_LINE */
+
+  for(int32_t index = 0; index <= result_length; index += 1) {
     assert(result[index] == expected[index]); /* LCOV_EXCL_BR_LINE */
   }
 }
@@ -114,7 +119,12 @@ static void test_batch_data_inspect_internal() {
     "     sample_index:\n"
     "       0: <#SampleIndex bundle: 1 index: 1>>";
 
-  for(int32_t index = 0; index < 117; index += 1) {
+  int32_t result_length   = strlen(result  );
+  int32_t expected_length = strlen(expected);
+
+  assert(result_length == expected_length); /* LCOV_EXCL_BR_LINE */
+
+  for(int32_t index = 0; index <= result_length; index += 1) {
     assert(result[index] == expected[index]); /* LCOV_EXCL_BR_LINE */
   }
 }

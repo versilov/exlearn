@@ -92,7 +92,7 @@ batch_data_inspect_internal(BatchData *batch_data, int32_t indentation) {
 
     if (index < batch_data->data_length - 1) printf("\n");
   }
-  printf(">\n");
+  printf(">");
 }
 
 void
