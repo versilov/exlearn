@@ -43,4 +43,48 @@ worker_data_bundle_basic() {
 
   return worker_data_bundle;
 }
+
+static WorkerDataBundle *
+worker_data_bundle_basic_2() {
+  WorkerDataBundle *worker_data_bundle = worker_data_bundle_new();
+
+  worker_data_bundle->count         = 2;
+  worker_data_bundle->first_length  = 4;
+  worker_data_bundle->second_length = 5;
+  worker_data_bundle->maximum_step  = 1;
+  worker_data_bundle->discard       = 0;
+
+  worker_data_bundle->first = malloc(sizeof(float *) * 2);
+
+  worker_data_bundle->first[0] = malloc(sizeof(float) * 4);
+  worker_data_bundle->first[1] = malloc(sizeof(float) * 4);
+
+  worker_data_bundle->first[0][0] = 1;
+  worker_data_bundle->first[0][1] = 2;
+  worker_data_bundle->first[0][2] = 1;
+  worker_data_bundle->first[0][3] = 2;
+  worker_data_bundle->first[1][0] = 1;
+  worker_data_bundle->first[1][1] = 2;
+  worker_data_bundle->first[1][2] = 2;
+  worker_data_bundle->first[1][3] = 3;
+
+  worker_data_bundle->second = malloc(sizeof(float *) * 2);
+
+  worker_data_bundle->second[0] = malloc(sizeof(float) * 5);
+  worker_data_bundle->second[1] = malloc(sizeof(float) * 5);
+
+  worker_data_bundle->second[0][0] = 1;
+  worker_data_bundle->second[0][1] = 3;
+  worker_data_bundle->second[0][2] = 1;
+  worker_data_bundle->second[0][3] = 2;
+  worker_data_bundle->second[0][4] = 3;
+  worker_data_bundle->second[1][0] = 1;
+  worker_data_bundle->second[1][1] = 3;
+  worker_data_bundle->second[1][2] = 2;
+  worker_data_bundle->second[1][3] = 3;
+  worker_data_bundle->second[1][4] = 4;
+
+  return worker_data_bundle;
+}
+
 #endif

@@ -1,6 +1,8 @@
 #include "../../../native/include/worker/worker_data.h"
 
 #include "../fixtures/file_fixtures.c"
+#include "../fixtures/worker_data_bundle_fixtures.c"
+#include "../fixtures/worker_data_fixtures.c"
 
 static void test_worker_data_free() {
   WorkerData *data = worker_data_new(4);
@@ -8,6 +10,104 @@ static void test_worker_data_free() {
   worker_data_free(&data);
 
   assert(data == NULL); /* LCOV_EXCL_BR_LINE */
+}
+
+static void test_worker_data_inspect_callback() {
+  WorkerData *worker_data = worker_data_basic();
+
+  worker_data_inspect(worker_data);
+
+  worker_data_free(&worker_data);
+}
+
+static void test_worker_data_inspect() {
+  char *result = capture_stdout(test_worker_data_inspect_callback);
+  char *expected =
+    "<#WorkerData\n"
+    "  count: 2\n"
+    "  bundle:\n"
+    "    0: <#WorkerDataBundle\n"
+    "         count:         2\n"
+    "         first_length:  4\n"
+    "         second_length: 5\n"
+    "         maximum_step:  1\n"
+    "         discard:       0\n"
+    "         first:\n"
+    "           0: 1.000000 2.000000 0.000000 1.000000\n"
+    "           1: 1.000000 2.000000 1.000000 2.000000\n"
+    "         second:\n"
+    "           0: 1.000000 3.000000 0.000000 1.000000 2.000000\n"
+    "           1: 1.000000 3.000000 1.000000 2.000000 3.000000>\n"
+    "    1: <#WorkerDataBundle\n"
+    "         count:         2\n"
+    "         first_length:  4\n"
+    "         second_length: 5\n"
+    "         maximum_step:  1\n"
+    "         discard:       0\n"
+    "         first:\n"
+    "           0: 1.000000 2.000000 1.000000 2.000000\n"
+    "           1: 1.000000 2.000000 2.000000 3.000000\n"
+    "         second:\n"
+    "           0: 1.000000 3.000000 1.000000 2.000000 3.000000\n"
+    "           1: 1.000000 3.000000 2.000000 3.000000 4.000000>>\n";
+
+  int32_t result_length   = strlen(result  );
+  int32_t expected_length = strlen(expected);
+
+  assert(result_length == expected_length); /* LCOV_EXCL_BR_LINE */
+
+  for(int32_t index = 0; index <= result_length; index += 1) {
+    assert(result[index] == expected[index]); /* LCOV_EXCL_BR_LINE */
+  }
+}
+
+static void test_worker_data_inspect_internal_callback() {
+  WorkerData *worker_data = worker_data_basic();
+
+  worker_data_inspect_internal(worker_data, 3);
+
+  worker_data_free(&worker_data);
+}
+
+static void test_worker_data_inspect_internal() {
+  char *result = capture_stdout(test_worker_data_inspect_internal_callback);
+  char *expected =
+    "<#WorkerData\n"
+    "     count: 2\n"
+    "     bundle:\n"
+    "       0: <#WorkerDataBundle\n"
+    "            count:         2\n"
+    "            first_length:  4\n"
+    "            second_length: 5\n"
+    "            maximum_step:  1\n"
+    "            discard:       0\n"
+    "            first:\n"
+    "              0: 1.000000 2.000000 0.000000 1.000000\n"
+    "              1: 1.000000 2.000000 1.000000 2.000000\n"
+    "            second:\n"
+    "              0: 1.000000 3.000000 0.000000 1.000000 2.000000\n"
+    "              1: 1.000000 3.000000 1.000000 2.000000 3.000000>\n"
+    "       1: <#WorkerDataBundle\n"
+    "            count:         2\n"
+    "            first_length:  4\n"
+    "            second_length: 5\n"
+    "            maximum_step:  1\n"
+    "            discard:       0\n"
+    "            first:\n"
+    "              0: 1.000000 2.000000 1.000000 2.000000\n"
+    "              1: 1.000000 2.000000 2.000000 3.000000\n"
+    "            second:\n"
+    "              0: 1.000000 3.000000 1.000000 2.000000 3.000000\n"
+    "              1: 1.000000 3.000000 2.000000 3.000000 4.000000>>";
+
+  int32_t result_length   = strlen(result  );
+  int32_t expected_length = strlen(expected);
+
+  assert(result_length == expected_length); /* LCOV_EXCL_BR_LINE */
+
+  for(int32_t index = 0; index <= result_length; index += 1) {
+    assert(result[index] == expected[index]); /* LCOV_EXCL_BR_LINE */
+  }
 }
 
 static void test_worker_data_new() {

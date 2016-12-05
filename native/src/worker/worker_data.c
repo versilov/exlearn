@@ -17,6 +17,44 @@ worker_data_free(WorkerData **data_address) {
   }
 }
 
+void
+worker_data_inspect(WorkerData *worker_data) {
+  printf("<#WorkerData\n");
+  printf("  count: %d\n", worker_data->count);
+
+  printf("  bundle:\n");
+  for (int32_t index = 0; index < worker_data->count; index += 1) {
+    printf("    %d: ", index);
+
+    worker_data_bundle_inspect_internal(worker_data->bundle[index], 7);
+
+    if (index < worker_data->count - 1) printf("\n");
+  }
+
+  printf(">\n");
+}
+
+void
+worker_data_inspect_internal(WorkerData *worker_data, int32_t indentation) {
+  printf("<#WorkerData\n");
+  print_spaces(indentation);
+  printf("  count: %d\n", worker_data->count);
+
+  print_spaces(indentation);
+  printf("  bundle:\n");
+  for (int32_t index = 0; index < worker_data->count; index += 1) {
+    print_spaces(indentation);
+    printf("    %d: ", index);
+
+    worker_data_bundle_inspect_internal(worker_data->bundle[index], indentation + 7);
+
+    if (index < worker_data->count - 1) printf("\n");
+  }
+
+  printf(">");
+}
+
+
 WorkerData *
 worker_data_new(int32_t count) {
   WorkerData *data = malloc(sizeof(WorkerData));
@@ -41,7 +79,7 @@ worker_data_read(BundlePaths *paths, WorkerData *data) {
   for (int32_t index = 0; index < paths->count; index += 1) {
     WorkerDataBundle *bundle = worker_data_bundle_new();
 
-    read_worker_data_bundle(paths->path[index], bundle);
+    read_worker_data_bundle(paths->paths[index], bundle);
 
     data->bundle[index] = bundle;
   }

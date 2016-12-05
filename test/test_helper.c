@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/time.h>
 
 #include "c/test_util.c"
@@ -124,6 +125,8 @@ int main() {
 
   // Tests for: c/worker/worker_data_test.c
   test_worker_data_free();
+  test_worker_data_inspect();
+  test_worker_data_inspect_internal();
   test_worker_data_new();
   test_worker_data_initialize();
   test_worker_data_read();

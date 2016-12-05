@@ -98,7 +98,7 @@ worker_data_bundle_inspect_internal(WorkerDataBundle *worker_data_bundle, int32_
     if (index < worker_data_bundle->count - 1) printf("\n");
   }
 
-  printf(">\n");
+  printf(">");
 }
 
 WorkerDataBundle *

@@ -15,6 +15,12 @@ typedef struct WorkerData {
 void
 worker_data_free(WorkerData **data_address);
 
+void
+worker_data_inspect(WorkerData *worker_data);
+
+void
+worker_data_inspect_internal(WorkerData *worker_data, int32_t indentation);
+
 WorkerData *
 worker_data_new(int32_t count);
 
