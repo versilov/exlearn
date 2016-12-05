@@ -86,7 +86,7 @@ create_worker_data(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
     if (!enif_get_string(env, head, new_path, string_length + 1, ERL_NIF_LATIN1))
       return enif_make_badarg(env);
 
-    bundle_paths->path[index] = new_path;
+    bundle_paths->paths[index] = new_path;
 
     index += 1;
   }

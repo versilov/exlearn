@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#include "../utils.h"
+
 typedef struct BundlePaths {
   int32_t   count;
   char    **paths;
