@@ -117,6 +117,8 @@ int main() {
 
   // Tests for: c/worker/worker_data_bundle_test.c
   test_worker_data_bundle_free();
+  test_worker_data_bundle_inspect();
+  test_worker_data_bundle_inspect_internal();
   test_worker_data_bundle_new();
   test_read_worker_data_bundle();
 

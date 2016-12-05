@@ -18,6 +18,89 @@ worker_data_bundle_free(WorkerDataBundle **data_address) {
   *data_address = NULL;
 }
 
+void
+worker_data_bundle_inspect(WorkerDataBundle *worker_data_bundle) {
+  printf("<#WorkerDataBundle\n");
+
+  printf("  count:         %d\n", worker_data_bundle->count        );
+  printf("  first_length:  %d\n", worker_data_bundle->first_length );
+  printf("  second_length: %d\n", worker_data_bundle->second_length);
+  printf("  maximum_step:  %d\n", worker_data_bundle->maximum_step );
+  printf("  discard:       %d\n", worker_data_bundle->discard      );
+
+  printf("  first:\n");
+  for(int32_t index = 0; index < worker_data_bundle->count; index += 1) {
+    printf("    %d:", index);
+
+    for(int32_t element_index = 0; element_index < worker_data_bundle->first_length; element_index += 1) {
+      printf(" %f", worker_data_bundle->first[index][element_index]);
+    }
+
+    printf("\n");
+  }
+
+  printf("  second:\n");
+  for(int32_t index = 0; index < worker_data_bundle->count; index += 1) {
+    printf("    %d:", index);
+
+    for(int32_t element_index = 0; element_index < worker_data_bundle->second_length; element_index += 1) {
+      printf(" %f", worker_data_bundle->second[index][element_index]);
+    }
+
+    if (index < worker_data_bundle->count - 1) printf("\n");
+  }
+
+  printf(">\n");
+}
+
+void
+worker_data_bundle_inspect_internal(WorkerDataBundle *worker_data_bundle, int32_t indentation) {
+  printf("<#WorkerDataBundle\n");
+
+  print_spaces(indentation);
+  printf("  count:         %d\n", worker_data_bundle->count        );
+
+  print_spaces(indentation);
+  printf("  first_length:  %d\n", worker_data_bundle->first_length );
+
+  print_spaces(indentation);
+  printf("  second_length: %d\n", worker_data_bundle->second_length);
+
+  print_spaces(indentation);
+  printf("  maximum_step:  %d\n", worker_data_bundle->maximum_step );
+
+  print_spaces(indentation);
+  printf("  discard:       %d\n", worker_data_bundle->discard      );
+
+  print_spaces(indentation);
+  printf("  first:\n");
+  for(int32_t index = 0; index < worker_data_bundle->count; index += 1) {
+    print_spaces(indentation);
+    printf("    %d:", index);
+
+    for(int32_t element_index = 0; element_index < worker_data_bundle->first_length; element_index += 1) {
+      printf(" %f", worker_data_bundle->first[index][element_index]);
+    }
+
+    printf("\n");
+  }
+
+  print_spaces(indentation);
+  printf("  second:\n");
+  for(int32_t index = 0; index < worker_data_bundle->count; index += 1) {
+    print_spaces(indentation);
+    printf("    %d:", index);
+
+    for(int32_t element_index = 0; element_index < worker_data_bundle->second_length; element_index += 1) {
+      printf(" %f", worker_data_bundle->second[index][element_index]);
+    }
+
+    if (index < worker_data_bundle->count - 1) printf("\n");
+  }
+
+  printf(">\n");
+}
+
 WorkerDataBundle *
 worker_data_bundle_new() {
   WorkerDataBundle *data = malloc(sizeof(WorkerDataBundle));
