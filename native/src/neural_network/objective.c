@@ -26,17 +26,17 @@ cross_entropy_function(Matrix expected, Matrix actual) {
 
 static Matrix
 cross_entropy_error_simple(
-  Matrix           expected,
-  Matrix           actual,
-  Matrix           last_input,
-  ActivityClosure *last_derivative
+  Matrix             expected,
+  Matrix             actual,
+  Matrix             last_input,
+  ActivationClosure *last_derivative
 ) {
   int32_t length = expected[0] * expected[1] + 2;
   Matrix  result = matrix_new(expected[0], expected[1]);
   float   top, bottom;
 
   matrix_clone(result, last_input);
-  call_activity_closure(last_derivative, result);
+  call_activation_closure(last_derivative, result);
 
   for (int32_t index = 2; index < length; index += 1) {
     top    = actual[index] - expected[index];
@@ -62,10 +62,10 @@ negative_log_likelihood_function(Matrix expected, Matrix actual) {
 
 static Matrix
 negative_log_likelihood_error_simple(
-  Matrix           expected,
-  Matrix           actual,
-  Matrix           _last_input,
-  ActivityClosure *_last_derivative
+  Matrix             expected,
+  Matrix             actual,
+  Matrix             _last_input,
+  ActivationClosure *_last_derivative
 ) {
   (void)(_last_input     );
   (void)(_last_derivative);
@@ -85,10 +85,10 @@ negative_log_likelihood_error_simple(
 
 static Matrix
 negative_log_likelihood_error_optimised(
-  Matrix           expected,
-  Matrix           actual,
-  Matrix           _last_input,
-  ActivityClosure *_last_derivative
+  Matrix             expected,
+  Matrix             actual,
+  Matrix             _last_input,
+  ActivationClosure *_last_derivative
 ) {
   (void)(_last_input     );
   (void)(_last_derivative);
@@ -123,16 +123,16 @@ quadratic_function(Matrix expected, Matrix actual) {
 
 static Matrix
 quadratic_error(
-  Matrix           expected,
-  Matrix           actual,
-  Matrix           last_input,
-  ActivityClosure *last_derivative
+  Matrix             expected,
+  Matrix             actual,
+  Matrix             last_input,
+  ActivationClosure *last_derivative
 ) {
   int32_t length = expected[0] * expected[1] + 2;
   Matrix  result = matrix_new(expected[0], expected[1]);
 
   matrix_clone(result, last_input);
-  call_activity_closure(last_derivative, result);
+  call_activation_closure(last_derivative, result);
 
   for (int32_t index = 2; index < length; index += 1) {
     result[index] *= actual[index] - expected[index];

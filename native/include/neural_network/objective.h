@@ -5,11 +5,11 @@
 #include <stdint.h>
 
 #include "../matrix.h"
-#include "./activity.h"
+#include "./activation.h"
 
 typedef float  (*ObjectiveFunction)(Matrix, Matrix);
 
-typedef Matrix (*ObjectiveError)(Matrix, Matrix, Matrix, ActivityClosure *);
+typedef Matrix (*ObjectiveError)(Matrix, Matrix, Matrix, ActivationClosure *);
 
 ObjectiveFunction
 objective_determine_function(int32_t function_id);

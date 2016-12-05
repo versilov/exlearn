@@ -4,10 +4,10 @@
 #include "../matrix.h"
 #include "../network_state.h"
 
-#include "./activity.h"
+#include "./activation.h"
 #include "./dropout.h"
 
-Activity *
+Activation *
 forward_for_activity(
   NetworkState *network_state,
   Matrix        sample

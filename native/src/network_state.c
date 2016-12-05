@@ -8,8 +8,8 @@ network_state_free(NetworkState **network_state_address) {
     matrix_free(&network_state->biases[layer] );
     matrix_free(&network_state->weights[layer]);
 
-    free_activity_closure(network_state->function[layer]  );
-    free_activity_closure(network_state->derivative[layer]);
+    free_activation_closure(network_state->function[layer]  );
+    free_activation_closure(network_state->derivative[layer]);
   }
 
   free(network_state->rows      );
@@ -37,8 +37,8 @@ network_state_new(int32_t layers) {
   network_state->biases       = malloc(sizeof(Matrix) * layers);
   network_state->weights      = malloc(sizeof(Matrix) * layers);
   network_state->dropout      = malloc(sizeof(float)  * layers);
-  network_state->function     = malloc(sizeof(ActivityClosure *) * layers);
-  network_state->derivative   = malloc(sizeof(ActivityClosure *) * layers);
+  network_state->function     = malloc(sizeof(ActivationClosure *) * layers);
+  network_state->derivative   = malloc(sizeof(ActivationClosure *) * layers);
   network_state->presentation = NULL;
   network_state->objective    = NULL;
   network_state->error        = NULL;

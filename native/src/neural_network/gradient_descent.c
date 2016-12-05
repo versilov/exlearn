@@ -13,7 +13,7 @@ gradient_descent(
   SampleIndex      *sample_index;
   WorkerDataBundle *bundle;
   Matrix            input, expected;
-  Activity         *activity;
+  Activation       *activity;
   Correction       *correction, *result;
 
   int32_t length    = batch_data->batch_length;

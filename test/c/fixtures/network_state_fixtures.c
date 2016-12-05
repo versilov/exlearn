@@ -1,7 +1,7 @@
 #ifndef INCLUDE_NETWORK_STATE_FIXTURES_C
 #define INCLUDE_NETWORK_STATE_FIXTURES_C
 
-#include "../../../native/include/neural_network/activity.h"
+#include "../../../native/include/neural_network/activation.h"
 #include "../../../native/include/neural_network/objective.h"
 #include "../../../native/include/neural_network/presentation.h"
 #include "../../../native/include/matrix.h"
@@ -96,20 +96,20 @@ network_state_basic() {
   network_state->rows[1]       = 3;
   network_state->columns[1]    = 3;
   network_state->dropout[1]    = 0;
-  network_state->function[1]   = activity_determine_function(3, 0);
-  network_state->derivative[1] = activity_determine_derivative(3, 0);
+  network_state->function[1]   = activation_determine_function(3, 0);
+  network_state->derivative[1] = activation_determine_derivative(3, 0);
 
   network_state->rows[2]       = 3;
   network_state->columns[2]    = 2;
   network_state->dropout[2]    = 0;
-  network_state->function[2]   = activity_determine_function(3, 0);
-  network_state->derivative[2] = activity_determine_derivative(3, 0);
+  network_state->function[2]   = activation_determine_function(3, 0);
+  network_state->derivative[2] = activation_determine_derivative(3, 0);
 
   network_state->rows[3]       = 2;
   network_state->columns[3]    = 2;
   network_state->dropout[3]    = 0;
-  network_state->function[3]   = activity_determine_function(3, 0);
-  network_state->derivative[3] = activity_determine_derivative(3, 0);
+  network_state->function[3]   = activation_determine_function(3, 0);
+  network_state->derivative[3] = activation_determine_derivative(3, 0);
 
   network_state->presentation = presentation_determine(0, 0);
   network_state->objective    = objective_determine_function(2);
@@ -183,20 +183,20 @@ network_state_with_dropout() {
   network_state->rows[1]       = 3;
   network_state->columns[1]    = 3;
   network_state->dropout[1]    = 0.5;
-  network_state->function[1]   = activity_determine_function(3, 0);
-  network_state->derivative[1] = activity_determine_derivative(3, 0);
+  network_state->function[1]   = activation_determine_function(3, 0);
+  network_state->derivative[1] = activation_determine_derivative(3, 0);
 
   network_state->rows[2]       = 3;
   network_state->columns[2]    = 2;
   network_state->dropout[2]    = 0.5;
-  network_state->function[2]   = activity_determine_function(3, 0);
-  network_state->derivative[2] = activity_determine_derivative(3, 0);
+  network_state->function[2]   = activation_determine_function(3, 0);
+  network_state->derivative[2] = activation_determine_derivative(3, 0);
 
   network_state->rows[3]       = 2;
   network_state->columns[3]    = 2;
   network_state->dropout[3]    = 0.5;
-  network_state->function[3]   = activity_determine_function(3, 0);
-  network_state->derivative[3] = activity_determine_derivative(3, 0);
+  network_state->function[3]   = activation_determine_function(3, 0);
+  network_state->derivative[3] = activation_determine_derivative(3, 0);
 
   network_state->presentation = presentation_determine(0, 0);
   network_state->objective    = objective_determine_function(2);

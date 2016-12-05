@@ -1,6 +1,6 @@
 #include "../../../native/include/neural_network/propagator.h"
 
-#include "../fixtures/activity_fixtures.c"
+#include "../fixtures/activation_fixtures.c"
 #include "../fixtures/correction_fixtures.c"
 #include "../fixtures/data_fixtures.c"
 #include "../fixtures/network_state_fixtures.c"
@@ -8,7 +8,7 @@
 static void test_back_propagate() {
   NetworkState *network_state       = network_state_basic();
   Matrix        expected_output     = data_expected_basic();
-  Activity     *activity            = activity_expected_basic();
+  Activation   *activity            = activity_expected_basic();
   Correction   *expected_correction = correction_expected_basic();
 
   Correction *result = back_propagate(network_state, activity, expected_output);
@@ -22,7 +22,7 @@ static void test_back_propagate() {
 
   correction_free(&result);
   correction_free(&expected_correction);
-  activity_free(&activity);
+  activation_free(&activity);
   matrix_free(&expected_output);
   network_state_free(&network_state);
 }
@@ -30,7 +30,7 @@ static void test_back_propagate() {
 static void test_back_propagate_with_dropout() {
   NetworkState *network_state       = network_state_with_dropout();
   Matrix        expected_output     = data_expected_basic();
-  Activity     *activity            = activity_expected_with_dropout();
+  Activation   *activity            = activity_expected_with_dropout();
   Correction   *expected_correction = correction_expected_with_dropout();
 
   Correction *result = back_propagate(network_state, activity, expected_output);
@@ -44,7 +44,7 @@ static void test_back_propagate_with_dropout() {
 
   correction_free(&result);
   correction_free(&expected_correction);
-  activity_free(&activity);
+  activation_free(&activity);
   matrix_free(&expected_output);
   network_state_free(&network_state);
 }

@@ -1,10 +1,10 @@
 #include "../../include/neural_network/forwarder.h"
 
-Activity *
+Activation *
 forward_for_activity(NetworkState *network_state, Matrix sample) {
-  int32_t   layers   = network_state->layers;
-  Activity *activity = activity_new(layers);
-  Matrix    input, output, mask, biases, weights;
+  int32_t     layers   = network_state->layers;
+  Activation *activity = activation_new(layers);
+  Matrix      input, output, mask, biases, weights;
 
   input = matrix_new(sample[0], sample[1]);
   matrix_clone(input, sample);
@@ -42,7 +42,7 @@ forward_for_activity(NetworkState *network_state, Matrix sample) {
     output = matrix_new(input[0], input[1]);
     matrix_clone(output, input);
 
-    call_activity_closure(network_state->function[layer], output);
+    call_activation_closure(network_state->function[layer], output);
 
     if (mask != NULL) matrix_multiply(output, mask, output);
 
@@ -61,7 +61,7 @@ forward_for_output(NetworkState *network_state, Matrix sample) {
   matrix_dot_and_add(
     sample, network_state->weights[1], network_state->biases[1], output
   );
-  call_activity_closure(network_state->function[1], output);
+  call_activation_closure(network_state->function[1], output);
   input = output;
 
   for (int32_t layer = 1; layer < layers; layer += 1) {
@@ -69,7 +69,7 @@ forward_for_output(NetworkState *network_state, Matrix sample) {
     matrix_dot_and_add(
       input, network_state->weights[layer], network_state->biases[layer], output
     );
-    call_activity_closure(network_state->function[1], output);
+    call_activation_closure(network_state->function[1], output);
 
     matrix_free(&input);
     input = output;

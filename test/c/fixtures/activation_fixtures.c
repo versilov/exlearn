@@ -1,11 +1,11 @@
-#ifndef INCLUDE_ACTIVITY_FIXTURES_C
-#define INCLUDE_ACTIVITY_FIXTURES_C
+#ifndef INCLUDE_ACTIVATION_FIXTURES_C
+#define INCLUDE_ACTIVATION_FIXTURES_C
 
-#include "../../../native/include/neural_network/activity.h"
+#include "../../../native/include/neural_network/activation.h"
 
-static Activity *
+static Activation *
 activity_expected_basic() {
-  Activity *activity = activity_new(4);
+  Activation *activity = activation_new(4);
 
   float layer_1_input[5] = {1, 3, 31, 38, 45};
   float layer_2_input[4] = {1, 2, 371, 486};
@@ -37,9 +37,9 @@ activity_expected_basic() {
   return activity;
 }
 
-static Activity *
+static Activation *
 activity_expected_with_dropout() {
-  Activity *activity = activity_expected_basic();
+  Activation *activity = activity_expected_basic();
 
   float layer_0_mask[5] = {1, 3, 0, 2, 2};
   float layer_1_mask[5] = {1, 3, 2, 2, 0};

@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 #include "./matrix.h"
-#include "./neural_network/activity.h"
+#include "./neural_network/activation.h"
 #include "./neural_network/objective.h"
 #include "./neural_network/presentation.h"
 
@@ -17,8 +17,8 @@ typedef struct NetworkState {
   Matrix               *biases;
   Matrix               *weights;
   float                *dropout;
-  ActivityClosure     **function;
-  ActivityClosure     **derivative;
+  ActivationClosure   **function;
+  ActivationClosure   **derivative;
   PresentationClosure  *presentation;
   ObjectiveFunction     objective;
   ObjectiveError        error;

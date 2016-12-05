@@ -6,7 +6,7 @@
 static void test_forward_for_activity() {
   NetworkState *network_state = network_state_basic();
   Matrix        sample        = data_sample_basic();
-  Activity     *activity      = forward_for_activity(network_state, sample);
+  Activation   *activity      = forward_for_activity(network_state, sample);
 
   assert(activity->layers == network_state->layers); /* LCOV_EXCL_BR_LINE */
 
@@ -34,7 +34,7 @@ static void test_forward_for_activity() {
   assert(activity->mask[2] == NULL); /* LCOV_EXCL_BR_LINE */
   assert(activity->mask[3] == NULL); /* LCOV_EXCL_BR_LINE */
 
-  activity_free(&activity);
+  activation_free(&activity);
   matrix_free(&sample);
   network_state_free(&network_state);
 }
@@ -42,7 +42,7 @@ static void test_forward_for_activity() {
 static void test_forward_for_activity_with_dropout() {
   NetworkState *network_state = network_state_with_dropout();
   Matrix        sample        = data_sample_basic();
-  Activity     *activity      = forward_for_activity(network_state, sample);
+  Activation   *activity      = forward_for_activity(network_state, sample);
 
   assert(activity->layers == network_state->layers); /* LCOV_EXCL_BR_LINE */
 
@@ -51,7 +51,7 @@ static void test_forward_for_activity_with_dropout() {
   assert(activity->mask[2] != NULL); /* LCOV_EXCL_BR_LINE */
   assert(activity->mask[3] != NULL); /* LCOV_EXCL_BR_LINE */
 
-  activity_free(&activity);
+  activation_free(&activity);
   matrix_free(&sample);
   network_state_free(&network_state);
 }

@@ -1,7 +1,7 @@
-#include "../../include/neural_network/activity.h"
+#include "../../include/neural_network/activation.h"
 
 //-----------------------------------------------------------------------------
-// Activity function pairs
+// Activation function pairs
 //-----------------------------------------------------------------------------
 
 static void arctan_function(Matrix matrix, float _alpha) {
@@ -349,8 +349,8 @@ static void prelu_derivative(Matrix matrix, float alpha) {
 //-----------------------------------------------------------------------------
 
 void
-activity_free(Activity **activity_address) {
-  Activity * activity = *activity_address;
+activation_free(Activation **activity_address) {
+  Activation * activity = *activity_address;
 
   for (int32_t layer = 0; layer < activity->layers; layer += 1) {
     if (activity->input[layer]  != NULL) free(activity->input[layer] );
@@ -367,9 +367,9 @@ activity_free(Activity **activity_address) {
   *activity_address = NULL;
 }
 
-Activity *
-activity_new(int32_t layers) {
-  Activity *activity = malloc(sizeof(Activity));
+Activation *
+activation_new(int32_t layers) {
+  Activation *activity = malloc(sizeof(Activation));
 
   activity->layers = layers;
   activity->input  = malloc(sizeof(Matrix) * layers);
@@ -386,21 +386,21 @@ activity_new(int32_t layers) {
 }
 
 void
-call_activity_closure(ActivityClosure *closure, Matrix matrix) {
+call_activation_closure(ActivationClosure *closure, Matrix matrix) {
   if (closure != NULL)
     closure->function(matrix, closure->alpha);
 }
 
 void
-free_activity_closure(ActivityClosure *closure) {
+free_activation_closure(ActivationClosure *closure) {
   if (closure != NULL) free(closure);
 
   closure = NULL;
 }
 
-ActivityClosure *
-new_activity_closure(ActivityFunction function, float alpha) {
-  ActivityClosure *closure = malloc(sizeof(ActivityClosure));
+ActivationClosure *
+new_activation_closure(ActivationFunction function, float alpha) {
+  ActivationClosure *closure = malloc(sizeof(ActivationClosure));
 
   closure->function = function;
   closure->alpha    = alpha;
@@ -408,44 +408,44 @@ new_activity_closure(ActivityFunction function, float alpha) {
   return closure;
 }
 
-ActivityClosure *
-activity_determine_function(int32_t function_id, float alpha) {
+ActivationClosure *
+activation_determine_function(int32_t function_id, float alpha) {
   switch (function_id) {
-    case  0: return new_activity_closure(arctan_function,        0    );
-    case  1: return new_activity_closure(bent_identity_function, 0    );
-    case  2: return new_activity_closure(gaussian_function,      0    );
-    case  3: return new_activity_closure(identity_function,      0    );
-    case  4: return new_activity_closure(logistic_function,      0    );
-    case  5: return new_activity_closure(relu_function,          0    );
-    case  6: return new_activity_closure(sinc_function,          0    );
-    case  7: return new_activity_closure(sinusoid_function,      0    );
-    case  8: return new_activity_closure(softmax_function,       0    );
-    case  9: return new_activity_closure(softplus_function,      0    );
-    case 10: return new_activity_closure(softsign_function,      0    );
-    case 11: return new_activity_closure(tanh_function,          0    );
-    case 12: return new_activity_closure(elu_function,           alpha);
-    case 13: return new_activity_closure(prelu_function,         alpha);
+    case  0: return new_activation_closure(arctan_function,        0    );
+    case  1: return new_activation_closure(bent_identity_function, 0    );
+    case  2: return new_activation_closure(gaussian_function,      0    );
+    case  3: return new_activation_closure(identity_function,      0    );
+    case  4: return new_activation_closure(logistic_function,      0    );
+    case  5: return new_activation_closure(relu_function,          0    );
+    case  6: return new_activation_closure(sinc_function,          0    );
+    case  7: return new_activation_closure(sinusoid_function,      0    );
+    case  8: return new_activation_closure(softmax_function,       0    );
+    case  9: return new_activation_closure(softplus_function,      0    );
+    case 10: return new_activation_closure(softsign_function,      0    );
+    case 11: return new_activation_closure(tanh_function,          0    );
+    case 12: return new_activation_closure(elu_function,           alpha);
+    case 13: return new_activation_closure(prelu_function,         alpha);
     default: return NULL;
   }
 }
 
-ActivityClosure *
-activity_determine_derivative(int32_t function_id, float alpha) {
+ActivationClosure *
+activation_determine_derivative(int32_t function_id, float alpha) {
   switch (function_id) {
-    case  0: return new_activity_closure(arctan_derivative,        0    );
-    case  1: return new_activity_closure(bent_identity_derivative, 0    );
-    case  2: return new_activity_closure(gaussian_derivative,      0    );
-    case  3: return new_activity_closure(identity_derivative,      0    );
-    case  4: return new_activity_closure(logistic_derivative,      0    );
-    case  5: return new_activity_closure(relu_derivative,          0    );
-    case  6: return new_activity_closure(sinc_derivative,          0    );
-    case  7: return new_activity_closure(sinusoid_derivative,      0    );
-    case  8: return new_activity_closure(softmax_derivative,       0    );
-    case  9: return new_activity_closure(softplus_derivative,      0    );
-    case 10: return new_activity_closure(softsign_derivative,      0    );
-    case 11: return new_activity_closure(tanh_derivative,          0    );
-    case 12: return new_activity_closure(elu_derivative,           alpha);
-    case 13: return new_activity_closure(prelu_derivative,         alpha);
+    case  0: return new_activation_closure(arctan_derivative,        0    );
+    case  1: return new_activation_closure(bent_identity_derivative, 0    );
+    case  2: return new_activation_closure(gaussian_derivative,      0    );
+    case  3: return new_activation_closure(identity_derivative,      0    );
+    case  4: return new_activation_closure(logistic_derivative,      0    );
+    case  5: return new_activation_closure(relu_derivative,          0    );
+    case  6: return new_activation_closure(sinc_derivative,          0    );
+    case  7: return new_activation_closure(sinusoid_derivative,      0    );
+    case  8: return new_activation_closure(softmax_derivative,       0    );
+    case  9: return new_activation_closure(softplus_derivative,      0    );
+    case 10: return new_activation_closure(softsign_derivative,      0    );
+    case 11: return new_activation_closure(tanh_derivative,          0    );
+    case 12: return new_activation_closure(elu_derivative,           alpha);
+    case 13: return new_activation_closure(prelu_derivative,         alpha);
     default: return NULL;
   }
 }

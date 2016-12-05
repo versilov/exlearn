@@ -5,7 +5,7 @@
 #include <sys/time.h>
 
 #include "c/test_util.c"
-#include "c/neural_network/activity_test.c"
+#include "c/neural_network/activation_test.c"
 #include "c/neural_network/correction_test.c"
 #include "c/neural_network/dropout_test.c"
 #include "c/neural_network/forwarder_test.c"
@@ -24,8 +24,8 @@
 
 int main() {
   // Test for: c/neural_network/activity_test.c
-  test_activity_free();
-  test_activity_new();
+  test_activation_free();
+  test_activation_new();
   test_an_unknown_pair();
   test_the_arctan_pair();
   test_the_bent_identity_pair();
