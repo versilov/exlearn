@@ -3,7 +3,7 @@
 static void test_activation_closure_free() {
   ActivationClosure *closure = activation_closure_new(NULL, 1, 0);
 
-  activation_closure_free(closure);
+  activation_closure_free(&closure);
 }
 static void test_activation_closure_new() {
   ActivationClosure *closure = activation_closure_new(NULL, 1, 0);
@@ -12,7 +12,7 @@ static void test_activation_closure_new() {
   assert(closure->function_id == 1   ); /* LCOV_EXCL_BR_LINE */
   assert(closure->alpha       == 0   ); /* LCOV_EXCL_BR_LINE */
 
-  activation_closure_free(closure);
+  activation_closure_free(&closure);
 }
 
 static void test_an_unknown_pair() {
@@ -45,8 +45,8 @@ static void test_the_arctan_pair() {
     assert(derivative_input[index] == expected_from_derivative[index]); /* LCOV_EXCL_BR_LINE */
   }
 
-  activation_closure_free(function);
-  activation_closure_free(derivative);
+  activation_closure_free(&function);
+  activation_closure_free(&derivative);
 }
 
 static void test_the_bent_identity_pair() {
@@ -69,8 +69,8 @@ static void test_the_bent_identity_pair() {
     assert(derivative_input[index] == expected_from_derivative[index]); /* LCOV_EXCL_BR_LINE */
   }
 
-  activation_closure_free(function);
-  activation_closure_free(derivative);
+  activation_closure_free(&function);
+  activation_closure_free(&derivative);
 }
 
 static void test_the_gaussian_pair() {
@@ -93,8 +93,8 @@ static void test_the_gaussian_pair() {
     assert(derivative_input[index] == expected_from_derivative[index]); /* LCOV_EXCL_BR_LINE */
   }
 
-  activation_closure_free(function);
-  activation_closure_free(derivative);
+  activation_closure_free(&function);
+  activation_closure_free(&derivative);
 }
 
 static void test_the_identity_pair() {
@@ -117,8 +117,8 @@ static void test_the_identity_pair() {
     assert(derivative_input[index] == expected_from_derivative[index]); /* LCOV_EXCL_BR_LINE */
   }
 
-  activation_closure_free(function);
-  activation_closure_free(derivative);
+  activation_closure_free(&function);
+  activation_closure_free(&derivative);
 }
 
 static void test_the_logistic_pair() {
@@ -144,8 +144,8 @@ static void test_the_logistic_pair() {
     assert(derivative_input[index] == expected_from_derivative[index]); /* LCOV_EXCL_BR_LINE */
   }
 
-  activation_closure_free(function);
-  activation_closure_free(derivative);
+  activation_closure_free(&function);
+  activation_closure_free(&derivative);
 }
 
 static void test_the_relu_pair() {
@@ -168,8 +168,8 @@ static void test_the_relu_pair() {
     assert(derivative_input[index] == expected_from_derivative[index]); /* LCOV_EXCL_BR_LINE */
   }
 
-  activation_closure_free(function);
-  activation_closure_free(derivative);
+  activation_closure_free(&function);
+  activation_closure_free(&derivative);
 }
 
 static void test_the_sinc_pair() {
@@ -192,8 +192,8 @@ static void test_the_sinc_pair() {
     assert(derivative_input[index] == expected_from_derivative[index]); /* LCOV_EXCL_BR_LINE */
   }
 
-  activation_closure_free(function);
-  activation_closure_free(derivative);
+  activation_closure_free(&function);
+  activation_closure_free(&derivative);
 }
 
 static void test_the_sinusoid_pair() {
@@ -216,8 +216,8 @@ static void test_the_sinusoid_pair() {
     assert(derivative_input[index] == expected_from_derivative[index]); /* LCOV_EXCL_BR_LINE */
   }
 
-  activation_closure_free(function);
-  activation_closure_free(derivative);
+  activation_closure_free(&function);
+  activation_closure_free(&derivative);
 }
 
 static void test_the_softmax_pair() {
@@ -244,8 +244,8 @@ static void test_the_softmax_pair() {
     assert(derivative_input[index] == expected_from_derivative[index]); /* LCOV_EXCL_BR_LINE */
   }
 
-  activation_closure_free(function);
-  activation_closure_free(derivative);
+  activation_closure_free(&function);
+  activation_closure_free(&derivative);
 }
 
 static void test_the_softplus_pair() {
@@ -268,8 +268,8 @@ static void test_the_softplus_pair() {
     assert(derivative_input[index] == expected_from_derivative[index]); /* LCOV_EXCL_BR_LINE */
   }
 
-  activation_closure_free(function);
-  activation_closure_free(derivative);
+  activation_closure_free(&function);
+  activation_closure_free(&derivative);
 }
 
 static void test_the_softsign_pair() {
@@ -292,8 +292,8 @@ static void test_the_softsign_pair() {
     assert(derivative_input[index] == expected_from_derivative[index]); /* LCOV_EXCL_BR_LINE */
   }
 
-  activation_closure_free(function);
-  activation_closure_free(derivative);
+  activation_closure_free(&function);
+  activation_closure_free(&derivative);
 }
 
 static void test_the_tanh_pair() {
@@ -316,8 +316,8 @@ static void test_the_tanh_pair() {
     assert(derivative_input[index] == expected_from_derivative[index]); /* LCOV_EXCL_BR_LINE */
   }
 
-  activation_closure_free(function);
-  activation_closure_free(derivative);
+  activation_closure_free(&function);
+  activation_closure_free(&derivative);
 }
 
 static void test_the_elu_pair() {
@@ -341,8 +341,8 @@ static void test_the_elu_pair() {
     assert(derivative_input[index] == expected_from_derivative[index]); /* LCOV_EXCL_BR_LINE */
   }
 
-  activation_closure_free(function);
-  activation_closure_free(derivative);
+  activation_closure_free(&function);
+  activation_closure_free(&derivative);
 }
 
 static void test_the_prelu_pair() {
@@ -366,6 +366,6 @@ static void test_the_prelu_pair() {
     assert(derivative_input[index] == expected_from_derivative[index]); /* LCOV_EXCL_BR_LINE */
   }
 
-  activation_closure_free(function);
-  activation_closure_free(derivative);
+  activation_closure_free(&function);
+  activation_closure_free(&derivative);
 }

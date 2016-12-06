@@ -355,10 +355,12 @@ activation_closure_call(ActivationClosure *closure, Matrix matrix) {
 }
 
 void
-activation_closure_free(ActivationClosure *closure) {
-  if (closure != NULL) free(closure);
+activation_closure_free(ActivationClosure **activity_closure_address) {
+  ActivationClosure *activity_closure = *activity_closure_address;
 
-  closure = NULL;
+  free(activity_closure);
+
+  *activity_closure_address = NULL;
 }
 
 ActivationClosure *

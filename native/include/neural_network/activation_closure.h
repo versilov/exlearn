@@ -16,18 +16,18 @@ typedef struct ActivationClosure {
 } ActivationClosure;
 
 void
-activation_closure_call(ActivationClosure *, Matrix);
+activation_closure_call(ActivationClosure *activity_closure, Matrix matrix);
 
 void
-activation_closure_free(ActivationClosure *);
+activation_closure_free(ActivationClosure ** activity_closure_address);
 
 ActivationClosure *
-activation_closure_new(ActivationFunction, int32_t, float);
+activation_closure_new(ActivationFunction function, int32_t function_id, float alpha);
 
 ActivationClosure *
-activation_determine_function(int32_t, float);
+activation_determine_function(int32_t function_id, float alpha);
 
 ActivationClosure *
-activation_determine_derivative(int32_t, float);
+activation_determine_derivative(int32_t function_id, float alpha);
 
 #endif
