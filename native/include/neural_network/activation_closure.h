@@ -11,6 +11,7 @@ typedef void (*ActivationFunction)(Matrix, float);
 
 typedef struct ActivationClosure {
   ActivationFunction function;
+  int32_t            function_id;
   float              alpha;
 } ActivationClosure;
 
@@ -21,7 +22,7 @@ void
 activation_closure_free(ActivationClosure *);
 
 ActivationClosure *
-activation_closure_new(ActivationFunction, float);
+activation_closure_new(ActivationFunction, int32_t, float);
 
 ActivationClosure *
 activation_determine_function(int32_t, float);

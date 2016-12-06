@@ -1,5 +1,20 @@
 #include "../../../native/include/neural_network/activation_closure.h"
 
+static void test_activation_closure_free() {
+  ActivationClosure *closure = activation_closure_new(NULL, 1, 0);
+
+  activation_closure_free(closure);
+}
+static void test_activation_closure_new() {
+  ActivationClosure *closure = activation_closure_new(NULL, 1, 0);
+
+  assert(closure->function    == NULL); /* LCOV_EXCL_BR_LINE */
+  assert(closure->function_id == 1   ); /* LCOV_EXCL_BR_LINE */
+  assert(closure->alpha       == 0   ); /* LCOV_EXCL_BR_LINE */
+
+  activation_closure_free(closure);
+}
+
 static void test_an_unknown_pair() {
   int32_t function_id = -1;
 

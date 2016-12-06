@@ -31,6 +31,8 @@ int main() {
   test_activation_new();
 
   // Test for: c/neural_network/activation_closure_test.c
+  test_activation_closure_free();
+  test_activation_closure_new();
   test_an_unknown_pair();
   test_the_arctan_pair();
   test_the_bent_identity_pair();
