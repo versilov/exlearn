@@ -26,6 +26,8 @@
 int main() {
   // Test for: c/neural_network/activation_test.c
   test_activation_free();
+  test_activation_inspect();
+  test_activation_inspect_internal();
   test_activation_new();
 
   // Test for: c/neural_network/activation_closure_test.c

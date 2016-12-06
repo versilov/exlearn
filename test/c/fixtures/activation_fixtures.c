@@ -56,4 +56,26 @@ activity_expected_with_dropout() {
   return activity;
 }
 
+static Activation *
+activation_simple() {
+  Activation *activation = activation_new(2);
+
+  activation->input[1] = matrix_new(1, 3);
+  activation->input[1][2] = 0;
+  activation->input[1][3] = 1;
+  activation->input[1][4] = 2;
+
+  activation->output[1] = matrix_new(1, 3);
+  activation->output[1][2] = 0;
+  activation->output[1][3] = 1;
+  activation->output[1][4] = 2;
+
+  activation->mask[1] = matrix_new(1, 3);
+  activation->mask[1][2] = 0;
+  activation->mask[1][3] = 1;
+  activation->mask[1][4] = 2;
+
+  return activation;
+}
+
 #endif
