@@ -21,6 +21,15 @@ activation_closure_call(ActivationClosure *activity_closure, Matrix matrix);
 void
 activation_closure_free(ActivationClosure ** activity_closure_address);
 
+void
+activation_closure_inspect(ActivationClosure *activation_closure);
+
+void
+activation_closure_inspect_internal(
+  ActivationClosure *activation_closure,
+  int32_t            _indentation
+);
+
 ActivationClosure *
 activation_closure_new(ActivationFunction function, int32_t function_id, float alpha);
 

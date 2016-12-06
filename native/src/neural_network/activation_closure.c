@@ -363,6 +363,29 @@ activation_closure_free(ActivationClosure **activity_closure_address) {
   *activity_closure_address = NULL;
 }
 
+void
+activation_closure_inspect(ActivationClosure *activation_closure) {
+  printf(
+    "<#ActivationClosure function: F, function_id: %d, alpha: %f>\n",
+    activation_closure->function_id,
+    activation_closure->alpha
+  );
+}
+
+void
+activation_closure_inspect_internal(
+  ActivationClosure *activation_closure,
+  int32_t            _indentation
+) {
+  (void)(_indentation);
+
+  printf(
+    "<#ActivationClosure function: F, function_id: %d, alpha: %f>\n",
+    activation_closure->function_id,
+    activation_closure->alpha
+  );
+}
+
 ActivationClosure *
 activation_closure_new(
   ActivationFunction function,

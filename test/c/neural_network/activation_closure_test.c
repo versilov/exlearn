@@ -5,6 +5,53 @@ static void test_activation_closure_free() {
 
   activation_closure_free(&closure);
 }
+
+static void test_activation_closure_inspect_callback() {
+  ActivationClosure *activation_closure = activation_determine_function(0, 1);
+
+  activation_closure_inspect(activation_closure);
+
+  activation_closure_free(&activation_closure);
+}
+
+static void test_activation_closure_inspect() {
+  char *result   = capture_stdout(test_activation_closure_inspect_callback);
+  char *expected =
+    "<#ActivationClosure function: F, function_id: 0, alpha: 0.000000>\n";
+
+  int32_t result_length   = strlen(result  );
+  int32_t expected_length = strlen(expected);
+
+  assert(result_length == expected_length); /* LCOV_EXCL_BR_LINE */
+
+  for(int32_t index = 0; index <= result_length; index += 1) {
+    assert(result[index] == expected[index]); /* LCOV_EXCL_BR_LINE */
+  }
+}
+
+static void test_activation_closure_inspect_internal_callback() {
+  ActivationClosure *activation_closure = activation_determine_function(0, 1);
+
+  activation_closure_inspect_internal(activation_closure, 3);
+
+  activation_closure_free(&activation_closure);
+}
+
+static void test_activation_closure_inspect_internal() {
+  char *result   = capture_stdout(test_activation_closure_inspect_internal_callback);
+  char *expected =
+    "<#ActivationClosure function: F, function_id: 0, alpha: 0.000000>\n";
+
+  int32_t result_length   = strlen(result  );
+  int32_t expected_length = strlen(expected);
+
+  assert(result_length == expected_length); /* LCOV_EXCL_BR_LINE */
+
+  for(int32_t index = 0; index <= result_length; index += 1) {
+    assert(result[index] == expected[index]); /* LCOV_EXCL_BR_LINE */
+  }
+}
+
 static void test_activation_closure_new() {
   ActivationClosure *closure = activation_closure_new(NULL, 1, 0);
 
