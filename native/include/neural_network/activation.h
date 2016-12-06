@@ -14,9 +14,9 @@ typedef struct Activation {
 } Activation;
 
 void
-activation_free(Activation **);
+activation_free(Activation ** activation_address);
 
 Activation *
-activation_new(int);
+activation_new(int layers);
 
 #endif

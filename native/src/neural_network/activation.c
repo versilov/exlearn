@@ -1,38 +1,38 @@
 #include "../../include/neural_network/activation.h"
 
 void
-activation_free(Activation **activity_address) {
-  Activation * activity = *activity_address;
+activation_free(Activation **activation_address) {
+  Activation * activation = *activation_address;
 
-  for (int32_t layer = 0; layer < activity->layers; layer += 1) {
-    if (activity->input[layer]  != NULL) free(activity->input[layer] );
-    if (activity->mask[layer]   != NULL) free(activity->mask[layer]  );
-    if (activity->output[layer] != NULL) free(activity->output[layer]);
+  for (int32_t layer = 0; layer < activation->layers; layer += 1) {
+    if (activation->input[layer]  != NULL) free(activation->input[layer] );
+    if (activation->mask[layer]   != NULL) free(activation->mask[layer]  );
+    if (activation->output[layer] != NULL) free(activation->output[layer]);
   }
 
-  free(activity->input );
-  free(activity->output);
-  free(activity->mask  );
+  free(activation->input );
+  free(activation->output);
+  free(activation->mask  );
 
-  free(activity);
+  free(activation);
 
-  *activity_address = NULL;
+  *activation_address = NULL;
 }
 
 Activation *
 activation_new(int32_t layers) {
-  Activation *activity = malloc(sizeof(Activation));
+  Activation *activation = malloc(sizeof(Activation));
 
-  activity->layers = layers;
-  activity->input  = malloc(sizeof(Matrix) * layers);
-  activity->output = malloc(sizeof(Matrix) * layers);
-  activity->mask   = malloc(sizeof(Matrix) * layers);
+  activation->layers = layers;
+  activation->input  = malloc(sizeof(Matrix) * layers);
+  activation->output = malloc(sizeof(Matrix) * layers);
+  activation->mask   = malloc(sizeof(Matrix) * layers);
 
   for (int32_t layer = 0; layer < layers; layer += 1) {
-    activity->input[layer]  = NULL;
-    activity->mask[layer]   = NULL;
-    activity->output[layer] = NULL;
+    activation->input[layer]  = NULL;
+    activation->mask[layer]   = NULL;
+    activation->output[layer] = NULL;
   }
 
-  return activity;
+  return activation;
 }
