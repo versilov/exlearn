@@ -52,7 +52,7 @@ presentation_closure_new(PresentationFunction function, int32_t alpha) {
 }
 
 PresentationClosure *
-presentation_determine(int32_t function_id, int32_t alpha) {
+presentation_closure_determine(int32_t function_id, int32_t alpha) {
   switch (function_id) {
     case 0:  return presentation_closure_new(argmax_function,      alpha);
     case 1:  return presentation_closure_new(floor_first_function, alpha);

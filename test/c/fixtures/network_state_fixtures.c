@@ -111,7 +111,7 @@ network_state_basic() {
   network_state->function[3]   = activation_determine_function(3, 0);
   network_state->derivative[3] = activation_determine_derivative(3, 0);
 
-  network_state->presentation = presentation_determine(0, 0);
+  network_state->presentation = presentation_closure_determine(0, 0);
   network_state->objective    = objective_determine_function(2);
   network_state->error        = objective_determine_error_simple(2);
 
@@ -198,7 +198,7 @@ network_state_with_dropout() {
   network_state->function[3]   = activation_determine_function(3, 0);
   network_state->derivative[3] = activation_determine_derivative(3, 0);
 
-  network_state->presentation = presentation_determine(0, 0);
+  network_state->presentation = presentation_closure_determine(0, 0);
   network_state->objective    = objective_determine_function(2);
   network_state->error        = objective_determine_error_simple(2);
 

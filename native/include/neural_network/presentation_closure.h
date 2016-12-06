@@ -23,6 +23,6 @@ PresentationClosure *
 presentation_closure_new(PresentationFunction function, int32_t alpha);
 
 PresentationClosure *
-presentation_determine(int32_t function_id, int32_t alpha);
+presentation_closure_determine(int32_t function_id, int32_t alpha);
 
 #endif
