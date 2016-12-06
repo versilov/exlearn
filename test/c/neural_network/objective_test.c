@@ -56,7 +56,7 @@ static void test_the_cross_entropy_objective_error_simple() {
   assert(result[3] ==  1.20000004768371582); /* LCOV_EXCL_BR_LINE */
   assert(result[4] == -1.42857146263122558); /* LCOV_EXCL_BR_LINE */
 
-  free_activation_closure(derivative);
+  activation_closure_free(derivative);
 }
 
 static void test_the_negative_log_likelihood_objective_error_simple() {
@@ -75,7 +75,7 @@ static void test_the_negative_log_likelihood_objective_error_simple() {
   assert(result[3] ==  0.30000001192092896); /* LCOV_EXCL_BR_LINE */
   assert(result[4] ==  0.10000000149011612); /* LCOV_EXCL_BR_LINE */
 
-  free_activation_closure(derivative);
+  activation_closure_free(derivative);
 }
 
 static void test_an_unknown_objective_error_optimised() {
@@ -100,7 +100,7 @@ static void test_the_cross_entropy_objective_error_optimised() {
   assert(result[3] ==  0.30000001192092896); /* LCOV_EXCL_BR_LINE */
   assert(result[4] ==  0.10000000149011612); /* LCOV_EXCL_BR_LINE */
 
-  free_activation_closure(derivative);
+  activation_closure_free(derivative);
 }
 
 static void test_the_negative_log_likelihood_objective_error_optimised() {
@@ -119,7 +119,7 @@ static void test_the_negative_log_likelihood_objective_error_optimised() {
   assert(result[3] ==  0.30000001192092896); /* LCOV_EXCL_BR_LINE */
   assert(result[4] ==  0.10000000149011612); /* LCOV_EXCL_BR_LINE */
 
-  free_activation_closure(derivative);
+  activation_closure_free(derivative);
 }
 
 static void test_the_quadratic_objective_error() {
@@ -148,5 +148,5 @@ static void test_the_quadratic_objective_error() {
   assert(result[3] == 0); /* LCOV_EXCL_BR_LINE */
   assert(result[4] == 4); /* LCOV_EXCL_BR_LINE */
 
-  free_activation_closure(derivative);
+  activation_closure_free(derivative);
 }

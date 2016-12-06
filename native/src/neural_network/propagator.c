@@ -33,7 +33,7 @@ back_propagate(
 
     input_gradient = matrix_new(activity->input[layer][0], activity->input[layer][1]);
     matrix_clone(input_gradient, activity->input[layer]);
-    call_activation_closure(network_state->derivative[layer], input_gradient);
+    activation_closure_call(network_state->derivative[layer], input_gradient);
 
     error = matrix_new(network_state->biases[layer][0], network_state->biases[layer][1]);
     matrix_multiply(output_gradient, input_gradient, error);

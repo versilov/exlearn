@@ -22,16 +22,16 @@ static void test_the_arctan_pair() {
   float expected_from_function[]   = {1, 1, 1.4711276743037347  };
   float expected_from_derivative[] = {1, 1, 0.009900990099009901};
 
-  call_activation_closure(function,   function_input  );
-  call_activation_closure(derivative, derivative_input);
+  activation_closure_call(function,   function_input  );
+  activation_closure_call(derivative, derivative_input);
 
   for (int32_t index = 0; index < 3; index += 1) {
     assert(function_input[index]   == expected_from_function[index]  ); /* LCOV_EXCL_BR_LINE */
     assert(derivative_input[index] == expected_from_derivative[index]); /* LCOV_EXCL_BR_LINE */
   }
 
-  free_activation_closure(function);
-  free_activation_closure(derivative);
+  activation_closure_free(function);
+  activation_closure_free(derivative);
 }
 
 static void test_the_bent_identity_pair() {
@@ -46,16 +46,16 @@ static void test_the_bent_identity_pair() {
   float expected_from_function[]   = {1, 1, 14.524937810560445};
   float expected_from_derivative[] = {1, 1, 1.4975185951049945};
 
-  call_activation_closure(function,   function_input  );
-  call_activation_closure(derivative, derivative_input);
+  activation_closure_call(function,   function_input  );
+  activation_closure_call(derivative, derivative_input);
 
   for (int32_t index = 0; index < 3; index += 1) {
     assert(function_input[index]   == expected_from_function[index]  ); /* LCOV_EXCL_BR_LINE */
     assert(derivative_input[index] == expected_from_derivative[index]); /* LCOV_EXCL_BR_LINE */
   }
 
-  free_activation_closure(function);
-  free_activation_closure(derivative);
+  activation_closure_free(function);
+  activation_closure_free(derivative);
 }
 
 static void test_the_gaussian_pair() {
@@ -70,16 +70,16 @@ static void test_the_gaussian_pair() {
   float expected_from_function[]   = {1, 1,  3.720075976020836e-44};
   float expected_from_derivative[] = {1, 1, -7.440151952041672e-43};
 
-  call_activation_closure(function,   function_input  );
-  call_activation_closure(derivative, derivative_input);
+  activation_closure_call(function,   function_input  );
+  activation_closure_call(derivative, derivative_input);
 
   for (int32_t index = 0; index < 3; index += 1) {
     assert(function_input[index]   == expected_from_function[index]  ); /* LCOV_EXCL_BR_LINE */
     assert(derivative_input[index] == expected_from_derivative[index]); /* LCOV_EXCL_BR_LINE */
   }
 
-  free_activation_closure(function);
-  free_activation_closure(derivative);
+  activation_closure_free(function);
+  activation_closure_free(derivative);
 }
 
 static void test_the_identity_pair() {
@@ -94,16 +94,16 @@ static void test_the_identity_pair() {
   float expected_from_function[]   = {1, 1, 10};
   float expected_from_derivative[] = {1, 1, 1 };
 
-  call_activation_closure(function,   function_input  );
-  call_activation_closure(derivative, derivative_input);
+  activation_closure_call(function,   function_input  );
+  activation_closure_call(derivative, derivative_input);
 
   for (int32_t index = 0; index < 3; index += 1) {
     assert(function_input[index]   == expected_from_function[index]  ); /* LCOV_EXCL_BR_LINE */
     assert(derivative_input[index] == expected_from_derivative[index]); /* LCOV_EXCL_BR_LINE */
   }
 
-  free_activation_closure(function);
-  free_activation_closure(derivative);
+  activation_closure_free(function);
+  activation_closure_free(derivative);
 }
 
 static void test_the_logistic_pair() {
@@ -118,8 +118,8 @@ static void test_the_logistic_pair() {
   float expected_from_function[]   = {1, 3, 0.9999546021312976, 1.0, 0.0};
   float expected_from_derivative[] = {1, 1, 4.5395805e-5};
 
-  call_activation_closure(function,   function_input  );
-  call_activation_closure(derivative, derivative_input);
+  activation_closure_call(function,   function_input  );
+  activation_closure_call(derivative, derivative_input);
 
   for (int32_t index = 0; index < 5; index += 1) {
     assert(function_input[index]   == expected_from_function[index]  ); /* LCOV_EXCL_BR_LINE */
@@ -129,8 +129,8 @@ static void test_the_logistic_pair() {
     assert(derivative_input[index] == expected_from_derivative[index]); /* LCOV_EXCL_BR_LINE */
   }
 
-  free_activation_closure(function);
-  free_activation_closure(derivative);
+  activation_closure_free(function);
+  activation_closure_free(derivative);
 }
 
 static void test_the_relu_pair() {
@@ -145,16 +145,16 @@ static void test_the_relu_pair() {
   float expected_from_function[]   = {1, 3, 0, 0, 2};
   float expected_from_derivative[] = {1, 3, 0, 1, 1};
 
-  call_activation_closure(function,   function_input  );
-  call_activation_closure(derivative, derivative_input);
+  activation_closure_call(function,   function_input  );
+  activation_closure_call(derivative, derivative_input);
 
   for (int32_t index = 0; index < 5; index += 1) {
     assert(function_input[index]   == expected_from_function[index]  ); /* LCOV_EXCL_BR_LINE */
     assert(derivative_input[index] == expected_from_derivative[index]); /* LCOV_EXCL_BR_LINE */
   }
 
-  free_activation_closure(function);
-  free_activation_closure(derivative);
+  activation_closure_free(function);
+  activation_closure_free(derivative);
 }
 
 static void test_the_sinc_pair() {
@@ -169,16 +169,16 @@ static void test_the_sinc_pair() {
   float expected_from_function[]   = {1, 2, 1,  0.8414709848078965 };
   float expected_from_derivative[] = {1, 2, 0, -0.30116867893975674};
 
-  call_activation_closure(function,   function_input  );
-  call_activation_closure(derivative, derivative_input);
+  activation_closure_call(function,   function_input  );
+  activation_closure_call(derivative, derivative_input);
 
   for (int32_t index = 0; index < 4; index += 1) {
     assert(function_input[index]   == expected_from_function[index]  ); /* LCOV_EXCL_BR_LINE */
     assert(derivative_input[index] == expected_from_derivative[index]); /* LCOV_EXCL_BR_LINE */
   }
 
-  free_activation_closure(function);
-  free_activation_closure(derivative);
+  activation_closure_free(function);
+  activation_closure_free(derivative);
 }
 
 static void test_the_sinusoid_pair() {
@@ -193,16 +193,16 @@ static void test_the_sinusoid_pair() {
   float expected_from_function[]   = {1, 1, 0};
   float expected_from_derivative[] = {1, 1, 1};
 
-  call_activation_closure(function,   function_input  );
-  call_activation_closure(derivative, derivative_input);
+  activation_closure_call(function,   function_input  );
+  activation_closure_call(derivative, derivative_input);
 
   for (int32_t index = 0; index < 3; index += 1) {
     assert(function_input[index]   == expected_from_function[index]  ); /* LCOV_EXCL_BR_LINE */
     assert(derivative_input[index] == expected_from_derivative[index]); /* LCOV_EXCL_BR_LINE */
   }
 
-  free_activation_closure(function);
-  free_activation_closure(derivative);
+  activation_closure_free(function);
+  activation_closure_free(derivative);
 }
 
 static void test_the_softmax_pair() {
@@ -221,16 +221,16 @@ static void test_the_softmax_pair() {
     1.5, -0.20000001788139343, -0.30000001192092896, -3.0
   };
 
-  call_activation_closure(function,   function_input  );
-  call_activation_closure(derivative, derivative_input);
+  activation_closure_call(function,   function_input  );
+  activation_closure_call(derivative, derivative_input);
 
   for (int32_t index = 0; index < 6; index += 1) {
     assert(function_input[index]   == expected_from_function[index]  ); /* LCOV_EXCL_BR_LINE */
     assert(derivative_input[index] == expected_from_derivative[index]); /* LCOV_EXCL_BR_LINE */
   }
 
-  free_activation_closure(function);
-  free_activation_closure(derivative);
+  activation_closure_free(function);
+  activation_closure_free(derivative);
 }
 
 static void test_the_softplus_pair() {
@@ -245,16 +245,16 @@ static void test_the_softplus_pair() {
   float expected_from_function[]   = {1, 1, 10.000045398899218};
   float expected_from_derivative[] = {1, 1, 0.9999546021312976};
 
-  call_activation_closure(function,   function_input  );
-  call_activation_closure(derivative, derivative_input);
+  activation_closure_call(function,   function_input  );
+  activation_closure_call(derivative, derivative_input);
 
   for (int32_t index = 0; index < 3; index += 1) {
     assert(function_input[index]   == expected_from_function[index]  ); /* LCOV_EXCL_BR_LINE */
     assert(derivative_input[index] == expected_from_derivative[index]); /* LCOV_EXCL_BR_LINE */
   }
 
-  free_activation_closure(function);
-  free_activation_closure(derivative);
+  activation_closure_free(function);
+  activation_closure_free(derivative);
 }
 
 static void test_the_softsign_pair() {
@@ -269,16 +269,16 @@ static void test_the_softsign_pair() {
   float expected_from_function[]   = {1, 1, 0.9090909361};
   float expected_from_derivative[] = {1, 1, 0.0082644628};
 
-  call_activation_closure(function,   function_input  );
-  call_activation_closure(derivative, derivative_input);
+  activation_closure_call(function,   function_input  );
+  activation_closure_call(derivative, derivative_input);
 
   for (int32_t index = 0; index < 3; index += 1) {
     assert(function_input[index]   == expected_from_function[index]  ); /* LCOV_EXCL_BR_LINE */
     assert(derivative_input[index] == expected_from_derivative[index]); /* LCOV_EXCL_BR_LINE */
   }
 
-  free_activation_closure(function);
-  free_activation_closure(derivative);
+  activation_closure_free(function);
+  activation_closure_free(derivative);
 }
 
 static void test_the_tanh_pair() {
@@ -293,16 +293,16 @@ static void test_the_tanh_pair() {
   float expected_from_function[]   = {1, 1, 0.99999999};
   float expected_from_derivative[] = {1, 1, 0};
 
-  call_activation_closure(function,   function_input  );
-  call_activation_closure(derivative, derivative_input);
+  activation_closure_call(function,   function_input  );
+  activation_closure_call(derivative, derivative_input);
 
   for (int32_t index = 0; index < 3; index += 1) {
     assert(function_input[index]   == expected_from_function[index]  ); /* LCOV_EXCL_BR_LINE */
     assert(derivative_input[index] == expected_from_derivative[index]); /* LCOV_EXCL_BR_LINE */
   }
 
-  free_activation_closure(function);
-  free_activation_closure(derivative);
+  activation_closure_free(function);
+  activation_closure_free(derivative);
 }
 
 static void test_the_elu_pair() {
@@ -318,16 +318,16 @@ static void test_the_elu_pair() {
   float expected_from_function[]   = {1, 3, -8.6466471676, 0, 2};
   float expected_from_derivative[] = {1, 3,  1.3533528323, 1, 1};
 
-  call_activation_closure(function,   function_input  );
-  call_activation_closure(derivative, derivative_input);
+  activation_closure_call(function,   function_input  );
+  activation_closure_call(derivative, derivative_input);
 
   for (int32_t index = 0; index < 5; index += 1) {
     assert(function_input[index]   == expected_from_function[index]  ); /* LCOV_EXCL_BR_LINE */
     assert(derivative_input[index] == expected_from_derivative[index]); /* LCOV_EXCL_BR_LINE */
   }
 
-  free_activation_closure(function);
-  free_activation_closure(derivative);
+  activation_closure_free(function);
+  activation_closure_free(derivative);
 }
 
 static void test_the_prelu_pair() {
@@ -343,14 +343,14 @@ static void test_the_prelu_pair() {
   float expected_from_function[]   = {1, 3, -20, 0, 2};
   float expected_from_derivative[] = {1, 3,  10, 1, 1};
 
-  call_activation_closure(function,   function_input  );
-  call_activation_closure(derivative, derivative_input);
+  activation_closure_call(function,   function_input  );
+  activation_closure_call(derivative, derivative_input);
 
   for (int32_t index = 0; index < 5; index += 1) {
     assert(function_input[index]   == expected_from_function[index]  ); /* LCOV_EXCL_BR_LINE */
     assert(derivative_input[index] == expected_from_derivative[index]); /* LCOV_EXCL_BR_LINE */
   }
 
-  free_activation_closure(function);
-  free_activation_closure(derivative);
+  activation_closure_free(function);
+  activation_closure_free(derivative);
 }

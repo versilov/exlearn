@@ -8,8 +8,8 @@ network_state_free(NetworkState **network_state_address) {
     matrix_free(&network_state->biases[layer] );
     matrix_free(&network_state->weights[layer]);
 
-    free_activation_closure(network_state->function[layer]  );
-    free_activation_closure(network_state->derivative[layer]);
+    activation_closure_free(network_state->function[layer]  );
+    activation_closure_free(network_state->derivative[layer]);
   }
 
   free(network_state->rows      );

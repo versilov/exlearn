@@ -36,7 +36,7 @@ cross_entropy_error_simple(
   float   top, bottom;
 
   matrix_clone(result, last_input);
-  call_activation_closure(last_derivative, result);
+  activation_closure_call(last_derivative, result);
 
   for (int32_t index = 2; index < length; index += 1) {
     top    = actual[index] - expected[index];
@@ -132,7 +132,7 @@ quadratic_error(
   Matrix  result = matrix_new(expected[0], expected[1]);
 
   matrix_clone(result, last_input);
-  call_activation_closure(last_derivative, result);
+  activation_closure_call(last_derivative, result);
 
   for (int32_t index = 2; index < length; index += 1) {
     result[index] *= actual[index] - expected[index];

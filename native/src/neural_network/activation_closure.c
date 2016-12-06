@@ -349,20 +349,20 @@ static void prelu_derivative(Matrix matrix, float alpha) {
 //-----------------------------------------------------------------------------
 
 void
-call_activation_closure(ActivationClosure *closure, Matrix matrix) {
+activation_closure_call(ActivationClosure *closure, Matrix matrix) {
   if (closure != NULL)
     closure->function(matrix, closure->alpha);
 }
 
 void
-free_activation_closure(ActivationClosure *closure) {
+activation_closure_free(ActivationClosure *closure) {
   if (closure != NULL) free(closure);
 
   closure = NULL;
 }
 
 ActivationClosure *
-new_activation_closure(ActivationFunction function, float alpha) {
+activation_closure_new(ActivationFunction function, float alpha) {
   ActivationClosure *closure = malloc(sizeof(ActivationClosure));
 
   closure->function = function;
@@ -374,20 +374,20 @@ new_activation_closure(ActivationFunction function, float alpha) {
 ActivationClosure *
 activation_determine_function(int32_t function_id, float alpha) {
   switch (function_id) {
-    case  0: return new_activation_closure(arctan_function,        0    );
-    case  1: return new_activation_closure(bent_identity_function, 0    );
-    case  2: return new_activation_closure(gaussian_function,      0    );
-    case  3: return new_activation_closure(identity_function,      0    );
-    case  4: return new_activation_closure(logistic_function,      0    );
-    case  5: return new_activation_closure(relu_function,          0    );
-    case  6: return new_activation_closure(sinc_function,          0    );
-    case  7: return new_activation_closure(sinusoid_function,      0    );
-    case  8: return new_activation_closure(softmax_function,       0    );
-    case  9: return new_activation_closure(softplus_function,      0    );
-    case 10: return new_activation_closure(softsign_function,      0    );
-    case 11: return new_activation_closure(tanh_function,          0    );
-    case 12: return new_activation_closure(elu_function,           alpha);
-    case 13: return new_activation_closure(prelu_function,         alpha);
+    case  0: return activation_closure_new(arctan_function,        0    );
+    case  1: return activation_closure_new(bent_identity_function, 0    );
+    case  2: return activation_closure_new(gaussian_function,      0    );
+    case  3: return activation_closure_new(identity_function,      0    );
+    case  4: return activation_closure_new(logistic_function,      0    );
+    case  5: return activation_closure_new(relu_function,          0    );
+    case  6: return activation_closure_new(sinc_function,          0    );
+    case  7: return activation_closure_new(sinusoid_function,      0    );
+    case  8: return activation_closure_new(softmax_function,       0    );
+    case  9: return activation_closure_new(softplus_function,      0    );
+    case 10: return activation_closure_new(softsign_function,      0    );
+    case 11: return activation_closure_new(tanh_function,          0    );
+    case 12: return activation_closure_new(elu_function,           alpha);
+    case 13: return activation_closure_new(prelu_function,         alpha);
     default: return NULL;
   }
 }
@@ -395,20 +395,20 @@ activation_determine_function(int32_t function_id, float alpha) {
 ActivationClosure *
 activation_determine_derivative(int32_t function_id, float alpha) {
   switch (function_id) {
-    case  0: return new_activation_closure(arctan_derivative,        0    );
-    case  1: return new_activation_closure(bent_identity_derivative, 0    );
-    case  2: return new_activation_closure(gaussian_derivative,      0    );
-    case  3: return new_activation_closure(identity_derivative,      0    );
-    case  4: return new_activation_closure(logistic_derivative,      0    );
-    case  5: return new_activation_closure(relu_derivative,          0    );
-    case  6: return new_activation_closure(sinc_derivative,          0    );
-    case  7: return new_activation_closure(sinusoid_derivative,      0    );
-    case  8: return new_activation_closure(softmax_derivative,       0    );
-    case  9: return new_activation_closure(softplus_derivative,      0    );
-    case 10: return new_activation_closure(softsign_derivative,      0    );
-    case 11: return new_activation_closure(tanh_derivative,          0    );
-    case 12: return new_activation_closure(elu_derivative,           alpha);
-    case 13: return new_activation_closure(prelu_derivative,         alpha);
+    case  0: return activation_closure_new(arctan_derivative,        0    );
+    case  1: return activation_closure_new(bent_identity_derivative, 0    );
+    case  2: return activation_closure_new(gaussian_derivative,      0    );
+    case  3: return activation_closure_new(identity_derivative,      0    );
+    case  4: return activation_closure_new(logistic_derivative,      0    );
+    case  5: return activation_closure_new(relu_derivative,          0    );
+    case  6: return activation_closure_new(sinc_derivative,          0    );
+    case  7: return activation_closure_new(sinusoid_derivative,      0    );
+    case  8: return activation_closure_new(softmax_derivative,       0    );
+    case  9: return activation_closure_new(softplus_derivative,      0    );
+    case 10: return activation_closure_new(softsign_derivative,      0    );
+    case 11: return activation_closure_new(tanh_derivative,          0    );
+    case 12: return activation_closure_new(elu_derivative,           alpha);
+    case 13: return activation_closure_new(prelu_derivative,         alpha);
     default: return NULL;
   }
 }

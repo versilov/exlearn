@@ -15,13 +15,13 @@ typedef struct ActivationClosure {
 } ActivationClosure;
 
 void
-call_activation_closure(ActivationClosure *, Matrix);
+activation_closure_call(ActivationClosure *, Matrix);
 
 void
-free_activation_closure(ActivationClosure *);
+activation_closure_free(ActivationClosure *);
 
 ActivationClosure *
-new_activation_closure(ActivationFunction, float);
+activation_closure_new(ActivationFunction, float);
 
 ActivationClosure *
 activation_determine_function(int32_t, float);
