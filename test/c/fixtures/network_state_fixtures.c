@@ -3,7 +3,7 @@
 
 #include "../../../native/include/neural_network/activation.h"
 #include "../../../native/include/neural_network/objective.h"
-#include "../../../native/include/neural_network/presentation.h"
+#include "../../../native/include/neural_network/presentation_closure.h"
 #include "../../../native/include/matrix.h"
 
 static NetworkState *

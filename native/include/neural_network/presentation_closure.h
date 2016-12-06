@@ -1,5 +1,5 @@
-#ifndef INCLUDED_PRESENTATION_H
-#define INCLUDED_PRESENTATION_H
+#ifndef INCLUDED_PRESENTATION_CLOSURE_H
+#define INCLUDED_PRESENTATION_CLOSURE_H
 
 #include <math.h>
 #include <stdint.h>

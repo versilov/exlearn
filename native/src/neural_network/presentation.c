@@ -1,4 +1,4 @@
-#include "../../include/neural_network/presentation.h"
+#include "../../include/neural_network/presentation_closure.h"
 
 static int32_t argmax_function(Matrix matrix, int32_t alpha) {
   int32_t argmax = matrix_argmax(matrix);

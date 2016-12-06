@@ -1,4 +1,4 @@
-#include "../../../native/include/neural_network/presentation.h"
+#include "../../../native/include/neural_network/presentation_closure.h"
 #include "../../../native/include/matrix.h"
 
 static void test_presentation_closure_free() {

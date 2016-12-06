@@ -7,7 +7,7 @@
 #include "./matrix.h"
 #include "./neural_network/activation.h"
 #include "./neural_network/objective.h"
-#include "./neural_network/presentation.h"
+#include "./neural_network/presentation_closure.h"
 
 
 typedef struct NetworkState {
