@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 #include "../matrix.h"
-#include "./activation.h"
+#include "./activation_closure.h"
 
 typedef float  (*ObjectiveFunction)(Matrix, Matrix);
 

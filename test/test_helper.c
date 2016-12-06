@@ -6,6 +6,7 @@
 
 #include "c/test_util.c"
 #include "c/neural_network/activation_test.c"
+#include "c/neural_network/activation_closure_test.c"
 #include "c/neural_network/correction_test.c"
 #include "c/neural_network/dropout_test.c"
 #include "c/neural_network/forwarder_test.c"
@@ -23,9 +24,11 @@
 #include "c/network_state_test.c"
 
 int main() {
-  // Test for: c/neural_network/activity_test.c
+  // Test for: c/neural_network/activation_test.c
   test_activation_free();
   test_activation_new();
+
+  // Test for: c/neural_network/activation_closure_test.c
   test_an_unknown_pair();
   test_the_arctan_pair();
   test_the_bent_identity_pair();
