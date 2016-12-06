@@ -41,6 +41,29 @@ presentation_closure_free(PresentationClosure **closure_address) {
   *closure_address = NULL;
 }
 
+void
+presentation_closure_inspect(PresentationClosure *presentation_closure) {
+  printf(
+    "<#PresentationClosure function: F, function_id: %d, alpha: %d>\n",
+    presentation_closure->function_id,
+    presentation_closure->alpha
+  );
+}
+
+void
+presentation_closure_inspect_internal(
+  PresentationClosure *presentation_closure,
+  int32_t              _indentation
+) {
+  (void)(_indentation);
+
+  printf(
+    "<#PresentationClosure function: F, function_id: %d, alpha: %d>",
+    presentation_closure->function_id,
+    presentation_closure->alpha
+  );
+}
+
 PresentationClosure *
 presentation_closure_new(
   PresentationFunction function,

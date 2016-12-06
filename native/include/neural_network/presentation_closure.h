@@ -15,10 +15,19 @@ typedef struct PresentationClosure {
 } PresentationClosure;
 
 int32_t
-presentation_closure_call(PresentationClosure *closure, Matrix matrix);
+presentation_closure_call(PresentationClosure *presentation_closure, Matrix matrix);
 
 void
-presentation_closure_free(PresentationClosure **closure);
+presentation_closure_free(PresentationClosure **presentation_closure);
+
+void
+presentation_closure_inspect(PresentationClosure *presentation_closure);
+
+void
+presentation_closure_inspect_internal(
+  PresentationClosure *presentation_closure,
+  int32_t              indentation
+);
 
 PresentationClosure *
 presentation_closure_new(

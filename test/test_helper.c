@@ -89,9 +89,11 @@ int main() {
   test_the_quadratic_objective_error();
 
   // Tests for: c/neural_network/presentation_closure_test.c
-  test_presentation_closure_free();
-  test_presentation_closure_new();
   test_presentation_closure_call();
+  test_presentation_closure_free();
+  test_presentation_closure_inspect();
+  test_presentation_closure_inspect_internal();
+  test_presentation_closure_new();
   test_an_unknown_function();
   test_the_argmax_function();
   test_the_floor_first_function();
