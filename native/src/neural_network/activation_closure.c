@@ -380,7 +380,7 @@ activation_closure_inspect_internal(
   (void)(_indentation);
 
   printf(
-    "<#ActivationClosure function: F, function_id: %d, alpha: %f>\n",
+    "<#ActivationClosure function: F, function_id: %d, alpha: %f>",
     activation_closure->function_id,
     activation_closure->alpha
   );

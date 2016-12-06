@@ -40,7 +40,7 @@ static void test_activation_closure_inspect_internal_callback() {
 static void test_activation_closure_inspect_internal() {
   char *result   = capture_stdout(test_activation_closure_inspect_internal_callback);
   char *expected =
-    "<#ActivationClosure function: F, function_id: 0, alpha: 0.000000>\n";
+    "<#ActivationClosure function: F, function_id: 0, alpha: 0.000000>";
 
   int32_t result_length   = strlen(result  );
   int32_t expected_length = strlen(expected);
