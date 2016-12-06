@@ -12,7 +12,7 @@
 #include "c/neural_network/forwarder_test.c"
 #include "c/neural_network/gradient_descent_test.c"
 #include "c/neural_network/objective_test.c"
-#include "c/neural_network/presentation_test.c"
+#include "c/neural_network/presentation_closure_test.c"
 #include "c/neural_network/propagator_test.c"
 #include "c/worker/batch_data_test.c"
 #include "c/worker/bundle_paths_test.c"
@@ -86,7 +86,7 @@ int main() {
 
   test_the_quadratic_objective_error();
 
-  // Tests for: c/neural_network/presentation_test.c
+  // Tests for: c/neural_network/presentation_closure_test.c
   test_presentation_closure_free();
   test_presentation_closure_new();
   test_presentation_closure_call();

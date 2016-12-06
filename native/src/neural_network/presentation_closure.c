@@ -42,11 +42,16 @@ presentation_closure_free(PresentationClosure **closure_address) {
 }
 
 PresentationClosure *
-presentation_closure_new(PresentationFunction function, int32_t alpha) {
+presentation_closure_new(
+  PresentationFunction function,
+  int32_t              function_id,
+  int32_t              alpha
+) {
   PresentationClosure *closure = malloc(sizeof(PresentationClosure));
 
-  closure->function = function;
-  closure->alpha    = alpha;
+  closure->function    = function;
+  closure->function_id = function_id;
+  closure->alpha       = alpha;
 
   return closure;
 }
@@ -54,10 +59,14 @@ presentation_closure_new(PresentationFunction function, int32_t alpha) {
 PresentationClosure *
 presentation_closure_determine(int32_t function_id, int32_t alpha) {
   switch (function_id) {
-    case 0:  return presentation_closure_new(argmax_function,      alpha);
-    case 1:  return presentation_closure_new(floor_first_function, alpha);
-    case 2:  return presentation_closure_new(round_first_function, alpha);
-    case 3:  return presentation_closure_new(ceil_first_function,  alpha);
+    case 0:
+      return presentation_closure_new(argmax_function,      function_id, alpha);
+    case 1:
+      return presentation_closure_new(floor_first_function, function_id, alpha);
+    case 2:
+      return presentation_closure_new(round_first_function, function_id, alpha);
+    case 3:
+      return presentation_closure_new(ceil_first_function,  function_id, alpha);
     default: return NULL;
   }
 }

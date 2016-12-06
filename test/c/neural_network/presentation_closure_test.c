@@ -2,7 +2,7 @@
 #include "../../../native/include/matrix.h"
 
 static void test_presentation_closure_free() {
-  PresentationClosure *closure = presentation_closure_new(0, 0);
+  PresentationClosure *closure = presentation_closure_new(NULL, 1, 0);
 
   presentation_closure_free(&closure);
 
@@ -10,7 +10,11 @@ static void test_presentation_closure_free() {
 }
 
 static void test_presentation_closure_new() {
-  PresentationClosure *closure = presentation_closure_new(0, 0);
+  PresentationClosure *closure = presentation_closure_new(NULL, 1, 0);
+
+  assert(closure->function    == NULL); /* LCOV_EXCL_BR_LINE */
+  assert(closure->function_id == 1   ); /* LCOV_EXCL_BR_LINE */
+  assert(closure->alpha       == 0   ); /* LCOV_EXCL_BR_LINE */
 
   presentation_closure_free(&closure);
 }
