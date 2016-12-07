@@ -9,7 +9,6 @@
 #include "./neural_network/objective.h"
 #include "./neural_network/presentation_closure.h"
 
-
 typedef struct NetworkState {
   int32_t               layers;
   int32_t              *rows;
@@ -21,7 +20,9 @@ typedef struct NetworkState {
   ActivationClosure   **derivative;
   PresentationClosure  *presentation;
   ObjectiveFunction     objective;
+  int32_t               objective_id;
   ObjectiveError        error;
+  int32_t               error_id;
 } NetworkState;
 
 void

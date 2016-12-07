@@ -103,9 +103,11 @@ network_state_inspect(NetworkState *network_state) {
   presentation_closure_inspect_internal(network_state->presentation, 7);
   printf("\n");
 
-  printf("  objective: F\n");
+  printf("  objective:    F\n");
+  printf("  objective_id: %d\n", network_state->objective_id);
 
-  printf("  error:     F>\n");
+  printf("  error:        F\n");
+  printf("  error_id:     %d>\n", network_state->error_id);
 }
 
 void
@@ -211,10 +213,16 @@ network_state_inspect_internal(NetworkState *network_state, int32_t indentation)
   printf("\n");
 
   print_spaces(indentation);
-  printf("  objective: F\n");
+  printf("  objective:    F\n");
 
   print_spaces(indentation);
-  printf("  error:     F>");
+  printf("  objective_id: %d\n", network_state->objective_id);
+
+  print_spaces(indentation);
+  printf("  error:        F\n");
+
+  print_spaces(indentation);
+  printf("  error_id:     %d>", network_state->error_id);
 }
 
 NetworkState *
@@ -231,7 +239,9 @@ network_state_new(int32_t layers) {
   network_state->derivative   = malloc(sizeof(ActivationClosure *) * layers);
   network_state->presentation = NULL;
   network_state->objective    = NULL;
+  network_state->objective_id = -1;
   network_state->error        = NULL;
+  network_state->error_id     = -1;
 
   for (int32_t layer = 0; layer < layers; layer += 1) {
     network_state->rows[layer]    = 0;

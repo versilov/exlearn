@@ -67,8 +67,10 @@ static void test_network_state_inspect() {
     "    2: <#ActivationClosure function: F, function_id: 3, alpha: 0.000000>\n"
     "    3: <#ActivationClosure function: F, function_id: 3, alpha: 0.000000>\n"
     "  presentation: <#PresentationClosure function: F, function_id: 0, alpha: 0>\n"
-    "  objective: F\n"
-    "  error:     F>\n";
+    "  objective:    F\n"
+    "  objective_id: 2\n"
+    "  error:        F\n"
+    "  error_id:     2>\n";
 
   int32_t result_length   = strlen(result  );
   int32_t expected_length = strlen(expected);
@@ -135,8 +137,10 @@ static void test_network_state_inspect_internal() {
     "       2: <#ActivationClosure function: F, function_id: 3, alpha: 0.000000>\n"
     "       3: <#ActivationClosure function: F, function_id: 3, alpha: 0.000000>\n"
     "     presentation: <#PresentationClosure function: F, function_id: 0, alpha: 0>\n"
-    "     objective: F\n"
-    "     error:     F>";
+    "     objective:    F\n"
+    "     objective_id: 2\n"
+    "     error:        F\n"
+    "     error_id:     2>";
 
   int32_t result_length   = strlen(result  );
   int32_t expected_length = strlen(expected);
