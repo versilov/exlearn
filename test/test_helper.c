@@ -171,5 +171,7 @@ int main() {
 
   // Tests for: c/network_state_test.c
   test_network_state_free();
+  test_network_state_inspect();
+  test_network_state_inspect_internal();
   test_network_state_new();
 }

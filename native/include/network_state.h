@@ -27,6 +27,12 @@ typedef struct NetworkState {
 void
 network_state_free(NetworkState **state);
 
+void
+network_state_inspect(NetworkState *network_state);
+
+void
+network_state_inspect_internal(NetworkState *network_state, int32_t indentation);
+
 NetworkState *
 network_state_new(int32_t layers);
 
