@@ -20,7 +20,15 @@ defmodule ExLearn.NeuralNetwork.Worker do
     :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
   end
 
+  def generate_batch_data(_worker_resource, _batch_length) do
+    :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
+  end
+
   def read_worker_data(_worker_resource, _paths) do
+    :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
+  end
+
+  def shuffle_batch_data(_worker_resource) do
     :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
   end
 

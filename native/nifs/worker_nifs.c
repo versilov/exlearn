@@ -43,6 +43,33 @@ create_worker_resource(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
 }
 
 static ERL_NIF_TERM
+generate_batch_data(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
+  int64_t         batch_length;
+  BatchData      *batch_data;
+  WorkerData     *worker_data;
+  WorkerResource *worker_resource;
+
+  (void)(argc);
+
+  worker_resource = NULL;
+  if (!enif_get_resource(env, argv[0], WORKER_RESOURCE, (void **) &worker_resource))
+    return enif_make_badarg(env);
+
+  if (!enif_get_int64(env, argv[1], &batch_length))
+    return enif_make_badarg(env);
+
+  worker_data = worker_resource->worker_data;
+  batch_data  = batch_data_new(worker_data, batch_length);
+
+  worker_resource->batch_data = batch_data;
+
+  // TODO: See why this loops forever!
+  /* worker_resource_inspect(worker_resource); */
+
+  return argv[0];
+}
+
+static ERL_NIF_TERM
 read_worker_data(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
   BundlePaths    *bundle_paths;
   ERL_NIF_TERM    list, head, tail;
@@ -89,13 +116,35 @@ read_worker_data(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
   return argv[0];
 }
 
+static ERL_NIF_TERM
+shuffle_batch_data(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
+  BatchData      *batch_data;
+  WorkerResource *worker_resource;
+
+  (void)(argc);
+
+  worker_resource = NULL;
+  if (!enif_get_resource(env, argv[0], WORKER_RESOURCE, (void **) &worker_resource))
+    return enif_make_badarg(env);
+
+  batch_data = worker_resource->batch_data;
+  shuffle_batch_data_indices(batch_data);
+
+  // TODO: See why this loops forever!
+  /* worker_resource_inspect(worker_resource); */
+
+  return argv[0];
+}
+
 //------------------------------------------------------------------------------
 // Initialization
 //------------------------------------------------------------------------------
 
 static ErlNifFunc nif_functions[] = {
   {"create_worker_resource", 0, create_worker_resource, 0},
-  {"read_worker_data",       2, read_worker_data,       0}
+  {"generate_batch_data",    2, generate_batch_data,    0},
+  {"read_worker_data",       2, read_worker_data,       0},
+  {"shuffle_batch_data",     1, shuffle_batch_data,     0}
 };
 
 static int32_t load(ErlNifEnv *env, void **_priv_data, ERL_NIF_TERM _load_info) {
