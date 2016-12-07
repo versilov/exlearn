@@ -4,17 +4,15 @@ void
 worker_data_free(WorkerData **data_address) {
   WorkerData *data = *data_address;
 
-  if(data != NULL) {
-    for (int32_t index = 0; index < data->count; index += 1) {
-      if (data->bundle[index] != NULL)
-        worker_data_bundle_free(&data->bundle[index]);
-    }
-
-    free(data->bundle);
-    free(data);
-
-    *data_address = NULL;
+  for (int32_t index = 0; index < data->count; index += 1) {
+    if (data->bundle[index] != NULL)
+      worker_data_bundle_free(&data->bundle[index]);
   }
+
+  free(data->bundle);
+  free(data);
+
+  *data_address = NULL;
 }
 
 void

@@ -4,14 +4,12 @@ void
 batch_data_free(BatchData **data_address) {
   BatchData *data = *data_address;
 
-  if (data != NULL) {
-    for (int32_t index = 0; index < data->data_length; index += 1) {
-      sample_index_free(&(data->sample_index[index]));
-    }
-
-    free(data->sample_index);
-    free(data);
+  for (int32_t index = 0; index < data->data_length; index += 1) {
+    sample_index_free(&(data->sample_index[index]));
   }
+
+  free(data->sample_index);
+  free(data);
 
   *data_address = NULL;
 }

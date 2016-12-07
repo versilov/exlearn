@@ -50,11 +50,15 @@ static void test_matrix_equal() {
   float first[8]  = {2, 3, 1, 2, 3, 4, 5, 6 };
   float second[8] = {2, 3, 1, 2, 3, 4, 5, 6 };
   float third[8]  = {2, 3, 5, 2, 1, 3, 4, 6 };
+  float fourth[8] = {3, 2, 5, 2, 1, 3, 4, 6 };
+  float fifth[10] = {2, 4, 5, 2, 1, 3, 4, 6, 7, 8};
 
   assert(matrix_equal(first, second)); /* LCOV_EXCL_BR_LINE */
 
   assert(matrix_equal(first, second) == 1); /* LCOV_EXCL_BR_LINE */
   assert(matrix_equal(first, third)  == 0); /* LCOV_EXCL_BR_LINE */
+  assert(matrix_equal(first, fourth) == 0); /* LCOV_EXCL_BR_LINE */
+  assert(matrix_equal(first, fifth)  == 0); /* LCOV_EXCL_BR_LINE */
 }
 
 static void test_matrix_add() {

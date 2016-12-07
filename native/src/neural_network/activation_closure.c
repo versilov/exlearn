@@ -350,8 +350,7 @@ static void prelu_derivative(Matrix matrix, float alpha) {
 
 void
 activation_closure_call(ActivationClosure *closure, Matrix matrix) {
-  if (closure != NULL)
-    closure->function(matrix, closure->alpha);
+  closure->function(matrix, closure->alpha);
 }
 
 void

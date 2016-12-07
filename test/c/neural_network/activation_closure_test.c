@@ -175,10 +175,10 @@ static void test_the_logistic_pair() {
   ActivationClosure *derivative = activation_determine_derivative(function_id, 0);
 
   float function_input[]   = {1, 3, 10, 710, -710};
-  float derivative_input[] = {1, 1, 10};
+  float derivative_input[] = {1, 3, 10, 710, -710};
 
   float expected_from_function[]   = {1, 3, 0.9999546021312976, 1.0, 0.0};
-  float expected_from_derivative[] = {1, 1, 4.5395805e-5};
+  float expected_from_derivative[] = {1, 3, 4.5395805e-5,       0.0, 0.0};
 
   activation_closure_call(function,   function_input  );
   activation_closure_call(derivative, derivative_input);
@@ -187,7 +187,7 @@ static void test_the_logistic_pair() {
     assert(function_input[index]   == expected_from_function[index]  ); /* LCOV_EXCL_BR_LINE */
   }
 
-  for (int32_t index = 0; index < 3; index += 1) {
+  for (int32_t index = 0; index < 5; index += 1) {
     assert(derivative_input[index] == expected_from_derivative[index]); /* LCOV_EXCL_BR_LINE */
   }
 

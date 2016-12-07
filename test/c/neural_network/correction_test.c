@@ -54,14 +54,14 @@ static void test_correction_accumulate() {
   for (int32_t index = 0; index < 4; index += 1) {
     int32_t length;
 
-    assert(first->biases[index] != NULL);
+    assert(first->biases[index] != NULL); /* LCOV_EXCL_BR_LINE */
     length = first->biases[index][0] * first->biases[index][1];
 
     for (int32_t bias_index = 2; bias_index < length + 2; bias_index += 1) {
       assert(first->biases[index][bias_index] == 3); /* LCOV_EXCL_BR_LINE */
     }
 
-    assert(first->weights[index] != NULL);
+    assert(first->weights[index] != NULL); /* LCOV_EXCL_BR_LINE */
     length = first->weights[index][0] * first->weights[index][1];
 
     for (int32_t weight_index = 2; weight_index < length + 2; weight_index += 1) {
@@ -97,7 +97,7 @@ static void test_correction_char_size() {
 
   size = correction_char_size(correction);
 
-  assert(size == 44);
+  assert(size == 44); /* LCOV_EXCL_BR_LINE */
 }
 
 static void test_correction_from_char_array() {
@@ -235,19 +235,19 @@ static void test_correction_initialize() {
 
   correction_initialize(network_state, correction);
 
-  assert(correction->layers == 4);
+  assert(correction->layers == 4); /* LCOV_EXCL_BR_LINE */
 
   for (int32_t index = 0; index < 4; index += 1) {
     int32_t length;
 
-    assert(correction->biases[index] != NULL);
+    assert(correction->biases[index] != NULL); /* LCOV_EXCL_BR_LINE */
     length = correction->biases[index][0] * correction->biases[index][1];
 
     for (int32_t bias_index = 2; bias_index < length + 2; bias_index += 1) {
       assert(correction->biases[index][bias_index] == 0); /* LCOV_EXCL_BR_LINE */
     }
 
-    assert(correction->weights[index] != NULL);
+    assert(correction->weights[index] != NULL); /* LCOV_EXCL_BR_LINE */
     length = correction->weights[index][0] * correction->weights[index][1];
 
     for (int32_t weight_index = 2; weight_index < length + 2; weight_index += 1) {
