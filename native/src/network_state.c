@@ -200,10 +200,14 @@ network_state_inspect_internal(NetworkState *network_state, int32_t indentation)
 
   print_spaces(indentation);
   printf("  presentation: ");
-  presentation_closure_inspect_internal(
-    network_state->presentation,
-    indentation + 7
-  );
+  if (network_state->presentation == NULL)
+    printf("NULL");
+  else
+    presentation_closure_inspect_internal(
+      network_state->presentation,
+      indentation + 7
+    );
+
   printf("\n");
 
   print_spaces(indentation);
@@ -230,6 +234,10 @@ network_state_new(int32_t layers) {
   network_state->error        = NULL;
 
   for (int32_t layer = 0; layer < layers; layer += 1) {
+    network_state->rows[layer]    = 0;
+    network_state->columns[layer] = 0;
+    network_state->dropout[layer] = 0;
+
     network_state->biases[layer]     = NULL;
     network_state->weights[layer]    = NULL;
     network_state->function[layer]   = NULL;

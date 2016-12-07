@@ -142,8 +142,10 @@ int main() {
   test_worker_data_initialize();
   test_worker_data_read();
 
-  // Tests for: c/worker/worker_data_test.c
+  // Tests for: c/worker/worker_resource_test.c
   test_worker_resource_free();
+  test_worker_resource_inspect();
+  test_worker_resource_inspect_internal();
   test_worker_resource_new();
 
   // Tests for: c/matrix_test.c

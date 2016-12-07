@@ -29,7 +29,7 @@ part of the public API.
 
 ## Development
 
-Follow the instructions from the [development](./documents/development.md) file.
+Follow the instructions from the [development](./docs/development.md) file.
 
 ## LICENSE
 

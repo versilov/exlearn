@@ -2,6 +2,8 @@
 #define INCLUDED_WORKER_RESOURCE_H
 
 #include "../network_state.h"
+#include "../utils.h"
+
 #include "./batch_data.h"
 #include "./worker_data.h"
 
@@ -13,6 +15,15 @@ typedef struct WorkerResource {
 
 void
 worker_resource_free(WorkerResource **worker_resource_address);
+
+void
+worker_resource_inspect(WorkerResource *worker_resource);
+
+void
+worker_resource_inspect_internal(
+  WorkerResource *worker_resource,
+  int32_t         indentation
+);
 
 WorkerResource *
 worker_resource_new();
