@@ -10,6 +10,13 @@ worker_resource_free(WorkerResource **worker_resource_address) {
 }
 
 void
+worker_resource_initialize(WorkerResource *worker_resource) {
+  worker_resource->batch_data    = NULL;
+  worker_resource->network_state = NULL;
+  worker_resource->worker_data   = NULL;
+}
+
+void
 worker_resource_inspect(WorkerResource *worker_resource) {
   printf("<#WorkerResource\n");
 
@@ -71,9 +78,7 @@ WorkerResource *
 worker_resource_new() {
   WorkerResource *worker_resource = malloc(sizeof(WorkerResource));
 
-  worker_resource->batch_data    = NULL;
-  worker_resource->network_state = NULL;
-  worker_resource->worker_data   = NULL;
+  worker_resource_initialize(worker_resource);
 
   return worker_resource;
 }

@@ -52,7 +52,6 @@ worker_data_inspect_internal(WorkerData *worker_data, int32_t indentation) {
   printf(">");
 }
 
-
 WorkerData *
 worker_data_new(int32_t count) {
   WorkerData *data = malloc(sizeof(WorkerData));

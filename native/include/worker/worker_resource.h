@@ -17,6 +17,9 @@ void
 worker_resource_free(WorkerResource **worker_resource_address);
 
 void
+worker_resource_initialize(WorkerResource *worker_resource);
+
+void
 worker_resource_inspect(WorkerResource *worker_resource);
 
 void

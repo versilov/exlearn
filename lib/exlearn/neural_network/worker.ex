@@ -16,8 +16,11 @@ defmodule ExLearn.NeuralNetwork.Worker do
     :ok = :erlang.load_nif('./priv/worker_nifs', 0)
   end
 
-  @spec create_worker_resource :: binary
   def create_worker_resource do
+    :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
+  end
+
+  def read_worker_data(_worker_resource, _paths) do
     :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
   end
 

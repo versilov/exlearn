@@ -144,6 +144,7 @@ int main() {
 
   // Tests for: c/worker/worker_resource_test.c
   test_worker_resource_free();
+  test_worker_resource_initialize();
   test_worker_resource_inspect();
   test_worker_resource_inspect_internal();
   test_worker_resource_new();
