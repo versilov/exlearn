@@ -21,26 +21,8 @@ static void worker_resource_destructor(ErlNifEnv *_env, void *resource_content) 
 }
 
 //------------------------------------------------------------------------------
-// NIF API
+// BatchData NIF API
 //------------------------------------------------------------------------------
-
-static ERL_NIF_TERM
-create_worker_resource(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
-  ERL_NIF_TERM    result;
-  WorkerResource *worker_resource;
-
-  (void)(argc);
-  (void)(argv);
-
-  worker_resource = enif_alloc_resource(WORKER_RESOURCE, sizeof(WorkerResource));
-
-  worker_resource_initialize(worker_resource);
-
-  result = enif_make_resource(env, worker_resource);
-  enif_release_resource(&worker_resource);
-
-  return result;
-}
 
 static ERL_NIF_TERM
 generate_batch_data(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
@@ -65,6 +47,52 @@ generate_batch_data(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
 
   return argv[0];
 }
+
+static ERL_NIF_TERM
+shuffle_batch_data(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
+  BatchData      *batch_data;
+  WorkerResource *worker_resource;
+
+  (void)(argc);
+
+  worker_resource = NULL;
+  if (!enif_get_resource(env, argv[0], WORKER_RESOURCE, (void **) &worker_resource))
+    return enif_make_badarg(env);
+
+  batch_data = worker_resource->batch_data;
+  shuffle_batch_data_indices(batch_data);
+
+  return argv[0];
+}
+
+//------------------------------------------------------------------------------
+// NetworkState NIF API
+//------------------------------------------------------------------------------
+
+#include "./helpers/network_state_helper.c"
+
+static ERL_NIF_TERM
+create_network_state(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
+  WorkerResource *worker_resource;
+
+  (void)(argc);
+
+  worker_resource = NULL;
+  if (!enif_get_resource(env, argv[0], WORKER_RESOURCE, (void **) &worker_resource))
+    return enif_make_badarg(env);
+
+  if (!enif_is_map(env, argv[1])) return enif_make_badarg(env);
+
+  create_network_state_from_definition(env, worker_resource, argv[1]);
+
+  worker_resource_inspect(worker_resource);
+
+  return argv[0];
+}
+
+//------------------------------------------------------------------------------
+// WorkerData NIF API
+//------------------------------------------------------------------------------
 
 static ERL_NIF_TERM
 read_worker_data(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
@@ -113,21 +141,26 @@ read_worker_data(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
   return argv[0];
 }
 
+//------------------------------------------------------------------------------
+// WorkerResource NIF API
+//------------------------------------------------------------------------------
+
 static ERL_NIF_TERM
-shuffle_batch_data(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
-  BatchData      *batch_data;
+create_worker_resource(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
+  ERL_NIF_TERM    result;
   WorkerResource *worker_resource;
 
   (void)(argc);
+  (void)(argv);
 
-  worker_resource = NULL;
-  if (!enif_get_resource(env, argv[0], WORKER_RESOURCE, (void **) &worker_resource))
-    return enif_make_badarg(env);
+  worker_resource = enif_alloc_resource(WORKER_RESOURCE, sizeof(WorkerResource));
 
-  batch_data = worker_resource->batch_data;
-  shuffle_batch_data_indices(batch_data);
+  worker_resource_initialize(worker_resource);
 
-  return argv[0];
+  result = enif_make_resource(env, worker_resource);
+  enif_release_resource(&worker_resource);
+
+  return result;
 }
 
 //------------------------------------------------------------------------------
@@ -135,6 +168,7 @@ shuffle_batch_data(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
 //------------------------------------------------------------------------------
 
 static ErlNifFunc nif_functions[] = {
+  {"create_network_state",   2, create_network_state,   0},
   {"create_worker_resource", 0, create_worker_resource, 0},
   {"generate_batch_data",    2, generate_batch_data,    0},
   {"read_worker_data",       2, read_worker_data,       0},

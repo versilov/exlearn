@@ -12,13 +12,11 @@ defmodule ExLearn.NeuralNetwork.Worker.NifsTest do
   alias ExLearn.TestUtil
   alias ExLearn.FileFixtures
 
-  test "#create_worker_resource can be called" do
-    worker_resource = Worker.create_worker_resource()
+  #----------------------------------------------------------------------------
+  # BatchData NIF API
+  #----------------------------------------------------------------------------
 
-    assert worker_resource != nil
-  end
-
-  test "#generate_worker_data creates batch data" do
+  test "#generate_batch_data creates batch data" do
     worker_resource = Worker.create_worker_resource()
 
     first_data  = FileFixtures.first_data_bundle
@@ -34,26 +32,6 @@ defmodule ExLearn.NeuralNetwork.Worker.NifsTest do
     assert result == worker_resource
 
     result = Worker.generate_batch_data(worker_resource, 1)
-    assert result == worker_resource
-
-    :ok = File.rm(first_path )
-    :ok = File.rm(second_path)
-  end
-
-  test "#read_worker_data diaplys the internal structure" do
-    worker_resource = Worker.create_worker_resource()
-
-    first_data  = FileFixtures.first_data_bundle
-    second_data = FileFixtures.second_data_bundle
-
-    first_path  = TestUtil.temp_file_path_as_list("exlearn-neural_network-worker-nifs_test_3")
-    second_path = TestUtil.temp_file_path_as_list("exlearn-neural_network-worker-nifs_test_4")
-
-    :ok  = File.write(first_path,  first_data )
-    :ok  = File.write(second_path, second_data)
-
-    result = Worker.read_worker_data(worker_resource, [first_path, second_path])
-
     assert result == worker_resource
 
     :ok = File.rm(first_path )
@@ -85,4 +63,50 @@ defmodule ExLearn.NeuralNetwork.Worker.NifsTest do
     :ok = File.rm(second_path)
   end
 
+  #----------------------------------------------------------------------------
+  # NetworkState NIF API
+  #----------------------------------------------------------------------------
+
+  test "#create_network_state creates the newtwork state from definition" do
+    worker_resource = Worker.create_worker_resource()
+
+    network_parameters = %{}
+
+    result = Worker.create_network_state(worker_resource, network_parameters)
+    assert result == worker_resource
+  end
+
+  #----------------------------------------------------------------------------
+  # WorkerData NIF API
+  #----------------------------------------------------------------------------
+
+  test "#read_worker_data diaplys the internal structure" do
+    worker_resource = Worker.create_worker_resource()
+
+    first_data  = FileFixtures.first_data_bundle
+    second_data = FileFixtures.second_data_bundle
+
+    first_path  = TestUtil.temp_file_path_as_list("exlearn-neural_network-worker-nifs_test_3")
+    second_path = TestUtil.temp_file_path_as_list("exlearn-neural_network-worker-nifs_test_4")
+
+    :ok  = File.write(first_path,  first_data )
+    :ok  = File.write(second_path, second_data)
+
+    result = Worker.read_worker_data(worker_resource, [first_path, second_path])
+
+    assert result == worker_resource
+
+    :ok = File.rm(first_path )
+    :ok = File.rm(second_path)
+  end
+
+  #----------------------------------------------------------------------------
+  # WorkerResource NIF API
+  #----------------------------------------------------------------------------
+
+  test "#create_worker_resource can be called" do
+    worker_resource = Worker.create_worker_resource()
+
+    assert worker_resource != nil
+  end
 end

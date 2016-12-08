@@ -15,7 +15,7 @@ PRIV_DIRECTORY = ./priv
 SOURCES := $(shell find $(SRC_DIRECTORY) -name *.c)
 OBJECTS := $(SOURCES:$(SRC_DIRECTORY)/%.c=$(OBJ_DIRECTORY)/%.o)
 
-NIFS_SOURCES := $(shell find $(NIFS_DIRECTORY) -name *.c)
+NIFS_SOURCES := $(wildcard $(NIFS_DIRECTORY)/*.c)
 NIFS_OBJECTS := $(NIFS_SOURCES:$(NIFS_DIRECTORY)/%.c=$(PRIV_DIRECTORY)/%.so)
 
 SOURCES_DIRECTORIES := $(shell find $(SRC_DIRECTORY) -type d)
