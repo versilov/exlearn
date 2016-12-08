@@ -59,7 +59,7 @@ batch_data_inspect(BatchData *batch_data) {
   printf("  data_length:  %d\n", batch_data->data_length );
   printf("  sample_index:\n");
 
-  for(int index = 0; index < batch_data->data_length; index =+ 1) {
+  for(int index = 0; index < batch_data->data_length; index += 1) {
     printf("    %d: ", index);
 
     sample_index_inspect_internal(batch_data->sample_index[index], 0);
@@ -82,7 +82,7 @@ batch_data_inspect_internal(BatchData *batch_data, int32_t indentation) {
   print_spaces(indentation);
   printf("  sample_index:\n");
 
-  for(int index = 0; index < batch_data->data_length; index =+ 1) {
+  for(int index = 0; index < batch_data->data_length; index += 1) {
     print_spaces(indentation);
     printf("    %d: ", index);
 

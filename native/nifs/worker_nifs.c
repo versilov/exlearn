@@ -63,9 +63,6 @@ generate_batch_data(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
 
   worker_resource->batch_data = batch_data;
 
-  // TODO: See why this loops forever!
-  /* worker_resource_inspect(worker_resource); */
-
   return argv[0];
 }
 
@@ -129,9 +126,6 @@ shuffle_batch_data(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
 
   batch_data = worker_resource->batch_data;
   shuffle_batch_data_indices(batch_data);
-
-  // TODO: See why this loops forever!
-  /* worker_resource_inspect(worker_resource); */
 
   return argv[0];
 }
