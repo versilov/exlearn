@@ -16,6 +16,7 @@ SOURCES := $(shell find $(SRC_DIRECTORY) -name *.c)
 OBJECTS := $(SOURCES:$(SRC_DIRECTORY)/%.c=$(OBJ_DIRECTORY)/%.o)
 
 NIFS_SOURCES := $(wildcard $(NIFS_DIRECTORY)/*.c)
+NIFS_HELPERS := $(shell find $(NIFS_DIRECTORY) -name *_helper.c)
 NIFS_OBJECTS := $(NIFS_SOURCES:$(NIFS_DIRECTORY)/%.c=$(PRIV_DIRECTORY)/%.so)
 
 SOURCES_DIRECTORIES := $(shell find $(SRC_DIRECTORY) -type d)
@@ -30,7 +31,7 @@ $(OBJECTS): $(OBJ_DIRECTORY)/%.o : $(SRC_DIRECTORY)/%.c
 $(OBJECTS_DIRECTORIES):
 	@mkdir -p $(OBJECTS_DIRECTORIES)
 
-$(NIFS_OBJECTS): $(PRIV_DIRECTORY)/%.so : $(NIFS_DIRECTORY)/%.c $(OBJECTS)
+$(NIFS_OBJECTS): $(PRIV_DIRECTORY)/%.so : $(NIFS_DIRECTORY)/%.c $(OBJECTS) $(NIFS_HELPERS)
 	@echo 'Creating nif: '$@
 	@$(CC) $(CFLAGS) $(OBJECTS) -o $@ $< $(LDFLAGS)
 
