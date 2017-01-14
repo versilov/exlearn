@@ -3,11 +3,25 @@
 Add the following aliases to `~/.bash_profile` and source it:
 
 ```bash
-alias docker-here='docker run --rm -it -u `id -u`:`id -g` -v "$PWD":/work -w /work'
-alias docker-dev-here='docker run --rm -it -u `id -u`:`id -g` -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v "$PWD":/work -v "$HOME"/.bash_profile:/home/notroot/.bash_profile -v "$HOME"/.globalrc:/home/notroot/.globalrc -v "$HOME"/.spacemacs:/home/notroot/.spacemacs -v "$HOME"/Sources:/home/notroot/Sources:ro -v "$HOME"/.emacs.d:/home/notroot/.emacs.d -w /work'
-alias docker-hack-here='docker-dev-here --security-opt seccomp=unconfined'
+# Runs a temporary container as `root`
 alias docker-root-here='docker run --rm -it -v "$PWD":/work -w /work'
+
+# Runs a temporary container as the current user
+alias docker-here='docker-root-here -u `id -u`:`id -g`'
+
+# Runs a temporary container for development purposes
+alias docker-dev-here='docker-here -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v "$HOME"/.bash_profile:/home/notroot/.bash_profile -v "$HOME"/.globalrc:/home/notroot/.globalrc -v "$HOME"/.spacemacs:/home/notroot/.spacemacs -v "$HOME"/Sources:/home/notroot/Sources:ro -v "$HOME"/.emacs.d.debian:/home/notroot/.emacs.d'
+
+# Creates a permanent container for development
+alias docker-new-here='docker run -it -v "$PWD":/work -w /work -u `id -u`:`id -g` -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v "$HOME"/.bash_profile:/home/notroot/.bash_profile -v "$HOME"/.globalrc:/home/notroot/.globalrc -v "$HOME"/.spacemacs:/home/notroot/.spacemacs -v "$HOME"/Sources:/home/notroot/Sources:ro -v "$HOME"/.emacs.d.debian:/home/notroot/.emacs.d'
+
+# Runs a temporary container for development with elevated privileges
+alias docker-hack-here='docker-dev-here --security-opt seccomp=unconfined'
+
+# Executes a command in a container as current user
 alias docker-exec='docker exec -it -u `id -u`:`id -g`'
+
+# Tails the container STDOUT
 alias docker-tail='docker logs -f --tail=100'
 ```
 
@@ -94,24 +108,36 @@ alias docker-tail='docker logs -f --tail=100'
     docker build -t exlearn-dev -f docker/development/Dockerfile "$PWD"
     ```
 
-2. Start the container with a login shell
+2. Start a temporary container with a login shell
     ```bash
-    docker-dev-here exlearn-dev bash -l
+    docker-dev-here exlearn-dev
     ```
 
-3. To run gdb you need to give seccomp permissions
+3. Start a permanent container with a login shell
     ```bash
-    docker-hack-here exlearn-dev bash -l
+    # Create and start the container
+    docker-new-here --name exlearn_development exlearn-dev
+
+    # Start already created container
+    docker start -i exlearn_development
+
+    # Execute another shell inside the container
+    docker-exec exlearn_development bash -l
+    ```
+
+4. To run gdb you need to have seccomp unconfined
+    ```bash
+    docker-hack-here exlearn-dev
 
     gdb -tui ./test/c/temp/test
     ```
 
-4. Run dialyzer
+5. Run dialyzer
     ```bash
     docker-dev-here exlearn-dev mix dialyzer
     ```
 
-5. Run all checks like on travis
+6. Run all checks like on travis
     ```bash
     docker-dev-here exlearn-dev make ci
     ```
