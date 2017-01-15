@@ -56,4 +56,6 @@ RUN set -ex                                && \
       mix dialyzer.plt                        \
     "
 
+ENV SHELL=/bin/bash
+
 CMD bash -l

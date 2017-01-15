@@ -13,7 +13,7 @@ alias docker-here='docker-root-here -u `id -u`:`id -g`'
 alias docker-dev-here='docker-here -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v "$HOME"/.bash_profile:/home/notroot/.bash_profile -v "$HOME"/.globalrc:/home/notroot/.globalrc -v "$HOME"/.spacemacs:/home/notroot/.spacemacs -v "$HOME"/Sources:/home/notroot/Sources:ro -v "$HOME"/.emacs.d.debian:/home/notroot/.emacs.d'
 
 # Creates a permanent container for development
-alias docker-new-here='docker run -it -v "$PWD":/work -w /work -u `id -u`:`id -g` -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v "$HOME"/.bash_profile:/home/notroot/.bash_profile -v "$HOME"/.globalrc:/home/notroot/.globalrc -v "$HOME"/.spacemacs:/home/notroot/.spacemacs -v "$HOME"/Sources:/home/notroot/Sources:ro -v "$HOME"/.emacs.d.debian:/home/notroot/.emacs.d'
+alias docker-new-here='docker create -it -v "$PWD":/work -w /work -u `id -u`:`id -g` -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v "$HOME"/.bash_profile:/home/notroot/.bash_profile -v "$HOME"/.globalrc:/home/notroot/.globalrc -v "$HOME"/.spacemacs:/home/notroot/.spacemacs -v "$HOME"/Sources:/home/notroot/Sources:ro -v "$HOME"/.emacs.d.debian:/home/notroot/.emacs.d'
 
 # Runs a temporary container for development with elevated privileges
 alias docker-hack-here='docker-dev-here --security-opt seccomp=unconfined'
@@ -24,27 +24,6 @@ alias docker-exec='docker exec -it -u `id -u`:`id -g`'
 # Tails the container STDOUT
 alias docker-tail='docker logs -f --tail=100'
 ```
-
-## Jupyter Notebook
-
-1. Build the notebook container
-    ```bash
-    docker build                        \
-      -t exlearn-jupyter                \
-      --build-arg HOST_USER_UID=`id -u` \
-      --build-arg HOST_USER_GID=`id -g` \
-      -f docker/notebook/Dockerfile     \
-      "$PWD"
-
-    # OR the short version if you are user 1000:1000
-
-    docker build -t exlearn-jupyter -f docker/notebook/Dockerfile "$PWD"
-    ```
-
-2. Run the server
-    ```bash
-    docker-here -p 8888:8888 exlearn-jupyter
-    ```
 
 ## Project Container
 
@@ -92,6 +71,27 @@ alias docker-tail='docker logs -f --tail=100'
     docker-here exlearn mix coveralls
     ```
 
+## Jupyter Notebook
+
+1. Build the notebook container
+    ```bash
+    docker build                        \
+      -t exlearn-jupyter                \
+      --build-arg HOST_USER_UID=`id -u` \
+      --build-arg HOST_USER_GID=`id -g` \
+      -f docker/notebook/Dockerfile     \
+      "$PWD"
+
+    # OR the short version if you are user 1000:1000
+
+    docker build -t exlearn-jupyter -f docker/notebook/Dockerfile "$PWD"
+    ```
+
+2. Run the server
+    ```bash
+    docker-here -p 8888:8888 exlearn-jupyter
+    ```
+
 ## Development Container
 
 1. Build the project container
@@ -115,13 +115,13 @@ alias docker-tail='docker logs -f --tail=100'
 
 3. Start a permanent container with a login shell
     ```bash
-    # Create and start the container
+    # Create the permanent container
     docker-new-here --name exlearn_development exlearn-dev
 
     # Start already created container
-    docker start -i exlearn_development
+    docker start exlearn_development
 
-    # Execute another shell inside the container
+    # Execute a shell inside the container
     docker-exec exlearn_development bash -l
     ```
 
