@@ -58,4 +58,4 @@ RUN set -ex                                && \
 
 ENV SHELL=/bin/bash
 
-CMD bash -l
+CMD ["bash", "-l"]

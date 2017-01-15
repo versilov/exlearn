@@ -1,7 +1,6 @@
 # Usage with Docker
 
 Add the following aliases to `~/.bash_profile` and source it:
-
 ```bash
 # Runs a temporary container as `root`
 alias docker-root-here='docker run --rm -it -v "$PWD":/work -w /work'
@@ -73,7 +72,7 @@ alias docker-tail='docker logs -f --tail=100'
 
 ## Jupyter Notebook
 
-1. Build the notebook container
+1. Build the notebook container, which is based on the project container above:
     ```bash
     docker build                        \
       -t exlearn-jupyter                \
@@ -94,7 +93,7 @@ alias docker-tail='docker logs -f --tail=100'
 
 ## Development Container
 
-1. Build the project container
+1. Build the project container, which is based on the project container above:
     ```bash
     docker build                        \
       -t exlearn-dev                    \
