@@ -39,7 +39,7 @@ create_network_state_from_definition(
 ) {
   NetworkState *network_state = worker_resource->network_state;
 
-  if (network_state != NULL) free_network_state(network_state);
+  if (network_state != NULL) network_state_free(&network_state);
 
   create_network_state_layers(env, worker_resource, network_definition);
   create_network_state_objective(env, worker_resource, network_definition);

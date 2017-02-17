@@ -1,9 +1,9 @@
 #ifndef INCLUDED_WORKER_RESOURCE_H
 #define INCLUDED_WORKER_RESOURCE_H
 
-#include "../network_state.h"
 #include "../utils.h"
 
+#include "../network_state.h"
 #include "./batch_data.h"
 #include "./worker_data.h"
 
