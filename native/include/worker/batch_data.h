@@ -1,5 +1,5 @@
-#ifndef INCLUDE_BATCH_DATA_C
-#define INCLUDE_BATCH_DATA_C
+#ifndef INCLUDE_BATCH_DATA_H
+#define INCLUDE_BATCH_DATA_H
 
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>

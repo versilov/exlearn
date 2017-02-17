@@ -22,6 +22,7 @@
 #include "c/worker/worker_resource_test.c"
 #include "c/matrix_test.c"
 #include "c/network_state_test.c"
+#include "c/nif_error_test.c"
 
 int main() {
   // Test for: c/neural_network/activation_test.c
@@ -177,4 +178,8 @@ int main() {
   test_network_state_inspect();
   test_network_state_inspect_internal();
   test_network_state_new();
+
+  // Tests for: c/nif_error.c
+  test_nif_error_free();
+  test_nif_error_new();
 }
