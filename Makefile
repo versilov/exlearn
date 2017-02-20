@@ -25,37 +25,63 @@ TEST_LDFLAGS = -lgcov
 
 
 #-------------------------------------------------------------------------------
-# C FILES
-#-------------------------------------------------------------------------------
-
-# Lists of all the C source files and directories.
-SOURCES := $(shell find $(SRC_DIRECTORY) -name *.c)
-
-# List of all the object files and their directories created from compiling the
-# C files.
-OBJECTS := $(SOURCES:$(SRC_DIRECTORY)/%.c=$(OBJ_DIRECTORY)/%.o)
-
-# A list of all C files that correspond to a nif.
-NIFS_SOURCES := $(wildcard $(NIFS_DIRECTORY)/*.c)
-
-# A list of all the helpers used by the nif C files.
-NIFS_HELPERS := $(shell find $(NIFS_DIRECTORY) -name *_helper.c)
-
-# A list of all the object files corresponding to the nif C files.
-NIFS_OBJECTS := $(NIFS_SOURCES:$(NIFS_DIRECTORY)/%.c=$(PRIV_DIRECTORY)/%.so)
-
-#-------------------------------------------------------------------------------
 # DIRECTORIES
 #-------------------------------------------------------------------------------
 
+# Location of the root directory for the C code files.
 SRC_DIRECTORY = ./native/src
+
+# Location of the root directory for the boject files created from the C code
+# files.
 OBJ_DIRECTORY = ./native/obj
 
+# Location of the root directory for the NIF code files.
 NIFS_DIRECTORY = ./native/nifs
+
+# Location of the `priv` directory where the final shared objects are placed.
 PRIV_DIRECTORY = ./priv
 
+# A list of all the subdirectories containing C code files.
 SOURCES_DIRECTORIES := $(shell find $(SRC_DIRECTORY) -type d)
+
+# A list of all the subdirectories containing object files created from the C
+# code files. The list is a mirror of the directory structure in which the C
+# code files reside.
 OBJECTS_DIRECTORIES := $(subst $(SRC_DIRECTORY),$(OBJ_DIRECTORY),$(SOURCES_DIRECTORIES))
+
+# Location of the root directory for the test object files created from the
+# C source files with the test specific flags.
+TEST_OBJ_DIRECTORY = ./test/c/obj
+
+# A list of all the subdirectories containing object files created from the C
+# code files with the test specific flags. The list is a mirror of the directory
+# structure in which the C code files reside.
+TEST_OBJECTS_DIRECTORIES := $(subst $(SRC_DIRECTORY),$(TEST_OBJ_DIRECTORY),$(SOURCES_DIRECTORIES))
+
+
+#-------------------------------------------------------------------------------
+# FILES
+#-------------------------------------------------------------------------------
+
+# Lists of all the C source files.
+SOURCES := $(shell find $(SRC_DIRECTORY) -name *.c)
+
+# List of all the object files created from the C code files. The list is a
+# mirror of the directory structure in which the C code files reside.
+OBJECTS := $(SOURCES:$(SRC_DIRECTORY)/%.c=$(OBJ_DIRECTORY)/%.o)
+
+# A list of all the NIF code files.
+NIFS_SOURCES := $(wildcard $(NIFS_DIRECTORY)/*.c)
+
+# A list of all the helpers used by the NIF code files.
+NIFS_HELPERS := $(shell find $(NIFS_DIRECTORY) -name *_helper.c)
+
+# A list of all the shared objects created by compiling the NIF code files.
+NIFS_OBJECTS := $(NIFS_SOURCES:$(NIFS_DIRECTORY)/%.c=$(PRIV_DIRECTORY)/%.so)
+
+# A list of all the shared objects created from the C code files with the test
+# specific flags.
+TEST_OBJECTS := $(SOURCES:$(SRC_DIRECTORY)/%.c=$(TEST_OBJ_DIRECTORY)/%.o)
 
 
 #-------------------------------------------------------------------------------
@@ -63,43 +89,79 @@ OBJECTS_DIRECTORIES := $(subst $(SRC_DIRECTORY),$(OBJ_DIRECTORY),$(SOURCES_DIREC
 #-------------------------------------------------------------------------------
 
 # Use the `build` target when executing make without arguments
+#
+# Example:
+#
+#   Executing:
+#   ```bash
+#   make
+#   ```
+#
+#   Is equivalent to executing:
+#   ```bash
+#   make build
+#   ```
+#
 .DEFAULT_GLOBAL := build
 
-# Targets that do not depend on files
+# Targets that do not depend on files.
 .PHONY: build ci clean test
 
 # Compiles and links the C nifs.
+#
+# Example
+#
+#   ```bash
+#   make build
+#   ```
+#
 build: $(OBJECTS_DIRECTORIES) $(OBJECTS) $(PRIV_DIRECTORY) $(NIFS_OBJECTS)
 
+# Target for creating directories for the C object files.
+$(OBJECTS_DIRECTORIES):
+	@mkdir -p $(OBJECTS_DIRECTORIES)
+
+# Target for creating object files from C source files.
+# Each object file depends on it's corresponding C source file for compilation.
+#
+# Example:
+#   native/obj/matrix.o
+#
+# Depends on:
+#   native/src/matrix.c
+#
+# Output:
+#   ```
+#   Compiling: native/src/matrix.c
+#   ```
+#
 $(OBJECTS): $(OBJ_DIRECTORY)/%.o : $(SRC_DIRECTORY)/%.c
 	@echo 'Compiling: '$<
 	@$(CC) $(CFLAGS) -c $< -o $@
 
-$(OBJECTS_DIRECTORIES):
-	@mkdir -p $(OBJECTS_DIRECTORIES)
-
-$(NIFS_OBJECTS): $(PRIV_DIRECTORY)/%.so : $(NIFS_DIRECTORY)/%.c $(OBJECTS) $(NIFS_HELPERS)
-	@echo 'Creating nif: '$@
-	@$(CC) $(CFLAGS) $(OBJECTS) -o $@ $< $(LDFLAGS)
-
+# Target for creating the `priv` directory for the NIF shared objects.
 $(PRIV_DIRECTORY):
 	@mkdir -p $(PRIV_DIRECTORY)
 
-
-TEST_OBJ_DIRECTORY = ./test/c/obj
-
-TEST_OBJECTS := $(SOURCES:$(SRC_DIRECTORY)/%.c=$(TEST_OBJ_DIRECTORY)/%.o)
-
-# Creates a directory structure for test object files that mirrors the one for
-# the source files.
-TEST_OBJECTS_DIRECTORIES := $(subst $(SRC_DIRECTORY),$(TEST_OBJ_DIRECTORY),$(SOURCES_DIRECTORIES))
-
-$(TEST_OBJECTS_DIRECTORIES):
-	@mkdir -p $(TEST_OBJECTS_DIRECTORIES)
-
-$(TEST_OBJECTS): $(TEST_OBJ_DIRECTORY)/%.o : $(SRC_DIRECTORY)/%.c
-	@echo 'Compiling: '$<
-	@$(CC) $(TEST_CFLAGS) -c $< -o $@
+# Target for creating the NIF shared objects.
+#
+# Example:
+#   priv/worker_nifs.so
+#
+# Depends on:
+#   priv/
+#   native/nifs/matrix_nifs.c
+#   native/nifs/helpers/network_state_helper.c
+#   native/obj/matrix.o
+#
+# Output:
+#   ```
+#   Creating NIF: priv/worker_nifs.so
+#   ```
+#
+$(NIFS_OBJECTS): $(PRIV_DIRECTORY)/%.so : $(NIFS_DIRECTORY)/%.c $(OBJECTS) $(NIFS_HELPERS)
+	@echo 'Creating NIF: '$@
+	@$(CC) $(CFLAGS) $(OBJECTS) -o $@ $< $(LDFLAGS)
 
 # Builds the C code with debugging and testing flags and runs the tests.
 #
@@ -118,6 +180,29 @@ test: $(TEST_OBJECTS_DIRECTORIES) $(TEST_OBJECTS)
 	lcov --list cover/lcov.info-file --rc lcov_branch_coverage=1
 	@genhtml --branch-coverage -o cover cover/lcov.info-file > /dev/null
 	@rm -rf *.gcda *.gcno
+
+# Target for creating directories for the C object files compiled with test
+# specific flags.
+$(TEST_OBJECTS_DIRECTORIES):
+	@mkdir -p $(TEST_OBJECTS_DIRECTORIES)
+
+# Target for creating object files from C source files with test specific flags.
+# Each object file depends on it's corresponding C source file for compilation.
+#
+# Example:
+#   test/c/obj/matrix.o
+#
+# Depends on:
+#   native/src/matrix.c
+#
+# Output:
+#   ```
+#   Compiling: native/src/matrix.c
+#   ```
+#
+$(TEST_OBJECTS): $(TEST_OBJ_DIRECTORY)/%.o : $(SRC_DIRECTORY)/%.c
+	@echo 'Compiling: '$<
+	@$(CC) $(TEST_CFLAGS) -c $< -o $@
 
 # Remove build artifacts.
 # Run this when you want to ensure you run a fresh build.
