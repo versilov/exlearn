@@ -135,6 +135,7 @@ $(OBJECTS_DIRECTORIES):
 #
 # Depends on:
 #   native/src/matrix.c
+#   native/include/matrix.h
 #
 # Output:
 #   ```
@@ -200,13 +201,14 @@ $(TEST_OBJECTS_DIRECTORIES):
 #
 # Depends on:
 #   native/src/matrix.c
+#   native/include/matrix.h
 #
 # Output:
 #   ```
 #   Compiling: native/src/matrix.c
 #   ```
 #
-$(TEST_OBJECTS): $(TEST_OBJ_DIRECTORY)/%.o : $(SRC_DIRECTORY)/%.c
+$(TEST_OBJECTS): $(TEST_OBJ_DIRECTORY)/%.o : $(SRC_DIRECTORY)/%.c $(INCLUDE_DIRECTORY)/%.h
 	@echo 'Compiling: '$<
 	@$(CC) $(TEST_CFLAGS) -c $< -o $@
 
