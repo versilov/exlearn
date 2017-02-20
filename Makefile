@@ -68,6 +68,8 @@ TEST_OBJECTS_DIRECTORIES := $(subst $(SRC_DIRECTORY),$(TEST_OBJ_DIRECTORY),$(SOU
 
 # Lists of all the C source files.
 SOURCES := $(shell find $(SRC_DIRECTORY) -name *.c)
+
+# Lists of all the C header files.
 HEADERS := $(shell find $(INCLUDE_DIRECTORY) -name *.h)
 
 # List of all the object files created from the C code files. The list is a
