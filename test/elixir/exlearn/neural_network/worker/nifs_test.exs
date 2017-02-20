@@ -70,7 +70,15 @@ defmodule ExLearn.NeuralNetwork.Worker.NifsTest do
   test "#create_network_state creates the newtwork state from definition" do
     worker_resource = Worker.create_worker_resource()
 
-    network_parameters = %{}
+    network_parameters = %{
+      layers: %{
+        input:   %{size: 784, name: "Input",  dropout: 0.2                       },
+        hidden: [%{size: 100, name: "Hidden", dropout: 0.5, activation: :logistic}],
+        output:  %{size: 10,  name: "Output",               activation: :logistic}
+      },
+      objective:    :cross_entropy,
+      presentation: :argmax
+    }
 
     result = Worker.create_network_state(worker_resource, network_parameters)
     assert result == worker_resource
