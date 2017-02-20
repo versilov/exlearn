@@ -31,6 +31,9 @@ TEST_LDFLAGS = -lgcov
 # Location of the root directory for the C code files.
 SRC_DIRECTORY = ./native/src
 
+# Location fo the root directory for the C header files.
+INCLUDE_DIRECTORY = ./native/include
+
 # Location of the root directory for the boject files created from the C code
 # files.
 OBJ_DIRECTORY = ./native/obj
@@ -65,6 +68,7 @@ TEST_OBJECTS_DIRECTORIES := $(subst $(SRC_DIRECTORY),$(TEST_OBJ_DIRECTORY),$(SOU
 
 # Lists of all the C source files.
 SOURCES := $(shell find $(SRC_DIRECTORY) -name *.c)
+HEADERS := $(shell find $(INCLUDE_DIRECTORY) -name *.h)
 
 # List of all the object files created from the C code files. The list is a
 # mirror of the directory structure in which the C code files reside.
@@ -88,7 +92,7 @@ TEST_OBJECTS := $(SOURCES:$(SRC_DIRECTORY)/%.c=$(TEST_OBJ_DIRECTORY)/%.o)
 # TARGETS
 #-------------------------------------------------------------------------------
 
-# Use the `build` target when executing make without arguments
+# Use the `build` target when executing make without arguments.
 #
 # Example:
 #
@@ -135,7 +139,7 @@ $(OBJECTS_DIRECTORIES):
 #   Compiling: native/src/matrix.c
 #   ```
 #
-$(OBJECTS): $(OBJ_DIRECTORY)/%.o : $(SRC_DIRECTORY)/%.c
+$(OBJECTS): $(OBJ_DIRECTORY)/%.o : $(SRC_DIRECTORY)/%.c $(INCLUDE_DIRECTORY)/%.h
 	@echo 'Compiling: '$<
 	@$(CC) $(CFLAGS) -c $< -o $@
 
