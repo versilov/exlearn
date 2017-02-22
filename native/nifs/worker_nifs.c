@@ -85,8 +85,6 @@ create_network_state(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
 
   create_network_state_from_definition(env, worker_resource, argv[1]);
 
-  worker_resource_inspect(worker_resource);
-
   return argv[0];
 }
 
