@@ -59,12 +59,16 @@ extract_activation_from_layers(
 
     enif_get_map_value(env, hidden_map, activation_atom, &activation_int);
     enif_get_int(env, activation_int, &activation_id);
+
+    // TODO: Extract alpha and use it in the closure.
     network_state->function[index + 1]   = activation_determine_function(activation_id, 0);
     network_state->derivative[index + 1] = activation_determine_derivative(activation_id, 0);
   }
 
   enif_get_map_value(env, output_map, activation_atom, &activation_int);
   enif_get_int(env, activation_int, &activation_id);
+
+  // TODO: Extract alpha and use it in the closure.
   network_state->function[hidden_length + 1]   = activation_determine_function(activation_id, 0);
   network_state->derivative[hidden_length + 1] = activation_determine_derivative(activation_id, 0);
 }
@@ -102,6 +106,25 @@ extract_dropout_from_layers(
 }
 
 static void
+extract_name_from_layers(
+  ErlNifEnv    *env,
+  NetworkState *network_state,
+  ERL_NIF_TERM  input_map,
+  ERL_NIF_TERM  hidden_list,
+  ERL_NIF_TERM  output_map
+) {
+  (void)(env);
+  (void)(network_state);
+  (void)(input_map);
+  (void)(hidden_list);
+  (void)(output_map);
+
+  // TODO: Implement this when `network_state` will have the name field defined.
+
+  // name_atom = enif_make_atom(env, "name");
+}
+
+static void
 create_network_state_from_layers(
   ErlNifEnv      *env,
   WorkerResource *worker_resource,
@@ -129,33 +152,50 @@ create_network_state_from_layers(
   network_state = network_state_new(hidden_length + 2);
   worker_resource->network_state = network_state;
 
-  /* name_atom       = enif_make_atom(env, "name"      ); */
-
   extract_size_from_layers(env, network_state, input_map, hidden_list, output_map);
   extract_activation_from_layers(env, network_state, input_map, hidden_list, output_map);
   extract_dropout_from_layers(env, network_state, input_map, hidden_list, output_map);
+  extract_name_from_layers(env, network_state, input_map, hidden_list, output_map);
 }
 
 static void
 create_network_state_objective(
-  ErlNifEnv      *env,
-  WorkerResource *worker_resource,
-  ERL_NIF_TERM    network_definition
+  ErlNifEnv    *env,
+  NetworkState *network_state,
+  ERL_NIF_TERM  network_definition
 ) {
-  (void)(env);
-  (void)(worker_resource);
-  (void)(network_definition);
+  ERL_NIF_TERM objective_atom;
+  ERL_NIF_TERM objective_int;
+  int          objective_id;
+
+  objective_atom = enif_make_atom(env, "objective");
+  enif_get_map_value(env, network_definition, objective_atom, &objective_int);
+  enif_get_int(env, objective_int, &objective_id);
+
+  network_state->objective_id = objective_id;
+  network_state->objective    = objective_determine_function(objective_id);
+
+  // TODO: Implement logic for optimised version of error.
+  network_state->error_id = objective_id;
+  network_state->error    = objective_determine_error_simple(objective_id);
 }
 
 static void
 create_network_state_presentation(
-  ErlNifEnv      *env,
-  WorkerResource *worker_resource,
-  ERL_NIF_TERM    network_definition
+  ErlNifEnv    *env,
+  NetworkState *network_state,
+  ERL_NIF_TERM  network_definition
 ) {
-  (void)(env);
-  (void)(worker_resource);
-  (void)(network_definition);
+  ERL_NIF_TERM presentation_atom;
+  ERL_NIF_TERM presentation_int;
+  int          presentation_id;
+
+  presentation_atom = enif_make_atom(env, "presentation");
+  enif_get_map_value(env, network_definition, presentation_atom, &presentation_int);
+  enif_get_int(env, presentation_int, &presentation_id);
+
+  // TODO: Extract alpha and use it in the closure.
+  network_state->presentation = presentation_closure_determine(presentation_id, 0);
 }
 
 static void
@@ -169,6 +209,8 @@ create_network_state_from_definition(
   if (network_state != NULL) network_state_free(&network_state);
 
   create_network_state_from_layers(env, worker_resource, network_definition);
-  create_network_state_objective(env, worker_resource, network_definition);
-  create_network_state_presentation(env, worker_resource, network_definition);
+  network_state = worker_resource->network_state;
+
+  create_network_state_objective(env, network_state, network_definition);
+  create_network_state_presentation(env, network_state, network_definition);
 }

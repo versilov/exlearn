@@ -70,16 +70,17 @@ defmodule ExLearn.NeuralNetwork.Worker.NifsTest do
   test "#create_network_state creates the newtwork state from definition" do
     worker_resource = Worker.create_worker_resource()
 
-    # TODO: Note that the activation contains the function id and not the name.
-    # This must be replaced with a call to a function that makes this change.
+    # TODO: Note that the activation, objective and presentation contain the
+    # function id and not the name. This must be replaced with a call to a
+    # function that makes this change.
     network_parameters = %{
       layers: %{
         input:   %{size: 784, name: "Input",  dropout: 0.2               },
         hidden: [%{size: 100, name: "Hidden", dropout: 0.5, activation: 1}],
         output:  %{size: 10,  name: "Output",               activation: 2}
       },
-      objective:    :cross_entropy,
-      presentation: :argmax
+      objective:    1,
+      presentation: 2
     }
 
     result = Worker.create_network_state(worker_resource, network_parameters)
