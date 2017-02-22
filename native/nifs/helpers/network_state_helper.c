@@ -70,6 +70,38 @@ extract_activation_from_layers(
 }
 
 static void
+extract_dropout_from_layers(
+  ErlNifEnv    *env,
+  NetworkState *network_state,
+  ERL_NIF_TERM  input_map,
+  ERL_NIF_TERM  hidden_list,
+  ERL_NIF_TERM  output_map
+) {
+  (void)(output_map);
+
+  ERL_NIF_TERM dropout_atom;
+  ERL_NIF_TERM dropout_double;
+  ERL_NIF_TERM hidden_map;
+  double       dropout;
+  int32_t      hidden_length;
+
+  dropout_atom = enif_make_atom(env, "dropout");
+
+  enif_get_map_value(env, input_map, dropout_atom, &dropout_double);
+  enif_get_double(env, dropout_double, &dropout);
+  network_state->dropout[0] = dropout;
+
+  hidden_length = network_state->layers - 2;
+  for (int32_t index = 0; index < hidden_length; index += 1) {
+    enif_get_list_cell(env, hidden_list, &hidden_map, &hidden_list);
+
+    enif_get_map_value(env, hidden_map, dropout_atom, &dropout_double);
+    enif_get_double(env, dropout_double, &dropout);
+    network_state->dropout[index + 1] = dropout;
+  }
+}
+
+static void
 create_network_state_from_layers(
   ErlNifEnv      *env,
   WorkerResource *worker_resource,
@@ -97,11 +129,11 @@ create_network_state_from_layers(
   network_state = network_state_new(hidden_length + 2);
   worker_resource->network_state = network_state;
 
-  /* dropout_atom    = enif_make_atom(env, "dropout"   ); */
   /* name_atom       = enif_make_atom(env, "name"      ); */
 
   extract_size_from_layers(env, network_state, input_map, hidden_list, output_map);
   extract_activation_from_layers(env, network_state, input_map, hidden_list, output_map);
+  extract_dropout_from_layers(env, network_state, input_map, hidden_list, output_map);
 }
 
 static void
