@@ -113,7 +113,6 @@ activation_inspect_internal(Activation *activation, int32_t indentation) {
   }
 
   printf(">");
-
 }
 
 Activation *

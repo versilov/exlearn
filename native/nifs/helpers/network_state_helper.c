@@ -1,9 +1,10 @@
-static void extract_size_from_layers(
+static void
+extract_size_from_layers(
   ErlNifEnv    *env,
   NetworkState *network_state,
-  ERL_NIF_TERM input_map,
-  ERL_NIF_TERM hidden_list,
-  ERL_NIF_TERM output_map
+  ERL_NIF_TERM  input_map,
+  ERL_NIF_TERM  hidden_list,
+  ERL_NIF_TERM  output_map
 ) {
   ERL_NIF_TERM size_atom;
   ERL_NIF_TERM columns_int;
@@ -36,15 +37,44 @@ static void extract_size_from_layers(
 }
 
 static void
+extract_activation_from_layers(
+  ErlNifEnv    *env,
+  NetworkState *network_state,
+  ERL_NIF_TERM  input_map,
+  ERL_NIF_TERM  hidden_list,
+  ERL_NIF_TERM  output_map
+) {
+  (void)(input_map);
+
+  ERL_NIF_TERM activation_atom;
+  ERL_NIF_TERM activation_int;
+  ERL_NIF_TERM hidden_map;
+  int32_t      activation_id, hidden_length;
+
+  activation_atom = enif_make_atom(env, "activation");
+
+  hidden_length = network_state->layers - 2;
+  for (int32_t index = 0; index < hidden_length; index += 1) {
+    enif_get_list_cell(env, hidden_list, &hidden_map, &hidden_list);
+
+    enif_get_map_value(env, hidden_map, activation_atom, &activation_int);
+    enif_get_int(env, activation_int, &activation_id);
+    network_state->function[index + 1]   = activation_determine_function(activation_id, 0);
+    network_state->derivative[index + 1] = activation_determine_derivative(activation_id, 0);
+  }
+
+  enif_get_map_value(env, output_map, activation_atom, &activation_int);
+  enif_get_int(env, activation_int, &activation_id);
+  network_state->function[hidden_length + 1]   = activation_determine_function(activation_id, 0);
+  network_state->derivative[hidden_length + 1] = activation_determine_derivative(activation_id, 0);
+}
+
+static void
 create_network_state_from_layers(
   ErlNifEnv      *env,
   WorkerResource *worker_resource,
   ERL_NIF_TERM    network_definition
 ) {
-  (void)(env);
-  (void)(worker_resource);
-  (void)(network_definition);
-
   ERL_NIF_TERM  layers_atom, input_atom, hidden_atom, output_atom;
   ERL_NIF_TERM  hidden_list;
   ERL_NIF_TERM  layers_map, input_map, output_map;
@@ -67,11 +97,11 @@ create_network_state_from_layers(
   network_state = network_state_new(hidden_length + 2);
   worker_resource->network_state = network_state;
 
-  /* activation_atom = enif_make_atom(env, "activation"); */
   /* dropout_atom    = enif_make_atom(env, "dropout"   ); */
   /* name_atom       = enif_make_atom(env, "name"      ); */
 
   extract_size_from_layers(env, network_state, input_map, hidden_list, output_map);
+  extract_activation_from_layers(env, network_state, input_map, hidden_list, output_map);
 }
 
 static void
