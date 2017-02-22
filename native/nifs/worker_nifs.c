@@ -88,6 +88,23 @@ create_network_state(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
   return argv[0];
 }
 
+static ERL_NIF_TERM
+initialize_network_state(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
+  WorkerResource *worker_resource;
+
+  (void)(argc);
+
+  worker_resource = NULL;
+  if (!enif_get_resource(env, argv[0], WORKER_RESOURCE, (void **) &worker_resource))
+    return enif_make_badarg(env);
+
+  if (!enif_is_map(env, argv[1])) return enif_make_badarg(env);
+
+  worker_resource_inspect(worker_resource);
+
+  return argv[0];
+}
+
 //------------------------------------------------------------------------------
 // WorkerData NIF API
 //------------------------------------------------------------------------------
@@ -166,11 +183,12 @@ create_worker_resource(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
 //------------------------------------------------------------------------------
 
 static ErlNifFunc nif_functions[] = {
-  {"create_network_state",   2, create_network_state,   0},
-  {"create_worker_resource", 0, create_worker_resource, 0},
-  {"generate_batch_data",    2, generate_batch_data,    0},
-  {"read_worker_data",       2, read_worker_data,       0},
-  {"shuffle_batch_data",     1, shuffle_batch_data,     0}
+  {"create_network_state",     2, create_network_state,     0},
+  {"initialize_network_state", 2, initialize_network_state, 0},
+  {"create_worker_resource",   0, create_worker_resource,   0},
+  {"generate_batch_data",      2, generate_batch_data,      0},
+  {"read_worker_data",         2, read_worker_data,         0},
+  {"shuffle_batch_data",       1, shuffle_batch_data,       0}
 };
 
 static int32_t load(ErlNifEnv *env, void **_priv_data, ERL_NIF_TERM _load_info) {

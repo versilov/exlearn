@@ -36,6 +36,10 @@ defmodule ExLearn.NeuralNetwork.Worker do
     :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
   end
 
+  def initialize_network_state(_worker_resource, _initialization_parameters) do
+    :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
+  end
+
   #----------------------------------------------------------------------------
   # WorkerData NIF API
   #----------------------------------------------------------------------------
