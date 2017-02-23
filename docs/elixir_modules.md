@@ -155,6 +155,10 @@ A `map` that defines the way biases and weights are initialized.
 | minimum          | float      | Mandatory for the `:uniform` distribution.         |
 | maximum          | float      | Mandatory for the `:uniform` distribution.         |
 
+#### Return
+
+The function returns the neural network object it acted upon.
+
 ### `#load\2`
 
 ### `#notification\2`
