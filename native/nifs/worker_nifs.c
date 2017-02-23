@@ -69,7 +69,7 @@ shuffle_batch_data(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
 // NetworkState NIF API
 //------------------------------------------------------------------------------
 
-#include "./helpers/network_state_helper.c"
+#include "./helpers/create_network_state_helper.c"
 
 static ERL_NIF_TERM
 create_network_state(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
@@ -88,6 +88,8 @@ create_network_state(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
   return argv[0];
 }
 
+#include "./helpers/initialize_network_state_helper.c"
+
 static ERL_NIF_TERM
 initialize_network_state(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
   WorkerResource *worker_resource;
@@ -100,7 +102,7 @@ initialize_network_state(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv)
 
   if (!enif_is_map(env, argv[1])) return enif_make_badarg(env);
 
-  worker_resource_inspect(worker_resource);
+  initialize_network_state_from_parameters(env, worker_resource, argv[1]);
 
   return argv[0];
 }
