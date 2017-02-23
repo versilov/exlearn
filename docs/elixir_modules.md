@@ -134,10 +134,14 @@ initialization_parameters = %{
   minimum:      -1
 }
 
-network = initialize(initialization_parameters)
+network = initialize(network, initialization_parameters)
 ```
 
 #### Parameters
+
+##### `network`
+
+A neural network created with the `#create\1` function described [previously](#create1).
 
 ##### `initialization_parameters`
 
