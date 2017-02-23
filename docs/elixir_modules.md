@@ -115,6 +115,7 @@ Default Value: `:raw`
 
 Default Value: `:logistic`
 
+
 ### `#initialize\2`
 
 Initializes the weights and biases of a neural network.
@@ -158,6 +159,16 @@ A `map` that defines the way biases and weights are initialized.
 #### Return
 
 The function returns the neural network object it acted upon.
+
+#### Schemas
+
+##### <a name="nn-initialize-distribution"></a> `distribution`
+
+| Value      | Type | About                                                                                                          |
+|------------|------|----------------------------------------------------------------------------------------------------------------|
+| `:normal`  | atom | Defines the use of the normal distribution and makes the `deviation` and `mean` parameters become mandatory.   |
+| `:uniform` | atom | Defines the use of the uniform distribution and makes the `minimum` and `maximum` parameters become mandatory. |
+
 
 ### `#load\2`
 
