@@ -117,6 +117,40 @@ Default Value: `:logistic`
 
 ### `#initialize\2`
 
+Initializes the weights and biases of a neural network.
+
+```elixir
+# For the `normal` distribution:
+initialization_parameters = %{
+  distribution: :normal,
+  deviation:    1,
+  mean:         0
+}
+
+# For the `uniform` distribution:
+initialization_parameters = %{
+  distribution: :uniform,
+  maximum:       1,
+  minimum:      -1
+}
+
+network = initialize(initialization_parameters)
+```
+
+#### Parameters
+
+##### `initialization_parameters`
+
+A `map` that defines the way biases and weights are initialized.
+
+| Key Name         | Value Type | About                                              |
+|------------------|------------|----------------------------------------------------|
+| **distribution** | atom       | [distribution schema](#nn-initialize-distribution) |
+| deviation        | float      | Mandatory for the `:normal` distribution.          |
+| mean             | float      | Mandatory for the `:normal` distribution.          |
+| minimum          | float      | Mandatory for the `:uniform` distribution.         |
+| maximum          | float      | Mandatory for the `:uniform` distribution.         |
+
 ### `#load\2`
 
 ### `#notification\2`
