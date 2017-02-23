@@ -4,7 +4,7 @@ Table items in bold are mandatory.
 
 ## `ExLearn.NeuralNetwork`
 
-### `#create\1`
+### `#create/1`
 
 Creates the neural network processes and returns a handle.
 
@@ -116,7 +116,7 @@ Default Value: `:raw`
 Default Value: `:logistic`
 
 
-### `#initialize\2`
+### `#initialize/2`
 
 Initializes the weights and biases of a neural network.
 
@@ -142,7 +142,7 @@ network = initialize(network, initialization_parameters)
 
 ##### `network`
 
-A neural network created with the `#create\1` function described [previously](#create1).
+A neural network created with the `#create/1` function described [previously](#create1).
 
 ##### `initialization_parameters`
 
@@ -170,18 +170,18 @@ The function returns the neural network object it acted upon.
 | `:uniform` | atom | Defines the use of the uniform distribution and makes the `minimum` and `maximum` parameters become mandatory. |
 
 
-### `#load\2`
+### `#load/2`
 
-### `#notification\2`
+### `#notification/2`
 
-### `#predict\2` and `#predict\3`
+### `#predict/2` and `#predict/3`
 
-### `#process\3`
+### `#process/3`
 
-### `#result\1`
+### `#result/1`
 
-### `#save\2`
+### `#save/2`
 
-### `#test\3`
+### `#test/3`
 
-### `#train\3`
+### `#train/3`
