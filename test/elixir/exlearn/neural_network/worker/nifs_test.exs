@@ -106,6 +106,7 @@ defmodule ExLearn.NeuralNetwork.Worker.NifsTest do
     result = Worker.create_network_state(worker_resource, network_parameters)
     assert result == worker_resource
 
+    # TODO: Make sure this works with integer values as well.
     initialization_parameters = %{
       distribution: :normal,
       deviation:    1.0,
@@ -135,6 +136,7 @@ defmodule ExLearn.NeuralNetwork.Worker.NifsTest do
     result = Worker.create_network_state(worker_resource, network_parameters)
     assert result == worker_resource
 
+    # TODO: Make sure this works with integer values as well.
     initialization_parameters = %{
       distribution: :uniform,
       maximum:       1.0,
