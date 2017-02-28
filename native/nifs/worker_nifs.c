@@ -107,6 +107,34 @@ initialize_network_state(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv)
   return argv[0];
 }
 
+//----------------------------------------------------------------------------
+// Neural Network NIF API
+//----------------------------------------------------------------------------
+
+static ERL_NIF_TERM
+neural_network_predict(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
+  (void)(env );
+  (void)(argc);
+
+  return argv[0];
+}
+
+static ERL_NIF_TERM
+neural_network_test(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
+  (void)(env );
+  (void)(argc);
+
+  return argv[0];
+}
+
+static ERL_NIF_TERM
+neural_network_train(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
+  (void)(env );
+  (void)(argc);
+
+  return argv[0];
+}
+
 //------------------------------------------------------------------------------
 // WorkerData NIF API
 //------------------------------------------------------------------------------
@@ -189,6 +217,9 @@ static ErlNifFunc nif_functions[] = {
   {"initialize_network_state", 2, initialize_network_state, 0},
   {"create_worker_resource",   0, create_worker_resource,   0},
   {"generate_batch_data",      2, generate_batch_data,      0},
+  {"neural_network_predict",   2, neural_network_predict,   0},
+  {"neural_network_test",      2, neural_network_test,      0},
+  {"neural_network_train",     2, neural_network_train,     0},
   {"read_worker_data",         2, read_worker_data,         0},
   {"shuffle_batch_data",       1, shuffle_batch_data,       0}
 };

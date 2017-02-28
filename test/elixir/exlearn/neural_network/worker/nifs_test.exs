@@ -148,6 +148,31 @@ defmodule ExLearn.NeuralNetwork.Worker.NifsTest do
   end
 
   #----------------------------------------------------------------------------
+  # Neural Network NIF API
+  #----------------------------------------------------------------------------
+
+  test "#neural_network_predict can be called" do
+    worker_resource = Worker.create_worker_resource()
+    result = Worker.neural_network_predict(worker_resource, 0)
+
+    assert result == worker_resource
+  end
+
+  test "#neural_network_test can be called" do
+    worker_resource = Worker.create_worker_resource()
+    result = Worker.neural_network_predict(worker_resource, 0)
+
+    assert result == worker_resource
+  end
+
+  test "#neural_network_train can be called" do
+    worker_resource = Worker.create_worker_resource()
+    result = Worker.neural_network_predict(worker_resource, 0)
+
+    assert result == worker_resource
+  end
+
+  #----------------------------------------------------------------------------
   # WorkerData NIF API
   #----------------------------------------------------------------------------
 

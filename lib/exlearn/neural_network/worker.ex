@@ -41,6 +41,22 @@ defmodule ExLearn.NeuralNetwork.Worker do
   end
 
   #----------------------------------------------------------------------------
+  # Neural Network NIF API
+  #----------------------------------------------------------------------------
+
+  def neural_network_predict(_worker_resource, _batch_number) do
+    :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
+  end
+
+  def neural_network_test(_worker_resource, _batch_number) do
+    :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
+  end
+
+  def neural_network_train(_worker_resource, _batch_number) do
+    :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
+  end
+
+  #----------------------------------------------------------------------------
   # WorkerData NIF API
   #----------------------------------------------------------------------------
 
