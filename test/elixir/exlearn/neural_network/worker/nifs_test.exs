@@ -160,14 +160,14 @@ defmodule ExLearn.NeuralNetwork.Worker.NifsTest do
 
   test "#neural_network_test can be called" do
     worker_resource = Worker.create_worker_resource()
-    result = Worker.neural_network_predict(worker_resource, 0)
+    result = Worker.neural_network_test(worker_resource, 0)
 
     assert result == worker_resource
   end
 
   test "#neural_network_train can be called" do
     worker_resource = Worker.create_worker_resource()
-    result = Worker.neural_network_predict(worker_resource, 0)
+    result = Worker.neural_network_train(worker_resource, 0)
 
     assert result == worker_resource
   end

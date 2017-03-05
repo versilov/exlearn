@@ -80,7 +80,7 @@ static void
 initialize_network_state_from_parameters(
   ErlNifEnv      *env,
   WorkerResource *worker_resource,
-  ERL_NIF_TERM   initialization_parameters
+  ERL_NIF_TERM    initialization_parameters
 ) {
   ERL_NIF_TERM  deviation_atom, distribution_atom, maximum_atom, mean_atom,
                 minimum_atom, normal_atom, uniform_atom;
