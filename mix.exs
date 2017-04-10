@@ -5,10 +5,10 @@ defmodule ExLearn.Mixfile do
     [
       app:               :ExLearn,
       version:           "0.1.0",
-      elixir:            "1.3.4",
+      elixir:            "1.4.2",
       build_embedded:    Mix.env == :prod,
       start_permanent:   Mix.env == :prod,
-      deps:              deps,
+      deps:              deps(),
       dialyzer: [
         flags: [
           #--------------------------
@@ -52,9 +52,9 @@ defmodule ExLearn.Mixfile do
 
   defp deps do
     [
-      {:benchfella,  "0.3.3", only: :dev         },
-      {:dialyxir,    "0.3.5", only: [:dev, :test]},
-      {:excoveralls, "0.5.6", only: :test        }
+      {:benchfella,  "0.3.4", only: :dev         },
+      {:dialyxir,    "0.5.0", only: [:dev, :test]},
+      {:excoveralls, "0.6.3", only: :test        }
     ]
   end
 end
