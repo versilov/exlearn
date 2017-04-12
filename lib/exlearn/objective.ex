@@ -17,7 +17,7 @@ defmodule ExLearn.Objective do
         %{function: function, error: error}
       :cross_entropy           -> cross_entropy_pair(output_layer)
       :negative_log_likelihood -> negative_log_likelihood_pair(output_layer)
-      :quadratic               -> quadratic_pair
+      :quadratic               -> quadratic_pair()
     end
   end
 

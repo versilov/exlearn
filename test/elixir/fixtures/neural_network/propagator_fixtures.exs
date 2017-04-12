@@ -67,7 +67,7 @@ defmodule ExLearn.NeuralNetwork.PropagatorFixtures do
   end
 
   def configuration_with_momentum do
-    configuration |> Map.put(:momentum, 0.5)
+    Map.put(configuration(), :momentum, 0.5)
   end
 
   def network_state_with_mask do
