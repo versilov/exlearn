@@ -240,7 +240,7 @@ clean:
 #
 ci:
 	@mix deps.get
-	@mix dialyzer.plt
+	@mix dialyzer --plt
 	@make
 	@make test
 	@mix coveralls.travis
