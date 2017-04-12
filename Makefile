@@ -239,9 +239,9 @@ clean:
 #   ```
 #
 ci:
+	@make
 	@mix deps.get
 	@mix dialyzer --plt
-	@make
 	@make test
 	@mix coveralls.travis
 	@mix dialyzer --halt-exit-status
