@@ -40,14 +40,14 @@ alias docker-tail='docker logs -f --tail=100'
     docker build -t exlearn -f docker/project/Dockerfile "$PWD"
     ```
 
-2. Update dependencies
-    ```bash
-    docker-here exlearn mix deps.get
-    ```
-
-3. Compile the C shared library
+2. Compile the C shared library
     ```bash
     docker-here exlearn make
+    ```
+
+3. Update dependencies
+    ```bash
+    docker-here exlearn mix deps.get
     ```
 
 4. Run an interactive shell
