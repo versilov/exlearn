@@ -113,24 +113,39 @@ initialize_network_state(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv)
 
 static ERL_NIF_TERM
 neural_network_predict(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
-  (void)(env );
   (void)(argc);
+
+  WorkerResource *worker_resource;
+
+  worker_resource = NULL;
+  if (!enif_get_resource(env, argv[0], WORKER_RESOURCE, (void **) &worker_resource))
+    return enif_make_badarg(env);
 
   return argv[0];
 }
 
 static ERL_NIF_TERM
 neural_network_test(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
-  (void)(env );
   (void)(argc);
+
+  WorkerResource *worker_resource;
+
+  worker_resource = NULL;
+  if (!enif_get_resource(env, argv[0], WORKER_RESOURCE, (void **) &worker_resource))
+    return enif_make_badarg(env);
 
   return argv[0];
 }
 
 static ERL_NIF_TERM
 neural_network_train(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
-  (void)(env );
   (void)(argc);
+
+  WorkerResource *worker_resource;
+
+  worker_resource = NULL;
+  if (!enif_get_resource(env, argv[0], WORKER_RESOURCE, (void **) &worker_resource))
+    return enif_make_badarg(env);
 
   return argv[0];
 }
