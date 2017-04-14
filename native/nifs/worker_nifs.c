@@ -5,6 +5,7 @@
 #include "erl_nif.h"
 
 #include "../include/worker/worker_resource.h"
+#include "../include/neural_network/gradient_descent.h"
 
 //------------------------------------------------------------------------------
 // Destructor
@@ -142,12 +143,37 @@ neural_network_train(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
   (void)(argc);
 
   WorkerResource *worker_resource;
+  WorkerData     *worker_data;
+  BatchData      *batch_data;
+  NetworkState   *network_state;
+
+  Correction    *correction;
+  int32_t        correction_size;
+  unsigned char *char_array;
+  ERL_NIF_TERM   result;
+
+  int64_t current_batch;
 
   worker_resource = NULL;
   if (!enif_get_resource(env, argv[0], WORKER_RESOURCE, (void **) &worker_resource))
     return enif_make_badarg(env);
 
-  return argv[0];
+  if (!enif_get_int64(env, argv[1], &current_batch))
+    return enif_make_badarg(env);
+
+  worker_data   = worker_resource->worker_data;
+  batch_data    = worker_resource->batch_data;
+  network_state = worker_resource->network_state;
+
+  correction = gradient_descent(
+    worker_data, batch_data, network_state, current_batch);
+
+  correction_size = correction_char_size(correction);
+  char_array = enif_make_new_binary(env, correction_size, &result);
+  correction_to_char_array(correction, char_array);
+  correction_free(&correction);
+
+  return result;
 }
 
 //------------------------------------------------------------------------------

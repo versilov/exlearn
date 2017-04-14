@@ -194,8 +194,21 @@ defmodule ExLearn.NeuralNetwork.Worker.NifsTest do
     result = Worker.initialize_network_state(worker_resource, initialization_parameters)
     assert result == worker_resource
 
-    result = Worker.neural_network_train(worker_resource, 0)
+    data = FileFixtures.data_bundle_3x1()
+    path = TestUtil.temp_file_path_as_list("exlearn-neural_network-worker-nifs_test_5")
+
+    :ok    = File.write(path, data)
+    result = Worker.read_worker_data(worker_resource, [path])
     assert result == worker_resource
+
+    result = Worker.generate_batch_data(worker_resource, 1)
+    assert result == worker_resource
+
+    result = Worker.shuffle_batch_data(worker_resource)
+    assert result == worker_resource
+
+    correction = Worker.neural_network_train(worker_resource, 0)
+    assert correction |> is_binary
   end
 
   #----------------------------------------------------------------------------

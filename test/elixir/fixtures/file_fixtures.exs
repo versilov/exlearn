@@ -45,7 +45,39 @@ defmodule ExLearn.FileFixtures do
       # sample two: second
       1 :: float-little-32,
       1 :: float-little-32,
+      1 :: float-little-32
+    >>
+  end
+
+  def data_bundle_3x1 do
+    <<
+      1 :: integer-little-32, # one
+      1 :: integer-little-32, # version
+      2 :: integer-little-32, # count
+      5 :: integer-little-32, # first_length
+      3 :: integer-little-32, # second_length
+      1 :: integer-little-32, # maximum_step
+      0 :: integer-little-32, # discard
+      # sample one: first
       1 :: float-little-32,
+      3 :: float-little-32,
+      1 :: float-little-32,
+      2 :: float-little-32,
+      3 :: float-little-32,
+      # sample one: second
+      1 :: float-little-32,
+      1 :: float-little-32,
+      1 :: float-little-32,
+      # sample two: first
+      1 :: float-little-32,
+      3 :: float-little-32,
+      1 :: float-little-32,
+      2 :: float-little-32,
+      4 :: float-little-32,
+      # sample two: second
+      1 :: float-little-32,
+      1 :: float-little-32,
+      2 :: float-little-32
     >>
   end
 end
