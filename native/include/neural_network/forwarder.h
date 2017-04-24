@@ -2,6 +2,7 @@
 #define INCLUDED_FORWARDER_H
 
 #include "../matrix.h"
+#include "../worker/worker_data.h"
 #include "../network_state.h"
 
 #include "./activation.h"

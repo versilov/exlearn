@@ -160,9 +160,47 @@ defmodule ExLearn.NeuralNetwork.Worker.NifsTest do
 
   test "#neural_network_test can be called" do
     worker_resource = Worker.create_worker_resource()
-    result = Worker.neural_network_test(worker_resource, 0)
 
+    # TODO: Note that the activation, objective and presentation contain the
+    # function id and not the name. This must be replaced with a call to a
+    # function that makes this change.
+    network_parameters = %{
+      layers: %{
+        input:   %{size: 3, name: "Input",  dropout: 0.2               },
+        hidden: [%{size: 2, name: "Hidden", dropout: 0.5, activation: 1}],
+        output:  %{size: 1, name: "Output",               activation: 2}
+      },
+      objective:    1,
+      presentation: 2
+    }
+
+    result = Worker.create_network_state(worker_resource, network_parameters)
     assert result == worker_resource
+
+    # TODO: Make sure this works with integer values as well.
+    initialization_parameters = %{
+      distribution: :normal,
+      deviation:    1.0,
+      mean:         0.0
+    }
+
+    result = Worker.initialize_network_state(worker_resource, initialization_parameters)
+    assert result == worker_resource
+
+    data = FileFixtures.data_bundle_3x1()
+    path = TestUtil.temp_file_path_as_list("exlearn-neural_network-worker-nifs_test_5")
+
+    :ok    = File.write(path, data)
+    result = Worker.read_worker_data(worker_resource, [path])
+    assert result == worker_resource
+
+    result = Worker.generate_batch_data(worker_resource, 1)
+    assert result == worker_resource
+
+    result = Worker.shuffle_batch_data(worker_resource)
+    assert result == worker_resource
+
+    {error, match} = Worker.neural_network_test(worker_resource, 0)
   end
 
   test "#neural_network_train can be called" do

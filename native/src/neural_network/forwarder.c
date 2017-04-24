@@ -77,3 +77,38 @@ forward_for_output(NetworkState *network_state, Matrix sample) {
 
   return output;
 }
+
+void
+forward_for_test(
+  WorkerData   *worker_data,
+  NetworkState *network_state,
+  float        *total_error,
+  int64_t      *total_match
+) {
+  WorkerDataBundle    *bundle;
+  PresentationClosure *presentation;
+
+  Matrix sample, expected, actual;
+  float  error;
+  int    expected_presentation, actual_presentation;
+
+  presentation = network_state->presentation;
+
+  for (int data_index = 0; data_index < worker_data->count; data_index += 1) {
+    bundle = worker_data->bundle[data_index];
+
+    for(int bundle_index = 0; bundle_index < bundle->count; bundle_index += 1) {
+      sample   = bundle->first[bundle_index];
+      expected = bundle->second[bundle_index];
+
+      actual = forward_for_output(network_state, sample);
+      error  = network_state->objective(expected, actual);
+
+      expected_presentation = presentation_closure_call(presentation, expected);
+      actual_presentation   = presentation_closure_call(presentation, actual);
+
+      *total_error += error;
+      if (expected_presentation == actual_presentation) *total_match += 1;
+    }
+  }
+}

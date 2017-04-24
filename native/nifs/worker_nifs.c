@@ -130,10 +130,20 @@ neural_network_test(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
   (void)(argc);
 
   WorkerResource *worker_resource;
+  WorkerData     *worker_data;
+  NetworkState   *network_state;
+
+  float   error = 0.0;
+  int64_t match = 0;
 
   worker_resource = NULL;
   if (!enif_get_resource(env, argv[0], WORKER_RESOURCE, (void **) &worker_resource))
     return enif_make_badarg(env);
+
+  worker_data   = worker_resource->worker_data;
+  network_state = worker_resource->network_state;
+
+  forward_for_test(worker_data, network_state, &error, &match);
 
   return argv[0];
 }
