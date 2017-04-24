@@ -129,6 +129,10 @@ static ERL_NIF_TERM
 neural_network_test(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
   (void)(argc);
 
+  ERL_NIF_TERM error_double;
+  ERL_NIF_TERM match_int;
+  ERL_NIF_TERM result_tuple;
+
   WorkerResource *worker_resource;
   WorkerData     *worker_data;
   NetworkState   *network_state;
@@ -145,7 +149,11 @@ neural_network_test(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
 
   forward_for_test(worker_data, network_state, &error, &match);
 
-  return argv[0];
+  error_double = enif_make_double(env, error);
+  match_int = enif_make_int64(env, match);
+  result_tuple = enif_make_tuple2(env, error_double, match_int);
+
+  return result_tuple;
 }
 
 static ERL_NIF_TERM

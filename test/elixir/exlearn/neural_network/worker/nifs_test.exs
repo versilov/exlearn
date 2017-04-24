@@ -170,8 +170,8 @@ defmodule ExLearn.NeuralNetwork.Worker.NifsTest do
         hidden: [%{size: 2, name: "Hidden", dropout: 0.5, activation: 1}],
         output:  %{size: 1, name: "Output",               activation: 2}
       },
-      objective:    1,
-      presentation: 2
+      objective:    2,
+      presentation: 0
     }
 
     result = Worker.create_network_state(worker_resource, network_parameters)
@@ -201,6 +201,8 @@ defmodule ExLearn.NeuralNetwork.Worker.NifsTest do
     assert result == worker_resource
 
     {error, match} = Worker.neural_network_test(worker_resource, 0)
+    assert error |> is_float
+    assert match |> is_integer
   end
 
   test "#neural_network_train can be called" do
