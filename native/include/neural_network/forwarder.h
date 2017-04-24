@@ -20,4 +20,12 @@ forward_for_output(
   Matrix        sample
 );
 
+void
+forward_for_test(
+  WorkerData   *worker_data,
+  NetworkState *network_state,
+  float        *total_error,
+  int64_t      *total_match
+);
+
 #endif

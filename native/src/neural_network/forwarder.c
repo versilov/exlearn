@@ -78,6 +78,7 @@ forward_for_output(NetworkState *network_state, Matrix sample) {
   return output;
 }
 
+// TODO: Write a test for this function
 void
 forward_for_test(
   WorkerData   *worker_data,

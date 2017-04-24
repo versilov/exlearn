@@ -6,6 +6,7 @@
 
 #include "../include/worker/worker_resource.h"
 #include "../include/neural_network/gradient_descent.h"
+#include "../include/neural_network/forwarder.h"
 
 //------------------------------------------------------------------------------
 // Destructor
@@ -116,13 +117,41 @@ static ERL_NIF_TERM
 neural_network_predict(ErlNifEnv *env, int32_t argc, const ERL_NIF_TERM *argv) {
   (void)(argc);
 
-  WorkerResource *worker_resource;
+  ERL_NIF_TERM result_list;
+  ERL_NIF_TERM output_binary;
+
+  WorkerResource   *worker_resource;
+  WorkerData       *worker_data;
+  WorkerDataBundle *bundle;
+  NetworkState     *network_state;
+
+  Matrix  sample, output;
+  int32_t output_size;
 
   worker_resource = NULL;
   if (!enif_get_resource(env, argv[0], WORKER_RESOURCE, (void **) &worker_resource))
     return enif_make_badarg(env);
 
-  return argv[0];
+  worker_data   = worker_resource->worker_data;
+  network_state = worker_resource->network_state;
+
+  result_list = enif_make_list(env, 0);
+
+  for (int data_index = 0; data_index < worker_data->count; data_index += 1) {
+    bundle = worker_data->bundle[data_index];
+
+    for(int bundle_index = 0; bundle_index < bundle->count; bundle_index += 1) {
+      sample = bundle->second[bundle_index];
+
+      output = forward_for_output(network_state, sample);
+      output_size = sizeof(float) * (int32_t) (output[0] * output[1] + 2);
+
+      enif_make_new_binary(env, output_size, &output_binary);
+      result_list = enif_make_list_cell(env, output_binary, result_list);
+    }
+  }
+
+  return result_list;
 }
 
 static ERL_NIF_TERM
