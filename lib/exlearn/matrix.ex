@@ -97,7 +97,19 @@ defmodule ExLearn.Matrix do
 
   @spec valid?(binary) :: boolean
   def valid?(binary) when is_binary(binary) do
-    true
+    binary_size = byte_size(binary)
+
+    case binary_size >= 12 do
+      false -> false
+      true  ->
+        <<
+          rows    :: unsigned-integer-little-32,
+          columns :: unsigned-integer-little-32,
+          rest    :: binary
+        >> = binary
+
+        byte_size(rest) == rows * columns * 4
+    end
   end
 
   @spec valid?({non_neg_integer, non_neg_integer, list(list)}) :: boolean
@@ -129,8 +141,8 @@ defmodule ExLearn.Matrix do
   defp contains_only_numbers?([]),          do: true
   defp contains_only_numbers?([first|rest]) do
     case is_number(first) do
-      true  -> contains_only_numbers?(rest)
       false -> false
+      true  -> contains_only_numbers?(rest)
     end
   end
 end
