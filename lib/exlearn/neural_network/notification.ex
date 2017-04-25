@@ -1,7 +1,9 @@
 defmodule ExLearn.NeuralNetwork.Notification do
   use GenServer
 
+  #-----------------------------------------------------------------------------
   # Client API
+  #-----------------------------------------------------------------------------
 
   @spec done(%{notification: {:global, reference}}) :: tuple
   def done(%{notification: notification = {:global, _reference}}) do
@@ -80,7 +82,9 @@ defmodule ExLearn.NeuralNetwork.Notification do
     end
   end
 
+  #-----------------------------------------------------------------------------
   # Server API
+  #-----------------------------------------------------------------------------
 
   @spec init(any) :: {:ok, any}
   def init(initial_state) do

@@ -1,7 +1,9 @@
 defmodule ExLearn.NeuralNetwork.Store do
   use GenServer
 
+  #-----------------------------------------------------------------------------
   # Client API
+  #-----------------------------------------------------------------------------
 
   @spec get(%{store: {:global, reference}}) :: tuple
   def get(%{store: store = {:global, _reference}}) do
@@ -33,7 +35,9 @@ defmodule ExLearn.NeuralNetwork.Store do
     GenServer.start_link(__MODULE__, args, options)
   end
 
+  #-----------------------------------------------------------------------------
   # Server API
+  #-----------------------------------------------------------------------------
 
   @spec init(map) :: {:ok, map}
   def init(names) do

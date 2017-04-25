@@ -6,14 +6,19 @@ defmodule ExLearn.NeuralNetwork.Master do
   alias ExLearn.NeuralNetwork.Notification
   alias ExLearn.NeuralNetwork.Store
 
+  #-----------------------------------------------------------------------------
   # Client API
+  #-----------------------------------------------------------------------------
 
   @spec start_link(map, map) :: pid
   def start_link(args, options) do
     Supervisor.start_link(__MODULE__, args, options)
   end
 
+  #-----------------------------------------------------------------------------
   # Supervisor API
+  #-----------------------------------------------------------------------------
+
   @spec init(map) :: any
   def init(names) do
     %{
