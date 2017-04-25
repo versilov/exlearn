@@ -14,8 +14,8 @@ Creates a new matrix.
 list_of_lists = [[1, 2, 3], [4, 5, 6]]
 
 ExLearn.Matrix.new(list_of_lists)
-# <<0, 0, 0, 64, 0, 0, 64, 64, 0, 0, 128, 63, 0, 0, 0, 64, 0, 0, 64, 64, 0, 0,
-#   128, 64, 0, 0, 160, 64, 0, 0, 192, 64>>
+# <<2, 0, 0, 0, 3, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 64, 0, 0, 64, 64, 0, 0, 128,
+#   64, 0, 0, 160, 64, 0, 0, 192, 64>>
 ```
 
 #### Parameters
@@ -50,8 +50,8 @@ columns = 3
 list_of_lists = [[1, 2, 3], [4, 5, 6]]
 
 ExLearn.Matrix.new(rows, columns, list_of_lists)
-# <<0, 0, 0, 64, 0, 0, 64, 64, 0, 0, 128, 63, 0, 0, 0, 64, 0, 0, 64, 64, 0, 0,
-#   128, 64, 0, 0, 160, 64, 0, 0, 192, 64>>
+# <<2, 0, 0, 0, 3, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 64, 0, 0, 64, 64, 0, 0, 128,
+#   64, 0, 0, 160, 64, 0, 0, 192, 64>>
 ```
 
 #### Parameters
@@ -97,7 +97,17 @@ list_of_lists = [[1, 2, 3], [4, 5, 6]]
 ```
 
 ### `#from_binary/1`
+
+Creates an erlang term representation of a matrix from a binary.
+
 ### `#to_binary/1`
+
+Creates a matrix binary from an erlang term representation.
+
+### `valid?/1`
+
+Checks if the argument is a valid representation of a matrix.
+
 
 ## `ExLearn.NeuralNetwork`
 
