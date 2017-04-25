@@ -2,6 +2,103 @@
 
 Table items in bold are mandatory.
 
+## `ExLearn.Matrix`
+
+Creates matrices in both binary and tuple representation.
+
+### `#new/1`
+
+Creates a new matrix.
+
+```elixir
+list_of_lists = [[1, 2, 3], [4, 5, 6]]
+
+ExLearn.Matrix.new(list_of_lists)
+# <<0, 0, 0, 64, 0, 0, 64, 64, 0, 0, 128, 63, 0, 0, 0, 64, 0, 0, 64, 64, 0, 0,
+#   128, 64, 0, 0, 160, 64, 0, 0, 192, 64>>
+```
+
+#### Parameters
+
+##### `list_of_lists`
+
+A `list` containing `lists` of the same length with values being `integers` or
+`floats`.
+
+Integers are converted to floats in the final binary representation.
+The length of the top list is used to determine the number of rows.
+The length of the first list inside the top list is used to determine the number
+of columns.
+If the internal lists are not of the same length or their contents are not
+numbers then the function will crash.
+
+Example:
+
+```elixir
+# A list representing a matrix with 2 rows and 3 columns.
+
+list_of_lists = [[1, 2, 3], [4, 5, 6]]
+```
+
+### `#new/3`
+
+Creates a new matrix.
+
+```elixir
+rows    = 2
+columns = 3
+list_of_lists = [[1, 2, 3], [4, 5, 6]]
+
+ExLearn.Matrix.new(rows, columns, list_of_lists)
+# <<0, 0, 0, 64, 0, 0, 64, 64, 0, 0, 128, 63, 0, 0, 0, 64, 0, 0, 64, 64, 0, 0,
+#   128, 64, 0, 0, 160, 64, 0, 0, 192, 64>>
+```
+
+#### Parameters
+
+##### `rows`
+
+A `non_neg_integer` representing the number of rows the matrix has.
+
+Example:
+
+```elixir
+rows = 2
+```
+
+##### `columns`
+
+A `non_neg_integer` representing the number of columns the matrix has.
+
+Example:
+
+```elixir
+columns = 3
+```
+
+##### `list_of_lists`
+
+A `list` containing `lists` of the same length with values being `integers` or
+`floats`.
+
+Integers are converted to floats in the final binary representation.
+The length of the top list is used to determine the number of rows.
+The length of the first list inside the top list is used to determine the number
+of columns.
+If the internal lists are not of the same length or their contents are not
+numbers then the function will crash.
+
+Example:
+
+```elixir
+# A list representing a matrix with 2 rows and 3 columns.
+
+list_of_lists = [[1, 2, 3], [4, 5, 6]]
+```
+
+### `#from_binary/1`
+### `#to_binary/1`
+
 ## `ExLearn.NeuralNetwork`
 
 ### `#create/1`
