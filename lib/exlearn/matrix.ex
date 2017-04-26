@@ -1,10 +1,32 @@
 defmodule ExLearn.Matrix do
   @moduledoc """
-  Creates matrices in both binary and tuple representation.
+  Handles matrix creation, validation and conversion between binary and erlang
+  term representation.
   """
 
   @doc """
-  Creates a new matrix.
+  Creates a new matrix from a list of lists.
+
+  Integer values are converted to floats in the final binary representation.
+  The length of the top list is used to determine the number of rows.
+  The length of the first list inside the top list is used to determine the
+  number of columns.
+  If the internal lists are not of the same length or their contents are not
+  numbers then the function will crash.
+
+  Example:
+  ```elixir
+  list_of_lists = [[1, 2, 3], [4, 5, 6]]
+
+  ExLearn.Matrix.new(list_of_lists)
+  # <<2, 0, 0, 0, 3, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 64, 0, 0, 64, 64, 0, 0,
+  #   128, 64, 0, 0, 160, 64, 0, 0, 192, 64>>
+  ```
+
+  Parameters:
+  - `list_of_lists`: A `list` containing `lists` of the same length with values
+  being `integers` or `floats`.
+
   """
 
   @spec new(list(list)) :: binary
@@ -16,6 +38,35 @@ defmodule ExLearn.Matrix do
 
     binary_from_list_of_lists(rows, columns, list_of_lists)
   end
+
+  @doc """
+  Creates a new matrix with the given number of rows, columns and elements from
+  the provided list of lists.
+
+  Integer values are converted to floats in the final binary representation.
+  If the length of the top list does no match the `rows`, the number of elements
+  in each sublist does not match the `columns`, or the elements are not all
+  numbers the function will crash.
+
+  Example:
+  ```elixir
+  rows    = 2
+  columns = 3
+  list_of_lists = [[1, 2, 3], [4, 5, 6]]
+
+  ExLearn.Matrix.new(rows, columns, list_of_lists)
+  # <<2, 0, 0, 0, 3, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 64, 0, 0, 64, 64, 0, 0,
+  #   128, 64, 0, 0, 160, 64, 0, 0, 192, 64>>
+  ```
+
+  Parameters:
+  - `rows`: A `non_neg_integer` representing the number of rows the matrix has.
+  - `columns`: A `non_neg_integer` representing the number of columns the matrix
+  has.
+  - `list_of_lists`: A `list` containing `lists` of the same length with values
+  being `integers` or `floats`.
+
+  """
 
   @spec new(non_neg_integer, non_neg_integer, list(list)) :: binary
   def new(rows, columns, list_of_lists) when is_list(list_of_lists) do
@@ -39,7 +90,7 @@ defmodule ExLearn.Matrix do
   end
 
   defp binary_from_list(0,       [],   accumulator), do: accumulator
-  defp binary_from_list(columns, list, accumulator) do
+  defp binary_from_list(columns, list, accumulator)  do
     [head|tail] = list
 
     new_accumulator = accumulator <> <<head :: float-little-32>>

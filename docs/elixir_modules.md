@@ -8,7 +8,7 @@ Creates matrices in both binary and tuple representation.
 
 ### `#new/1`
 
-Creates a new matrix.
+Creates a new matrix from a lis of lists.
 
 ```elixir
 list_of_lists = [[1, 2, 3], [4, 5, 6]]
@@ -81,12 +81,10 @@ columns = 3
 A `list` containing `lists` of the same length with values being `integers` or
 `floats`.
 
-Integers are converted to floats in the final binary representation.
-The length of the top list is used to determine the number of rows.
-The length of the first list inside the top list is used to determine the number
-of columns.
-If the internal lists are not of the same length or their contents are not
-numbers then the function will crash.
+Integer values are converted to floats in the final binary representation.
+If the length of the top list does no match the `rows`, the number of elements
+in each sublist does not match the `columns`, or the elements are not all
+numbers the function will crash.
 
 Example:
 
