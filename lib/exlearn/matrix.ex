@@ -30,7 +30,7 @@ defmodule ExLearn.Matrix do
   """
 
   @spec new(list(list)) :: binary
-  def new(list_of_lists) when is_list(list_of_lists) do
+  def new(list_of_lists) do
     [first = [_|_]|_] = list_of_lists
 
     rows    = length(list_of_lists)
@@ -69,7 +69,7 @@ defmodule ExLearn.Matrix do
   """
 
   @spec new(non_neg_integer, non_neg_integer, list(list)) :: binary
-  def new(rows, columns, list_of_lists) when is_list(list_of_lists) do
+  def new(rows, columns, list_of_lists) do
     [first = [_|_]|_] = list_of_lists
 
     ^rows    = length(list_of_lists)
@@ -103,7 +103,7 @@ defmodule ExLearn.Matrix do
   """
 
   @spec from_binary(binary) :: {non_neg_integer, non_neg_integer, list(list)}
-  def from_binary(binary) when is_binary(binary) do
+  def from_binary(binary) do
     <<
       rows    :: unsigned-integer-little-32,
       columns :: unsigned-integer-little-32,
@@ -147,10 +147,10 @@ defmodule ExLearn.Matrix do
   """
 
   @spec valid?(binary) :: boolean
-  def valid?(binary) when is_binary(binary) do
-    binary_size = byte_size(binary)
+  def valid?(binary) do
+    binary_size = bit_size(binary)
 
-    case binary_size >= 12 do
+    case binary_size >= 96 do
       false -> false
       true  ->
         <<
@@ -159,7 +159,7 @@ defmodule ExLearn.Matrix do
           rest    :: binary
         >> = binary
 
-        byte_size(rest) == rows * columns * 4
+        bit_size(rest) == rows * columns * 32
     end
   end
 
