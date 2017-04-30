@@ -26,7 +26,7 @@ alias docker-tail='docker logs -f --tail=100'
 
 ## Project Container
 
-1. Build the project container
+1. Build the project image
     ```bash
     docker build                        \
       -t exlearn                        \
@@ -40,34 +40,49 @@ alias docker-tail='docker logs -f --tail=100'
     docker build -t exlearn -f docker/project/Dockerfile "$PWD"
     ```
 
-2. Compile the C shared library
+2. Create the project container
     ```bash
-    docker-here exlearn make
+    docker-new-here --name exlearn exlearn bash -l
+
+    # Alternatively you can prefix the bellow commands with
+    # 'docker-here exlearn' in order to run them in one-off containers
+
+    docker-here exlearn bash -l
     ```
 
-3. Update dependencies
+3. Start the project container if not already started
     ```bash
-    docker-here exlearn mix deps.get
+    docker start -i exlearn
     ```
 
-4. Run an interactive shell
+4. Compile the C shared library
     ```bash
-    docker-here exlearn iex -S mix
+    make
     ```
 
-5. Run a sample
+5. Update dependencies
     ```bash
-    docker-here exlearn mix run samples/or.exs
+    mix deps.get
     ```
 
-6. Run tests
+6. Run an interactive shell
     ```bash
-    docker-here exlearn mix test
+    iex -S mix
     ```
 
-7. Run tests with coverage report
+7. Run a sample
     ```bash
-    docker-here exlearn mix coveralls
+    mix run samples/or.exs
+    ```
+
+8. Run tests
+    ```bash
+    mix test
+    ```
+
+9. Run tests with coverage report
+    ```bash
+    mix coveralls
     ```
 
 ## Jupyter Notebook
@@ -118,7 +133,7 @@ alias docker-tail='docker logs -f --tail=100'
     docker-new-here --name exlearn_development exlearn-dev
 
     # Start already created container
-    docker start exlearn_development
+    docker start -i exlearn_development
 
     # Execute a shell inside the container
     docker-exec exlearn_development bash -l
