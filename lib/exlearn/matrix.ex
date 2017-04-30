@@ -1,281 +1,385 @@
 defmodule ExLearn.Matrix do
   @moduledoc """
-Handles matrix creation, validation and conversion between binary and erlang
-term representation.
-"""
+  Performs operations on matrices
+  """
 
-  @doc """
-Creates a new matrix from a list of lists.
+  @on_load :load_nifs
 
-Integer values are converted to floats in the final binary representation.
-The length of the top list is used to determine the number of rows.
-The length of the first list inside the top list is used to determine the
-number of columns.
-
-If the internal lists are not of the same length or their contents are not
-numbers then the function will crash.
-The lists must all be proper lists, otherwise the function will crash.
-
-# Example
-
-```elixir
-list_of_lists = [[1, 2, 3], [4, 5, 6]]
-
-ExLearn.Matrix.new(list_of_lists)
-# <<2, 0, 0, 0, 3, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 64, 0, 0, 64, 64, 0, 0,
-#   128, 64, 0, 0, 160, 64, 0, 0, 192, 64>>
-```
-
-# Parameters
-1. `list_of_lists`: A `list` containing `lists` of the same length with values
-being `integers` or `floats`.
-
-# Return value
-
-The function returns a `binary` with the following structure:
-
-```
-<<
-  rows    :: unsigned-integer-little-32,
-  columns :: unsigned-integer-little-32
-  first   :: float-little-32,
-  ...
->>
-```
-
-The `...` denotes potentially more elements following, equal to the number of
-elements in all the sublists, all having the same data type as `first`.
-
-# Formal proof of Correctness
-
-THEOREM: The function produces valid output given valid input, otherwise it
-produces a crash.
-
-<1>1 LET =X= be the argument to the function.
-  <2>1 CASE =X= is not a list.
-    The function crashes on the first pattern match.
-  <2>2 CASE =X= is an improper list.
-    The function is guaranteed to crash when the `length` function is called on =X=
-    due to the way `length` works.
-  <2>3 CASE =X= is a proper list.
-    <3>1 LET =Y= be the first element in =X=.
-    <3>2 CASE =Y= is not a list.
-      The function crashes on the first pattern match.
-    <3>3 CASE =Y= is an improper list.
-      The function is guaranteed to crash when the `length` function is called on =Y=
-      due to the way `length` works.
-    <3>4 CASE =Y= is a proper list.
-      <4>1 LET =R= be the number of rows, equal to the length of =X=, a non negative
-        integer.
-      <4>2 LET =C= be the number of columns, equal to the length of =Y=, a non
-        negative integer.
-      <4>3 LET =I= be the initial binary, to withch the elements in =X= will be
-        concatenated after being transformed in binary form. =I= conforms to the return
-        value specification.
-      <4>4 FOR EACH element =L= inside the list =X= traversed in order; there is at
-        least one element =L= inside =X= that is a non empty proper list.
-        <5>1 CASE =L= is not a list.
-          The function crashes on the pattern match that extracts the head of a list.
-        <5>2 CASE =L= is an improper list.
-          <6>1 LET =Z= be the last element of the improper list =L=.
-            When =Z= is not an empty list, the argument guard will pass it to the function
-            that does a patter match in order to extract the head and tail. This pattern
-            match will fail and crash the function.
-        <5>3 CASE =L= is a proper list.
-          <6>1 FOR EACH element =E= inside the list =L=.
-            <7>1 CASE =E= is not a number.
-              The function crashes when tryin to convert the term =E= into a binary
-              representation of a float.
-            <7>2 CASE =E= is a number.
-              The term =E= is used to create a binary representation of a float which is
-              concatenated to the end of an accumulator, initially containing an empty
-              binary. The new accumulator is passed on to the next iteration.
-            <7>3 The resulting binary is a valid binary representation of all the
-              elements inside =E=.
-            <7>4 The resulting binary is concatenated at the end of the binary from the
-              previous iteration, or with an empty binary if we are at the start of the first
-              iteration.
-          <6>2 CASE There are less elements in =L= than the value of =C=.
-            The list of remaining elements will be empty while the number of still to
-            process elements will be greater than 0. The function will try a pattern match
-            to extract head and tail from an empty list and crash.
-          <6>3 CASE There are more elements in =L= than the value of =C=.
-            The iterating function expects an empty list when the remaining number of
-            elements is 0. When the remaining list is empty, the number of elements drops
-            below 0 and no guard matches so the function crashes.
-        <5>2 The resulting binary is a valid binary representation of all the elements
-          inside =L=.
-        <5>3 The resulting binary is concatenated at the end of the binary from the
-          previous iteration, or with =I= if we are at the start of the first iteration.
-      <4>5 The resulting binary is a valid binary representation of a matrix.
-      <4>QED The resulting binary is returned to the caller.
-"""
-
-  @spec new(list(list)) :: binary
-  def new(list_of_lists) do
-    [first = [_|_]|_] = list_of_lists
-
-    rows    = length(list_of_lists)
-    columns = length(first)
-
-    binary_from_list_of_lists(rows, columns, list_of_lists)
+  @spec load_nifs :: :ok
+  def load_nifs do
+    :ok = :erlang.load_nif('./priv/matrix_nifs', 0)
   end
 
   @doc """
-Creates a new matrix with the given number of rows, columns and elements from
-the provided list of lists.
+  Adds two matrices
+  """
+  @spec add(binary, binary) :: binary
+  def add(first, second)
+  when is_binary(first) and is_binary(second)
+  do
+    :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
 
-Integer values are converted to floats in the final binary representation.
-If the length of the top list does no match the `rows`, the number of elements
-in each sublist does not match the `columns`, or the elements are not all
-numbers the function will crash.
-The lists must all be proper lists, otherwise the function will crash.
+    random_size = :rand.uniform(2)             # excoveralls ignore
+    <<1 :: size(random_size)>>                 # excoveralls ignore
+  end
 
-Example:
-```elixir
-rows    = 2
-columns = 3
-list_of_lists = [[1, 2, 3], [4, 5, 6]]
+  @doc """
+  Applies the given function on each element of the matrix
+  """
+  @spec apply(binary, function) :: binary
+  def apply(matrix, function)
+  when is_binary(matrix) and is_function(function, 1)
+  do
+    <<
+      rows    :: float-little-32,
+      columns :: float-little-32,
+      data    :: binary
+    >> = matrix
 
-ExLearn.Matrix.new(rows, columns, list_of_lists)
-# <<2, 0, 0, 0, 3, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 64, 0, 0, 64, 64, 0, 0,
-#   128, 64, 0, 0, 160, 64, 0, 0, 192, 64>>
-```
+    initial = <<rows :: float-little-32, columns :: float-little-32>>
 
-Parameters:
-- `rows`: A `non_neg_integer` representing the number of rows the matrix has.
-- `columns`: A `non_neg_integer` representing the number of columns the matrix
-has.
-- `list_of_lists`: A `list` containing `lists` of the same length with values
-being `integers` or `floats`.
-"""
+    apply_on_matrix(data, function, initial)
+  end
+
+  @spec apply(binary, function) :: binary
+  def apply(matrix, function)
+  when is_binary(matrix) and is_function(function, 2)
+  do
+    <<
+      rows    :: float-little-32,
+      columns :: float-little-32,
+      data    :: binary
+    >> = matrix
+
+    initial = <<rows :: float-little-32, columns :: float-little-32>>
+    size    = rows * columns
+
+    apply_on_matrix(data, function, 1, size, initial)
+  end
+
+  @spec apply(binary, function) :: binary
+  def apply(matrix, function)
+  when is_binary(matrix) and is_function(function, 3)
+  do
+    <<
+      rows    :: float-little-32,
+      columns :: float-little-32,
+      data    :: binary
+    >> = matrix
+
+    initial = <<rows :: float-little-32, columns :: float-little-32>>
+
+    apply_on_matrix(data, function, 1, 1, columns, initial)
+  end
+
+  defp apply_on_matrix(<<>>, _,        accumulator), do: accumulator
+  defp apply_on_matrix(data, function, accumulator)  do
+    <<value :: float-little-32, rest :: binary>> = data
+
+    new_value   = function.(value)
+    new_element = <<new_value :: float-little-32>>
+
+    apply_on_matrix(rest, function, accumulator <> new_element)
+  end
+
+  defp apply_on_matrix(<<>>, _, _, _, accumulator), do: accumulator
+  defp apply_on_matrix(data, function, index, size, accumulator) do
+    <<value :: float-little-32, rest :: binary>> = data
+
+    new_value       = function.(value, index)
+    new_element     = <<new_value :: float-little-32>>
+    new_accumulator = accumulator <> new_element
+
+    apply_on_matrix(rest, function, index + 1, size, new_accumulator)
+  end
+
+  defp apply_on_matrix(<<>>, _, _, _, _, accumulator), do: accumulator
+  defp apply_on_matrix(data, function, row_index, column_index, columns, accumulator) do
+    <<value :: float-little-32, rest :: binary>> = data
+
+    new_value       = function.(value, row_index, column_index)
+    new_element     = <<new_value :: float-little-32>>
+    new_accumulator = accumulator <> new_element
+
+    case column_index < columns do
+      true  ->
+        apply_on_matrix(rest, function, row_index, column_index + 1, columns, new_accumulator)
+      false ->
+        apply_on_matrix(rest, function, row_index + 1, 1, columns, new_accumulator)
+    end
+  end
+
+  @spec apply(binary, binary, function) :: binary
+  def apply(first, second, function) do
+    <<
+      rows       :: float-little-32,
+      columns    :: float-little-32,
+      first_data :: binary
+    >> = first
+    <<
+      _           :: float-little-32,
+      _           :: float-little-32,
+      second_data :: binary
+    >> = second
+
+    initial = <<rows :: float-little-32, columns :: float-little-32>>
+
+    apply_on_matrices(first_data, second_data, function, initial)
+  end
+
+  defp apply_on_matrices(<<>>, <<>>, _, accumulator), do: accumulator
+  defp apply_on_matrices(first_data, second_data, function, accumulator)  do
+    <<first_value  :: float-little-32, first_rest  :: binary>> = first_data
+    <<second_value :: float-little-32, second_rest :: binary>> = second_data
+
+    new_value       = function.(first_value, second_value)
+    new_element     = <<new_value :: float-little-32>>
+    new_accumulator = accumulator <> new_element
+
+    apply_on_matrices(first_rest, second_rest, function, new_accumulator)
+  end
+
+  @doc """
+  Returns the index of the biggest element.
+  """
+  @spec argmax(binary) :: non_neg_integer
+  def argmax(_matrix) do
+    :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
+
+    :rand.uniform                              # excoveralls ignore
+  end
+
+  @doc """
+  Divides two matrices
+  """
+  @spec divide(binary, binary) :: binary
+  def divide(first, second)
+  when is_binary(first) and is_binary(second)
+  do
+    :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
+
+    random_size = :rand.uniform(2)             # excoveralls ignore
+    <<1 :: size(random_size)>>                 # excoveralls ignore
+  end
+
+  @doc """
+  Matrix multiplication
+  """
+  @spec dot(binary, binary) :: binary
+  def dot(first, second)
+  when is_binary(first) and is_binary(second)
+  do
+    :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
+
+    random_size = :rand.uniform(2)             # excoveralls ignore
+    <<1 :: size(random_size)>>                 # excoveralls ignore
+  end
+
+  @doc """
+  Matrix multiplication
+  """
+  @spec dot_and_add(binary, binary, binary) :: binary
+  def dot_and_add(first, second, third)
+  when is_binary(first) and is_binary(second) and is_binary(third)
+  do
+    :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
+
+    random_size = :rand.uniform(2)             # excoveralls ignore
+    <<1 :: size(random_size)>>                 # excoveralls ignore
+  end
+
+  @doc """
+  Matrix multiplication where the second matrix needs to be transposed.
+  """
+  @spec dot_nt(binary, binary) :: binary
+  def dot_nt(first, second)
+  when is_binary(first) and is_binary(second)
+  do
+    :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
+
+    random_size = :rand.uniform(2)             # excoveralls ignore
+    <<1 :: size(random_size)>>                 # excoveralls ignore
+  end
+
+  @doc """
+  Matrix multiplication where the first matrix needs to be transposed.
+  """
+  @spec dot_tn(binary, binary) :: binary
+  def dot_tn(first, second)
+  when is_binary(first) and is_binary(second)
+  do
+    :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
+
+    random_size = :rand.uniform(2)             # excoveralls ignore
+    <<1 :: size(random_size)>>                 # excoveralls ignore
+  end
+
+  def first(matrix) do
+    <<
+      _rows    :: float-little-32,
+      _columns :: float-little-32,
+      element  :: float-little-32,
+      _rest    :: binary
+    >> = matrix
+
+    element
+  end
+
+  @doc """
+  Displays a visualization of the matrix.
+  """
+  @spec inspect(binary) :: binary
+  def inspect(matrix) do
+    <<
+      rows    :: float-little-32,
+      columns :: float-little-32,
+      rest    :: binary
+    >> = matrix
+
+    IO.puts("Rows: #{trunc(rows)} Columns: #{trunc(columns)}")
+
+    inspect_element(1, columns, rest)
+
+    matrix
+  end
+
+  defp inspect_element(_, _, <<>>), do: :ok
+  defp inspect_element(column, columns, elements) do
+    <<element :: float-little-32, rest :: binary>> = elements
+
+    next_column = case column == columns do
+      true ->
+        IO.puts(element)
+
+        1.0
+      false ->
+        IO.write("#{element} ")
+
+        column + 1.0
+    end
+
+    inspect_element(next_column, columns, rest)
+  end
+
+  @doc """
+  Maximum element in a matrix.
+  """
+  @spec max(binary) :: number
+  def max(_matrix) do
+    :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
+
+    :rand.uniform                              # excoveralls ignore
+  end
+
+  @doc """
+  Elementwise multiplication of two matrices
+  """
+  @spec multiply(binary, binary) :: binary
+  def multiply(first, second)
+  when is_binary(first) and is_binary(second)
+  do
+    :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
+
+    random_size = :rand.uniform(2)             # excoveralls ignore
+    <<1 :: size(random_size)>>                 # excoveralls ignore
+  end
+
+  @doc """
+  Elementwise multiplication of a scalar
+  """
+  @spec multiply_with_scalar(binary, number) :: binary
+  def multiply_with_scalar(matrix, scalar)
+  when is_binary(matrix) and is_number(scalar)
+  do
+    :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
+
+    random_size = :rand.uniform(2)             # excoveralls ignore
+    <<1 :: size(random_size)>>                 # excoveralls ignore
+  end
+
+  @doc """
+  Creates a new matrix with values provided by the given function
+  """
+  @spec new(non_neg_integer, non_neg_integer, function) :: binary
+  def new(rows, columns, function) when is_function(function, 0) do
+    initial = <<rows :: float-little-32, columns :: float-little-32>>
+
+    new_matrix_from_function(rows * columns, function, initial)
+  end
+
+  @spec new(non_neg_integer, non_neg_integer, function) :: binary
+  def new(rows, columns, function) when is_function(function, 2) do
+    initial = <<rows :: float-little-32, columns :: float-little-32>>
+    size    = rows * columns
+
+    new_matrix_from_function(size, rows, columns, function, initial)
+  end
 
   @spec new(non_neg_integer, non_neg_integer, list(list)) :: binary
-  def new(rows, columns, list_of_lists) do
-    [first = [_|_]|_] = list_of_lists
-
-    ^rows    = length(list_of_lists)
-    ^columns = length(first)
-
-    binary_from_list_of_lists(rows, columns, list_of_lists)
-  end
-
-  defp binary_from_list_of_lists(rows, columns, list_of_lists) do
-    initial = <<
-      rows    :: unsigned-integer-little-32,
-      columns :: unsigned-integer-little-32
-    >>
+  def new(rows, columns, list_of_lists) when is_list(list_of_lists) do
+    initial = <<rows :: float-little-32, columns :: float-little-32>>
 
     Enum.reduce(list_of_lists, initial, fn(list, accumulator) ->
-      accumulator <> binary_from_list(columns, list, <<>>)
+      accumulator <> Enum.reduce(list, <<>>, fn(element, partial) ->
+        partial <> <<element :: float-little-32>>
+      end)
     end)
   end
 
-  defp binary_from_list(0,       [],   accumulator), do: accumulator
-  defp binary_from_list(columns, list, accumulator) when columns > 0 do
-    [head|tail] = list
+  defp new_matrix_from_function(0,    _,        accumulator), do: accumulator
+  defp new_matrix_from_function(size, function, accumulator)  do
+    current = <<function.() :: float-little-32>>
 
-    new_accumulator = accumulator <> <<head :: float-little-32>>
+    new_matrix_from_function(size - 1, function, accumulator <> current)
+  end
 
-    binary_from_list(columns - 1, tail, new_accumulator)
+  defp new_matrix_from_function(0, _, _, _, accumulator), do: accumulator
+  defp new_matrix_from_function(size, rows, columns, function, accumulator)  do
+    current         = <<function.(rows, columns) :: float-little-32>>
+    new_accumulator = accumulator <> current
+
+    new_matrix_from_function(size - 1, rows, columns, function, new_accumulator)
   end
 
   @doc """
-Creates an erlang term representation of a matrix from a binary.
-"""
+  Substracts two matrices
+  """
+  @spec substract(binary, binary) :: binary
+  def substract(first, second)
+  when is_binary(first) and is_binary(second)
+  do
+    :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
 
-  @spec from_binary(binary) :: {non_neg_integer, non_neg_integer, list(list)}
-  def from_binary(binary) do
-    <<
-      rows    :: unsigned-integer-little-32,
-      columns :: unsigned-integer-little-32,
-      rest    :: binary
-    >> = binary
-
-    list_of_lists = lists_from_binary(rows, columns, 4 * columns, rest, [])
-
-    {rows, columns, list_of_lists}
-  end
-
-  defp lists_from_binary(0, _columns, _size, <<>>, accumulator) do
-    Enum.reverse(accumulator)
-  end
-  defp lists_from_binary(rows, columns, size, binary, accumulator) do
-    <<row_binary :: binary-size(size), rest :: binary>> = binary
-
-    row = extract_row(columns, row_binary, [])
-
-    lists_from_binary(rows - 1, columns, size, rest, [row|accumulator])
-  end
-
-  defp extract_row(0,       <<>>,   accumulator), do: Enum.reverse(accumulator)
-  defp extract_row(columns, binary, accumulator)  do
-    <<element :: float-little-32, rest :: binary>> = binary
-
-    extract_row(columns - 1, rest, [element| accumulator])
+    random_size = :rand.uniform(2)             # excoveralls ignore
+    <<1 :: size(random_size)>>                 # excoveralls ignore
   end
 
   @doc """
-Creates a matrix binary from an erlang term representation.
-"""
-
-  @spec to_binary({non_neg_integer, non_neg_integer, list(list)}) :: binary
-  def to_binary({rows, columns, list_of_lists}) do
-    new(rows, columns, list_of_lists)
+  Substracts the second matrix from the first
+  """
+  @spec substract_inverse(binary, binary) :: binary
+  def substract_inverse(first, second) do
+    substract(second, first)
   end
 
   @doc """
-Checks if the argument is a valid representation of a matrix.
-"""
+  Sums all elements.
+  """
+  @spec sum(binary) :: number
+  def sum(_matrix) do
+    :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
 
-  @spec valid?(binary) :: boolean
-  def valid?(binary) do
-    binary_size = bit_size(binary)
-
-    case binary_size >= 96 do
-      false -> false
-      true  ->
-        <<
-          rows    :: unsigned-integer-little-32,
-          columns :: unsigned-integer-little-32,
-          rest    :: binary
-        >> = binary
-
-        bit_size(rest) == rows * columns * 32
-    end
+    :rand.uniform                              # excoveralls ignore
   end
 
-  @spec valid?({non_neg_integer, non_neg_integer, list(list)}) :: boolean
-  def valid?({rows, columns, list_of_lists}) do
-    cond do
-      not (is_number(rows)    and rows > 0)                          -> false
-      not (is_number(columns) and columns > 0)                       -> false
-      not (is_list(list_of_lists) and length(list_of_lists) == rows) -> false
-      true ->
-        valid_list_of_lists?(columns, list_of_lists)
-    end
-  end
+  @doc """
+  Transposes a matrix
+  """
+  @spec transpose(binary) :: binary
+  def transpose(matrix) when is_binary(matrix) do
+    :erlang.nif_error(:nif_library_not_loaded) # excoveralls ignore
 
-  @spec valid?(any) :: false
-  def valid?(_), do: false
-
-  defp valid_list_of_lists?(_columns, []           ), do: true
-  defp valid_list_of_lists?(columns,  list_of_lists)  do
-    [first|rest] = list_of_lists
-
-    cond do
-      not (is_list(first) and length(first) == columns) -> false
-      not contains_only_numbers?(first)                 -> false
-      true ->
-        valid_list_of_lists?(columns, rest)
-    end
-  end
-
-  defp contains_only_numbers?([]),          do: true
-  defp contains_only_numbers?([first|rest]) do
-    case is_number(first) do
-      false -> false
-      true  -> contains_only_numbers?(rest)
-    end
+    random_size = :rand.uniform(2)             # excoveralls ignore
+    <<1 :: size(random_size)>>                 # excoveralls ignore
   end
 end
