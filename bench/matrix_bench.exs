@@ -4,7 +4,6 @@ defmodule MatrixBench.RandomMatrix do
     """
     @spec random(integer, integer, integer) :: [[number]]
     def random(rows, cols, max) do
-      IO.puts "Random #{rows}, #{cols}."
       ExLearn.Matrix.new(rows, cols, fn -> :rand.uniform(max) end)
     end
 end
@@ -14,37 +13,36 @@ defmodule MatrixBench do
   @moduledoc """
   Benchfella module to compare matrix operations performance with a115/exmatrix
 
-  Below are results for MacBookPro, 8 cores, 16 GB memory.
-  ExLearn used only a fraction of CPU, because it does not use parallel computation.
-  So, actual performance advantage of ExLearn will be an order of magnitude greater.
+  Below are results for MacBookPro, 1 core used, 16 GB memory.
+  ExLearn shows about 1 000 times better performance in dot product
+  and is tens times faster in transposing.
 
   ## ExMatrix
 
-  Finished in 29.04 seconds
+  Finished in 53.23 seconds
 
   benchmark name                iterations   average time
-  transpose a 100x100 matrix        5000   719.77 µs/op
-  transpose a 200x200 matrix         500   2828.41 µs/op
-  transpose a 400x400 matrix         100   14057.79 µs/op
-  50x50 matrix in parallel            50   29563.38 µs/op
-  100x100 matrix in parallel          10   195277.70 µs/op
-  200x200 matrix in parallel           1   1585938.00 µs/op
-  400x400 matrix in parallel           1   15745453.00 µs/op
+  transpose a 100x100 matrix          5000   763.27 µs/op
+  transpose a 200x200 matrix          1000   2704.82 µs/op
+  transpose a 400x400 matrix           100   13543.31 µs/op
+  50x50 matrices dot product            20   79386.05 µs/op
+  100x100 matrices dot product           2   615565.00 µs/op
+  200x200 matrices dot product           1   4383168.00 µs/op
+  400x400 matrices dot product           1   34386453.00 µs/op
 
 
   ## ExLearn.Matrix
 
-  Finished in 19.57 seconds
+  Finished in 18.4 seconds
 
   benchmark name                iterations   average time
-  transpose a 100x100 matrix        100000   27.47 µs/op
-  50x50 matrices dot product         20000   95.70 µs/op
-  transpose a 200x200 matrix         10000   120.89 µs/op
-  transpose a 400x400 matrix          5000   418.17 µs/op
-  100x100 matrices dot product        5000   674.94 µs/op
-  200x200 matrices dot product         500   4998.85 µs/op
-  400x400 matrices dot product          50   38847.84 µs/op
-
+  transpose a 100x100 matrix        100000   26.28 µs/op
+  50x50 matrices dot product         20000   89.86 µs/op
+  transpose a 200x200 matrix         10000   116.80 µs/op
+  transpose a 400x400 matrix          5000   405.55 µs/op
+  100x100 matrices dot product        5000   622.99 µs/op
+  200x200 matrices dot product         500   4652.35 µs/op
+  400x400 matrices dot product          50   36277.00 µs/op
   """
 
   use Benchfella
