@@ -15,10 +15,10 @@ defmodule MatrixBench do
 
   Below are results for MacBookPro, 1 core used, 16 GB memory.
   ExLearn shows about 1 000 times better performance in dot product
-  and is tens times faster in transposing.
+  and is 20 times faster in transposing.
 
   ## ExMatrix
-
+  ```
   Finished in 52.3 seconds
 
   benchmark name                iterations   average time
@@ -29,10 +29,11 @@ defmodule MatrixBench do
   100x100 matrices dot product           2   615565.00 µs/op
   200x200 matrices dot product           1   4383168.00 µs/op
   400x400 matrices dot product           1   34386453.00 µs/op
+  ```
 
 
   ## ExLearn.Matrix
-
+  ```
   Finished in 18.4 seconds
 
   benchmark name                iterations   average time
@@ -43,6 +44,7 @@ defmodule MatrixBench do
   100x100 matrices dot product        5000   622.99 µs/op
   200x200 matrices dot product         500   4652.35 µs/op
   400x400 matrices dot product          50   36277.00 µs/op
+  ```
   """
 
   use Benchfella
