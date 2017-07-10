@@ -11,6 +11,9 @@ end
 
 
 defmodule MatrixBench do
+  @moduledoc """
+  Benchfella module to compare matrix operations performance with a115/exmatrix
+  """
   use Benchfella
   import ExLearn.Matrix
   import MatrixBench.RandomMatrix
