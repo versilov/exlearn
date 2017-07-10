@@ -19,7 +19,7 @@ defmodule MatrixBench do
 
   ## ExMatrix
 
-  Finished in 53.23 seconds
+  Finished in 52.3 seconds
 
   benchmark name                iterations   average time
   transpose a 100x100 matrix          5000   763.27 µs/op
