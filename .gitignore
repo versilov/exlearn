@@ -33,3 +33,8 @@ erl_crash.dump
 
 /native/obj
 /native/bin
+
+/bench/graphs
+/bench/snapshots
+
+.DS_Store
