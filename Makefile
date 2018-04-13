@@ -17,7 +17,7 @@ ERL_INCLUDE_PATH = $(shell erl -eval 'io:format("~s", [lists:concat([code:root_d
 
 # For compiling and linking the final NIF shared objects.
 CFLAGS  = -fPIC -I$(ERL_INCLUDE_PATH) -O3 -shared -std=gnu11 -Wall -Wextra
-LDFLAGS = -lblas -lgsl -lgslcblas -lm
+LDFLAGS = -lblas -lgsl -lgslcblas -lm -flat_namespace -undefined suppress
 
 # For compiling and linking the test runner.
 TEST_CFLAGS  = -g -O0 -std=gnu11 -Wall -Wextra --coverage
